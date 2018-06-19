@@ -37,19 +37,21 @@ class Deployer {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 1);
 
-		this._preValidateArguments(contract, deploymentArguments);
+		await this._preValidateArguments(contract, deploymentArguments);
 
-		const deployTransaction = this._prepareDeployTransaction(contract, deploymentArguments);
+		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
 
-		const transaction = await this._sendDeployTransaction(this._overrideDeployTransactionConfig(deployTransaction));
+		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
+
+		const transaction = await this._sendDeployTransaction(deployTransaction);
 
 		await this._waitForDeployTransaction(transaction);
 
 		const transactionReceipt = await this._getTransactionReceipt(transaction);
 
-		this._postValidateTransaction(contract, transaction, transactionReceipt)
+		await this._postValidateTransaction(contract, transaction, transactionReceipt)
 
-		const deploymentResult = this._generateDeploymentResult(contract, transaction, transactionReceipt);
+		const deploymentResult = await this._generateDeploymentResult(contract, transaction, transactionReceipt);
 
 		return deploymentResult;
 
@@ -62,9 +64,9 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	_preValidateArguments(contract, deploymentArguments) {
+	async _preValidateArguments(contract, deploymentArguments) {
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
-		const argumentsEnd = (deploymentArguments.length == 0) ? '' : ` with arguments: ${colors.colorParams(deploymentArguments)}`;
+		const argumentsEnd = (deploymentArguments.length == 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 
 		console.log(`${deployContractStart}${argumentsEnd}`);
 	}
@@ -76,7 +78,7 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
  	 * @param {*} deploymentArguments the arguments to this contract
 	 */
-	_prepareDeployTransaction(contract, deploymentArguments) {
+	async _prepareDeployTransaction(contract, deploymentArguments) {
 		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
 	}
 
@@ -86,7 +88,7 @@ class Deployer {
 	 * 
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
-	_overrideDeployTransactionConfig(deployTransaction) {
+	async _overrideDeployTransactionConfig(deployTransaction) {
 		if (this.defaultOverrides === undefined) {
 			return deployTransaction;
 		}
@@ -109,7 +111,7 @@ class Deployer {
 	 * 
 	 * @param {*} deployTransaction the transaction that is to be sent
 	 */
-	_sendDeployTransaction(deployTransaction) {
+	async _sendDeployTransaction(deployTransaction) {
 		return this.wallet.sendTransaction(deployTransaction);
 	}
 
@@ -130,7 +132,7 @@ class Deployer {
 	 * 
 	 * @param {*} transaction the already mined transaction
 	 */
-	_getTransactionReceipt(transaction) {
+	async _getTransactionReceipt(transaction) {
 		return this.provider.getTransactionReceipt(transaction.hash);
 	}
 
@@ -140,7 +142,7 @@ class Deployer {
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	_postValidateTransaction(contract, transaction, transactionReceipt) {
+	async _postValidateTransaction(contract, transaction, transactionReceipt) {
 		if (transactionReceipt.status === 0) {
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
@@ -154,7 +156,7 @@ class Deployer {
 	 * @param {*} transaction the transaction object that was sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	_generateDeploymentResult(contract, transaction, transactionReceipt) {
+	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
 		console.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return transactionReceipt.contractAddress
 	}
