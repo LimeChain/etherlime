@@ -12,5 +12,8 @@
   "dependencies": {
     "ethers": "^3.0.22",
     "readline-sync": "^1.4.9"
+  },
+  "bin": {
+    "limedply": "./cli.js"
   }
 }
