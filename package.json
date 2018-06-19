@@ -1,5 +1,5 @@
 {
-  "name": "ogitestdeploy",
+  "name": "limedeploy",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,10 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.1",
     "ethers": "^3.0.22",
     "readline-sync": "^1.4.9"
   },
   "bin": {
-    "limedply": "./cli.js"
+    "ethploy": "./cli.js"
   }
 }
