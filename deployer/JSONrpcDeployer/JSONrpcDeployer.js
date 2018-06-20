@@ -10,7 +10,7 @@ class JSONrpcDeployer extends PrivateKeyDeployer {
 	 * Instantiates new deployer based on the Local Node Provider Address (for example: 'http://localhost:8545/') and private key based deployment wallet
 	 * 
 	 * @param {*} privateKey the private key for the deployer wallet
-	 * @param {*} network network to deploy on. This is the local node address that is given to the class
+	 * @param {*} nodeLink network to deploy on. This is the local node address that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, nodeLink, defaultOverrides) {
