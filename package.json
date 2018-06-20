@@ -1,19 +1,24 @@
 {
-  "name": "ogitestdeploy",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ethploy",
+  "version": "0.0.1",
+  "description": "Ethploy is deployment framework for ethereum smart contracts, based on ethers.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LimeChain/lime-deployer"
+  },
   "keywords": [],
-  "author": "",
+  "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^2.4.1",
     "ethers": "^3.0.22",
     "readline-sync": "^1.4.9"
   },
   "bin": {
-    "limedply": "./cli.js"
+    "ethploy": "./cli.js"
   }
 }
