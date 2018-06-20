@@ -17,13 +17,13 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
-		console.log(`Deployer set to ${this.nodeUrl}. Network: ${colors.colorNetwork(this.nodeUrl)}`)
+		console.log(`Network: ${colors.colorNetwork(this.nodeUrl)}`)
 
 	}
 
 	toString() {
 		const superString = super.toString();
-		return `Deployer set to ${this.nodeUrl}. Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
+		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
 	}
 }
 
