@@ -23,7 +23,7 @@ class JSONrpcDeployer extends PrivateKeyDeployer {
 
 	toString() {
 		const superString = super.toString();
-		return `Deployer set to ${this.nodeLink}. Network: ${colors.colorNetwork(this.nodeLink)}`;
+		return `Deployer set to ${this.nodeLink}. Network: ${colors.colorNetwork(this.nodeLink)}\n${superString}`;
 	}
 }
 
