@@ -1,0 +1,394 @@
+{
+  "contractName": "ProductionFactoryProxy",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "contractImplementation",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_contractImpl",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "fallback"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b506040516020806101a9833981016040525160008054600160a060020a03909216600160a060020a0319909216919091179055610157806100526000396000f3006080604052600436106100405763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416639e72370b8114610096575b6000805460408051602036601f81018290048202830182019093528282526100949473ffffffffffffffffffffffffffffffffffffffff9094169391929081908401838280828437506100d4945050505050565b005b3480156100a257600080fd5b506100ab61010f565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b813b80156100e1576100e6565b600080fd5b50600080825160208401856127105a03f43d604051816000823e82801561010b578282f35b8282fd5b60005473ffffffffffffffffffffffffffffffffffffffff16815600a165627a7a7230582014046a373362678ae7bcf8d7e5e45f82f88188882daf50a34f80363add52f9780029",
+  "deployedBytecode": "0x6080604052600436106100405763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416639e72370b8114610096575b6000805460408051602036601f81018290048202830182019093528282526100949473ffffffffffffffffffffffffffffffffffffffff9094169391929081908401838280828437506100d4945050505050565b005b3480156100a257600080fd5b506100ab61010f565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b813b80156100e1576100e6565b600080fd5b50600080825160208401856127105a03f43d604051816000823e82801561010b578282f35b8282fd5b60005473ffffffffffffffffffffffffffffffffffffffff16815600a165627a7a7230582014046a373362678ae7bcf8d7e5e45f82f88188882daf50a34f80363add52f9780029",
+  "sourceMap": "76:135:9:-;;;132:76;8:9:-1;5:2;;;30:1;27;20:12;5:2;132:76:9;;;;;;;;;;;;;462:22:18;:38;;-1:-1:-1;;;;;462:38:18;;;-1:-1:-1;;;;;;462:38:18;;;;;;;;;76:135:9;;;;;;",
+  "deployedSourceMap": "76:135:9:-;;;;;;;;;;;;;;;;;;;;740:22:18;;;727:46;;;;764:8;727:46;;;;;;;;;;;;;;;;;;;;740:22;;;;;727:46;;764:8;;;727:46;;740:22;764:8;;740:22;727:46;;-1:-1:-1;727:12:18;;-1:-1:-1;;;;;727:46:18:i;:::-;76:135:9;55:37:16;;8:9:-1;5:2;;;30:1;27;20:12;5:2;55:37:16;;;;;;;;;;;;;;;;;;;;;;;309:655:13;411:17;;429:23;;;;404:48;;429:23;448:1;445;438:12;404:48;;559:1;556;544:9;538:16;531:4;520:9;516:20;510:4;502:5;497:3;493:15;480:81;586:14;631:4;625:11;672:4;669:1;664:3;649:28;871:6;878:28;;;;941:4;936:3;929:17;878:28;899:4;894:3;887:17;55:37:16;;;;;;:::o",
+  "source": "pragma solidity ^0.4.23;\n\nimport \"../Upgradeability/UpgradeableProxy.sol\";\n\ncontract ProductionFactoryProxy is UpgradeableProxy {\n\n\tconstructor(address _contractImpl) UpgradeableProxy(_contractImpl) public {}\n\n}",
+  "sourcePath": "/Users/georgispasov/Development/ARXUM/Demoapp_SC/contracts/ProductionFactory/ProductionFactoryProxy.sol",
+  "ast": {
+    "absolutePath": "/Users/georgispasov/Development/ARXUM/Demoapp_SC/contracts/ProductionFactory/ProductionFactoryProxy.sol",
+    "exportedSymbols": {
+      "ProductionFactoryProxy": [
+        1831
+      ]
+    },
+    "id": 1832,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1818,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:9"
+      },
+      {
+        "absolutePath": "/Users/georgispasov/Development/ARXUM/Demoapp_SC/contracts/Upgradeability/UpgradeableProxy.sol",
+        "file": "../Upgradeability/UpgradeableProxy.sol",
+        "id": 1819,
+        "nodeType": "ImportDirective",
+        "scope": 1832,
+        "sourceUnit": 3266,
+        "src": "26:48:9",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1820,
+              "name": "UpgradeableProxy",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3265,
+              "src": "111:16:9",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_UpgradeableProxy_$3265",
+                "typeString": "contract UpgradeableProxy"
+              }
+            },
+            "id": 1821,
+            "nodeType": "InheritanceSpecifier",
+            "src": "111:16:9"
+          }
+        ],
+        "contractDependencies": [
+          3131,
+          3212,
+          3265
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1831,
+        "linearizedBaseContracts": [
+          1831,
+          3265,
+          3131,
+          3212
+        ],
+        "name": "ProductionFactoryProxy",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 1829,
+              "nodeType": "Block",
+              "src": "206:2:9",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 1830,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 1826,
+                    "name": "_contractImpl",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1823,
+                    "src": "184:13:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  }
+                ],
+                "id": 1827,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1825,
+                  "name": "UpgradeableProxy",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3265,
+                  "src": "167:16:9",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_UpgradeableProxy_$3265_$",
+                    "typeString": "type(contract UpgradeableProxy)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "167:31:9"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1824,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1823,
+                  "name": "_contractImpl",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1830,
+                  "src": "144:21:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1822,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "144:7:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "143:23:9"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1828,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "206:0:9"
+            },
+            "scope": 1831,
+            "src": "132:76:9",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1832,
+        "src": "76:135:9"
+      }
+    ],
+    "src": "0:211:9"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/georgispasov/Development/ARXUM/Demoapp_SC/contracts/ProductionFactory/ProductionFactoryProxy.sol",
+    "exportedSymbols": {
+      "ProductionFactoryProxy": [
+        1831
+      ]
+    },
+    "id": 1832,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1818,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".23"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:9"
+      },
+      {
+        "absolutePath": "/Users/georgispasov/Development/ARXUM/Demoapp_SC/contracts/Upgradeability/UpgradeableProxy.sol",
+        "file": "../Upgradeability/UpgradeableProxy.sol",
+        "id": 1819,
+        "nodeType": "ImportDirective",
+        "scope": 1832,
+        "sourceUnit": 3266,
+        "src": "26:48:9",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 1820,
+              "name": "UpgradeableProxy",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3265,
+              "src": "111:16:9",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_UpgradeableProxy_$3265",
+                "typeString": "contract UpgradeableProxy"
+              }
+            },
+            "id": 1821,
+            "nodeType": "InheritanceSpecifier",
+            "src": "111:16:9"
+          }
+        ],
+        "contractDependencies": [
+          3131,
+          3212,
+          3265
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1831,
+        "linearizedBaseContracts": [
+          1831,
+          3265,
+          3131,
+          3212
+        ],
+        "name": "ProductionFactoryProxy",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 1829,
+              "nodeType": "Block",
+              "src": "206:2:9",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 1830,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 1826,
+                    "name": "_contractImpl",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1823,
+                    "src": "184:13:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  }
+                ],
+                "id": 1827,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 1825,
+                  "name": "UpgradeableProxy",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3265,
+                  "src": "167:16:9",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_UpgradeableProxy_$3265_$",
+                    "typeString": "type(contract UpgradeableProxy)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "167:31:9"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1824,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1823,
+                  "name": "_contractImpl",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1830,
+                  "src": "144:21:9",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1822,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "144:7:9",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "143:23:9"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 1828,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "206:0:9"
+            },
+            "scope": 1831,
+            "src": "132:76:9",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1832,
+        "src": "76:135:9"
+      }
+    ],
+    "src": "0:211:9"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-06-14T17:04:59.969Z"
+}
