@@ -12,8 +12,8 @@ class PrivateKeyDeployer extends Deployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, provider, defaultOverrides) {
-		const sanePrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
-		const wallet = new ethers.Wallet(sanePrivateKey);
+		const sanitizedPrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
+		const wallet = new ethers.Wallet(sanitizedPrivateKey);
 		super(wallet, provider, defaultOverrides);
 
 		console.log(`Deployer set to deploy from address: ${colors.colorAddress(this.wallet.address)}\n`)
