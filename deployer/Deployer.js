@@ -1,5 +1,6 @@
 const ethers = require('ethers');
 const colors = require('../utils/colors');
+const isValidContract = require('../utils/contract-utils').isValidContract;
 const Wallet = ethers.Wallet;
 
 class Deployer {
@@ -13,15 +14,19 @@ class Deployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(wallet, provider, defaultOverrides) {
-		if (!(wallet instanceof Wallet)) {
-			throw new Error('Passed wallet is not instance of ethers Wallet');
-		}
+		this._validateInput(wallet, provider, defaultOverrides);
 
 		this.wallet = wallet;
 		this.provider = provider;
 		this.wallet.provider = provider;
 
 		this.defaultOverrides = defaultOverrides;
+	}
+
+	_validateInput(wallet, provider, defaultOverrides) {
+		if (!(wallet instanceof Wallet)) {
+			throw new Error('Passed wallet is not instance of ethers Wallet');
+		}
 	}
 
 	/**
@@ -65,6 +70,10 @@ class Deployer {
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
 	async _preValidateArguments(contract, deploymentArguments) {
+		if (!(isValidContract(contract))) {
+			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
+		}
+
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
 		const argumentsEnd = (deploymentArguments.length == 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 

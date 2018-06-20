@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const colors = require('../utils/colors');
 
-const Deployer = require('./Deployer');
+const Deployer = require('./deployer');
 
 class PrivateKeyDeployer extends Deployer {
 
