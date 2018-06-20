@@ -14,7 +14,7 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, nodeUrl, defaultOverrides) {
-		const localNodeProvider = new providers.JsonRpcProvider(nodeUrl, providers.networks.unspecified);
+		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 		console.log(`Deployer set to ${this.nodeUrl}. Network: ${colors.colorNetwork(this.nodeUrl)}`)
