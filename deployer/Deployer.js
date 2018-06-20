@@ -179,6 +179,8 @@ class Deployer {
 	 * 
 	 * @param {*} contract 
 	 * @param {*} contractAddress 
+	 * 
+	 * @return
 	 */
 	wrapDeployedContract(contract, contractAddress) {
 		console.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
