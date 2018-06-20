@@ -1,7 +1,7 @@
 # Usage
 
 ```
-const ethploy = require('ethploy');
+const etherlime = require('etherlime');
 
 const TestContract = require('./TestContract.json');
 
@@ -10,7 +10,7 @@ const defaultConfigs = {
 	gasLimit: 4700000
 }
 
-const deployer = new ethploy.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
+const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
 
 const run = async () => {
 	
