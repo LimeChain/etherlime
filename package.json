@@ -1,14 +1,14 @@
 {
-  "name": "ethploy",
+  "name": "etherlime",
   "version": "0.0.1",
-  "description": "Ethploy is deployment framework for ethereum smart contracts, based on ethers.js",
+  "description": "etherlime is deployment framework for ethereum smart contracts, based on ethers.js",
   "main": "index.js",
   "scripts": {
     "test": "mocha 'test/**/*.js'"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LimeChain/lime-deployer"
+    "url": "https://github.com/LimeChain/etherlime"
   },
   "keywords": [],
   "author": "http://www.limechain.tech",
