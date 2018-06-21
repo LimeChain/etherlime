@@ -6,6 +6,7 @@ const isAddress = require('../../utils/address-utils').isAddress;
 const config = require('../config.json');
 const ICOTokenContract = require('../testContracts/ICOToken.json');
 const VestingContract = require('../testContracts/Vesting.json');
+const Greetings = require('../testContracts/Greetings.json');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -65,18 +66,41 @@ describe('Deployer tests', () => {
 			})
 
 			it('should deploy contract without params correctly', async () => {
-				const contractWrapper = await deployer.deploy(ICOTokenContract);
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-				assert.deepEqual(ICOTokenContract.abi, contractWrapper.contract.interface.abi, "The stored contract abi differs from the inputted one");
 			})
 
 			it('should deploy contract without default configs', async () => {
 				deployer = new etherlime.Deployer(wallet, provider);
-				const contractWrapper = await deployer.deploy(VestingContract, config.randomAddress, 1569426974);
+				const contractWrapper = await deployer.deploy(Greetings);
+
+				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
+				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
+				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
+			})
+
+			it('should deploy contract without gasPrice correctly', async () => {
+				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
+				delete defaultConfigsCopy.gasPrice;
+				deployer.defaultOverrides = defaultConfigsCopy;
+				const contractWrapper = await deployer.deploy(Greetings);
+
+				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
+				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
+				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
+			})
+
+			it('should deploy contract without gasLimit correctly', async () => {
+				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
+				delete defaultConfigsCopy.gasLimit;
+				deployer.defaultOverrides = defaultConfigsCopy;
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -141,6 +165,20 @@ describe('Deployer tests', () => {
 	})
 
 	describe('Wrapping deployed contract', async () => {
-		// TODO write the tests for wrapping
+		beforeEach(async () => {
+			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
+			provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
+		})
+
+		it('should wrap contracts correctly', async () => {
+			const contractWrapper = await deployer.wrapDeployedContract(ICOTokenContract, config.randomAddress);
+
+			assert.ok(isAddress(contractWrapper.contractAddress), 'The wrapped address is incorrect');
+			assert.strictEqual(contractWrapper.contractAddress, config.randomAddress, 'The wrapped address is no the inputed one');
+			assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
+			assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+		})
 	})
 });
