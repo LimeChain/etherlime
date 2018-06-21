@@ -50,7 +50,6 @@ const defaultConfigs = {
 	gasLimit: 4700000
 }
 
-}
 const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
 
 const runDeployment = async () => {
