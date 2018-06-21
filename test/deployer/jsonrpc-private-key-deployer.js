@@ -8,7 +8,7 @@ const defaultConfigs = {
 	gasLimit: config.defaultGasLimit
 }
 
-describe('Deployer tests', () => {
+describe('JSONRPC-Private-Key-Deployer tests', () => {
 
 	describe('Initialization', async () => {
 		it('Should initialize the wallet with correct values', () => {
@@ -35,11 +35,11 @@ describe('Deployer tests', () => {
 
 		})
 
-		it('Should return string', () => {
+		it('Provider method toString should return string', () => {
 			const deployer = new ethploy.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
 			const returnedString = deployer.toString();
-			assert(typeof returnedString === 'string', "The returned string method did not return string");
-			assert(returnedString.includes(config.nodeUrl), `The returned string does not contain ${config.nodeUrl}`)
+			assert(typeof returnedString === 'string', "The returned toString method did not return string");
+			assert(returnedString.includes(config.nodeUrl), `The returned toString did not contain ${config.nodeUrl}`)
 		})
 	})
 });
