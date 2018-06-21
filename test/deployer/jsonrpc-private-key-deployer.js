@@ -39,7 +39,7 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			const deployer = new ethploy.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
 			const returnedString = deployer.toString();
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
-			assert(returnedString.includes(config.nodeUrl), `The returned toString did not contain ${config.nodeUrl}`)
+			assert(returnedString.includes(config.nodeUrl), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
 	})
 });
