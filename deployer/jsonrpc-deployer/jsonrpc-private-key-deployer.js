@@ -16,6 +16,7 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 	constructor(privateKey, nodeUrl, defaultOverrides) {
 		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 		super(privateKey, localNodeProvider, defaultOverrides);
+		this._validateInput(nodeUrl);
 		this.nodeUrl = nodeUrl;
 		console.log(`Network: ${colors.colorNetwork(this.nodeUrl)}`)
 
@@ -24,6 +25,12 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 	toString() {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
+	}
+
+	_validateInput(nodeUrl) {
+		if (nodeUrl === null || nodeUrl === '') {
+			throw new Error('Passed nodeUrl is empty');
+		}
 	}
 }
 
