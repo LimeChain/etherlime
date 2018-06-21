@@ -100,6 +100,7 @@ class Deployer {
 	 */
 	async _overrideDeployTransactionConfig(deployTransaction) {
 		if (this.defaultOverrides === undefined) {
+			console.log(1);
 			return deployTransaction;
 		}
 

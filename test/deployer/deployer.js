@@ -1,4 +1,4 @@
-const ethploy = require('../../index.js');
+const etherlime = require('../../index.js');
 const ethers = require('ethers')
 const assert = require('assert');
 
@@ -19,7 +19,7 @@ describe('Deployer tests', () => {
 			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
 			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
-			const deployer = new ethploy.Deployer(wallet, provider, defaultConfigs);
+			const deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			assert.deepEqual(wallet, deployer.wallet, "The stored wallet does not match the inputted one");
 			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
@@ -31,7 +31,7 @@ describe('Deployer tests', () => {
 			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
 			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
-				new ethploy.Deployer('Random Things Here', infuraProvider, defaultConfigs)
+				new etherlime.Deployer('Random Things Here', provider, defaultConfigs)
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
@@ -41,7 +41,7 @@ describe('Deployer tests', () => {
 			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
 			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
-				new ethploy.Deployer(69, infuraProvider, defaultConfigs)
+				new etherlime.Deployer(69, provider, defaultConfigs)
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
@@ -60,7 +60,7 @@ describe('Deployer tests', () => {
 				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 				const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
 				provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
-				deployer = new ethploy.Deployer(wallet, provider, defaultConfigs);
+				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			})
 
@@ -71,7 +71,17 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-				assert.deepEqual(ICOTokenContract.abi, contractWrapper.contract.interface.abi, "The stored contract abi differs from the inputed one");
+				assert.deepEqual(ICOTokenContract.abi, contractWrapper.contract.interface.abi, "The stored contract abi differs from the inputted one");
+			})
+
+			it('should deploy contract without default configs', async () => {
+				deployer = new etherlime.Deployer(wallet, provider);
+				const contractWrapper = await deployer.deploy(VestingContract, config.randomAddress, 1569426974);
+
+				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
+				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
+				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
 			})
 
 			it('should deploy contract with params correctly', async () => {
@@ -87,12 +97,36 @@ describe('Deployer tests', () => {
 
 		describe('Negative Cases', () => {
 
+			let wallet
+			let provider;
+			let deployer;
+
+			beforeEach(async () => {
+				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+				const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
+				provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
+
+			})
+
+			it('should throw on incorrect contract object', async () => {
+				const contractCopy = JSON.parse(JSON.stringify(ICOTokenContract));
+				delete contractCopy.abi;
+
+				try {
+					await deployer.deploy(contractCopy);
+					assert.fails("The deployer did not throw on broken contract passed");
+				} catch (e) {
+					console.log(e.message);
+				}
+
+			})
 
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
 				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
 				const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
-				const deployer = new ethploy.Deployer(wallet, infuraProvider, defaultConfigs);
+				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
 				try {
 					await deployer.deploy(VestingContract, config.randomAddress, 69)
