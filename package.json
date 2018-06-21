@@ -4,7 +4,7 @@
   "description": "etherlime is deployment framework for ethereum smart contracts, based on ethers.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha 'test/**/*.js'"
+    "test": "nyc mocha 'test/**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "ethploy": "./cli.js"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2"
   }
 }
