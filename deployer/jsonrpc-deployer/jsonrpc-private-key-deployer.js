@@ -1,4 +1,5 @@
 const ethers = require('ethers');
+const isUrl = require('../../utils/url-utils').isUrl;
 
 const PrivateKeyDeployer = require('../private-key-deployer');
 const colors = require('../../utils/colors');
@@ -16,14 +17,20 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 	constructor(privateKey, nodeUrl, defaultOverrides) {
 		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 		super(privateKey, localNodeProvider, defaultOverrides);
+		this._validateNodeUrl(nodeUrl);
 		this.nodeUrl = nodeUrl;
 		console.log(`Network: ${colors.colorNetwork(this.nodeUrl)}`)
-
 	}
 
 	toString() {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
+	}
+
+	_validateNodeUrl(nodeUrl) {
+		if (!(isUrl(nodeUrl))) {
+			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
+		}
 	}
 }
 
