@@ -29,7 +29,7 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 
 	_validation(nodeUrl) {
 		if (!(isUrl(nodeUrl))) {
-			throw new Error(`Passed contract url (${isUrl}) is not valid url`);
+			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
 		}
 	}
 }
