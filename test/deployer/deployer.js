@@ -33,7 +33,7 @@ describe('Deployer tests', () => {
 			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
 		})
 
-		it('Should throw on incorrect wallet string', () => {
+		it('Should throw on incorrect wallet input type', () => {
 			const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
 			const throwingFunction = () => {
 				new ethploy.Deployer(69, infuraProvider, defaultConfigs)
