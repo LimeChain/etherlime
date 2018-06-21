@@ -18,8 +18,7 @@ describe('Deployer tests', () => {
 	describe('Initialization', async () => {
 		it('should initialize the wallet with correct values', () => {
 			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			const deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			assert.deepEqual(wallet, deployer.wallet, "The stored wallet does not match the inputted one");
@@ -29,8 +28,7 @@ describe('Deployer tests', () => {
 		})
 
 		it('should throw on incorrect wallet string', () => {
-			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
 				new etherlime.Deployer('Random Things Here', provider, defaultConfigs)
 			}
@@ -39,8 +37,7 @@ describe('Deployer tests', () => {
 		})
 
 		it('should throw on incorrect wallet input type', () => {
-			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-			const provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
 				new etherlime.Deployer(69, provider, defaultConfigs)
 			}
@@ -59,8 +56,7 @@ describe('Deployer tests', () => {
 
 			beforeEach(async () => {
 				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-				const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-				provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			})
@@ -127,8 +123,7 @@ describe('Deployer tests', () => {
 
 			beforeEach(async () => {
 				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-				const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-				provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			})
@@ -167,8 +162,7 @@ describe('Deployer tests', () => {
 	describe('Wrapping deployed contract', async () => {
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-			const nodeUrl = 'http://localhost:8545/'; // TODO - get this from ogi config
-			provider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 		})
 
