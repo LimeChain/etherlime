@@ -176,7 +176,7 @@ describe('Deployer tests', () => {
 			const contractWrapper = await deployer.wrapDeployedContract(ICOTokenContract, config.randomAddress);
 
 			assert.ok(isAddress(contractWrapper.contractAddress), 'The wrapped address is incorrect');
-			assert.strictEqual(contractWrapper.contractAddress, config.randomAddress, 'The wrapped address is no the inputed one');
+			assert.strictEqual(contractWrapper.contractAddress, config.randomAddress, 'The wrapped address is no the inputted one');
 			assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 			assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 		})

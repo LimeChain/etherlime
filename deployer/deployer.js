@@ -143,7 +143,7 @@ class Deployer {
 	 * @param {*} transaction the already mined transaction
 	 */
 	async _getTransactionReceipt(transaction) {
-		return this.provider.getTransactionReceipt(transaction.hash);
+		return await this.provider.getTransactionReceipt(transaction.hash);
 	}
 
 	/**

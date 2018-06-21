@@ -3,7 +3,7 @@ const assert = require('assert');
 const isValidContract = require('../../utils/contract-utils').isValidContract;
 const ICOTokenContract = require('../testContracts/ICOToken.json');
 
-describe('Address utils tests', () => {
+describe('Contract utils tests', () => {
 
 	let contractCopy;
 

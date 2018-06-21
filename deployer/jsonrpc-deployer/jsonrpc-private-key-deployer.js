@@ -19,7 +19,7 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this._validateNodeUrl(nodeUrl);
 		this.nodeUrl = nodeUrl;
-		console.log(`Network: ${colors.colorNetwork(this.nodeUrl)}`)
+		console.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`)
 	}
 
 	toString() {
