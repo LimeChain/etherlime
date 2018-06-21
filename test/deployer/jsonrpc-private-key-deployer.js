@@ -34,13 +34,12 @@ describe('Deployer tests', () => {
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
 
 		})
-	})
 
-	describe('Deploying contract', async () => {
-		// TODO write the tests for deployment
-	})
-
-	describe('Wrapping deployed contract', async () => {
-		// TODO write the tests for wrapping
+		it('Should return string', () => {
+			const deployer = new ethploy.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+			const returnedString = deployer.toString();
+			assert(typeof returnedString === 'string', "The returned string method did not return string");
+			assert(returnedString.includes(config.nodeUrl), `The returned string does not contain ${config.nodeUrl}`)
+		})
 	})
 });
