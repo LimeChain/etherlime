@@ -76,6 +76,17 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert(result.hasOwnProperty('data'), 'There is no data property of the result');
 		})
 
+		it('should wait for transaction without label', async () => {
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+			const contractWrapper = await deployer.deploy(ICOTokenContract);
+			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
+			const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash);
+			assert(result.hasOwnProperty('hash'), 'There is no hash property of the result');
+			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
+			assert(result.hasOwnProperty('nonce'), 'There is no nonce property of the result');
+			assert(result.hasOwnProperty('data'), 'There is no data property of the result');
+		})
+
 		it('should throw on transaction receipt status being 0', async () => {
 
 			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
