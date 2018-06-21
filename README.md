@@ -70,9 +70,9 @@ In addition it exposes you `verboseWaitForTransaction(transactionHash, transacti
 
 **Example**
 ```
-	const contractWrapper = await deployer.deploy(ICOTokenContract);
-	const transferTransaction = await contractWrapper.contract.transferOwnership(randomAddress);
-	const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, 'Transfer Ownership');
+const contractWrapper = await deployer.deploy(ICOTokenContract);
+const transferTransaction = await contractWrapper.contract.transferOwnership(randomAddress);
+const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, 'Transfer Ownership');
 ```
 
 ### Working with previously deployed contracts
@@ -81,10 +81,10 @@ Sometimes you want to work with already deployed contract. The deployer object a
 
 **Example**
 ```
-	const deployedContractWrapper = deployer.wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
+const deployedContractWrapper = deployer.wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
 
-	const initTransaction = await deployedContractWrapper.contract.init(randomParam, defaultConfigs);
-	const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction.hash, 'Init Contract');
+const initTransaction = await deployedContractWrapper.contract.init(randomParam, defaultConfigs);
+const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction.hash, 'Init Contract');
 ```
 
 ## Compiling
