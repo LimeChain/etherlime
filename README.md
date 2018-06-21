@@ -19,7 +19,7 @@ npm install etherlime
 
 ## Deploying
 
-etherlime exposes the following deployers:
+**etherlime** exposes the following deployers:
 - `InfuraPrivateKeyDeployer(privateKey, network, apiKey, defaultOverrides)` - given private key to the deployment wallet, the network (as found in `ethers.providers.networks`), your infura API key and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
 
 - `JSONRPCDeployer(privateKey, nodeUrl, defaultOverrides)` - given private key to the deployment wallet, the url to the node you are trying to connect (local or remote) and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
@@ -62,7 +62,7 @@ runDeployment();
 ```
 
 ### Deployed Contract Wrapper
-One of the advancements of the etherlime is the result of the deploiment - the `DeployedContractWrapper`
+One of the advancements of the etherlime is the result of the deployment - the `DeployedContractWrapper`
 
 The `DeployedContractWrapper` is a powerful object that provides you with `ethers.Contract` amongst other functionalities. This allows you to start using your deployed contract right away as part of your deployment sequence (f.e. you can call initialization methods)
 
