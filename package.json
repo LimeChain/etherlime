@@ -1,7 +1,7 @@
 {
   "name": "etherlime",
   "version": "0.0.1",
-  "description": "etherlime is deployment framework for ethereum smart contracts, based on ethers.js",
+  "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
     "test": "nyc --check-coverage --lines 100 mocha 'test/**/*.js'",
