@@ -65,9 +65,16 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 	describe('Verbose waiting for transaction', async () => {
 
+		let deployer;
+		let contractWrapper;
+
+		beforeEach(async () => {
+			deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
+			contractWrapper = await deployer.deploy(ICOTokenContract);
+		})
+
 		it('should wait for transaction correctly', async () => {
-			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
-			const contractWrapper = await deployer.deploy(ICOTokenContract);
+
 			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
 			const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, 'Transfer Ownership');
 			assert(result.hasOwnProperty('hash'), 'There is no hash property of the result');
@@ -77,8 +84,6 @@ describe('Deployed Contracts Wrapper tests', () => {
 		})
 
 		it('should wait for transaction without label', async () => {
-			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
-			const contractWrapper = await deployer.deploy(ICOTokenContract);
 			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
 			const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash);
 			assert(result.hasOwnProperty('hash'), 'There is no hash property of the result');
@@ -89,8 +94,6 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		it('should throw on transaction receipt status being 0', async () => {
 
-			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
-			const contractWrapper = await deployer.deploy(ICOTokenContract);
 			const transferTransaction = await contractWrapper.contract.transfer(config.randomAddress, 69);
 			try {
 				await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, 'Throwing transfer function');
