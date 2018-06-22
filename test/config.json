@@ -1,7 +1,8 @@
 {
 	"infuraAPIKey": "Up5uvBHSCSqtOmnlhL87",
 	"infuraNetwork": "ropsten",
-	"randomPrivateKey": "c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3",
+	"infuraPrivateKey": "c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3",
+	"randomPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
 	"randomAddress": "0xda8a06f1c910cab18ad187be1faa2b8606c2ec86",
 	"defaultGasPrice": 20000000000,
 	"defaultGasLimit": 4700000,

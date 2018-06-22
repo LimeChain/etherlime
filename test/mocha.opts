@@ -1,2 +1,2 @@
 --timeout 0
---slow 60000
+--slow 90000

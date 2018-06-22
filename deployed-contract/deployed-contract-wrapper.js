@@ -54,7 +54,7 @@ class DeployedContractWrapper {
 	}
 
 	async _postValidateTransaction(transactionHash, transactionResult) {
-		const transactionReceipt = this.provider.getTransactionReceipt(transactionHash);
+		const transactionReceipt = await this.provider.getTransactionReceipt(transactionHash);
 		if (transactionReceipt.status === 0) {
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
