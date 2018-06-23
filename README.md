@@ -19,6 +19,14 @@ This framework was born out of necessity, hardships and trouble in the developme
 npm install etherlime
 ```
 
+## Running embedded ganache-cli
+
+For easier integration and usage of the upcoming EtherlimeGanacheDeployer and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of eth (191408831393027885698 to be precise)
+
+```
+etherlime ganache
+```
+
 ## Deploying
 
 **etherlime** exposes the following deployers:
