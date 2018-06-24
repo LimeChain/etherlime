@@ -2,6 +2,9 @@ const etherlime = require('../../../index.js');
 const assert = require('assert');
 const config = require('../../config.json');
 const ganacheSetupConfig = require('../../../cli-commands/ganache/setup');
+const Greetings = require('../../testContracts/Greetings.json');
+const ethers = require('ethers')
+
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -15,14 +18,14 @@ describe('GanacheCli-Deployer tests', () => {
 
 	describe('Initialization', async () => {
 		it('Should initialize the wallet with correct values', () => {
-			const deployer = new etherlime.GanacheCliDeployer(config.ganacheCliPrivateKey, config.ganacheCliNodeUrl, defaultConfigs);
+			const deployer = new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, config.ganacheCliNodeUrl, defaultConfigs);
 			assert.deepEqual(config.ganacheCliNodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
 		})
 
 		it('Should throw on empty nodeUrl', () => {
 			const throwingFunction = () => {
-				new etherlime.GanacheCliDeployer(config.ganacheCliPrivateKey, '', defaultConfigs)
+				new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, '', defaultConfigs)
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
@@ -30,26 +33,43 @@ describe('GanacheCli-Deployer tests', () => {
 		})
 
 		it('Should take default value on empty nodeUrl', () => {
-			const deployer = new etherlime.GanacheCliDeployer(config.ganacheCliPrivateKey, undefined, defaultConfigs);
+			const deployer = new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, undefined, defaultConfigs);
 			assert.deepEqual(defaultNodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
 
 		})
 
 		it('Should take default value on empty privateKey', () => {
-			const deployer = new etherlime.GanacheCliDeployer(undefined, config.ganacheCliNodeUrl, defaultConfigs);
+			const deployer = new etherlime.GanacheDeployer(undefined, config.ganacheCliNodeUrl, defaultConfigs);
 			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
 
 		})
 
-		it('Should take dafault values on empty privateKey and nodeUrl', () => {
-			const deployer = new etherlime.GanacheCliDeployer(undefined, undefined, defaultConfigs);
+		it('Should take default values on empty privateKey and nodeUrl', () => {
+			const deployer = new etherlime.GanacheDeployer(undefined, undefined, defaultConfigs);
 			assert.deepEqual(defaultNodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 
+		it('Should take default values on empty privateKey, nodeUrl and defaultConfigs', () => {
+			const deployer = new etherlime.GanacheDeployer(undefined, undefined, undefined);
+			assert.deepEqual(defaultNodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+		})
+
+		it('should deploy contract without default configs', async () => {
+
+			deployer = new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, config.ganacheCliNodeUrl);
+			const contractWrapper = await deployer.deploy(Greetings);
+
+			assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
+			assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
+			assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+			assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
+		})
+
 		it('Should throw on number for nodeUrl', () => {
 			const throwingFunction = () => {
-				new etherlime.GanacheCliDeployer(config.ganacheCliPrivateKey, 69, defaultConfigs)
+				new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, 69, defaultConfigs)
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
@@ -57,7 +77,7 @@ describe('GanacheCli-Deployer tests', () => {
 		})
 
 		it('Provider method toString should return string', () => {
-			const deployer = new etherlime.GanacheCliDeployer(config.ganacheCliPrivateKey, config.ganacheCliNodeUrl, defaultConfigs);
+			const deployer = new etherlime.GanacheDeployer(config.ganacheCliPrivateKey, config.ganacheCliNodeUrl, defaultConfigs);
 			const returnedString = deployer.toString();
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
 			assert(returnedString.includes(config.ganacheCliNodeUrl), `The returned toString method did not contain ${config.ganacheCliNodeUrl}`)

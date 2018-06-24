@@ -5,7 +5,7 @@ const JSONRPCDeployer = require('../jsonrpc-deployer/jsonrpc-private-key-deploye
 const ganacheSetupConfig = require('../../cli-commands/ganache/setup');
 
 
-class GanacheCliDeployer extends JSONRPCDeployer {
+class GanacheDeployer extends JSONRPCDeployer {
 	/**
 	 * 
 	 * Instantiates new deployer based on the GanacheCli Provider; If no privateKey and nodeUrl are specified, the deployer will be instantiated with the default values from cli-commands/ganache/setup.json
@@ -31,4 +31,4 @@ class GanacheCliDeployer extends JSONRPCDeployer {
 	}
 }
 
-module.exports = GanacheCliDeployer;
+module.exports = GanacheDeployer;
