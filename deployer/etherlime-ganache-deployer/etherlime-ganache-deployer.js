@@ -1,11 +1,9 @@
-const isUrl = require('../../utils/url-utils').isUrl;
-const ethers = require('ethers');
 const colors = require('../../utils/colors');
 const JSONRPCDeployer = require('../jsonrpc-deployer/jsonrpc-private-key-deployer');
 const ganacheSetupConfig = require('../../cli-commands/ganache/setup');
 
 
-class GanacheDeployer extends JSONRPCDeployer {
+class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
 	 * 
 	 * Instantiates new deployer based on the GanacheCli Provider; If no privateKey and nodeUrl are specified, the deployer will be instantiated with the default values from cli-commands/ganache/setup.json
@@ -31,4 +29,4 @@ class GanacheDeployer extends JSONRPCDeployer {
 	}
 }
 
-module.exports = GanacheDeployer;
+module.exports = EtherlimeGanacheDeployer;
