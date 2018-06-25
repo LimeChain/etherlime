@@ -36,6 +36,8 @@ etherlime ganache
 
 - `JSONRPCDeployer(privateKey, nodeUrl, defaultOverrides)` - given private key to the deployment wallet, the url to the node you are trying to connect (local or remote) and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
 
+- `EtherlimeGanacheDeployer(privateKey, nodeUrl, defaultOverrides)` - given private key to the deployment wallet, the url to the node you are trying to connect (local or remote) and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
+
 
 All deployers share the same base functionality:
 
