@@ -8,5 +8,5 @@
 	"defaultGasLimit": 4700000,
 	"nodeUrl": "http://localhost:8545/",
 	"ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
-	"ganacheCliNodeUrl": "http://localhost:8545/"
+	"ganacheCliPort": 8545
 }

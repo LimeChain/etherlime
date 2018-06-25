@@ -1,6 +1,8 @@
 const colors = require('../../utils/colors');
 const JSONRPCDeployer = require('../jsonrpc-deployer/jsonrpc-private-key-deployer');
 const ganacheSetupConfig = require('../../cli-commands/ganache/setup');
+const isNumber = require('../../utils/number-utils').isNumber;
+
 
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
@@ -9,12 +11,13 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * Instantiates new deployer based on the GanacheCli Provider; If no privateKey and nodeUrl are specified, the deployer will be instantiated with the default values from cli-commands/ganache/setup.json
 	 * 
 	 * @param {*} privateKey the private key for the deployer wallet
-	 * @param {*} nodeUrl url of the network to deploy on. This is the node url address that is given to the class
+	 * @param {*} port port number of the network to deploy on. This is the port number that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, nodeUrl = `http://localhost:${ganacheSetupConfig.defaultPort}`, defaultOverrides) {
+	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
+		const nodeUrl = `http://localhost:${port}/`;
 		super(privateKey, nodeUrl, defaultOverrides);
-		this._validateNodeUrl(nodeUrl);
+		this._validateNodePort(port);
 		this.nodeUrl = nodeUrl;
 		console.log(`GanacheCLi Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`)
 	}
@@ -24,8 +27,10 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
 	}
 
-	_validateNodeUrl(nodeUrl) {
-		return super._validateNodeUrl(nodeUrl);
+	_validateNodePort(port) {
+		if (!(isNumber(port))) {
+			throw new Error(`Passed port (${port}) is not valid port`);
+		}
 	}
 }
 
