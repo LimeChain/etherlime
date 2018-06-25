@@ -36,7 +36,10 @@ etherlime ganache
 
 - `JSONRPCDeployer(privateKey, nodeUrl, defaultOverrides)` - given private key to the deployment wallet, the url to the node you are trying to connect (local or remote) and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
 
-- `EtherlimeGanacheDeployer(privateKey, nodeUrl, defaultOverrides)` - given private key to the deployment wallet, the url to the node you are trying to connect (local or remote) and default deployment settings for `gasPrice` and `gasLimit` it exposes you a deployer object.
+- `EtherlimeGanacheDeployer([privateKey], [port], [defaultOverrides])` - This deployer allows you to deploy on etherlime ganache. It takes privateKey, port and defaultOverrides as optional parameters. If not passed, the optional parameters are taken as follows:
+`privateKey` - default value is taken from the first deployed account from ehterlime ganache. You can find the default 10 private key accounts in /cli-commands/ganache/setup.json file;
+`port` - default value is taken from the /cli-commands/ganache/setup.json file;
+`defaultOverrides` - default values that are presented in Deployer.js;
 
 
 All deployers share the same base functionality:
