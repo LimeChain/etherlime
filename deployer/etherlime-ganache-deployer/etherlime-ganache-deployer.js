@@ -15,9 +15,11 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
+		if (!(isNumber(port))) {
+			throw new Error(`Passed port (${port}) is not valid port`);
+		}
 		const nodeUrl = `http://localhost:${port}/`;
 		super(privateKey, nodeUrl, defaultOverrides);
-		this._validateNodePort(port);
 		this.nodeUrl = nodeUrl;
 		console.log(`GanacheCLi Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`)
 	}
@@ -25,12 +27,6 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	toString() {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
-	}
-
-	_validateNodePort(port) {
-		if (!(isNumber(port))) {
-			throw new Error(`Passed port (${port}) is not valid port`);
-		}
 	}
 }
 
