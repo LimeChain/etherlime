@@ -18,7 +18,7 @@ This framework was born out of necessity, hardships and trouble in the developme
 ## Installing
 
 ```
-npm install etherlime
+npm install etherlime [-g]
 ```
 ## Running embedded ganache-cli
 
