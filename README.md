@@ -20,7 +20,6 @@ This framework was born out of necessity, hardships and trouble in the developme
 ```
 npm install etherlime
 ```
-
 ## Running embedded ganache-cli
 
 For easier integration and usage of the upcoming EtherlimeGanacheDeployer and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of eth (191408831393027885698 to be precise)
@@ -29,7 +28,14 @@ For easier integration and usage of the upcoming EtherlimeGanacheDeployer and ru
 etherlime ganache
 ```
 
-## Deploying
+## Setting up your project to deploy with etherlime
+
+```
+etherlime init
+```
+This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
+
+## Deployer API
 
 **etherlime** exposes the following deployers:
 - `InfuraPrivateKeyDeployer(privateKey, network, apiKey, [defaultOverrides])` - given private key to the deployment wallet, the network (as found in `ethers.providers.networks`), your infura API key and default deployment settings object for `gasPrice` and `gasLimit` it exposes you a deployer object.  (Check the example bellow for how to use the default config settings)
@@ -67,14 +73,13 @@ const defaultConfigs = {
 	gasLimit: 4700000
 }
 
-const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
+const deploy = async (network) => {
 
-const runDeployment = async () => {
+	const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
 	
 	const result = await deployer.deploy(TestContract, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
 }
 
-runDeployment();
 ```
 
 ### Deployed Contract Wrapper

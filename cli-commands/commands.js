@@ -1,4 +1,5 @@
 const ganache = require('./ganache/ganache');
+const init = require('./init/init');
 
 const commands = [
 	{
@@ -12,6 +13,14 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 			ganache.run(argv.port, console);
+		}
+	},
+	{
+		command: 'init',
+		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
+		argumentsProcessor: (yargs) => { },
+		commandProcessor: (argv) => {
+			init.run();
 		}
 	}
 ]
