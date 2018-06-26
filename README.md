@@ -35,6 +35,13 @@ etherlime init
 ```
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
 
+In order to deploy using this file you can use the following file:
+```
+etherlime deploy [file] [network]
+```
+
+Optionally you can use another file as long as you keep the structure of the file (exporting an `async deploy` function with `network` param). You can also optionally provide a `--network` argument to be passed to the deployer. It is up to you how to make sense of it.
+
 ## Deployer API
 
 **etherlime** exposes the following deployers:

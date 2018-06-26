@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const commands = require('./cli-commands/commands')
+const { exec } = require('child_process');
 
 run = () => {
 
@@ -9,13 +10,24 @@ run = () => {
 	}
 	menu.command({
 		command: '*',
-		handler() {
-			menu.showHelp()
+		handler(args) {
+			exec(`${args['$0']} help`, (err, stdout, stderr) => {
+				if (err) {
+					throw new Error('Could not execute help');
+					return;
+				}
+
+				console.log(`${stdout}`);
+				console.error(`${stderr}`);
+			});
 		}
 	})
-	menu.help()
+
+	menu.help('help')
 	menu.version();
 	menu.demandCommand();
+	menu.recommendCommands();
+	menu.showHelpOnFail();
 	menu.argv;
 }
 

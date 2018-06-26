@@ -1,5 +1,6 @@
 const ganache = require('./ganache/ganache');
 const init = require('./init/init');
+const deployer = require('./deployer/deployer');
 
 const commands = [
 	{
@@ -21,6 +22,24 @@ const commands = [
 		argumentsProcessor: (yargs) => { },
 		commandProcessor: (argv) => {
 			init.run();
+		}
+	},
+	{
+		command: 'deploy [file] [network]',
+		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('file', {
+				describe: 'port to run ganache-cli on',
+				type: 'string'
+			})
+
+			yargs.positional('network', {
+				describe: 'network param to pass to the deployment script',
+				type: 'string'
+			})
+		},
+		commandProcessor: (argv) => {
+			deployer.run(argv.file, argv.network);
 		}
 	}
 ]
