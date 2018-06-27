@@ -2,6 +2,7 @@ const ethers = require('ethers');
 const isAddress = require('../utils/address-utils').isAddress;
 const isValidContract = require('../utils/contract-utils').isValidContract;
 const colors = require('../utils/colors');
+const logsStore = require('../logs-store/logs-store');
 
 class DeployedContractWrapper {
 
@@ -15,11 +16,12 @@ class DeployedContractWrapper {
 	 * @param {*} wallet The wallet that has deployed this contract
 	 * @param {*} provider ethers provider
 	 */
-	constructor(contract, contractAddress, wallet, provider) {
+	constructor(contract, contractAddress, wallet, provider, transactionHash) {
 		this._validateInput(contract, contractAddress, wallet, provider);
 		this.contractAddress = contractAddress;
 		this.wallet = wallet;
 		this.provider = provider;
+		this._contract = contract;
 		this.contract = new ethers.Contract(contractAddress, contract.abi, wallet);
 	}
 
@@ -45,19 +47,37 @@ class DeployedContractWrapper {
 	 * @param {*} transactionLabel [Optional] A human readable label to help you differentiate you transaction
 	 */
 	async verboseWaitForTransaction(transactionHash, transactionLabel) {
+
 		let labelPart = (transactionLabel) ? `labeled ${colors.colorName(transactionLabel)} ` : '';
 		console.log(`Waiting for transaction ${labelPart}to be included in a block and mined: ${colors.colorTransactionHash(transactionHash)}`);
 
 		const transactionResult = await this.provider.waitForTransaction(transactionHash);
 		await this._postValidateTransaction(transactionHash, transactionResult);
+		const actionLabel = (transactionLabel) ? transactionLabel : this.constructor.name;
+		this._logAction(this.constructor.name, actionLabel, transactionHash, 0, 'Succesfully Waited For Transaction');
 		return transactionResult;
 	}
 
 	async _postValidateTransaction(transactionHash, transactionResult) {
 		const transactionReceipt = await this.provider.getTransactionReceipt(transactionHash);
 		if (transactionReceipt.status === 0) {
+			this._logAction(this.constructor.name, this._contract.contractName, transactionHash, 1, 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
+	}
+
+	/**
+	 * 
+	 * Override this for custom logging functionality
+	 * 
+	 * @param {*} deployerType type of deployer
+	 * @param {*} nameOrLabel name of the contract or label of the transaction
+	 * @param {*} transactionHash transaction hash if available
+	 * @param {*} status 0 - success, 1 - failure
+	 * @param {*} result arbitrary result text
+	 */
+	_logAction(deployerType, nameOrLabel, transactionHash, status, result) {
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, result);
 	}
 }
 

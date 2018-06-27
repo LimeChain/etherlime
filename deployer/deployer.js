@@ -2,6 +2,7 @@ const ethers = require('ethers');
 const colors = require('../utils/colors');
 const DeployedContractWrapper = require('../deployed-contract/deployed-contract-wrapper');
 const isValidContract = require('../utils/contract-utils').isValidContract;
+const logsStore = require('../logs-store/logs-store');
 const Wallet = ethers.Wallet;
 
 class Deployer {
@@ -59,6 +60,8 @@ class Deployer {
 
 		const deploymentResult = await this._generateDeploymentResult(contract, transaction, transactionReceipt);
 
+		this._logAction(this.constructor.name, contract.contractName, transaction.hash, 0, deploymentResult.contractAddress);
+
 		return deploymentResult;
 
 	}
@@ -72,6 +75,7 @@ class Deployer {
 	 */
 	async _preValidateArguments(contract, deploymentArguments) {
 		if (!(isValidContract(contract))) {
+			this._logAction(this.constructor.name, contract.contractName, '', 1, 'Invalid contract object');
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
@@ -154,6 +158,7 @@ class Deployer {
 	 */
 	async _postValidateTransaction(contract, transaction, transactionReceipt) {
 		if (transactionReceipt.status === 0) {
+			this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
 	}
@@ -169,6 +174,20 @@ class Deployer {
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
 		console.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
+	}
+
+	/**
+	 * 
+	 * Override this for custom logging functionality
+	 * 
+	 * @param {*} deployerType type of deployer
+	 * @param {*} nameOrLabel name of the contract or label of the transaction
+	 * @param {*} transactionHash transaction hash if available
+	 * @param {*} status 0 - success, 1 - failure
+	 * @param {*} result arbitrary result text
+	 */
+	_logAction(deployerType, nameOrLabel, transactionHash, status, result) {
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, result);
 	}
 
 	/**
