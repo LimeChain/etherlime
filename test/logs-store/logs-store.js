@@ -22,16 +22,15 @@ describe('Logs store tests', () => {
 	})
 
 	it('should initialize logs correctly', () => {
-		const lastRecord = history[history.length - 1];
+		const currentRecord = store.getCurrentWorkingRecord();
 
-		assert(Array.isArray(lastRecord.actions), 'The last record actions is not array');
+		assert(Array.isArray(currentRecord.actions), 'The last record actions is not array');
 	});
 
 	it('should log actions correctly', () => {
 		store.logAction(deployerType, label, transactionHash, status, result);
 
-		history = store.getHistory();
-		const lastRecord = history[history.length - 1];
+		const lastRecord = store.getCurrentWorkingRecord();
 		const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
 
 		assert(lastAction.deployerType == deployerType, 'Deployer Type not set correctly');

@@ -69,9 +69,8 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-				const history = store.getHistory();
-				const lastRecord = history[history.length - 1];
-				const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.deployerType, 'Deployer', 'Deployer Type not set correctly');
 				assert.strictEqual(lastAction.nameOrLabel, 'Greetings', 'Label not set correctly');
 				assert(lastAction.status == 0, 'status not set correctly');

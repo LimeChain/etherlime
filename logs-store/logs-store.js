@@ -35,6 +35,13 @@ class LogsStore {
 	}
 
 	/**
+	 * Gets the record that logAction is going to be writing at.
+	 */
+	getCurrentWorkingRecord() {
+		return this._historyStore.get(this._HISTORY_ID);
+	}
+
+	/**
 	 * 
 	 * Add a record to the history of deployments
 	 * 
@@ -55,9 +62,9 @@ class LogsStore {
 			result
 		}
 
-		const historyRecord = this._historyStore.get(this._HISTORY_ID);
-		historyRecord.actions.push(record);
-		this._historyStore.set(this._HISTORY_ID, historyRecord);
+		const currentRecord = this.getCurrentWorkingRecord();
+		currentRecord.actions.push(record);
+		this._historyStore.set(this._HISTORY_ID, currentRecord);
 
 	}
 }

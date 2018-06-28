@@ -82,9 +82,8 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('nonce'), 'There is no nonce property of the result');
 			assert(result.hasOwnProperty('data'), 'There is no data property of the result');
-			const history = store.getHistory();
-			const lastRecord = history[history.length - 1];
-			const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
+			const currentRecord = store.getCurrentWorkingRecord();
+			const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 			assert.strictEqual(lastAction.deployerType, 'DeployedContractWrapper', 'Deployer Type not set correctly');
 			assert.strictEqual(lastAction.nameOrLabel, label, 'Label not set correctly');
 			assert.strictEqual(lastAction.transactionHash, transferTransaction.hash, 'Transaction hash not set correctly');
