@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const colorTransactionHash = chalk.bold.magenta;
 const colorParams = chalk.yellow;
 const colorName = chalk.bold.blueBright;
+const colorSuccess = chalk.bold.green;
 const colorAddress = chalk.bold.green;
 const colorFailure = chalk.bold.red;
 const colorNetwork = chalk.bold.rgb(165, 42, 42);
@@ -13,7 +14,8 @@ module.exports = {
 	colorParams,
 	colorName,
 	colorAddress,
-	colorFailure,
 	colorNetwork,
-	colorAPIKey
+	colorAPIKey,
+	colorFailure,
+	colorSuccess
 }

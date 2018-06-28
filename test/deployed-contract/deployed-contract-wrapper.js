@@ -1,12 +1,13 @@
-const etherlime = require('../../index.js');
+const etherlime = require('./../../index.js');
 const ethers = require('ethers')
 const assert = require('assert');
 
-const isAddress = require('../../utils/address-utils').isAddress;
-const config = require('../config.json');
-const ICOTokenContract = require('../testContracts/ICOToken.json');
-const VestingContract = require('../testContracts/Vesting.json');
-const Greetings = require('../testContracts/Greetings.json');
+const isAddress = require('./../../utils/address-utils').isAddress;
+const config = require('./../config.json');
+const ICOTokenContract = require('./../testContracts/ICOToken.json');
+const VestingContract = require('./../testContracts/Vesting.json');
+const Greetings = require('./../testContracts/Greetings.json');
+const store = require('./../../logs-store/logs-store');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -74,13 +75,19 @@ describe('Deployed Contracts Wrapper tests', () => {
 		})
 
 		it('should wait for transaction correctly', async () => {
-
+			const label = 'Transfer Ownership';
 			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
-			const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, 'Transfer Ownership');
+			const result = await contractWrapper.verboseWaitForTransaction(transferTransaction.hash, label);
 			assert(result.hasOwnProperty('hash'), 'There is no hash property of the result');
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('nonce'), 'There is no nonce property of the result');
 			assert(result.hasOwnProperty('data'), 'There is no data property of the result');
+			const currentRecord = store.getCurrentWorkingRecord();
+			const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+			assert.strictEqual(lastAction.deployerType, 'DeployedContractWrapper', 'Deployer Type not set correctly');
+			assert.strictEqual(lastAction.nameOrLabel, label, 'Label not set correctly');
+			assert.strictEqual(lastAction.transactionHash, transferTransaction.hash, 'Transaction hash not set correctly');
+			assert(lastAction.status == 0, 'status not set correctly');
 		})
 
 		it('should wait for transaction without label', async () => {

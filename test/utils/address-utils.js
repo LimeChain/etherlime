@@ -1,5 +1,5 @@
-const isAddress = require('../../utils/address-utils').isAddress;
-const config = require('../config.json');
+const isAddress = require('./../../utils/address-utils').isAddress;
+const config = require('./../config.json');
 const assert = require('assert');
 
 describe('Address utils tests', () => {

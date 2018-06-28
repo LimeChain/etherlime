@@ -1,12 +1,13 @@
-const etherlime = require('../../index.js');
+const etherlime = require('./../../index.js');
 const ethers = require('ethers')
 const assert = require('assert');
+const store = require('./../../logs-store/logs-store');
 
-const isAddress = require('../../utils/address-utils').isAddress;
-const config = require('../config.json');
-const ICOTokenContract = require('../testContracts/ICOToken.json');
-const VestingContract = require('../testContracts/Vesting.json');
-const Greetings = require('../testContracts/Greetings.json');
+const isAddress = require('./../../utils/address-utils').isAddress;
+const config = require('./../config.json');
+const ICOTokenContract = require('./../testContracts/ICOToken.json');
+const VestingContract = require('./../testContracts/Vesting.json');
+const Greetings = require('./../testContracts/Greetings.json');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -68,6 +69,11 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.deployerType, 'Deployer', 'Deployer Type not set correctly');
+				assert.strictEqual(lastAction.nameOrLabel, 'Greetings', 'Label not set correctly');
+				assert(lastAction.status == 0, 'status not set correctly');
 			})
 
 			it('should deploy contract without default configs', async () => {

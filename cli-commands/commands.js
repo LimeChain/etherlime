@@ -39,7 +39,7 @@ const commands = [
 			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network);
+			deployer.run(argv.file, argv.network, argv.verbose);
 		}
 	}
 ]

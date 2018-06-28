@@ -1,5 +1,7 @@
 const fs = require('fs');
 const defaultDeploymentFilePath = `deployment/deploy.js`;
+const logsStore = require('../../logs-store/logs-store');
+const utils = require('./util');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -15,15 +17,19 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 }
 
-const run = async (deploymentFilePath, network) => {
+const run = async (deploymentFilePath, network, verbose) => {
+	const deployMethod = getDeployMethod(deploymentFilePath);
 	try {
-		const deployMethod = getDeployMethod(deploymentFilePath);
 		await deployMethod(network);
-		console.log(`Your deployment script finished successfully. Bye!`);
+		console.log(`Your deployment script finished successfully!`);
 	} catch (e) {
-		console.error(e.message);
+		if (verbose) {
+			console.error(e);
+		}
+		console.log(`Your deployment script finished with failure!`);
 	}
-
+	const currentRecord = logsStore.getCurrentWorkingRecord();
+	utils.printReportTable(currentRecord.actions);
 }
 
 

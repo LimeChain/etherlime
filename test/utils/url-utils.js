@@ -1,5 +1,5 @@
-const isUrl = require('../../utils/url-utils').isUrl;
-const config = require('../config.json');
+const isUrl = require('./../../utils/url-utils').isUrl;
+const config = require('./../config.json');
 const assert = require('assert');
 
 describe('Url utils tests', () => {
