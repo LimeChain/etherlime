@@ -3,6 +3,8 @@ const assert = require('assert');
 
 describe('Logs store tests', () => {
 
+	store.initHistoryRecord();
+
 	const now = Date.now();
 	const deployerType = 'Deployer Type';
 	const label = 'Label Name';
@@ -17,7 +19,7 @@ describe('Logs store tests', () => {
 	})
 
 	it('should store is initialized correctly', () => {
-		assert(store._historyStore.path == './.etherlime-store/.history.json');
+		assert(store._historyStore.path == './.etherlime-store/.history.json', 'Icorrect path');
 		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
 	})
 

@@ -1,6 +1,6 @@
 var BlockingJSONStore = require('./blocking-json-store');
 
-const storageDir = './.store'
+const storageDir = './.etherlime-store'
 
 /**
  * Store for the logs created by the deployment scripts.
