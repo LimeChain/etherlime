@@ -66,7 +66,7 @@ const deploy = async (network) => {
 ```
 
 Result would be something like this:
-[![Deployment result](DeploymentResult.png)](DeploymentResult.png)
+[![Deployment result](DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
 
 For more info check the section below.
 

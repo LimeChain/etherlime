@@ -1,4 +1,4 @@
-const store = require('../../logs-store/logs-store');
+const store = require('./../../logs-store/logs-store');
 const assert = require('assert');
 
 describe('Logs store tests', () => {

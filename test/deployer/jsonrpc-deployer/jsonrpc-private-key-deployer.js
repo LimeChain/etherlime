@@ -1,7 +1,7 @@
-const etherlime = require('../../../index.js');
+const etherlime = require('./../../../index.js');
 const assert = require('assert');
 
-const config = require('../../config.json');
+const config = require('./../../config.json');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,

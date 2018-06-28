@@ -1,4 +1,4 @@
-const jsonStore = require('../../logs-store/blocking-json-store');
+const jsonStore = require('./../../logs-store/blocking-json-store');
 const assert = require('assert');
 const fs = require('fs-extra')
 

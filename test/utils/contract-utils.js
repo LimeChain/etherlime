@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-const isValidContract = require('../../utils/contract-utils').isValidContract;
-const ICOTokenContract = require('../testContracts/ICOToken.json');
+const isValidContract = require('./../../utils/contract-utils').isValidContract;
+const ICOTokenContract = require('./../testContracts/ICOToken.json');
 
 describe('Contract utils tests', () => {
 

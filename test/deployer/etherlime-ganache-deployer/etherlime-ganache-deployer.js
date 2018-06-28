@@ -1,9 +1,9 @@
-const etherlime = require('../../../index.js');
+const etherlime = require('./../../../index.js');
 const assert = require('assert');
-const config = require('../../config.json');
-const ganacheSetupConfig = require('../../../cli-commands/ganache/setup');
-const Greetings = require('../../testContracts/Greetings.json');
-const isAddress = require('../../../utils/address-utils').isAddress;
+const config = require('./../../config.json');
+const ganacheSetupConfig = require('./../../../cli-commands/ganache/setup');
+const Greetings = require('./../../testContracts/Greetings.json');
+const isAddress = require('./../../../utils/address-utils').isAddress;
 
 
 
