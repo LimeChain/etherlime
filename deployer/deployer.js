@@ -184,6 +184,8 @@ class Deployer {
 	 * @param {*} nameOrLabel name of the contract or label of the transaction
 	 * @param {*} transactionHash transaction hash if available
 	 * @param {*} status 0 - success, 1 - failure
+	 * @param {*} gasPrice the gas price param that was used by this transaction
+	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
 	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {

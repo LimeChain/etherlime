@@ -16,7 +16,7 @@ class DeployedContractWrapper {
 	 * @param {*} wallet The wallet that has deployed this contract
 	 * @param {*} provider ethers provider
 	 */
-	constructor(contract, contractAddress, wallet, provider, transactionHash) {
+	constructor(contract, contractAddress, wallet, provider) {
 		this._validateInput(contract, contractAddress, wallet, provider);
 		this.contractAddress = contractAddress;
 		this.wallet = wallet;
@@ -75,6 +75,8 @@ class DeployedContractWrapper {
 	 * @param {*} nameOrLabel name of the contract or label of the transaction
 	 * @param {*} transactionHash transaction hash if available
 	 * @param {*} status 0 - success, 1 - failure
+	 * @param {*} gasPrice the gas price param that was used by this transaction
+	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
 	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
