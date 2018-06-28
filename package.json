@@ -20,6 +20,7 @@
     "ethers": "^3.0.22",
     "fs-extra": "^6.0.1",
     "ganache-cli": "^6.1.3",
+    "moment": "^2.22.2",
     "readline-sync": "^1.4.9",
     "yargs": "^11.0.0"
   },
