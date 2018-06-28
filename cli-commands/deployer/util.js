@@ -5,8 +5,8 @@ const moment = require('moment');
 const printReportTable = (recordActions) => {
 	console.log(`Here is your report:`);
 	const table = new Table({
-		head: ['Event Time', 'Executor', 'Contract name or TX label', 'Transaction Hash', 'Status', 'Gas Price', 'Gas Used', 'Result'],
-		style: { head: ['magenta'] }
+		head: ['Event Time', 'Executor', 'Name or Label', 'Tx Hash', 'Status', 'Gas Price', 'Gas Used', 'Result'],
+		style: { head: ['magenta'], 'padding-left': 1, 'padding-right': 1 }
 	});
 	for (const action of recordActions) {
 		table.push([
