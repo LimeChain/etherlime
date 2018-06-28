@@ -9,18 +9,16 @@ class LogsStore {
 
 
 	constructor() {
-		this._initHistoryRecord();
+		this._historyStore = BlockingJSONStore(`${storageDir}/.history.json`);
+
+		const history = this.getHistory();
+		this._HISTORY_ID = '' + history.length;
 	}
 
 	/**
 	 * Initializes the history store with default empty array value
 	 */
-	_initHistoryRecord() {
-		this._historyStore = BlockingJSONStore(`${storageDir}/.history.json`);
-
-		const history = this.getHistory();
-		this._HISTORY_ID = '' + history.length;
-
+	initHistoryRecord() {
 		const initialRecord = {
 			actions: new Array()
 		}

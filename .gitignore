@@ -2,5 +2,5 @@
 dist
 node_modules
 .nyc_output
-.store
+.etherlime-store
 .testcases

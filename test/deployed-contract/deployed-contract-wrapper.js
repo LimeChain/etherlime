@@ -15,6 +15,7 @@ const defaultConfigs = {
 }
 
 describe('Deployed Contracts Wrapper tests', () => {
+	store.initHistoryRecord();
 
 	describe('Initialization', async () => {
 		let deployer;

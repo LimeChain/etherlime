@@ -1,6 +1,7 @@
 const ganache = require('./ganache/ganache');
 const init = require('./init/init');
 const deployer = require('./deployer/deployer');
+const history = require('./history/history');
 
 const commands = [
 	{
@@ -40,6 +41,20 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 			deployer.run(argv.file, argv.network, argv.verbose);
+		}
+	},
+	{
+		command: 'history [limit]',
+		description: 'Show historical log of execution and reports of the executions.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('limit', {
+				describe: 'Limit to the execution logs',
+				type: 'number',
+				default: 5
+			})
+		},
+		commandProcessor: (argv) => {
+			history.run(argv.limit, console);
 		}
 	}
 ]

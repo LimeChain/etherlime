@@ -17,7 +17,7 @@ describe('Logs store tests', () => {
 	})
 
 	it('should store is initialized correctly', () => {
-		assert(store._historyStore.path == './.store/.history.json');
+		assert(store._historyStore.path == './.etherlime-store/.history.json');
 		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
 	})
 

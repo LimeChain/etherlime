@@ -1,9 +1,8 @@
-const colors = require('../../utils/colors');
+const colors = require('./../utils/colors');
 const Table = require('cli-table');
 const moment = require('moment');
 
 const printReportTable = (recordActions) => {
-	console.log(`Here is your report:`);
 	const table = new Table({
 		head: ['Event Time', 'Executor', 'Name or Label', 'Tx Hash', 'Status', 'Gas Price', 'Gas Used', 'Result'],
 		style: { head: ['magenta'], 'padding-left': 1, 'padding-right': 1 }

@@ -15,6 +15,7 @@ const defaultConfigs = {
 }
 
 describe('Deployer tests', () => {
+	store.initHistoryRecord();
 
 	describe('Initialization', async () => {
 		it('should initialize the wallet with correct values', () => {
