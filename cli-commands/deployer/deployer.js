@@ -17,16 +17,19 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 }
 
-const run = async (deploymentFilePath, network) => {
+const run = async (deploymentFilePath, network, verbose) => {
+	const deployMethod = getDeployMethod(deploymentFilePath);
 	try {
-		const deployMethod = getDeployMethod(deploymentFilePath);
 		await deployMethod(network);
-		const currentRecord = logsStore.getCurrentWorkingRecord();
 		console.log(`Your deployment script finished successfully!`);
-		utils.printReportTable(currentRecord.actions);
 	} catch (e) {
-		console.error(e.message);
+		if (verbose) {
+			console.error(e);
+		}
+		console.log(`Your deployment script finished with failure!`);
 	}
+	const currentRecord = logsStore.getCurrentWorkingRecord();
+	utils.printReportTable(currentRecord.actions);
 }
 
 

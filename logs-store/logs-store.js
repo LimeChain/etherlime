@@ -51,7 +51,7 @@ class LogsStore {
 	 * @param {*} status 0 - success, 1 - failure
 	 * @param {*} result arbitrary result text
 	 */
-	logAction(deployerType, nameOrLabel, transactionHash, status, result) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
 		const now = Date.now();
 		const record = {
 			eventTimestamp: now,
@@ -59,6 +59,8 @@ class LogsStore {
 			nameOrLabel,
 			transactionHash,
 			status,
+			gasPrice,
+			gasUsed,
 			result
 		}
 

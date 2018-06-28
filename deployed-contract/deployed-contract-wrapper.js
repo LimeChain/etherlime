@@ -52,18 +52,19 @@ class DeployedContractWrapper {
 		console.log(`Waiting for transaction ${labelPart}to be included in a block and mined: ${colors.colorTransactionHash(transactionHash)}`);
 
 		const transactionResult = await this.provider.waitForTransaction(transactionHash);
-		await this._postValidateTransaction(transactionHash, transactionResult);
+		const transactionReceipt = await this._postValidateTransaction(transactionHash, transactionResult);
 		const actionLabel = (transactionLabel) ? transactionLabel : this.constructor.name;
-		this._logAction(this.constructor.name, actionLabel, transactionHash, 0, 'Succesfully Waited For Transaction');
+		await this._logAction(this.constructor.name, actionLabel, transactionHash, 0, transactionResult.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Successfully Waited For Transaction');
 		return transactionResult;
 	}
 
 	async _postValidateTransaction(transactionHash, transactionResult) {
 		const transactionReceipt = await this.provider.getTransactionReceipt(transactionHash);
 		if (transactionReceipt.status === 0) {
-			this._logAction(this.constructor.name, this._contract.contractName, transactionHash, 1, 'Transaction failed');
+			await this._logAction(this.constructor.name, this._contract.contractName, transactionHash, 1, transactionResult.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
+		return transactionReceipt;
 	}
 
 	/**
@@ -76,8 +77,8 @@ class DeployedContractWrapper {
 	 * @param {*} status 0 - success, 1 - failure
 	 * @param {*} result arbitrary result text
 	 */
-	_logAction(deployerType, nameOrLabel, transactionHash, status, result) {
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, result);
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result);
 	}
 }
 

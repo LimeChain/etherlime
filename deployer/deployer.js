@@ -60,7 +60,7 @@ class Deployer {
 
 		const deploymentResult = await this._generateDeploymentResult(contract, transaction, transactionReceipt);
 
-		this._logAction(this.constructor.name, contract.contractName, transaction.hash, 0, deploymentResult.contractAddress);
+		await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
 
 		return deploymentResult;
 
@@ -75,7 +75,7 @@ class Deployer {
 	 */
 	async _preValidateArguments(contract, deploymentArguments) {
 		if (!(isValidContract(contract))) {
-			this._logAction(this.constructor.name, contract.contractName, '', 1, 'Invalid contract object');
+			await this._logAction(this.constructor.name, contract.contractName, '', 1, '-', '-', 'Invalid contract object');
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
@@ -158,7 +158,7 @@ class Deployer {
 	 */
 	async _postValidateTransaction(contract, transaction, transactionReceipt) {
 		if (transactionReceipt.status === 0) {
-			this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, 'Transaction failed');
+			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
 	}
@@ -186,8 +186,8 @@ class Deployer {
 	 * @param {*} status 0 - success, 1 - failure
 	 * @param {*} result arbitrary result text
 	 */
-	_logAction(deployerType, nameOrLabel, transactionHash, status, result) {
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, result);
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result);
 	}
 
 	/**

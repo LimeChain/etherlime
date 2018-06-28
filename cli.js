@@ -23,7 +23,11 @@ run = () => {
 		}
 	})
 
-	menu.help('help')
+	menu.help('help');
+	menu.option('verbose', {
+		alias: 'v',
+		default: false
+	});
 	menu.version();
 	menu.demandCommand();
 	menu.recommendCommands();

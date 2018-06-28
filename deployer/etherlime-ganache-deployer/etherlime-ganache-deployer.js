@@ -21,7 +21,6 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 		const nodeUrl = `http://localhost:${port}/`;
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
-		console.log(`GanacheCLi Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`)
 	}
 
 	toString() {
