@@ -1,7 +1,7 @@
-const colors = require('../../utils/colors');
-const JSONRPCDeployer = require('../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const ganacheSetupConfig = require('../../cli-commands/ganache/setup');
-const isNumber = require('../../utils/number-utils').isNumber;
+const colors = require('./../../utils/colors');
+const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
+const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
+const isNumber = require('./../../utils/number-utils').isNumber;
 
 
 

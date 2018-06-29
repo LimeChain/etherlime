@@ -1,8 +1,8 @@
 const ethers = require('ethers');
-const isAddress = require('../utils/address-utils').isAddress;
-const isValidContract = require('../utils/contract-utils').isValidContract;
-const colors = require('../utils/colors');
-const logsStore = require('../logs-store/logs-store');
+const isAddress = require('./../utils/address-utils').isAddress;
+const isValidContract = require('./../utils/contract-utils').isValidContract;
+const colors = require('./../utils/colors');
+const logsStore = require('./../logs-store/logs-store');
 
 class DeployedContractWrapper {
 

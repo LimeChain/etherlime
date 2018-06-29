@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const colors = require('../utils/colors');
+const colors = require('./../utils/colors');
 
 const Deployer = require('./deployer');
 
