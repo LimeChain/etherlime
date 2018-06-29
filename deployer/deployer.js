@@ -1,8 +1,8 @@
 const ethers = require('ethers');
-const colors = require('../utils/colors');
-const DeployedContractWrapper = require('../deployed-contract/deployed-contract-wrapper');
-const isValidContract = require('../utils/contract-utils').isValidContract;
-const logsStore = require('../logs-store/logs-store');
+const colors = require('./../utils/colors');
+const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
+const isValidContract = require('./../utils/contract-utils').isValidContract;
+const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
 
 class Deployer {

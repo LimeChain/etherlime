@@ -1,8 +1,8 @@
 const ethers = require('ethers');
-const isUrl = require('../../utils/url-utils').isUrl;
+const isUrl = require('./../../utils/url-utils').isUrl;
 
-const PrivateKeyDeployer = require('../private-key-deployer');
-const colors = require('../../utils/colors');
+const PrivateKeyDeployer = require('./../private-key-deployer');
+const colors = require('./../../utils/colors');
 
 class JSONRPCDeployer extends PrivateKeyDeployer {
 

@@ -44,6 +44,14 @@ Optionally you can use another file as long as you keep the structure of the fil
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
 
+### History of your deploys
+In order to see a list of what you've deployed you can run the following command:
+```
+etherlime history [limit]
+```
+
+By default it returns the last 5 records but you can use the optional `limit` parameter to request less or more entries.
+
 ## Quick Deployer Example
 
 ```
