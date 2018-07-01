@@ -42,4 +42,17 @@ describe('Logs store tests', () => {
 		assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
 	});
 
+	it('should not log if logs not inited', () => {
+		let lastRecord = store.getCurrentWorkingRecord();
+		const actionsBefore = lastRecord.actions.length;
+		store.isInitied = false;
+
+		store.logAction(deployerType, label, transactionHash, status, result);
+
+		lastRecord = store.getCurrentWorkingRecord();
+		const actionsAfter = lastRecord.actions.length;
+
+		assert.equal(actionsBefore, actionsAfter, "The logger logged on not inited store");
+	});
+
 });

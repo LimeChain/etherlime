@@ -13,6 +13,7 @@ class LogsStore {
 
 		const history = this.getHistory();
 		this._HISTORY_ID = '' + history.length;
+		this.isInitied = false;
 	}
 
 	/**
@@ -22,7 +23,9 @@ class LogsStore {
 		const initialRecord = {
 			actions: new Array()
 		}
-		return this._historyStore.set(this._HISTORY_ID, initialRecord)
+		this._historyStore.set(this._HISTORY_ID, initialRecord)
+		this.isInitied = true;
+		return
 	}
 
 	/**
@@ -50,6 +53,9 @@ class LogsStore {
 	 * @param {*} result arbitrary result text
 	 */
 	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+		if (!this.isInitied) {
+			return;
+		}
 		const now = Date.now();
 		const record = {
 			eventTimestamp: now,
