@@ -18,21 +18,21 @@ describe('Logs store tests', () => {
 		history = store.getHistory();
 	})
 
-	it('should store is initialized correctly', () => {
-		assert(store._historyStore.path == './.etherlime-store/.history.json', 'Icorrect path');
+	it('should initialize the store', () => {
+		store.initHistoryRecord();
+		assert(store._historyStore.path.endsWith('.etherlime-store/.history.json'), 'Icorrect path');
 		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
 	})
 
 	it('should initialize logs correctly', () => {
 		const currentRecord = store.getCurrentWorkingRecord();
-
 		assert(Array.isArray(currentRecord.actions), 'The last record actions is not array');
 	});
 
 	it('should log actions correctly', () => {
 		store.logAction(deployerType, label, transactionHash, status, result);
 
-		const lastRecord = store.getCurrentWorkingRecord();
+		const lastRecord = store.getLastWorkingRecord();
 		const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
 
 		assert(lastAction.deployerType == deployerType, 'Deployer Type not set correctly');
@@ -40,6 +40,15 @@ describe('Logs store tests', () => {
 		assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
 		assert(lastAction.status == status, 'status not set correctly');
 		assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
+
+		const currentRecord = store.getLastWorkingRecord();
+		const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
+
+		assert(currentAction.deployerType == deployerType, 'Deployer Type not set correctly');
+		assert(currentAction.nameOrLabel == label, 'Label not set correctly');
+		assert(currentAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
+		assert(currentAction.status == status, 'status not set correctly');
+		assert(currentAction.eventTimestamp >= now, 'timestamp set was not correct');
 	});
 
 	it('should not log if logs not inited', () => {

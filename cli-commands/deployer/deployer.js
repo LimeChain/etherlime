@@ -19,7 +19,6 @@ const getDeployMethod = (deploymentFilePath) => {
 
 const run = async (deploymentFilePath, network, verbose) => {
 	const deployMethod = getDeployMethod(deploymentFilePath);
-	logsStore.initHistoryRecord();
 	try {
 		await deployMethod(network);
 		console.log(`Your deployment script finished successfully!`);
@@ -29,7 +28,7 @@ const run = async (deploymentFilePath, network, verbose) => {
 		}
 		console.log(`Your deployment script finished with failure!`);
 	}
-	const currentRecord = logsStore.getCurrentWorkingRecord();
+	const currentRecord = logsStore.getLastWorkingRecord();
 	console.log(`\nHere is your report:`);
 	utils.printReportTable(currentRecord.actions);
 }

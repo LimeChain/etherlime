@@ -20,6 +20,9 @@ class LogsStore {
 	 * Initializes the history store with default empty array value
 	 */
 	initHistoryRecord() {
+		if (this.isInitied) {
+			return;
+		}
 		const initialRecord = {
 			actions: new Array()
 		}
@@ -40,6 +43,14 @@ class LogsStore {
 	 */
 	getCurrentWorkingRecord() {
 		return this._historyStore.get(this._HISTORY_ID);
+	}
+
+	/**
+	 * Gets the last written record.
+	 */
+	getLastWorkingRecord() {
+		const history = this.getHistory();
+		return this._historyStore.get('' + (history.length - 1));
 	}
 
 	/**

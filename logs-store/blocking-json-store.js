@@ -11,11 +11,11 @@ class BlockingJSONStore {
 	 * @param {*} path the path to save the file. Will be created if does not exist
 	 */
 	constructor(path) {
-		this.path = path;
+		this.path = `${process.cwd()}/${path}`;
 		if (!fs.existsSync(path)) {
 			fs.outputJsonSync(path, { data: {} });
 		}
-		this.store = require(`${process.cwd()}/${path}`);
+		this.store = require(this.path);
 	}
 
 	/**

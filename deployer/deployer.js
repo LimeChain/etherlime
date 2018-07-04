@@ -23,6 +23,7 @@ class Deployer {
 		this.wallet.provider = provider;
 
 		this.defaultOverrides = defaultOverrides;
+		logsStore.initHistoryRecord();
 	}
 
 	_validateInput(wallet, provider, defaultOverrides) {
