@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Deployer &mdash; Etherlime  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deployed Contract Wrapper" href="wrappers.html" />
+    <link rel="prev" title="Etherlime Library API" href="etherlime-api.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Etherlime
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="etherlime-cli.html">Etherlime CLI Commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="etherlime-api.html">Etherlime Library API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Deployer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deployer-functionality">Deployer functionality</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deploy-contract-params">deploy(contract, [params])</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#deployers">Deployers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#infuraprivatekeydeployer">InfuraPrivateKeyDeployer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jsonrpcdeployer">JSONRPCDeployer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#etherlimeganachedeployer">EtherlimeGanacheDeployer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wrappers.html">Deployed Contract Wrapper</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Etherlime</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="etherlime-api.html">Etherlime Library API</a> &raquo;</li>
+        
+      <li>Deployer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/deployers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="deployer">
+<h1>Deployer<a class="headerlink" href="#deployer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="deployer-functionality">
+<h2>Deployer functionality<a class="headerlink" href="#deployer-functionality" title="Permalink to this headline">¶</a></h2>
+<p>The main functionality the deployer exposes is (obviously) the ability
+to deploy compiled contract.</p>
+<p>This is achieved through the <code class="docutils literal notranslate"><span class="pre">deploy(contract,</span> <span class="pre">[params])</span></code> function.</p>
+<div class="section" id="deploy-contract-params">
+<h3>deploy(contract, [params])<a class="headerlink" href="#deploy-contract-params" title="Permalink to this headline">¶</a></h3>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">contract</span></code> - descriptor object for contract to be deployed. More details below</li>
+<li><code class="docutils literal notranslate"><span class="pre">params</span></code> - the constructor params you’d need to pass on deploy (if there are any)</li>
+</ul>
+<p>The contract is descriptor object that needs to have atleast the following three fields:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">contractName</span></code> - the name of the contract</li>
+<li><code class="docutils literal notranslate"><span class="pre">abi</span></code> - the abi interface of the contract</li>
+<li><code class="docutils literal notranslate"><span class="pre">bytecode</span></code> - the compiled bytecode</li>
+</ul>
+<p><em>All of these you can get by compiling with Truffle. We will soon expose
+you a way to do this through etherlime.</em></p>
+</div>
+</div>
+<div class="section" id="deployers">
+<h2>Deployers<a class="headerlink" href="#deployers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="infuraprivatekeydeployer">
+<h3>InfuraPrivateKeyDeployer<a class="headerlink" href="#infuraprivatekeydeployer" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">InfuraPrivateKeyDeployer</span><span class="p">(</span><span class="n">privateKey</span><span class="p">,</span> <span class="n">network</span><span class="p">,</span> <span class="n">apiKey</span><span class="p">,</span> <span class="p">[</span><span class="n">defaultOverrides</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">privateKey</span></code> - The private key to the deployment wallet</li>
+<li><code class="docutils literal notranslate"><span class="pre">network</span></code> - network as found in <code class="docutils literal notranslate"><span class="pre">ethers.providers.networks</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">apiKey</span></code> - your Infura API key</li>
+<li><code class="docutils literal notranslate"><span class="pre">defaultOverrides</span></code> - [Optional] object overiding the deployment settings for <code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> and <code class="docutils literal notranslate"><span class="pre">gasLimit</span></code>.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">etherlime</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;etherlime&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">TestContract</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;./TestContract.json&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">defaultConfigs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">gasPrice</span><span class="p">:</span> <span class="mi">20000000000</span><span class="p">,</span>
+    <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
+<span class="p">}</span>
+
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">InfuraPrivateKeyDeployer</span><span class="p">(</span><span class="s1">&#39;Your Private Key Goes Here&#39;</span><span class="p">,</span> <span class="s1">&#39;ropsten&#39;</span><span class="p">,</span> <span class="s1">&#39;Your Infura API Key&#39;</span><span class="p">,</span> <span class="n">defaultConfigs</span><span class="p">);</span>
+
+    <span class="n">const</span> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">deployer</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">TestContract</span><span class="p">,</span> <span class="s1">&#39;0xda8a06f1c910cab18ad187be1faa2b8606c2ec86&#39;</span><span class="p">,</span> <span class="mi">1539426974</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="jsonrpcdeployer">
+<h3>JSONRPCDeployer<a class="headerlink" href="#jsonrpcdeployer" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JSONRPCDeployer</span><span class="p">(</span><span class="n">privateKey</span><span class="p">,</span> <span class="n">nodeUrl</span><span class="p">,</span> <span class="p">[</span><span class="n">defaultOverrides</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">privateKey</span></code> - The private key to the deployment wallet</li>
+<li><code class="docutils literal notranslate"><span class="pre">nodeUrl</span></code> - the url to the node you are trying to connect (local or remote)</li>
+<li><code class="docutils literal notranslate"><span class="pre">defaultOverrides</span></code> - [Optional] object overiding the deployment settings for <code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> and <code class="docutils literal notranslate"><span class="pre">gasLimit</span></code>.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">etherlime</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;etherlime&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">TestContract</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;./TestContract.json&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">defaultConfigs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">gasPrice</span><span class="p">:</span> <span class="mi">20000000000</span><span class="p">,</span>
+    <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
+<span class="p">}</span>
+
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">JSONRPCDeployer</span><span class="p">(</span><span class="s1">&#39;Your Private Key Goes Here&#39;</span><span class="p">,</span> <span class="s1">&#39;http://localhost:8545/&#39;</span><span class="p">,</span> <span class="n">defaultConfigs</span><span class="p">);</span>
+
+    <span class="n">const</span> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">deployer</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">TestContract</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="etherlimeganachedeployer">
+<h3>EtherlimeGanacheDeployer<a class="headerlink" href="#etherlimeganachedeployer" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EtherlimeGanacheDeployer</span><span class="p">([</span><span class="n">privateKey</span><span class="p">],</span> <span class="p">[</span><span class="n">port</span><span class="p">],</span> <span class="p">[</span><span class="n">defaultOverrides</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">privateKey</span></code> - [Optional] The private key to the deployment wallet. Defauts to the first one in the <cite>etherlime ganache</cite></li>
+<li><code class="docutils literal notranslate"><span class="pre">port</span></code> - [Optional] the port you’ve ran the etherlime ganache on. Defaults to 8545.</li>
+<li><code class="docutils literal notranslate"><span class="pre">defaultOverrides</span></code> - [Optional] object overiding the deployment settings for <code class="docutils literal notranslate"><span class="pre">gasPrice</span></code> and <code class="docutils literal notranslate"><span class="pre">gasLimit</span></code>.</li>
+</ul>
+<p><strong>This deployer only works with etherlime ganache</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">etherlime</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;etherlime&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">TestContract</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;./TestContract.json&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">defaultConfigs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">gasPrice</span><span class="p">:</span> <span class="mi">20000000000</span><span class="p">,</span>
+    <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
+<span class="p">}</span>
+
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">EtherlimeGanacheDeployer</span><span class="p">();</span>
+
+    <span class="n">const</span> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">deployer</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">TestContract</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="wrappers.html" class="btn btn-neutral float-right" title="Deployed Contract Wrapper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="etherlime-api.html" class="btn btn-neutral" title="Etherlime Library API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Limechain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

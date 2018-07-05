@@ -21,8 +21,8 @@ const commands = [
 		command: 'init',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => { },
-		commandProcessor: (argv) => {
-			init.run();
+		commandProcessor: async (argv) => {
+			await init.run();
 		}
 	},
 	{
