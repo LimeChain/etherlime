@@ -18,11 +18,9 @@ This framework was born out of necessity, hardships and trouble in the developme
 ## Installing
 
 ```
-npm install etherlime [-g]
+npm i -g etherlime
 ```
 ## Running embedded ganache-cli
-
-For easier integration and usage of the upcoming EtherlimeGanacheDeployer and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of eth (191408831393027885698 to be precise)
 
 ```
 etherlime ganache
@@ -35,22 +33,18 @@ etherlime init
 ```
 This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
 
-In order to deploy using this file you can use the following file:
+In order to deploy using this file you can run the following command:
 ```
-etherlime deploy [file] [network]
+etherlime deploy
 ```
-
-Optionally you can use another file as long as you keep the structure of the file (exporting an `async deploy` function with `network` param). You can also optionally provide a `--network` argument to be passed to the deployer. It is up to you how to make sense of it.
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
 
 ### History of your deploys
 In order to see a list of what you've deployed you can run the following command:
 ```
-etherlime history [limit]
+etherlime history
 ```
-
-By default it returns the last 5 records but you can use the optional `limit` parameter to request less or more entries.
 
 ## Quick Deployer Example
 
