@@ -20,6 +20,11 @@ This framework was born out of necessity, hardships and trouble in the developme
 ```
 npm i -g etherlime
 ```
+
+## Documentation
+
+[Documentation](https://etherlime.readthedocs.io/en/latest/)
+
 ## Running embedded ganache-cli
 
 ```
@@ -69,12 +74,6 @@ const deploy = async (network) => {
 
 Result of `etherlime deploy` would be something like this:
 [![Deployment result](DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
-
-For more info check the section below.
-
-## Comprehensive Deployment API
-
-[Documentation](https://etherlime.readthedocs.io/en/latest/)
 
 # License
 Completely MIT Licensed. Including ALL dependencies.
