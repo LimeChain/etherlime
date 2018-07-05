@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>etherlime &mdash; Etherlime  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Etherlime
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployer-api.html">Deployer API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Etherlime</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>etherlime</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.1.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p><a class="reference external" href="https://badge.fury.io/js/etherlime"><img alt="npm version" src="https://badge.fury.io/js/etherlime.svg" /></a> <a class="reference external" href="https://codecov.io/gh/LimeChain/etherlime"><img alt="travis build status" src="https://img.shields.io/codecov/c/github/LimeChain/etherlime/master.svg" /></a> <a class="reference external" href="https://codecov.io/gh/LimeChain/etherlime"><img alt="travis build status" src="https://img.shields.io/codecov/c/github/LimeChain/etherlime/master.svg" /></a> <a class="reference external" href="https://gitter.im/lime-tech-talks/Lobby"><img alt="Gitter chat" src="https://badges.gitter.im/lime-tech-talks/Lobby.png" /></a></p>
+<div class="section" id="etherlime">
+<h1>etherlime<a class="headerlink" href="#etherlime" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Developer Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deployer-api.html">Deployer API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deployer-api.html#deployer-functionality">Deployer functionality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployer-api.html#deployed-contract-wrapper">Deployed Contract Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployer-api.html#working-with-previously-deployed-contracts">Working with previously deployed contracts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<hr class="docutils" />
+<p><strong>etherlime</strong> is an ethereum development and deployment framework based
+on <a class="reference external" href="https://github.com/ethers-io/ethers.js/">ethers.js</a>.</p>
+<p>This framework provides alternative to the other web3.js based
+frameworks and allows for ultimate control by the developer. It also
+adds much needed verboseness in the deployment process so that you can
+be aware of what is really going on (as opposed to the general shooting
+in the dark technique).</p>
+<p>This framework was born out of necessity, hardships and trouble in the
+development and deployment of ethereum smart contract. We are trying to
+ease the pain of deployment, compilation and unit testing and add much
+needed stability to the process. In our mind ethers is much more stable
+alternative than web3.js for the moment therefore this framework is
+born.</p>
+<p><strong>Milestones:</strong> 1. Being able to deploy compiled contracts (compiled in
+the truffle format) on local and infura nodes &lt;—- We are here 2. [Not
+Ready]Being able to compile contracts to the desired formats for
+deployment 3. [Not Ready]Being able to run unit tests on the compiled
+contracts</p>
+<div class="section" id="installing">
+<h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">install</span> <span class="n">etherlime</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-embedded-ganache-cli">
+<h2>Running embedded ganache-cli<a class="headerlink" href="#running-embedded-ganache-cli" title="Permalink to this headline">¶</a></h2>
+<p>For easier integration and usage of the upcoming
+EtherlimeGanacheDeployer and running local deployments you can use the
+embedded ganache-cli. It comes with fixed 10 accounts and a lot of eth
+(191408831393027885698 to be precise)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">ganache</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setting-up-your-project-to-deploy-with-etherlime">
+<h2>Setting up your project to deploy with etherlime<a class="headerlink" href="#setting-up-your-project-to-deploy-with-etherlime" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">init</span>
+</pre></div>
+</div>
+<p>This will create <code class="docutils literal notranslate"><span class="pre">deployment</span></code> directory with <code class="docutils literal notranslate"><span class="pre">deploy.js</span></code> file
+inside. You can use this file to write your deployment procedure.</p>
+<p>In order to deploy using this file you can use the following file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">deploy</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="p">[</span><span class="n">network</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Optionally you can use another file as long as you keep the structure of
+the file (exporting an <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">deploy</span></code> function with <code class="docutils literal notranslate"><span class="pre">network</span></code>
+param). You can also optionally provide a <code class="docutils literal notranslate"><span class="pre">--network</span></code> argument to be
+passed to the deployer. It is up to you how to make sense of it.</p>
+<p>The deployment process is verbose and gives you real-time info about the
+performed actions. In addition there is a report of the actions when the
+deployment finishes (as not all of us monitor the deployment process
+constantly);</p>
+<div class="section" id="history-of-your-deploys">
+<h3>History of your deploys<a class="headerlink" href="#history-of-your-deploys" title="Permalink to this headline">¶</a></h3>
+<p>In order to see a list of what you’ve deployed you can run the following
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">history</span> <span class="p">[</span><span class="n">limit</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>By default it returns the last 5 records but you can use the optional
+<code class="docutils literal notranslate"><span class="pre">limit</span></code> parameter to request less or more entries.</p>
+</div>
+</div>
+<div class="section" id="quick-deployer-example">
+<h2>Quick Deployer Example<a class="headerlink" href="#quick-deployer-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">etherlime</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;etherlime&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">TestContract</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;./TestContract.json&#39;</span><span class="p">);</span>
+
+<span class="n">const</span> <span class="n">defaultConfigs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">gasPrice</span><span class="p">:</span> <span class="mi">20000000000</span><span class="p">,</span>
+    <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
+<span class="p">}</span>
+
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+    <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">InfuraPrivateKeyDeployer</span><span class="p">(</span><span class="s1">&#39;Your Private Key Goes Here&#39;</span><span class="p">,</span> <span class="s1">&#39;ropsten&#39;</span><span class="p">,</span> <span class="s1">&#39;Your Infura API Key&#39;</span><span class="p">,</span> <span class="n">defaultConfigs</span><span class="p">);</span>
+
+    <span class="n">const</span> <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">deployer</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="n">TestContract</span><span class="p">,</span> <span class="s1">&#39;0xda8a06f1c910cab18ad187be1faa2b8606c2ec86&#39;</span><span class="p">,</span> <span class="mi">1539426974</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Result of <code class="docutils literal notranslate"><span class="pre">etherlime</span> <span class="pre">deploy</span></code> would be something like this: <a class="reference external" href="https://imgur.com/a/NyLX9mH"><img alt="Deployment result" src="DeploymentResult.png" /></a></p>
+<p>For more info check the section below.</p>
+</div>
+<div class="section" id="comprehensive-deployment-api">
+<h2>Comprehensive Deployment API<a class="headerlink" href="#comprehensive-deployment-api" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="./DeployerAPI.md">Click me for Etherlime Deployment API</a></p>
+</div>
+<div class="section" id="compiling">
+<h2>Compiling<a class="headerlink" href="#compiling" title="Permalink to this headline">¶</a></h2>
+<p>Not ready. TBD</p>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>Not ready. TBD</p>
+</div>
+</div>
+<div class="section" id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
+<p>Completely MIT Licensed. Including ALL dependencies.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Limechain.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
