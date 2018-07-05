@@ -80,15 +80,7 @@ For more info check the section below.
 
 ## Comprehensive Deployment API
 
-[Click me for Etherlime Deployment API](./DeployerAPI.md)
-
-## Compiling
-
-Not ready. TBD
-
-## Testing
-
-Not ready. TBD
+[Documentation](https://etherlime.readthedocs.io/en/latest/)
 
 # License
 Completely MIT Licensed. Including ALL dependencies.
