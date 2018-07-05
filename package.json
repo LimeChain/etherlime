@@ -1,6 +1,6 @@
 {
   "name": "etherlime",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
