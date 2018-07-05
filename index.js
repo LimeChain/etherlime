@@ -5,6 +5,7 @@ const JSONRPCPrivateKeyDeployer = require('./deployer/jsonrpc-deployer/jsonrpc-p
 const EtherlimeGanacheDeployer = require('./deployer/etherlime-ganache-deployer/etherlime-ganache-deployer');
 
 const DeployedContractWrapper = require('./deployed-contract/deployed-contract-wrapper');
+const EtherlimeGanacheWrapper = require('./deployed-contract/etherlime-ganache-wrapper');
 
 module.exports = {
 	Deployer,
@@ -12,5 +13,6 @@ module.exports = {
 	InfuraPrivateKeyDeployer,
 	JSONRPCPrivateKeyDeployer,
 	DeployedContractWrapper,
-	EtherlimeGanacheDeployer
+	EtherlimeGanacheDeployer,
+	EtherlimeGanacheWrapper
 }

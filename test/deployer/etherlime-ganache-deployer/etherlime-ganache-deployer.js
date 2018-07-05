@@ -72,4 +72,15 @@ describe('GanacheCli-Deployer tests', () => {
 			assert(returnedString.includes(config.nodeUrl), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
 	})
+
+	describe('Wrapping deployed contract', async () => {
+
+		it('should wrap contracts correctly', async () => {
+			const deployer = new etherlime.EtherlimeGanacheDeployer();
+			const contractWrapper = await deployer.wrapDeployedContract(Greetings, config.randomAddress);
+
+			assert.ok(isAddress(contractWrapper.contractAddress), 'The wrapped address is incorrect');
+			assert.strictEqual(contractWrapper.contractAddress, config.randomAddress, 'The wrapped address is no the inputted one');
+		})
+	})
 });

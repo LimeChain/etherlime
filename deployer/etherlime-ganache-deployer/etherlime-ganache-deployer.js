@@ -2,6 +2,7 @@ const colors = require('./../../utils/colors');
 const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
 const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
 const isNumber = require('./../../utils/number-utils').isNumber;
+const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 
 
 
@@ -26,6 +27,21 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	toString() {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
+	}
+
+
+	async _waitForDeployTransaction(transaction) {
+		return this.provider.send('evm_mine');
+	}
+
+	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
+		console.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
+		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
+	}
+
+	wrapDeployedContract(contract, contractAddress) {
+		console.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
+		return new EtherlimeGanacheWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 }
 
