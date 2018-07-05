@@ -20,8 +20,6 @@ specify a label for the transaction you are waiting for, so that you can
 get a better understanding of what transaction is being waited for. This
 comes in handy when deployment scripts start to grow.
 
-**Example**
-
 ::
 
     const contractWrapper = await deployer.deploy(ICOTokenContract);
@@ -35,8 +33,6 @@ Sometimes you want to work with already deployed contract. The deployer
 object allows you to wrap such an deployed contract by it's address and
 continue using the power of the wrapper object. The function you can use
 to achieve this is ``wrapDeployedContract(contract, contractAddress)``.
-
-**Example**
 
 ::
 

@@ -33,7 +33,11 @@ Running embedded ganache-cli
 
 ::
 
-    etherlime ganache
+    etherlime ganache [port]
+
+Parameters:
+
+* ``port`` - [Optional] By specifying ``--port`` you can specify port to run the etherlime ganache. Default: 8545
 
 For easier integration and usage of ``EtherlimeGanacheDeployer`` and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of ETH (191408831393027885698 to be precise)
 
