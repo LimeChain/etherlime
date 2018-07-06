@@ -1,5 +1,5 @@
 Etherlime CLI Commands
-*************
+**********************
 
 Installing
 ----------
@@ -57,13 +57,14 @@ Deploying
 ~~~~~~~~~
 ::
 
-    etherlime deploy [file] [network] [-v]
+    etherlime deploy [file] [network] [secret] [-v]
 
 Parameters:
 
-* ``file`` - [Optional] By specifying ``--file`` you can use another file as long as you keep the structure of the file (exporting an ``async deploy`` function with ``network`` param)
-* ``network`` - [Optional] By specifying ``--network`` you can specify a param to be passed to your deploy method
-* ``-v`` - [Optional] 
+* ``file`` - [Optional] By specifying ``--file`` you can use another file as long as you keep the structure of the file (exporting an ``async deploy`` function with ``network`` and ``secret`` params)
+* ``network`` - [Optional] By specifying ``--network`` you can specify the network param to be passed to your deploy method
+* ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
+* ``-v`` - [Optional] Verboose printing of errors if they occur
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the

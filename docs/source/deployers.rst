@@ -10,7 +10,7 @@ to deploy compiled contract.
 This is achieved through the ``deploy(contract, [params])`` function. 
 
 deploy(contract, [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Parameters:
 
@@ -54,7 +54,7 @@ Parameters:
         gasLimit: 4700000
     }
 
-    const deploy = async (network) => {
+    const deploy = async (network, secret) => {
 
         const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
         
@@ -86,7 +86,7 @@ Parameters:
         gasLimit: 4700000
     }
 
-    const deploy = async (network) => {
+    const deploy = async (network, secret) => {
 
         const deployer = new etherlime.JSONRPCDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
         
@@ -120,7 +120,7 @@ Parameters:
         gasLimit: 4700000
     }
 
-    const deploy = async (network) => {
+    const deploy = async (network, secret) => {
 
         const deployer = new etherlime.EtherlimeGanacheDeployer();
         

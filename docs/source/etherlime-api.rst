@@ -1,5 +1,5 @@
 Etherlime Library API
-*************
+*********************
 
 .. toctree::
    :maxdepth: 3

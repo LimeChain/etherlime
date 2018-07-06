@@ -26,8 +26,8 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network]',
-		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching.',
+		command: 'deploy [file] [network] [secret]',
+		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
 				describe: 'port to run ganache-cli on',
@@ -38,9 +38,14 @@ const commands = [
 				describe: 'network param to pass to the deployment script',
 				type: 'string'
 			})
+
+			yargs.positional('secret', {
+				describe: 'secret string to be passed to your deployer. Useful for private keys or api keys',
+				type: 'string'
+			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.verbose);
+			deployer.run(argv.file, argv.network, argv.secret, argv.verbose);
 		}
 	},
 	{

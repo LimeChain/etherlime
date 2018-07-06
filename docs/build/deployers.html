@@ -212,7 +212,7 @@ you a way to do this through etherlime.</em></p>
     <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
 <span class="p">}</span>
 
-<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
     <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">InfuraPrivateKeyDeployer</span><span class="p">(</span><span class="s1">&#39;Your Private Key Goes Here&#39;</span><span class="p">,</span> <span class="s1">&#39;ropsten&#39;</span><span class="p">,</span> <span class="s1">&#39;Your Infura API Key&#39;</span><span class="p">,</span> <span class="n">defaultConfigs</span><span class="p">);</span>
 
@@ -241,7 +241,7 @@ you a way to do this through etherlime.</em></p>
     <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
 <span class="p">}</span>
 
-<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
     <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">JSONRPCDeployer</span><span class="p">(</span><span class="s1">&#39;Your Private Key Goes Here&#39;</span><span class="p">,</span> <span class="s1">&#39;http://localhost:8545/&#39;</span><span class="p">,</span> <span class="n">defaultConfigs</span><span class="p">);</span>
 
@@ -271,7 +271,7 @@ you a way to do this through etherlime.</em></p>
     <span class="n">gasLimit</span><span class="p">:</span> <span class="mi">4700000</span>
 <span class="p">}</span>
 
-<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
     <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">EtherlimeGanacheDeployer</span><span class="p">();</span>
 

@@ -1,6 +1,6 @@
 const etherlime = require('etherlime');
 
-const deploy = async (network) => {
+const deploy = async (network, secret) => {
 
 }
 
