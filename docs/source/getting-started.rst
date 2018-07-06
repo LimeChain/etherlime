@@ -39,7 +39,7 @@ Deployer Example
 
     const TestContract = require('./TestContract.json'); // Your Truffle compiled contract here
 
-    const deploy = async (network) => {
+    const deploy = async (network, secret) => {
 
         const deployer = new etherlime.EtherlimeGanacheDeployer();
         

@@ -189,7 +189,7 @@ inside. You can use this file to write your deployment procedure.</p>
 
 <span class="n">const</span> <span class="n">TestContract</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;./TestContract.json&#39;</span><span class="p">);</span> <span class="o">//</span> <span class="n">Your</span> <span class="n">Truffle</span> <span class="n">compiled</span> <span class="n">contract</span> <span class="n">here</span>
 
-<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="n">const</span> <span class="n">deploy</span> <span class="o">=</span> <span class="k">async</span> <span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
 
     <span class="n">const</span> <span class="n">deployer</span> <span class="o">=</span> <span class="n">new</span> <span class="n">etherlime</span><span class="o">.</span><span class="n">EtherlimeGanacheDeployer</span><span class="p">();</span>
 

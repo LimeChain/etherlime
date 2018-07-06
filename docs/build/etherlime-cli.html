@@ -207,14 +207,15 @@ You can use this file to write your deployment procedure.</p>
 <h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="deploying">
 <h3>Deploying<a class="headerlink" href="#deploying" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">deploy</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="p">[</span><span class="n">network</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">etherlime</span> <span class="n">deploy</span> <span class="p">[</span><span class="n">file</span><span class="p">]</span> <span class="p">[</span><span class="n">network</span><span class="p">]</span> <span class="p">[</span><span class="n">secret</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Parameters:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">file</span></code> - [Optional] By specifying <code class="docutils literal notranslate"><span class="pre">--file</span></code> you can use another file as long as you keep the structure of the file (exporting an <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">deploy</span></code> function with <code class="docutils literal notranslate"><span class="pre">network</span></code> param)</li>
-<li><code class="docutils literal notranslate"><span class="pre">network</span></code> - [Optional] By specifying <code class="docutils literal notranslate"><span class="pre">--network</span></code> you can specify a param to be passed to your deploy method</li>
-<li><code class="docutils literal notranslate"><span class="pre">-v</span></code> - [Optional]</li>
+<li><code class="docutils literal notranslate"><span class="pre">file</span></code> - [Optional] By specifying <code class="docutils literal notranslate"><span class="pre">--file</span></code> you can use another file as long as you keep the structure of the file (exporting an <code class="docutils literal notranslate"><span class="pre">async</span> <span class="pre">deploy</span></code> function with <code class="docutils literal notranslate"><span class="pre">network</span></code> and <code class="docutils literal notranslate"><span class="pre">secret</span></code> params)</li>
+<li><code class="docutils literal notranslate"><span class="pre">network</span></code> - [Optional] By specifying <code class="docutils literal notranslate"><span class="pre">--network</span></code> you can specify the network param to be passed to your deploy method</li>
+<li><code class="docutils literal notranslate"><span class="pre">secret</span></code> - [Optional] By specifying <code class="docutils literal notranslate"><span class="pre">secret</span></code> you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.</li>
+<li><code class="docutils literal notranslate"><span class="pre">-v</span></code> - [Optional] Verboose printing of errors if they occur</li>
 </ul>
 <p>Running this command will deploy the file specified (defaults to <code class="docutils literal notranslate"><span class="pre">./deployment/deploy.js</span></code>)
 The deployment process is verbose and gives you real-time info about the
