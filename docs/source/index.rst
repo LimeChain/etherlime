@@ -17,11 +17,13 @@ be aware of what is really going on (as opposed to the general shooting
 in the dark technique).
 
 This framework was born out of necessity, hardships and trouble in the
-development and deployment of ethereum smart contract. We are trying to
+development and deployment of ethereum smart contracts. We are trying to
 ease the pain of deployment, compilation and unit testing and add much
 needed stability to the process. In our mind ethers is much more stable
 alternative than web3.js for the moment therefore this framework is
 born.
+
+Etherlime can be used as library and/or command line tool. The command line tools give you great boosts but you can skip them fully and use plain old node.js including the etherlime library.
 
 Milestones
 ~~~~~~~~~~~~~~~

@@ -17,14 +17,14 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 }
 
-const run = async (deploymentFilePath, network, secret, verbose) => {
+const run = async (deploymentFilePath, network, secret, silent) => {
 	const initialRecordsCount = logsStore.getHistory().length;
 	const deployMethod = getDeployMethod(deploymentFilePath);
 	try {
 		await deployMethod(network, secret);
 		console.log(`Your deployment script finished successfully!`);
 	} catch (e) {
-		if (verbose) {
+		if (!silent) {
 			console.error(e);
 		}
 		console.log(`Your deployment script finished with failure!`);

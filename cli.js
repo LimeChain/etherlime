@@ -24,8 +24,8 @@ run = () => {
 	})
 
 	menu.help('help');
-	menu.option('verbose', {
-		alias: 'v',
+	menu.option('silent', {
+		alias: 's',
 		default: false
 	});
 	menu.version();
