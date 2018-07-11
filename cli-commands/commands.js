@@ -70,7 +70,7 @@ const commands = [
 			yargs.positional('default_path', {
 				describe: 'Specifies the default path to all folders',
 				type: 'string',
-				default: './..'
+				default: '.'
 			})
 		},
 		commandProcessor: (argv) => {
