@@ -4,20 +4,20 @@ const utils = require('./../util');
 let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
 
-const run = async (workingDirectory, contractsDirectory, buildDirectory) => {
+const run = async (defaultPath) => {
     const initialRecordsCount = logsStore.getHistory().length;
 
     try {
         let resolverOptions = {
-            "working_directory": `${workingDirectory}/contracts`,
-            "contracts_build_directory": `${buildDirectory}/build`
+            "working_directory": `${defaultPath}/contracts`,
+            "contracts_build_directory": `${defaultPath}/build`
         };
 
         Resolver(resolverOptions);
 
         let compileOptions = {
-            "contracts_directory": `${contractsDirectory}/contracts`,
-            "contracts_build_directory": `${buildDirectory}/build`
+            "contracts_directory": `${defaultPath}/contracts`,
+            "contracts_build_directory": `${defaultPath}/build`
         };
 
         compiler.compile(compileOptions, () => {});
