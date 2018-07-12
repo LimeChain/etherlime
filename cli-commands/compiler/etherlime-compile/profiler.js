@@ -1,6 +1,3 @@
-// Compares .sol files to their .sol.js counterparts,
-// determines which .sol files have been updated.
-
 var path = require("path");
 var async = require("async");
 var fs = require("fs");
@@ -11,8 +8,6 @@ var find_contracts = require("./../etherlime-contract-sources");
 
 module.exports = {
   updated: function (options, callback) {
-    var self = this;
-
     expect.options(options, [
       "resolver"
     ]);
@@ -220,7 +215,6 @@ module.exports = {
     find_contracts(options.base_path, function (err, allPaths) {
       if (err) return callback(err);
 
-      // Include paths for Solidity .sols, specified in options.
       allPaths = allPaths.concat(paths);
 
       self.dependency_graph(allPaths, options.resolver, function (err, dependsGraph) {
@@ -235,13 +229,14 @@ module.exports = {
     var self = this;
 
     return paths.map(function (p) {
-      // If it's an absolute paths, leave it alone.
-      if (path.isAbsolute(p)) return p;
+      if (path.isAbsolute(p)) {
+        return p;
+      }
 
-      // If it's not explicitly relative, then leave it alone (i.e., it's a module).
-      if (!self.isExplicitlyRelative(p)) return p;
+      if (!self.isExplicitlyRelative(p)) {
+        return p;
+      }
 
-      // Path must be explicitly relative, therefore make it absolute.
       return path.resolve(path.join(base, p));
     });
   },
@@ -253,14 +248,10 @@ module.exports = {
   dependency_graph: function (paths, resolver, callback) {
     var self = this;
 
-    // Iterate through all the contracts looking for libraries and building a dependency graph
     var dependsGraph = new Graph();
 
     var imports_cache = {};
 
-    // For the purposes of determining correct error messages.
-    // The second array item denotes which path imported the current path.
-    // In the case of the paths passed in, there was none.
     paths = paths.map(function (p) {
       return [p, null];
     });
@@ -283,7 +274,6 @@ module.exports = {
           return finished();
         }
 
-        // Add the contract to the depends graph.
         dependsGraph.setNode(resolved_path, resolved_body);
 
         var imports;
@@ -295,21 +285,15 @@ module.exports = {
           return finished(e);
         }
 
-        // Convert explicitly relative dependencies of modules
-        // back into module paths. We also use this loop to update
-        // the graph edges.
         imports = imports.map(function (dependency_path) {
-          // Convert explicitly relative paths
           if (self.isExplicitlyRelative(dependency_path)) {
             dependency_path = source.resolve_dependency_path(import_path, dependency_path);
           }
 
-          // Update graph edges
           if (!dependsGraph.hasEdge(import_path, dependency_path)) {
             dependsGraph.setEdge(import_path, dependency_path);
           }
 
-          // Return an array that denotes a new import and the path it was imported from.
           return [dependency_path, import_path];
         });
 
@@ -326,8 +310,6 @@ module.exports = {
       });
   },
 
-  // Parse all source files in the directory and output the names of contracts and their source paths
-  // directory can either be a directory or array of files.
   defined_contracts: function (directory, callback) {
     function getFiles(callback) {
       if (Array.isArray(directory)) {

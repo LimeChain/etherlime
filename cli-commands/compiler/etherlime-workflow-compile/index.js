@@ -10,13 +10,6 @@ var Artifactor = require("./../etherlime-artifactor");
 
 var Contracts = {
 
-  // contracts_directory: String. Directory where .sol files can be found.
-  // contracts_build_directory: String. Directory where .sol.js files can be found and written to.
-  // all: Boolean. Compile all sources found. Defaults to true. If false, will compare sources against built files
-  //      in the build directory to see what needs to be compiled.
-  // network_id: network id to link saved contract artifacts.
-  // quiet: Boolean. Suppress output. Defaults to false.
-  // strict: Boolean. Return compiler warnings as errors. Defaults to false.
   compile: function (options, callback) {
     var self = this;
 
@@ -29,7 +22,6 @@ var Contracts = {
       "files"
     ]);
 
-    // Use a config object to ensure we get the default sources.
     var config = Config.default().merge(options);
 
     if (!config.resolver) {

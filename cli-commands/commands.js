@@ -64,17 +64,17 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [default_path]',
-		description: 'Compiles smart contracts',
+		command: 'compile [dir]',
+		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
-			yargs.positional('default_path', {
-				describe: 'Specifies the default path to all folders',
+			yargs.positional('dir', {
+				describe: 'Specifies the default dir to all folders',
 				type: 'string',
 				default: '.'
 			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.default_path);
+			compiler.run(argv.dir);
 		}
 	}
 ]

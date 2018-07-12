@@ -36,24 +36,6 @@ var Blockchain = {
     return parsed;
   },
 
-  asURI: function (provider, callback) {
-    var self = this;
-    var genesis;
-
-    self.getBlockByNumber("0x0", provider, function (err, response) {
-      if (err) return callback(err);
-      genesis = response.result;
-
-      self.getBlockByNumber("latest", provider, function (err, response) {
-        if (err) return callback(err);
-        latest = response.result;
-        var url = "blockchain://" + genesis.hash.replace("0x", "") + "/block/" + latest.hash.replace("0x", "");
-
-        callback(null, url);
-      });
-    });
-  },
-
   matches: function (uri, provider, callback) {
     var self = this;
     uri = self.parse(uri);

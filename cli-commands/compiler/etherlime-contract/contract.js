@@ -3,15 +3,11 @@ var BlockchainUtils = require("./../etherlime-blockchain-utils");
 var Web3 = require("web3");
 var StatusError = require("./status-error.js")
 
-// For browserified version. If browserify gave us an empty version,
-// look for the one provided by the user.
 if (typeof Web3 == "object" && Object.keys(Web3).length == 0) {
     Web3 = global.Web3;
 }
 
 var contract = (function (module) {
-
-    // Planned for future features, logging, etc.
     function Provider(provider) {
         this.provider = provider;
     }
@@ -269,9 +265,6 @@ var contract = (function (module) {
         }
     };
 
-    // Accepts a contract object created with web3.eth.contract.
-    // Optionally, if called without `new`, accepts a network_id and will
-    // create a new version of the contract abstraction with that network_id set.
     function Contract(contract) {
         var self = this;
         var constructor = this.constructor;
@@ -284,8 +277,6 @@ var contract = (function (module) {
         }
 
         this.contract = contract;
-
-        // Provision our functions.
         for (var i = 0; i < this.abi.length; i++) {
             var item = this.abi[i];
             if (item.type == "function") {
@@ -683,7 +674,6 @@ var contract = (function (module) {
         }
     };
 
-    // Getter functions are scoped to Contract object.
     Contract._properties = {
         contract_name: {
             get: function () {

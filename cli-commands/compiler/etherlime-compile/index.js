@@ -8,16 +8,6 @@ var expect = require("./../etherlime-expect");
 var find_contracts = require("./../etherlime-contract-sources");
 var Config = require("./../etherlime-config");
 
-// Most basic of the compile commands. Takes a hash of sources, where
-// the keys are file or module paths and the values are the bodies of
-// the contracts. Does not evaluate dependencies that aren't already given.
-//
-// Default options:
-// {
-//   strict: false,
-//   quiet: false,
-//   logger: console
-// }
 var compile = function (sources, options, callback) {
   if (typeof options == "function") {
     callback = options;
@@ -33,9 +23,8 @@ var compile = function (sources, options, callback) {
     "solc"
   ]);
 
-  // Load solc module only when compilation is actually required.
   var solc = require("solc");
-  // Clean up after solc.
+
   var listeners = process.listeners("uncaughtException");
   var solc_listener = listeners[listeners.length - 1];
 
@@ -43,25 +32,18 @@ var compile = function (sources, options, callback) {
     process.removeListener("uncaughtException", solc_listener);
   }
 
-  // Ensure sources have operating system independent paths
-  // i.e., convert backslashes to forward slashes; things like C: are left intact.
   var operatingSystemIndependentSources = {};
   var originalPathMappings = {};
 
   Object.keys(sources).forEach(function (source) {
-    // Turn all backslashes into forward slashes
     var replacement = source.replace(/\\/g, "/");
 
-    // Turn G:/.../ into /G/.../ for Windows
     if (replacement.length >= 2 && replacement[1] == ":") {
       replacement = "/" + replacement;
       replacement = replacement.replace(":", "");
     }
 
-    // Save the result
     operatingSystemIndependentSources[replacement] = sources[source];
-
-    // Map the replacement back to the original source path.
     originalPathMappings[replacement] = source;
   });
 
@@ -89,7 +71,6 @@ var compile = function (sources, options, callback) {
     }
   };
 
-  // Nothing to compile? Bail.
   if (Object.keys(sources).length == 0) {
     return callback(null, [], []);
   }
@@ -141,7 +122,6 @@ var compile = function (sources, options, callback) {
 
   var returnVal = {};
 
-  // This block has comments in it as it's being prepared for solc > 0.4.10
   Object.keys(contracts).forEach(function (source_path) {
     var files_contracts = contracts[source_path];
 
@@ -150,7 +130,7 @@ var compile = function (sources, options, callback) {
 
       var contract_definition = {
         contract_name: contract_name,
-        sourcePath: originalPathMappings[source_path], // Save original source path, not modified ones
+        sourcePath: originalPathMappings[source_path],
         source: operatingSystemIndependentSources[source_path],
         sourceMap: contract.evm.bytecode.sourceMap,
         deployedSourceMap: contract.evm.deployedBytecode.sourceMap,
@@ -159,20 +139,15 @@ var compile = function (sources, options, callback) {
         abi: contract.abi,
         bytecode: "0x" + contract.evm.bytecode.object,
         deployedBytecode: "0x" + contract.evm.deployedBytecode.object,
-        unlinked_binary: "0x" + contract.evm.bytecode.object, // deprecated
+        unlinked_binary: "0x" + contract.evm.bytecode.object,
         compiler: {
           "name": "solc",
           "version": solc.version()
         }
       }
 
-      // Reorder ABI so functions are listed in the order they appear
-      // in the source file. Solidity tests need to execute in their expected sequence.
       contract_definition.abi = orderABI(contract_definition);
 
-      // Go through the link references and replace them with older-style
-      // identifiers. We'll do this until we're ready to making a breaking
-      // change to this code.
       Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
         var fileLinks = contract.evm.bytecode.linkReferences[file_name];
 
@@ -184,7 +159,6 @@ var compile = function (sources, options, callback) {
         });
       });
 
-      // Now for the deployed bytecode
       Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
         var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
 
@@ -210,7 +184,6 @@ function replaceLinkReferences(bytecode, linkReferences, libraryName) {
   }
 
   linkReferences.forEach(function (ref) {
-    // ref.start is a byte offset. Convert it to character offset.
     var start = (ref.start * 2) + 2;
 
     bytecode = bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
@@ -227,8 +200,6 @@ function orderABI(contract) {
   for (var i = 0; i < contract.legacyAST.children.length; i++) {
     var definition = contract.legacyAST.children[i];
 
-    // AST can have multiple contract definitions, make sure we have the
-    // one that matches our contract
     if (definition.name !== "ContractDefinition" ||
       definition.attributes.name !== contract.contract_name) {
       continue;
@@ -247,60 +218,44 @@ function orderABI(contract) {
     }
   });
 
-  // Put function names in a hash with their order, lowest first, for speed.
   var functions_to_remove = ordered_function_names.reduce(function (obj, value, index) {
     obj[value] = index;
     return obj;
   }, {});
 
-  // Filter out functions from the abi
   var function_definitions = contract.abi.filter(function (item) {
     return functions_to_remove[item.name] != null;
   });
 
-  // Sort removed function defintions
   function_definitions = function_definitions.sort(function (item_a, item_b) {
     var a = functions_to_remove[item_a.name];
     var b = functions_to_remove[item_b.name];
 
     if (a > b) return 1;
     if (a < b) return -1;
+
     return 0;
   });
 
-  // Create a new ABI, placing ordered functions at the end.
   var newABI = [];
   contract.abi.forEach(function (item) {
     if (functions_to_remove[item.name] != null) return;
     newABI.push(item);
   });
 
-  // Now pop the ordered functions definitions on to the end of the abi..
   Array.prototype.push.apply(newABI, function_definitions);
 
   return newABI;
 }
 
-// contracts_directory: String. Directory where .sol files can be found.
-// quiet: Boolean. Suppress output. Defaults to false.
-// strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.all = function (options, callback) {
-  var self = this;
-
   find_contracts(options.contracts_directory, function (err, files) {
     options.paths = files;
     compile.with_dependencies(options, callback);
   });
 };
 
-// contracts_directory: String. Directory where .sol files can be found.
-// build_directory: String. Optional. Directory where .sol.js files can be found. Only required if `all` is false.
-// all: Boolean. Compile all sources found. Defaults to true. If false, will compare sources against built files
-//      in the build directory to see what needs to be compiled.
-// quiet: Boolean. Suppress output. Defaults to false.
-// strict: Boolean. Return compiler warnings as errors. Defaults to false.
 compile.necessary = function (options, callback) {
-  var self = this;
   options.logger = options.logger || console;
 
   Profiler.updated(options, function (err, updated) {
@@ -312,7 +267,6 @@ compile.necessary = function (options, callback) {
 
     options.paths = updated;
     compile.with_dependencies(options, callback);
-
   });
 };
 
@@ -329,7 +283,6 @@ compile.with_dependencies = function (options, callback) {
 
   var config = Config.default().merge(options);
 
-  var self = this;
   Profiler.required_sources(config.with({
     paths: options.paths,
     base_path: options.contracts_directory,
@@ -340,6 +293,7 @@ compile.with_dependencies = function (options, callback) {
     if (options.quiet != true) {
       Object.keys(result).sort().forEach(function (import_path) {
         var display_path = import_path;
+
         if (path.isAbsolute(import_path)) {
           display_path = "." + path.sep + path.relative(options.working_directory, import_path);
         }

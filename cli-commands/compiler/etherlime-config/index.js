@@ -6,9 +6,6 @@ var Module = require('module');
 var findUp = require("find-up");
 var originalRequire = require("original-require");
 
-var DEFAULT_CONFIG_FILENAME = "etherlime.js";
-var BACKUP_CONFIG_FILENAME = "etherlime-config.js"; // For Windows + Command Prompt
-
 function Config(etherlime_directory, working_directory, network) {
   var self = this;
 
@@ -43,7 +40,6 @@ function Config(etherlime_directory, working_directory, network) {
   };
 
   var props = {
-    // These are already set.
     etherlime_directory: function () { },
     working_directory: function () { },
     network: function () { },
@@ -221,29 +217,11 @@ Config.default = function () {
   return new Config();
 };
 
-Config.detect = function (options, filename) {
-  var search;
-
-  (!filename)
-    ? search = [DEFAULT_CONFIG_FILENAME, BACKUP_CONFIG_FILENAME]
-    : search = filename;
-
-  var file = findUp.sync(search, { cwd: options.working_directory || options.workingDirectory });
-
-  if (file == null) {
-    throw new EtherlimeError("Could not find suitable configuration file.");
-  }
-
-  return this.load(file, options);
-};
-
 Config.load = function (file, options) {
   var config = new Config();
 
   config.working_directory = path.dirname(path.resolve(file));
 
-  // The require-nocache module used to do this for us, but
-  // it doesn't bundle very well. So we've pulled it out ourselves.
   delete require.cache[Module._resolveFilename(file, module)];
   var static_config = originalRequire(file);
 

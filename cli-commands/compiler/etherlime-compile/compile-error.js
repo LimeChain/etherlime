@@ -5,7 +5,6 @@ var inherits = require("util").inherits;
 inherits(CompileError, EtherlimeError);
 
 function CompileError(message) {
-  // Note we trim() because solc likes to add extra whitespace.
   var fancy_message = message.trim() + "\n" + colors.red("Compilation failed. See above.");
   var normal_message = message.trim();
 

@@ -29,8 +29,6 @@ NPM.prototype.require = function (import_path, search_path) {
 };
 
 NPM.prototype.resolve = function (import_path, imported_from, callback) {
-
-  // If nothing's found, body returns `undefined`
   var body;
   var modulesDir = this.working_directory;
 
@@ -43,7 +41,6 @@ NPM.prototype.resolve = function (import_path, imported_from, callback) {
     }
     catch (err) { }
 
-    // Recurse outwards until impossible
     var oldModulesDir = modulesDir;
     modulesDir = path.join(modulesDir, '..');
     if (modulesDir === oldModulesDir) {
@@ -53,20 +50,9 @@ NPM.prototype.resolve = function (import_path, imported_from, callback) {
   return callback(null, body, import_path);
 };
 
-// We're resolving package paths to other package paths, not absolute paths.
-// This will ensure the source fetcher conintues to use the correct sources for packages.
-// i.e., if some_module/contracts/MyContract.sol imported "./AnotherContract.sol",
-// we're going to resolve it to some_module/contracts/AnotherContract.sol, ensuring
-// that when this path is evaluated this source is used again.
 NPM.prototype.resolve_dependency_path = function (import_path, dependency_path) {
   var dirname = path.dirname(import_path);
   return path.join(dirname, dependency_path);
 };
-
-NPM.prototype.provision_contracts = function (callback) {
-  // TODO: Fill this out!
-  callback(null, {});
-};
-
 
 module.exports = NPM;
