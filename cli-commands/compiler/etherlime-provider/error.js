@@ -1,8 +1,6 @@
 var inherits = require("util").inherits;
 var EtherlimeError = require("./../etherlime-error");
 
-// HACK: string comparison seems to be only way to identify being unable to
-// connect to RPC node.
 var NOT_CONNECTED_MESSAGE = 'Invalid JSON RPC response: ""';
 
 function ProviderError(message, error) {

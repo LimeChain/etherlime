@@ -49,8 +49,6 @@ var Blockchain = {
       if (block.hash != expected_genesis) return callback(null, false);
 
       self.getBlockByHash(expected_block, provider, function (err, response) {
-        // Treat an error as if the block didn't exist. This is because
-        // some clients respond differently.
         var block = response.result;
         if (err || block == null) {
           return callback(null, false);

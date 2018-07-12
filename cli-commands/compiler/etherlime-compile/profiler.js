@@ -29,12 +29,12 @@ module.exports = {
     var updatedFiles = [];
 
     async.series([
-      // Get all the source files and create an object out of them.
       function (c) {
-        getFiles(function (err, files) {
-          if (err) return c(err);
+        getFiles(function (error, files) {
+          if (error) {
+            return c(error);
+          }
 
-          // Use an object for O(1) access.
           files.forEach(function (sourceFile) {
             sourceFilesArtifacts[sourceFile] = [];
           });
@@ -42,16 +42,14 @@ module.exports = {
           c();
         })
       },
-      // Get all the artifact files, and read them, parsing them as JSON
+
       function (c) {
-        fs.readdir(build_directory, function (err, build_files) {
-          if (err) {
-            // The build directory may not always exist.
-            if (err.message.indexOf("ENOENT: no such file or directory") >= 0) {
-              // Ignore it.
+        fs.readdir(build_directory, function (error, build_files) {
+          if (error) {
+            if (error.message.indexOf("ENOENT: no such file or directory") >= 0) {
               build_files = [];
             } else {
-              return c(err);
+              return c(error);
             }
           }
 
@@ -60,18 +58,17 @@ module.exports = {
           });
 
           async.map(build_files, function (buildFile, finished) {
-            fs.readFile(path.join(build_directory, buildFile), "utf8", function (err, body) {
-              if (err) return finished(err);
+            fs.readFile(path.join(build_directory, buildFile), "utf8", function (error, body) {
+              if (error) return finished(error);
               finished(null, body);
             });
-          }, function (err, jsonData) {
-            if (err) return c(err);
+          }, function (error, jsonData) {
+            if (error) return c(error);
 
             try {
               for (var i = 0; i < jsonData.length; i++) {
                 var data = JSON.parse(jsonData[i]);
 
-                // In case there are artifacts from other source locations.
                 if (sourceFilesArtifacts[data.sourcePath] == null) {
                   sourceFilesArtifacts[data.sourcePath] = [];
                 }
@@ -87,8 +84,6 @@ module.exports = {
         });
       },
       function (c) {
-        // Get the minimum updated time for all of a source file's artifacts
-        // (note: one source file might have multiple artifacts).
         Object.keys(sourceFilesArtifacts).forEach(function (sourceFile) {
           var artifacts = sourceFilesArtifacts[sourceFile];
 
@@ -98,10 +93,10 @@ module.exports = {
             if (updatedAt < minimum) {
               return updatedAt;
             }
+
             return minimum;
           }, Number.MAX_SAFE_INTEGER);
 
-          // Empty array?
           if (sourceFilesArtifactsUpdatedTimes[sourceFile] == Number.MAX_SAFE_INTEGER) {
             sourceFilesArtifactsUpdatedTimes[sourceFile] = 0;
           }
@@ -109,28 +104,26 @@ module.exports = {
 
         c();
       },
-      // Stat all the source files, getting there updated times, and comparing them to
-      // the artifact updated times.
+
       function (c) {
         var sourceFiles = Object.keys(sourceFilesArtifacts);
 
         async.map(sourceFiles, function (sourceFile, finished) {
-          fs.stat(sourceFile, function (err, stat) {
-            if (err) {
-              // Ignore it. This means the source file was removed
-              // but the artifact file possibly exists. Return null
-              // to signfy that we should ignore it.
+          fs.stat(sourceFile, function (error, stat) {
+            if (error) {
               stat = null;
             }
+
             finished(null, stat);
           });
-        }, function (err, sourceFileStats) {
-          if (err) return callback(err);
+        }, function (error, sourceFileStats) {
+          if (error) {
+            return callback(error);
+          }
 
           sourceFiles.forEach(function (sourceFile, index) {
             var sourceFileStat = sourceFileStats[index];
 
-            // Ignore updating artifacts if source file has been removed.
             if (sourceFileStat == null) {
               return;
             }
@@ -146,8 +139,8 @@ module.exports = {
           c();
         });
       }
-    ], function (err) {
-      callback(err, updatedFiles);
+    ], function (error) {
+      callback(error, updatedFiles);
     });
   },
 
@@ -212,13 +205,17 @@ module.exports = {
       done(null, required);
     }
 
-    find_contracts(options.base_path, function (err, allPaths) {
-      if (err) return callback(err);
+    find_contracts(options.base_path, function (error, allPaths) {
+      if (error) {
+        return callback(error);
+      }
 
       allPaths = allPaths.concat(paths);
 
-      self.dependency_graph(allPaths, options.resolver, function (err, dependsGraph) {
-        if (err) return callback(err);
+      self.dependency_graph(allPaths, options.resolver, function (error, dependsGraph) {
+        if (error) {
+          return callback(error);
+        }
 
         findRequiredSources(dependsGraph, callback);
       });
@@ -267,8 +264,8 @@ module.exports = {
         return finished();
       }
 
-      resolver.resolve(import_path, imported_from, function (err, resolved_body, resolved_path, source) {
-        if (err) return finished(err);
+      resolver.resolve(import_path, imported_from, function (error, resolved_body, resolved_path, source) {
+        if (error) return finished(error);
 
         if (dependsGraph.hasNode(resolved_path) && imports_cache[resolved_path] != null) {
           return finished();
@@ -281,7 +278,7 @@ module.exports = {
         try {
           imports = Parser.parseImports(resolved_body);
         } catch (e) {
-          e.message = "Error parsing " + import_path + ": " + e.message;
+          e.message = ` Error parsing ${import_path} : ${e.message}`;
           return finished(e);
         }
 
@@ -304,8 +301,8 @@ module.exports = {
         finished();
       });
     },
-      function (err) {
-        if (err) return callback(err);
+      function (error) {
+        if (error) return callback(error);
         callback(null, dependsGraph)
       });
   },
@@ -319,20 +316,21 @@ module.exports = {
       }
     }
 
-    getFiles(function (err, files) {
-      if (err) return callback(err);
+    getFiles(function (error, files) {
+      if (error) return callback(error);
 
       var promises = files.map(function (file) {
         return new Promise(function (accept, reject) {
-          fs.readFile(file, "utf8", function (err, body) {
-            if (err) return reject(err);
+          fs.readFile(file, "utf8", function (error, body) {
+            if (error) return reject(error);
 
             var output;
 
             try {
               output = Parser.parse(body);
             } catch (e) {
-              e.message = "Error parsing " + file + ": " + e.message;
+              e.message = `Error parsing ${file} : ${e.message}`;
+              
               return reject(e);
             }
 

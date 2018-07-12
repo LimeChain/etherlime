@@ -98,7 +98,7 @@ var compile = function (sources, options, callback) {
     });
 
     if (options.quiet !== true && warnings.length > 0) {
-      options.logger.log(OS.EOL + "Compilation warnings encountered:" + OS.EOL);
+      options.logger.log(`${OS.EOL} Compilation warnings encountered: ${OS.EOL}`);
       options.logger.log(warnings.map(function (warning) {
         return warning.formattedMessage;
       }).join());
@@ -298,7 +298,7 @@ compile.with_dependencies = function (options, callback) {
           display_path = "." + path.sep + path.relative(options.working_directory, import_path);
         }
 
-        options.logger.log("Compiling " + display_path + "...");
+        options.logger.log(`Compiling ${display_path}...`);
       });
     }
 

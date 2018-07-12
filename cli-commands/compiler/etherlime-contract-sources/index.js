@@ -6,7 +6,6 @@ module.exports = function (directory, callback) {
     if (err) return callback(err);
 
     files = files.filter(function (file) {
-      // Ignore any files that aren't solidity files.
       return path.extname(file) == ".sol" && path.basename(file)[0] != ".";
     });
 

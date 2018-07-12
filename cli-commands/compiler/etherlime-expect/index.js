@@ -2,7 +2,7 @@ var Expect = {
     options: function (options, expected_keys) {
         expected_keys.forEach(function (key) {
             if (options[key] == null) {
-                throw new Error("Expected parameter '" + key + "' not passed to function.");
+                throw new Error(`Expected parameter "${key}" not passed to function.`);
             }
         });
     },
@@ -22,11 +22,9 @@ var Expect = {
             return t + value;
         });
 
-        // If this doesn't work in all cases, perhaps we should
-        // create an expect.onlyOne() function.
         if (total >= 1) return;
 
-        throw new Error("Expected one of the following parameters, but found none: " + expected_keys.join(", "));
+        throw new Error(`Expected one of the following parameters, but found none: ${expected_keys.join(", ")}`);
     }
 }
 

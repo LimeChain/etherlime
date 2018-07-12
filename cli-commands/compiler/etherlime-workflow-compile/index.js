@@ -32,12 +32,12 @@ var Contracts = {
       config.artifactor = new Artifactor(config.contracts_build_directory);
     }
 
-    function finished(err, contracts, paths) {
-      if (err) return callback(err);
+    function finished(error, contracts, paths) {
+      if (error) return callback(error);
 
       if (contracts != null && Object.keys(contracts).length > 0) {
-        self.write_contracts(contracts, config, function (err, abstractions) {
-          callback(err, abstractions, paths);
+        self.write_contracts(contracts, config, function (error, abstractions) {
+          callback(error, abstractions, paths);
         });
       } else {
         callback(null, [], paths);
@@ -46,7 +46,6 @@ var Contracts = {
 
     if (config.all === true || config.compileAll === true) {
       compile.all(config, finished);
-
     } else {
       compile.necessary(config, finished);
     }
@@ -55,15 +54,15 @@ var Contracts = {
   write_contracts: function (contracts, options, callback) {
     var logger = options.logger || console;
 
-    mkdirp(options.contracts_build_directory, function (err, result) {
-      if (err != null) {
-        callback(err);
+    mkdirp(options.contracts_build_directory, function (error, result) {
+      if (error != null) {
+        callback(error);
 
         return;
       }
 
       if (options.quiet != true && options.quietWrite != true) {
-        logger.log("Writing artifacts to ." + path.sep + path.relative(options.working_directory, options.contracts_build_directory) + OS.EOL);
+        logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);
       }
 
       var extra_opts = {

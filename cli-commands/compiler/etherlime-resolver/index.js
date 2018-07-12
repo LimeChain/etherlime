@@ -21,13 +21,13 @@ function Resolver(options) {
   ];
 };
 
-// This function might be doing too much. If so, too bad (for now).
 Resolver.prototype.require = function (import_path, search_path) {
   var self = this;
 
   for (var i = 0; i < this.sources.length; i++) {
     var source = this.sources[i];
     var result = source.require(import_path, search_path);
+
     if (result) {
       var abstraction = contract(result);
       provision(abstraction, self.options);
@@ -36,7 +36,7 @@ Resolver.prototype.require = function (import_path, search_path) {
     }
   }
 
-  throw new Error("Could not find artifacts for " + import_path + " from any sources");
+  throw new Error(`Could not find artifacts for ${import_path} from any sources"`);
 };
 
 Resolver.prototype.resolve = function (import_path, imported_from, callback) {
@@ -58,21 +58,24 @@ Resolver.prototype.resolve = function (import_path, imported_from, callback) {
     current_index += 1;
     current_source = self.sources[current_index];
 
-    current_source.resolve(import_path, imported_from, function (err, body, file_path) {
-      if (!err && body) {
+    current_source.resolve(import_path, imported_from, function (error, body, file_path) {
+      if (!error && body) {
         resolved_body = body;
         resolved_path = file_path;
       }
-      next(err);
+
+      next(error);
     });
-  }, function (err) {
-    if (err) return callback(err);
+  }, function (error) {
+    if (error) {
+      return callback(error);
+    }
 
     if (!resolved_body) {
-      var message = "Could not find " + import_path + " from any sources";
+      var message = `Could not find ${import_path} from any sources`;
 
       if (imported_from) {
-        message += "; imported from " + imported_from;
+        message += `; imported from ${imported_from}`;
       }
 
       return callback(new Error(message));

@@ -68,7 +68,7 @@ const commands = [
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
-				describe: 'Specifies the default dir to all folders',
+				describe: 'Specifies the root dir to read the contracts and place the build folder',
 				type: 'string',
 				default: '.'
 			})

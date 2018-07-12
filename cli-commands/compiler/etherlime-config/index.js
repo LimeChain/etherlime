@@ -183,7 +183,7 @@ Config.prototype.normalize = function (obj) {
     try {
       clone[key] = obj[key];
     } catch (e) {
-      // Do nothing with values that throw.
+
     }
   });
 
@@ -201,12 +201,11 @@ Config.prototype.merge = function (obj) {
   var self = this;
   var clone = this.normalize(obj);
 
-  // Only set keys for values that don't throw.
   Object.keys(obj).forEach(function (key) {
     try {
       self[key] = clone[key];
     } catch (e) {
-      // Do nothing.
+      
     }
   });
 

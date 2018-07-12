@@ -29,7 +29,6 @@ var contract = (function (module) {
         is_big_number: function (val) {
             if (typeof val != "object") return false;
 
-            // Instanceof won't work because we have multiple versions of Web3.
             try {
                 new BigNumber(val);
                 return true;
@@ -44,9 +43,6 @@ var contract = (function (module) {
                 if (logABI == null) {
                     return null;
                 }
-
-                // This function has been adapted from web3's SolidityEvent.decode() method,
-                // and built to work with ethjs-abi.
 
                 var copy = Utils.merge({}, log);
 
@@ -88,7 +84,6 @@ var contract = (function (module) {
                 Object.keys(copy.args).forEach(function (key) {
                     var val = copy.args[key];
 
-                    // We have BN. Convert it to BigNumber
                     if (val.constructor.isBN) {
                         copy.args[key] = C.web3.toBigNumber("0x" + val.toString(16));
                     }
@@ -111,7 +106,6 @@ var contract = (function (module) {
                 var tx_params = {};
                 var last_arg = args[args.length - 1];
 
-                // It's only tx_params if it's an object and not a BigNumber.
                 if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
                     tx_params = args.pop();
                 }
@@ -140,7 +134,6 @@ var contract = (function (module) {
                 var tx_params = {};
                 var last_arg = args[args.length - 1];
 
-                // It's only tx_params if it's an object and not a BigNumber.
                 if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
                     tx_params = args.pop();
                 }
@@ -165,9 +158,9 @@ var contract = (function (module) {
                             var start = new Date().getTime();
 
                             var make_attempt = function () {
-                                C.web3.eth.getTransactionReceipt(tx, function (err, receipt) {
-                                    if (err && !err.toString().includes('unknown transaction')) {
-                                        return reject(err);
+                                C.web3.eth.getTransactionReceipt(tx, function (error, receipt) {
+                                    if (error && !error.toString().includes('unknown transaction')) {
+                                        return reject(error);
                                     }
 
                                     // Reject on transaction failures, accept otherwise
@@ -226,9 +219,9 @@ var contract = (function (module) {
             var index = 0;
             var results = new Array(arr.length);
             arr.forEach(function (fn, position) {
-                fn(function (err, result) {
-                    if (err) {
-                        callback(err);
+                fn(function (error, result) {
+                    if (error) {
+                        callback(error);
                         callback = function () { };
                     } else {
                         index++;
@@ -241,12 +234,10 @@ var contract = (function (module) {
             });
         },
         bootstrap: function (fn) {
-            // Add our static methods
             Object.keys(fn._static_methods).forEach(function (key) {
                 fn[key] = fn._static_methods[key].bind(fn);
             });
 
-            // Add our properties.
             Object.keys(fn._properties).forEach(function (key) {
                 fn.addProp(key, fn._properties[key]);
             });
@@ -342,16 +333,13 @@ var contract = (function (module) {
             }
 
             return self.detectNetwork().then(function (network_id) {
-                // After the network is set, check to make sure everything's ship shape.
                 var regex = /__[^_]+_+/g;
                 var unlinked_libraries = self.binary.match(regex);
 
                 if (unlinked_libraries != null) {
                     unlinked_libraries = unlinked_libraries.map(function (name) {
-                        // Remove underscores
                         return name.replace(/_/g, "");
                     }).sort().filter(function (name, index, arr) {
-                        // Remove duplicates
                         if (index + 1 >= arr.length) {
                             return true;
                         }
@@ -359,7 +347,7 @@ var contract = (function (module) {
                         return name != arr[index + 1];
                     }).join(", ");
 
-                    throw new Error(self.contractName + " contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of " + self._json.contractName + ": " + unlinked_libraries);
+                    throw new Error(`${self.contractName} contains unresolved libraries. You must deploy and link the following libraries before you can deploy a new version of ${self._json.contractName}: ${unlinked_libraries}`);
                 }
             }).then(function () {
                 return new Promise(function (accept, reject) {
@@ -367,18 +355,16 @@ var contract = (function (module) {
                     var tx_params = {};
                     var last_arg = args[args.length - 1];
 
-                    // It's only tx_params if it's an object and not a BigNumber.
                     if (Utils.is_object(last_arg) && !Utils.is_big_number(last_arg)) {
                         tx_params = args.pop();
                     }
 
-                    // Validate constructor args
                     var constructor = self.abi.filter(function (item) {
                         return item.type === 'constructor';
                     });
 
                     if (constructor.length && constructor[0].inputs.length !== args.length) {
-                        throw new Error(self.contractName + " contract constructor expected " + constructor[0].inputs.length + " arguments, received " + args.length);
+                        throw new Error(`${self.contractName} contract constructor expected ${constructor[0].inputs.length} arguments, received ${args.length}`);
                     }
 
                     tx_params = Utils.merge(self.class_defaults, tx_params);
@@ -387,15 +373,14 @@ var contract = (function (module) {
                         tx_params.data = self.binary;
                     }
 
-                    // web3 0.9.0 and above calls new this callback twice.
-                    // Why, I have no idea...
-                    var intermediary = function (err, web3_instance) {
-                        if (err != null) {
-                            reject(err);
+                    var intermediary = function (error, web3_instance) {
+                        if (error != null) {
+                            reject(error);
+                            
                             return;
                         }
 
-                        if (err == null && web3_instance != null && web3_instance.address != null) {
+                        if (error == null && web3_instance != null && web3_instance.address != null) {
                             accept(new self(web3_instance));
                         }
                     };
@@ -410,22 +395,21 @@ var contract = (function (module) {
             var self = this;
 
             if (address == null || typeof address != "string" || address.length != 42) {
-                throw new Error("Invalid address passed to " + this._json.contractName + ".at(): " + address);
+                throw new Error(`Invalid address passed to ${this._json.contractName}.at(): ${address}`);
             }
 
             var contract = new this(address);
 
-            // Add thennable to allow people opt into new recommended usage.
             contract.then = function (fn) {
                 return self.detectNetwork().then(function (network_id) {
                     var instance = new self(address);
 
                     return new Promise(function (accept, reject) {
-                        self.web3.eth.getCode(address, function (err, code) {
-                            if (err) return reject(err);
+                        self.web3.eth.getCode(address, function (error, code) {
+                            if (error) return reject(error);
 
                             if (!code || code.replace("0x", "").replace(/0/g, "") === '') {
-                                return reject(new Error("Cannot create instance of " + self.contractName + "; no code at address " + address));
+                                return reject(new Error(`Cannot create instance of ${self.contractName}; no code at address ${address}`));
                             }
 
                             accept(instance);
@@ -440,14 +424,12 @@ var contract = (function (module) {
         deployed: function () {
             var self = this;
             return self.detectNetwork().then(function () {
-                // We don't have a network config for the one we found
                 if (self._json.networks[self.network_id] == null) {
-                    throw new Error(self.contractName + " has not been deployed to detected network (network/artifact mismatch)");
+                    throw new Error(`${self.contractName} has not been deployed to detected network (network/artifact mismatch)`);
                 }
 
-                // If we found the network but it's not deployed
                 if (!self.isDeployed()) {
-                    throw new Error(self.contractName + " has not been deployed to detected network (" + self.network_id + ")");
+                    throw new Error(`${self.contractName} has not been deployed to detected network (${self.network_id})`);
                 }
 
                 return new self(self.address);
@@ -492,27 +474,25 @@ var contract = (function (module) {
             var self = this;
 
             return new Promise(function (accept, reject) {
-                // Try to detect the network we have artifacts for.
                 if (self.network_id) {
-                    // We have a network id and a configuration, let's go with it.
                     if (self.networks[self.network_id] != null) {
                         return accept(self.network_id);
                     }
                 }
 
-                self.web3.version.getNetwork(function (err, result) {
-                    if (err) return reject(err);
+                self.web3.version.getNetwork(function (error, result) {
+                    if (error) {
+                        return reject(error);
+                    }
 
                     var network_id = result.toString();
 
-                    // If we found the network via a number, let's use that.
                     if (self.hasNetwork(network_id)) {
                         self.setNetwork(network_id);
+
                         return accept();
                     }
 
-                    // Otherwise, go through all the networks that are listed as
-                    // blockchain uris and see if they match.
                     var uris = Object.keys(self._json.networks).filter(function (network) {
                         return network.indexOf("blockchain://") == 0;
                     });
@@ -521,19 +501,20 @@ var contract = (function (module) {
                         return BlockchainUtils.matches.bind(BlockchainUtils, uri, self.web3.currentProvider);
                     });
 
-                    Utils.parallel(matches, function (err, results) {
-                        if (err) return reject(err);
+                    Utils.parallel(matches, function (error, results) {
+                        if (error) {
+                            return reject(error);
+                        }
 
                         for (var i = 0; i < results.length; i++) {
                             if (results[i]) {
                                 self.setNetwork(uris[i]);
+
                                 return accept();
                             }
                         }
 
-                        // We found nothing. Set the network id to whatever the provider states.
                         self.setNetwork(network_id);
-
                         accept();
                     });
 
@@ -542,12 +523,13 @@ var contract = (function (module) {
         },
 
         setNetwork: function (network_id) {
-            if (!network_id) return;
+            if (!network_id) {
+                return;
+            }
+
             this.network_id = network_id + "";
         },
 
-        // Overrides the deployed address to null.
-        // You must call this explicitly so you don't inadvertently do this otherwise.
         resetAddress: function () {
             delete this.network.address;
         },
@@ -564,7 +546,6 @@ var contract = (function (module) {
 
                 this.link(contract.contractName, contract.address);
 
-                // Merge events so this contract knows about library's events
                 Object.keys(contract.events).forEach(function (topic) {
                     self.network.events[topic] = contract.events[topic];
                 });
@@ -574,10 +555,12 @@ var contract = (function (module) {
 
             if (typeof name == "object") {
                 var obj = name;
+
                 Object.keys(obj).forEach(function (name) {
                     var a = obj[name];
                     self.link(name, a);
                 });
+
                 return;
             }
 
@@ -591,9 +574,6 @@ var contract = (function (module) {
             this.network.links[name] = address;
         },
 
-        // Note, this function can be called with two input types:
-        // 1. Object with a bunch of data; this data will be merged with the json data of contract being cloned.
-        // 2. network id; this will clone the contract and set a specific network id upon cloning.
         clone: function (json) {
             var self = this;
 
@@ -601,6 +581,7 @@ var contract = (function (module) {
 
             var temp = function EtherlimeContract() {
                 this.constructor = temp;
+
                 return Contract.apply(this, arguments);
             };
 
@@ -608,7 +589,6 @@ var contract = (function (module) {
 
             var network_id;
 
-            // If we have a network id passed
             if (typeof json != "object") {
                 network_id = json;
                 json = self._json;
@@ -631,7 +611,6 @@ var contract = (function (module) {
                 temp.setNetwork(network_id);
             }
 
-            // Copy over custom key/values to the contract class
             Object.keys(json).forEach(function (key) {
                 if (key.indexOf("x-") != 0) return;
                 temp[key] = json[key];
@@ -650,17 +629,19 @@ var contract = (function (module) {
 
                 return self._property_values[key] || fn.call(self);
             }
+
             var setter = function (val) {
                 if (fn.set != null) {
                     fn.set.call(self, val);
+
                     return;
                 }
 
-                // If there's not a setter, then the property is immutable.
-                throw new Error(key + " property is immutable");
+                throw new Error(`${key} property is immutable`);
             };
 
             var definition = {};
+
             definition.enumerable = false;
             definition.configurable = false;
             definition.get = getter;
@@ -703,17 +684,15 @@ var contract = (function (module) {
             var network_id = this.network_id;
 
             if (network_id == null) {
-                throw new Error(this.contractName + " has no network id set, cannot lookup artifact data. Either set the network manually using " + this.contractName + ".setNetwork(), run " + this.contractName + ".detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.");
+                throw new Error(`${this.contractName} has no network id set, cannot lookup artifact data. Either set the network manually using ${this.contractName}setNetwork(), run ${this.contractName}.detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.`);
             }
 
-            // TODO: this might be bad; setting a value on a get.
             if (this._json.networks[network_id] == null) {
-                throw new Error(this.contractName + " has no network configuration for its current network id (" + network_id + ").");
+                throw new Error(`${this.contractName} has no network configuration for its current network id (${network_id}).`);
             }
 
             var returnVal = this._json.networks[network_id];
 
-            // Normalize output
             if (returnVal.links == null) {
                 returnVal.links = {};
             }
@@ -732,23 +711,22 @@ var contract = (function (module) {
                 var address = this.network.address;
 
                 if (address == null) {
-                    throw new Error("Cannot find deployed address: " + this.contractName + " not deployed or address not set.");
+                    throw new Error(`Cannot find deployed address: ${this.contractName} not deployed or address not set.`);
                 }
 
                 return address;
             },
             set: function (val) {
                 if (val == null) {
-                    throw new Error("Cannot set deployed address; malformed value: " + val);
+                    throw new Error(`Cannot set deployed address; malformed value: ${val}`);
                 }
 
                 var network_id = this.network_id;
 
                 if (network_id == null) {
-                    throw new Error(this.contractName + " has no network id set, cannot lookup artifact data. Either set the network manually using " + this.contractName + ".setNetwork(), run " + this.contractName + ".detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.");
+                    throw new Error(`${this.contractName} has no network id set, cannot lookup artifact data. Either set the network manually using ${this.contractName}.setNetwork(), run ${this.contractName}.detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.`);
                 }
 
-                // Create a network if we don't have one.
                 if (this._json.networks[network_id] == null) {
                     this._json.networks[network_id] = {
                         events: {},
@@ -756,7 +734,6 @@ var contract = (function (module) {
                     };
                 }
 
-                // Finally, set the address.
                 this.network.address = val;
             }
         },
@@ -765,7 +742,7 @@ var contract = (function (module) {
                 var transactionHash = this.network.transactionHash;
 
                 if (transactionHash === null) {
-                    throw new Error("Could not find transaction hash for " + this.contractName);
+                    throw new Error(`Could not find transaction hash for ${this.contractName}`);
                 }
 
                 return transactionHash;
@@ -776,7 +753,7 @@ var contract = (function (module) {
         },
         links: function () {
             if (!this.network_id) {
-                throw new Error(this.contractName + " has no network id set, cannot lookup artifact data. Either set the network manually using " + this.contractName + ".setNetwork(), run " + this.contractName + ".detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.");
+                throw new Error(`${this.contractName} has no network id set, cannot lookup artifact data. Either set the network manually using ${this.contractName}.setNetwork(), run ${this.contractName}.detectNetwork(), or use new(), at() or deployed() as a thenable which will detect the network automatically.`);
             }
 
             if (this._json.networks[this.network_id] == null) {
@@ -786,7 +763,6 @@ var contract = (function (module) {
             return this.network.links || {};
         },
         events: function () {
-            // helper web3; not used for provider
             var web3 = new Web3();
 
             var events;
@@ -797,7 +773,6 @@ var contract = (function (module) {
                 events = this.network.events || {};
             }
 
-            // Merge abi events with whatever's returned.
             var abi = this.abi;
 
             abi.forEach(function (item) {
@@ -828,7 +803,6 @@ var contract = (function (module) {
         deployedBinary: function () {
             return Utils.linkBytecode(this.deployedBytecode, this.links);
         },
-        // deprecated; use bytecode
         unlinked_binary: {
             get: function () {
                 return this.bytecode;
@@ -837,7 +811,6 @@ var contract = (function (module) {
                 this.bytecode = val;
             }
         },
-        // alias for unlinked_binary; unlinked_binary will eventually be deprecated
         bytecode: {
             get: function () {
                 return this._json.bytecode;

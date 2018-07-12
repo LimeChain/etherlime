@@ -1,4 +1,4 @@
-var pkgVersion = require("./../../../package.json").version;
+var pkgVersion = require("./../../package.json").version;
 var Ajv = require("ajv");
 
 var contractObjectSchema = require("./spec/contract-object.spec.json");
@@ -149,12 +149,7 @@ function chain() {
   }
 }
 
-// Schema module
-
 var EtherlimeContractSchema = {
-  // Return a promise to validate a contract object
-  // - Resolves as validated `contractObj`
-  // - Rejects with list of errors from schema validator
   validate: function (contractObj) {
     var ajv = new Ajv({ useDefaults: true });
     ajv.addSchema(abiSchema);
@@ -167,55 +162,41 @@ var EtherlimeContractSchema = {
     }
   },
 
-  // accepts as argument anything that can be turned into a contract object
-  // returns a contract object
   normalize: function (objDirty, options) {
     options = options || {};
     var normalized = {};
 
-    // iterate over each property
     Object.keys(properties).forEach(function (key) {
       var property = properties[key];
-      var value;  // normalized value || undefined
-
-      // either used the defined sources or assume the key will only ever be
-      // listed as its canonical name (itself)
+      var value;  
+      
       var sources = property.sources || [key];
 
-      // iterate over sources until value is defined or end of list met
       for (var i = 0; value === undefined && i < sources.length; i++) {
         var source = sources[i];
-        // string refers to path to value in objDirty, split and chain
-        // getters
+        
         if (typeof source === "string") {
           var traversals = source.split(".")
             .map(function (k) { return getter(k) });
           source = chain.apply(null, traversals);
         }
 
-        // source should be a function that takes the objDirty and returns
-        // value or undefined
         value = source(objDirty);
       }
 
-      // run source-agnostic transform on value
-      // (e.g. make sure bytecode begins 0x)
       if (property.transform) {
         value = property.transform(value, objDirty);
       }
 
-      // add resulting (possibly undefined) to normalized obj
       normalized[key] = value;
     });
 
-    // Copy x- options
     Object.keys(objDirty).forEach(function (key) {
       if (key.indexOf("x-") === 0) {
         normalized[key] = getter(key)(objDirty);
       }
     });
 
-    // update schema version
     normalized.schemaVersion = pkgVersion;
 
     if (options.validate) {

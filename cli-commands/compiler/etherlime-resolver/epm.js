@@ -11,11 +11,8 @@ EPM.prototype.require = function (import_path, search_path) {
     return null;
   }
 
-  // Look to see if we've compiled our own version first.
   var contract_filename = path.basename(import_path);
   var contract_name = path.basename(import_path, ".sol");
-
-  // We haven't compiled our own version. Assemble from data in the lockfile.
   var separator = import_path.indexOf("/")
   var package_name = import_path.substring(0, separator);
 
@@ -35,19 +32,14 @@ EPM.prototype.require = function (import_path, search_path) {
     networks: {}
   };
 
-  // TODO: contracts that reference other types
-  // TODO: contract types that specify a hash as their key
-  // TODO: imported name doesn't match type but matches deployment name
   var contract_types = lockfile.contract_types || {};
   var type = contract_types[contract_name];
 
-  // No contract name of the type asked.
   if (!type) return null;
 
   json.abi = type.abi;
   json.unlinked_binary = type.bytecode;
 
-  // Go through deployments and save all of them
   Object.keys(lockfile.deployments || {}).forEach(function (blockchain) {
     var deployments = lockfile.deployments[blockchain];
 
@@ -72,7 +64,6 @@ EPM.prototype.resolve = function (import_path, imported_from, callback) {
   var internal_path = import_path.substring(separator + 1);
   var installDir = this.working_directory;
 
-  // If nothing's found, body returns `undefined`
   var body;
 
   while (true) {
@@ -92,7 +83,6 @@ EPM.prototype.resolve = function (import_path, imported_from, callback) {
     }
     catch (err) { }
 
-    // Recurse outwards until impossible
     var oldInstallDir = installDir;
     installDir = path.join(installDir, '..');
     if (installDir === oldInstallDir) {
@@ -103,22 +93,13 @@ EPM.prototype.resolve = function (import_path, imported_from, callback) {
   return callback(null, body, import_path);
 },
 
-  // We're resolving package paths to other package paths, not absolute paths.
-  // This will ensure the source fetcher continues to use the correct sources for packages.
-  // i.e., if some_module/contracts/MyContract.sol imported "./AnotherContract.sol",
-  // we're going to resolve it to some_module/contracts/AnotherContract.sol, ensuring
-  // that when this path is evaluated this source is used again.
-  EPM.prototype.resolve_dependency_path = function (import_path, dependency_path) {
-    var dirname = path.dirname(import_path);
-    var resolved_dependency_path = path.join(dirname, dependency_path);
+EPM.prototype.resolve_dependency_path = function (import_path, dependency_path) {
+  var dirname = path.dirname(import_path);
+  var resolved_dependency_path = path.join(dirname, dependency_path);
 
-    // Note: We use `path.join()` here to take care of path idiosyncrasies
-    // like joining "something/" and "./something_else.sol". However, this makes
-    // paths OS dependent, and on Windows, makes the separator "\". Solidity
-    // needs the separator to be a forward slash. Let's massage that here.
-    resolved_dependency_path = resolved_dependency_path.replace(/\\/g, "/");
+  resolved_dependency_path = resolved_dependency_path.replace(/\\/g, "/");
 
-    return resolved_dependency_path;
-  };
+  return resolved_dependency_path;
+};
 
 module.exports = EPM;
