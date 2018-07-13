@@ -1,4 +1,4 @@
-var pkgVersion = require("./../../package.json").version;
+var pkgVersion = require("./../../../package.json").version;
 var Ajv = require("ajv");
 
 var contractObjectSchema = require("./spec/contract-object.spec.json");
