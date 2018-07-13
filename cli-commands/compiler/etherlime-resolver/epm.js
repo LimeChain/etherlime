@@ -35,7 +35,9 @@ EPM.prototype.require = function (import_path, search_path) {
   var contract_types = lockfile.contract_types || {};
   var type = contract_types[contract_name];
 
-  if (!type) return null;
+  if (!type) {
+    return null;
+  }
 
   json.abi = type.abi;
   json.unlinked_binary = type.bytecode;
@@ -45,6 +47,7 @@ EPM.prototype.require = function (import_path, search_path) {
 
     Object.keys(deployments).forEach(function (name) {
       var deployment = deployments[name];
+      
       if (deployment.contract_type == contract_name) {
         json.networks[blockchain] = {
           events: {},

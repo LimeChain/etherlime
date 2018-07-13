@@ -24,7 +24,9 @@ var Blockchain = {
 
   parse: function (uri) {
     var parsed = {};
-    if (uri.indexOf("blockchain://") != 0) return parsed;
+    if (uri.indexOf("blockchain://") != 0) {
+      return parsed;
+    }
 
     uri = uri.replace("blockchain://", "");
 
