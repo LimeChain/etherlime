@@ -86,6 +86,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Deployer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#deployer-functionality">Deployer functionality</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#deploy-contract-params">deploy(contract, [params])</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#estimategas-contract-params">estimateGas(contract, [params])</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#deployers">Deployers</a><ul>
@@ -187,6 +188,21 @@ to deploy compiled contract.</p>
 </ul>
 <p><em>All of these you can get by compiling with Truffle. We will soon expose
 you a way to do this through etherlime.</em></p>
+</div>
+<div class="section" id="estimategas-contract-params">
+<h3>estimateGas(contract, [params])<a class="headerlink" href="#estimategas-contract-params" title="Permalink to this headline">¶</a></h3>
+<p>Estimates the gas that this transaction is going to cost you.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">contract</span></code> - descriptor object for contract to be deployed</li>
+<li><code class="docutils literal notranslate"><span class="pre">params</span></code> - the constructor params you’d need to pass on deploy (if there are any)</li>
+</ul>
+<p>The contract is descriptor object is the same as above.</p>
+<p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">estimate</span> <span class="o">=</span> <span class="k">await</span> <span class="n">deployer</span><span class="o">.</span><span class="n">estimateGas</span><span class="p">(</span><span class="n">TestContract</span><span class="p">,</span> <span class="n">randomParam1</span><span class="p">,</span> <span class="n">randomParam2</span><span class="p">);</span>
+<span class="o">//</span> <span class="n">returns</span> <span class="n">something</span> <span class="n">like</span> <span class="s2">&quot;2470692&quot;</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="deployers">
