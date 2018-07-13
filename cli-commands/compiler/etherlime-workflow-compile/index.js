@@ -32,34 +32,32 @@ var Contracts = {
       config.artifactor = new Artifactor(config.contracts_build_directory);
     }
 
-    function finished(error, contracts, paths) {
-      if (error) return callback(error);
-
+    
+    async function finished(error, contracts, paths) {
+      if (error) {
+        return callback(error);
+      }
+  
       if (contracts != null && Object.keys(contracts).length > 0) {
-        self.write_contracts(contracts, config, function (error, abstractions) {
-          callback(error, abstractions, paths);
-        });
+        await self.write_contracts(contracts, config);
+        callback(error, abstractions, paths);
       } else {
         callback(null, [], paths);
       }
-    };
+    }
 
     if (config.all === true || config.compileAll === true) {
-      compile.all(config, finished);
+      compile.all(config, self.finished);
     } else {
-      compile.necessary(config, finished);
+      compile.necessary(config, self.finished);
     }
   },
 
-  write_contracts: function (contracts, options, callback) {
+  write_contracts: async function (contracts, options, callback) {
     var logger = options.logger || console;
 
-    mkdirp(options.contracts_build_directory, function (error, result) {
-      if (error != null) {
-        callback(error);
-
-        return;
-      }
+    try {
+      let result = await mkdirp(options.contracts_build_directory);
 
       if (options.quiet != true && options.quietWrite != true) {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);
@@ -69,11 +67,13 @@ var Contracts = {
         network_id: options.network_id
       };
 
-      options.artifactor.saveAll(contracts, extra_opts).then(function () {
-        callback(null, contracts);
-      }).catch(callback);
-    });
+      await options.artifactor.saveAll(contracts, extra_opts);
+      callback(null, contracts);
+    } catch (error) {
+      callback(error);
+    }
   }
 };
+
 
 module.exports = Contracts;

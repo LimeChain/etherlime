@@ -43,7 +43,7 @@ Artifactor.prototype.save = async function (object) {
   await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
 };
 
-Artifactor.prototype.saveAll = function (objects) {
+Artifactor.prototype.saveAll = async function (objects) {
   var self = this;
 
   if (Array.isArray(objects)) {
@@ -55,25 +55,23 @@ Artifactor.prototype.saveAll = function (objects) {
     })
   }
 
-  return new Promise(function (accept, reject) {
-    fs.stat(self.destination, function (error, stat) {
-      if (error) {
-        return reject(new Error(`Destination ${self.destination} `));
-      }
-      
-      accept();
-    });
-  }).then(function () {
+  try {
+    await fs.stat(self.destination);
+
     var promises = [];
 
     Object.keys(objects).forEach(function (contractName) {
       var object = objects[contractName];
+
       object.contractName = contractName;
       promises.push(self.save(object));
     });
 
     return Promise.all(promises);
-  });
+
+  } catch (error) {
+    throw new Error(`Destination ${self.destination} `);
+  }
 };
 
 module.exports = Artifactor;
