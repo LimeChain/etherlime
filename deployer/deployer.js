@@ -209,6 +209,33 @@ class Deployer {
 		return new DeployedContractWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 
+	/**
+	 * 
+	 * Use this estimate deployment gas cost for given transaction
+	 * 
+	 * @return the gas it is going to cost
+	 * 
+	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile. Add the deployment params as comma separated values
+	 */
+	async estimateGas(contract) {
+
+		const deploymentArguments = Array.prototype.slice.call(arguments);
+		deploymentArguments.splice(0, 1);
+
+		await this._preValidateArguments(contract, deploymentArguments);
+
+		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
+
+		const gasBN = await this._estimateTransactionGas(deployTransaction);
+
+		return gasBN.toString();
+
+	}
+
+	async _estimateTransactionGas(transaction) {
+		return this.wallet.estimateGas(transaction);
+	}
+
 }
 
 module.exports = Deployer;

@@ -166,6 +166,11 @@ describe('Deployer tests', () => {
 	})
 
 	describe('Wrapping deployed contract', async () => {
+
+		let wallet
+		let provider;
+		let deployer;
+
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
@@ -179,6 +184,27 @@ describe('Deployer tests', () => {
 			assert.strictEqual(contractWrapper.contractAddress, config.randomAddress, 'The wrapped address is no the inputted one');
 			assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 			assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+		})
+	})
+
+	describe('Estimating gas of deployment', async () => {
+
+		let wallet
+		let provider;
+		let deployer;
+
+		beforeEach(async () => {
+			wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
+			infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
+			deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
+		})
+
+		it('should wrap contracts correctly', async () => {
+			const gas = 2470692;
+
+			const estimateGas = await deployer.estimateGas(ICOTokenContract);
+
+			assert.equal(gas, estimateGas.toString())
 		})
 	})
 });

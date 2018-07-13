@@ -26,6 +26,24 @@ The contract is descriptor object that needs to have atleast the following three
 *All of these you can get by compiling with Truffle. We will soon expose
 you a way to do this through etherlime.*
 
+estimateGas(contract, [params])
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Estimates the gas that this transaction is going to cost you.
+
+Parameters:
+
+* ``contract`` - descriptor object for contract to be deployed
+* ``params`` - the constructor params you'd need to pass on deploy (if there are any)
+
+The contract is descriptor object is the same as above.
+
+Example
+::
+
+    const estimate = await deployer.estimateGas(TestContract, randomParam1, randomParam2);
+    // returns something like "2470692"
+
 Deployers
 ---------
 
