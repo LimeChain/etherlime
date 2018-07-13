@@ -32,24 +32,23 @@ var Contracts = {
       config.artifactor = new Artifactor(config.contracts_build_directory);
     }
 
-    
-    async function finished(error, contracts, paths) {
+    function finished(error, contracts, paths) {
+      console.log('callback = = ', callback);
       if (error) {
         return callback(error);
       }
-  
+      
       if (contracts != null && Object.keys(contracts).length > 0) {
-        await self.write_contracts(contracts, config);
-        callback(error, abstractions, paths);
+        self.write_contracts(contracts, config, callback);
       } else {
         callback(null, [], paths);
       }
     }
 
     if (config.all === true || config.compileAll === true) {
-      compile.all(config, self.finished);
+      compile.all(config, finished);
     } else {
-      compile.necessary(config, self.finished);
+      compile.necessary(config, finished);
     }
   },
 
@@ -57,7 +56,7 @@ var Contracts = {
     var logger = options.logger || console;
 
     try {
-      let result = await mkdirp(options.contracts_build_directory);
+      await mkdirp(options.contracts_build_directory);
 
       if (options.quiet != true && options.quietWrite != true) {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);
@@ -74,6 +73,5 @@ var Contracts = {
     }
   }
 };
-
 
 module.exports = Contracts;

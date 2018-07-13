@@ -172,7 +172,7 @@ var compile = function (sources, options, callback) {
       returnVal[contract_name] = contract_definition;
     });
   });
-
+  console.log('callback = ', callback);
   callback(null, returnVal, files);
 };
 
@@ -183,9 +183,8 @@ function replaceLinkReferences(bytecode, linkReferences, libraryName) {
     linkId += "_";
   }
 
-  linkReferences.forEach(function (ref) {
+  linkReferences.forEach((ref) => {
     var start = (ref.start * 2) + 2;
-
     bytecode = bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
   });
 
@@ -209,25 +208,31 @@ function orderABI(contract) {
     break;
   }
 
-  if (!contract_definition) return contract.abi;
-  if (!contract_definition.children) return contract.abi;
+  if (!contract_definition) {
+    return contract.abi;
+  }
 
-  contract_definition.children.forEach(function (child) {
+  if (!contract_definition.children) {
+    return contract.abi;
+  }
+
+  contract_definition.children.forEach((child) => {
     if (child.name == "FunctionDefinition") {
       ordered_function_names.push(child.attributes.name);
     }
   });
 
-  var functions_to_remove = ordered_function_names.reduce(function (obj, value, index) {
+  var functions_to_remove = ordered_function_names.reduce((obj, value, index) => {
     obj[value] = index;
+
     return obj;
   }, {});
 
-  var function_definitions = contract.abi.filter(function (item) {
+  var function_definitions = contract.abi.filter((item) => {
     return functions_to_remove[item.name] != null;
   });
 
-  function_definitions = function_definitions.sort(function (item_a, item_b) {
+  function_definitions = function_definitions.sort((item_a, item_b) => {
     var a = functions_to_remove[item_a.name];
     var b = functions_to_remove[item_b.name];
 
@@ -238,8 +243,11 @@ function orderABI(contract) {
   });
 
   var newABI = [];
-  contract.abi.forEach(function (item) {
-    if (functions_to_remove[item.name] != null) return;
+  contract.abi.forEach((item) => {
+    if (functions_to_remove[item.name] != null) {
+      return;
+    }
+
     newABI.push(item);
   });
 
@@ -249,7 +257,7 @@ function orderABI(contract) {
 }
 
 compile.all = function (options, callback) {
-  find_contracts(options.contracts_directory, function (err, files) {
+  find_contracts(options.contracts_directory, (error, files) => {
     options.paths = files;
     compile.with_dependencies(options, callback);
   });
@@ -258,8 +266,10 @@ compile.all = function (options, callback) {
 compile.necessary = function (options, callback) {
   options.logger = options.logger || console;
 
-  Profiler.updated(options, function (err, updated) {
-    if (err) return callback(err);
+  Profiler.updated(options, (error, updated) => {
+    if (error) {
+      return callback(error);
+    }
 
     if (updated.length == 0 && options.quiet != true) {
       return callback(null, [], {});
@@ -287,11 +297,13 @@ compile.with_dependencies = function (options, callback) {
     paths: options.paths,
     base_path: options.contracts_directory,
     resolver: options.resolver
-  }), function (err, result) {
-    if (err) return callback(err);
+  }), (error, result) => {
+    if (error) {
+      return callback(error);
+    }
 
     if (options.quiet != true) {
-      Object.keys(result).sort().forEach(function (import_path) {
+      Object.keys(result).sort().forEach((import_path) => {
         var display_path = import_path;
 
         if (path.isAbsolute(import_path)) {
