@@ -33,7 +33,7 @@ var Contracts = {
     }
 
     function finished(error, contracts, paths) {
-      console.log('callback = = ', callback);
+      
       if (error) {
         return callback(error);
       }
