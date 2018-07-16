@@ -89,7 +89,14 @@ Using this command will print you historical list of execution reports
 
 Compiling
 ---------
-Not ready yet
+
+::
+
+    etherlime compile [dir]
+
+Parameters:
+
+* ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
 
 Testing
 -------
