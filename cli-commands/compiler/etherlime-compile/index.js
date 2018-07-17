@@ -310,7 +310,7 @@ compile.with_dependencies = function (options, callback) {
           display_path = "." + path.sep + path.relative(options.working_directory, import_path);
         }
 
-        options.logger.log(`Compiling ${display_path}...`);
+        console.log(`Compiling ${display_path}...`);
       });
     }
 
