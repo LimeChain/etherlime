@@ -1,9 +1,10 @@
-const utils = require('./../util');
-
 let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
 
-const performCompilation = () => {
+const performCompilation = (defaultPath) => {
+    // const deploymentFile = `${process.cwd()}/${_deploymentFilePath}`;
+    defaultPath = `${process.cwd()}/${defaultPath}`;
+
     let resolverOptions = {
         "working_directory": `${defaultPath}/contracts`,
         "contracts_build_directory": `${defaultPath}/build`
@@ -16,11 +17,18 @@ const performCompilation = () => {
         "contracts_build_directory": `${defaultPath}/build`
     };
 
-    compiler.compile(compileOptions, () => { });
+    // console.log('compileOptions = ', compileOptions);
+    // console.log('resolverOptions = ', resolverOptions);
+
+    compiler.compile(compileOptions, (error, artifacts, paths) => { 
+        // console.log('error = ', error);
+        // console.log('artifacts = ', artifacts);
+        console.log('paths = ', paths);
+    });
 }
 
 const run = async (defaultPath) => {
-    performCompilation();
+    performCompilation(defaultPath);
 }
 
 module.exports = {

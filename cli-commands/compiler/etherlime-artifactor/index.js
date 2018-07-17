@@ -22,9 +22,11 @@ Artifactor.prototype.save = async function (object) {
   output_path = path.resolve(output_path);
   output_path = `${output_path}.json`;
 
+  var finalObject = object;
+  
   try {
     let json = await fs.readFile(output_path, { encoding: "utf8" });
-    var finalObject = object;
+    
     var existingObjDirty = JSON.parse(json);
 
     finalObject = Schema.normalize(existingObjDirty);

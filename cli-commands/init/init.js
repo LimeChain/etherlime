@@ -24,6 +24,7 @@ const copyDeployFile = (libraryDirectory) => {
 }
 
 const createContractsFolder = () => {
+	console.log('===== Creating contracts file structure =====')
 	if (!fs.existsSync(contractsDir)) {
 		fs.mkdirSync(contractsDir);
 	}
