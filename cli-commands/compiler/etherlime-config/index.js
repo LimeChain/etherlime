@@ -1,6 +1,5 @@
 var _ = require("lodash");
 var path = require("path");
-var Provider = require("./../etherlime-provider");
 var EtherlimeError = require("./../etherlime-error");
 var Module = require('module');
 var findUp = require("find-up");
@@ -140,20 +139,6 @@ function Config(etherlime_directory, working_directory, network) {
       },
       set: function (val) {
         throw new Error("Don't set config.gasPrice directly. Instead, set config.networks and then config.networks[<network name>].gasPrice")
-      }
-    },
-    provider: {
-      get: function () {
-        if (!self.network) {
-          return null;
-        }
-
-        var options = self.network_config;
-        options.verboseRpc = self.verboseRpc;
-        return Provider.create(options);
-      },
-      set: function (val) {
-        throw new Error("Don't set config.provider directly. Instead, set config.networks and then set config.networks[<network name>].provider")
       }
     }
   };

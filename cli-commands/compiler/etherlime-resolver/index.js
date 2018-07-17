@@ -2,9 +2,7 @@ var EPMSource = require("./epm");
 var NPMSource = require("./npm");
 var FSSource = require("./fs");
 var whilst = require("async.whilst");
-var contract = require("./../etherlime-contract");
 var expect = require("./../etherlime-expect");
-var provision = require("./../etherlime-provisioner");
 
 function Resolver(options) {
   expect.options(options, [
@@ -21,23 +19,6 @@ function Resolver(options) {
   ];
 };
 
-Resolver.prototype.require = function (import_path, search_path) {
-  var self = this;
-
-  for (var i = 0; i < this.sources.length; i++) {
-    var source = this.sources[i];
-    var result = source.require(import_path, search_path);
-
-    if (result) {
-      var abstraction = contract(result);
-      provision(abstraction, self.options);
-
-      return abstraction;
-    }
-  }
-
-  throw new Error(`Could not find artifacts for ${import_path} from any sources"`);
-};
 
 Resolver.prototype.resolve = function (import_path, imported_from, callback) {
   var self = this;
