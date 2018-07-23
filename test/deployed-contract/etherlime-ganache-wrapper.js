@@ -40,7 +40,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 
 		beforeEach(async () => {
 			deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
-			contractWrapper = await deployer.deploy(ICOTokenContract);
+			contractWrapper = await deployer.deploy(ICOTokenContract, {});
 		})
 
 		it('should wait for transaction correctly', async () => {
