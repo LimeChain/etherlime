@@ -27,7 +27,7 @@ The contract is descriptor object that needs to have atleast the following three
 you a way to do this through etherlime.*
 
 estimateGas(contract, [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Estimates the gas that this transaction is going to cost you.
 
