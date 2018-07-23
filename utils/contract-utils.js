@@ -14,6 +14,32 @@ const isValidContract = function (contract) {
 	return true;
 };
 
+const isValidLibrary = function (libraries) {
+	if (JSON.stringify(libraries) !== JSON.stringify({})) {
+		return true;
+	}
+
+	return false;
+}
+
+const isValidBytecode = function (libraries, bytecode) {
+	if (isValidLibrary(libraries)) {
+		for (const key in Object.keys(libraries)) {
+			if (libraries.hasOwnProperty(key)) {
+				if (!bytecode.includes(`__${key}`)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 module.exports = {
-	isValidContract
+	isValidContract,
+	isValidLibrary,
+	isValidBytecode
 }

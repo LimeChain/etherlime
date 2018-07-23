@@ -2,6 +2,8 @@ const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
 const isValidContract = require('./../utils/contract-utils').isValidContract;
+const isValidLibrary = require('./../utils/contract-utils').isValidLibrary;
+const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
 const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
 
@@ -40,31 +42,29 @@ class Deployer {
 	 * 
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile
 	 */
-	async deploy(contract) {
-
+	async deploy(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 1);
+		deploymentArguments.splice(0, 2);
 
-		await this._preValidateArguments(contract, deploymentArguments);
+		await this._preValidateArguments(contract, libraries, deploymentArguments);
 
-		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
+		let contractCopy = JSON.parse(JSON.stringify(contract));
 
+		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
+
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, contractCopy.bytecode, deploymentArguments);
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-
 		await this._waitForDeployTransaction(transaction);
 
 		const transactionReceipt = await this._getTransactionReceipt(transaction);
+		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt)
 
-		await this._postValidateTransaction(contract, transaction, transactionReceipt)
-
-		const deploymentResult = await this._generateDeploymentResult(contract, transaction, transactionReceipt);
-
-		await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
+		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
 
 		return deploymentResult;
-
 	}
 
 	/**
@@ -74,10 +74,16 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	async _preValidateArguments(contract, deploymentArguments) {
+	async _preValidateArguments(contract, libraries, deploymentArguments) {
 		if (!(isValidContract(contract))) {
 			await this._logAction(this.constructor.name, contract.contractName, '', 1, '-', '-', 'Invalid contract object');
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
+		}
+
+		if (isValidLibrary(libraries)) {
+			if (!isValidBytecode(libraries, contract.bytecode)) {
+				throw new Error(`The bytecode of the contract doesn't contain the а library`);
+			}
 		}
 
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
@@ -93,8 +99,8 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
  	 * @param {*} deploymentArguments the arguments to this contract
 	 */
-	async _prepareDeployTransaction(contract, deploymentArguments) {
-		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
+	async _prepareDeployTransaction(contract, bytecode, deploymentArguments) {
+		return ethers.Contract.getDeployTransaction(bytecode, contract.abi, ...deploymentArguments);
 	}
 
 	/**
@@ -234,6 +240,38 @@ class Deployer {
 
 	async _estimateTransactionGas(transaction) {
 		return this.wallet.estimateGas(transaction);
+	}
+
+	/**
+	 * 
+	 * Link a library or number of libraries to a contract
+	 * 
+	 * @param {*} libraries The libraries which will be linked to the contract
+	 * @param {*} bytecode The contract's bytecode which be used for linking
+	 */
+	async _prepareBytecode(libraries, bytecode) {
+		if (isValidLibrary(libraries)) {
+			return await this._linkLibrary(libraries, bytecode);
+		}
+
+		return bytecode;
+	}
+
+	async _linkLibrary(libraries, bytecode) {
+		if (bytecode === '' || bytecode === undefined) {
+			throw new Error(`"${bytecode}" is not a valid bytecode.`);
+		}
+
+		for (const libraryName in libraries) {
+			if (libraries.hasOwnProperty(libraryName)) {
+				const libraryAddress = libraries[libraryName];
+
+				var regex = new RegExp("__" + libraryName + "_+", "g");
+				bytecode = bytecode.replace(regex, libraryAddress.replace("0x", ""));
+			}
+		}
+
+		return bytecode;
 	}
 
 }

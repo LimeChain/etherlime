@@ -4,8 +4,6 @@ const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 
-
-
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
 	 * 
