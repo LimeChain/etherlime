@@ -2,6 +2,7 @@ const ganache = require('./ganache/ganache');
 const init = require('./init/init');
 const deployer = require('./deployer/deployer');
 const history = require('./history/history');
+const compiler = require('./compiler/compiler');
 
 const commands = [
 	{
@@ -60,6 +61,20 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 			history.run(argv.limit, console);
+		}
+	},
+	{
+		command: 'compile [dir]',
+		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('dir', {
+				describe: 'Specifies the root dir to read the contracts and place the build folder',
+				type: 'string',
+				default: '.'
+			})
+		},
+		commandProcessor: (argv) => {
+			compiler.run(argv.dir);
 		}
 	}
 ]
