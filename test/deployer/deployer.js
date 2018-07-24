@@ -147,6 +147,18 @@ describe('Deployer tests', () => {
 
 			})
 
+			it('should throw on incorrect bytecode', async () => {
+				const contractCopy = JSON.parse(JSON.stringify(ICOTokenContract));
+				contractCopy.bytecode = 100;
+
+				try {
+					await deployer.deploy(contractCopy);
+					assert.fails("The deployer did not throw on broken bytecode passed");
+				} catch (e) {
+					console.log(e.message);
+				}
+			})
+
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
 				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
@@ -206,5 +218,25 @@ describe('Deployer tests', () => {
 
 			assert.equal(gas, estimateGas.toString())
 		})
+	})
+
+	describe('Preparing bytecode', async () => {
+		let wallet
+		let provider;
+		let deployer;
+
+		beforeEach(async () => {
+			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
+
+		})
+
+		it('should prepare the bytecode', async () => {
+			let invalidLibrary = 100;
+			let bytecode = await deployer._prepareBytecode(invalidLibrary, ICOTokenContract.bytecode);
+
+			assert.equal(ICOTokenContract.bytecode, bytecode);
+		});
 	})
 });

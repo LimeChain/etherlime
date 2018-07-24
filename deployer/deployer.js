@@ -47,10 +47,6 @@ class Deployer {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 2);
 
-		if (!deploymentArguments) {
-			deploymentArguments = [];
-		}
-
 		await this._preValidateArguments(contract, deploymentArguments);
 
 		let contractCopy = JSON.parse(JSON.stringify(contract));
@@ -229,10 +225,6 @@ class Deployer {
 	async estimateGas(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 2);
-
-		if (!deploymentArguments) {
-			deploymentArguments = [];
-		}
 
 		await this._preValidateArguments(contract, deploymentArguments);
 

@@ -1,5 +1,3 @@
-const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
-
 const isValidContract = function (contract) {
 	if (!contract.bytecode) {
 		return false;
@@ -17,9 +15,12 @@ const isValidContract = function (contract) {
 };
 
 const isValidBytecode = function (bytecode) {
-	if (typeof bytecode !== 'string' 
-		|| bytecode.length <= 0) {
-			return false;
+	if (typeof bytecode !== 'string') {
+		return false;
+	}
+
+	if (bytecode.length <= 0) {
+		return false;
 	}
 
 	return true;
