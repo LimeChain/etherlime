@@ -111,7 +111,7 @@ describe('Deployer tests', () => {
 			})
 
 			it('should deploy contract with params correctly', async () => {
-				const contractWrapper = await deployer.deploy(VestingContract, {}, config.randomAddress, 1569426974);
+				const contractWrapper = await deployer.deploy(VestingContract, config.randomAddress, 1569426974);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -154,7 +154,7 @@ describe('Deployer tests', () => {
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
 				try {
-					await deployer.deploy(VestingContract, {}, config.randomAddress, 69)
+					await deployer.deploy(VestingContract, config.randomAddress, 69)
 					assert.fails("The deployment did not throw");
 				} catch (e) {
 					console.log(e.message);

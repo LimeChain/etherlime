@@ -51,7 +51,7 @@ describe('GanacheCli-Deployer tests', () => {
 		it('should deploy contract without default configs', async () => {
 
 			deployer = new etherlime.EtherlimeGanacheDeployer();
-			const contractWrapper = await deployer.deploy(Greetings, {});
+			const contractWrapper = await deployer.deploy(Greetings);
 
 			assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 		})

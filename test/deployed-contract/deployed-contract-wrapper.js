@@ -72,7 +72,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		beforeEach(async () => {
 			deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
-			contractWrapper = await deployer.deploy(ICOTokenContract, {});
+			contractWrapper = await deployer.deploy(ICOTokenContract);
 		})
 
 		it('should wait for transaction correctly', async () => {

@@ -97,11 +97,6 @@ Compiling
 Parameters:
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
-<<<<<<< HEAD
-=======
-
-**Note: Support of library linking is Work in Progress. Expect updates very soon**
->>>>>>> master
 
 Testing
 -------

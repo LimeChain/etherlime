@@ -2,8 +2,9 @@ const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
 const isValidContract = require('./../utils/contract-utils').isValidContract;
-const isValidLibrary = require('./../utils/contract-utils').isValidLibrary;
+const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
 const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
+const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
 
@@ -80,10 +81,8 @@ class Deployer {
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
-		if (isValidLibrary(libraries)) {
-			if (!isValidBytecode(libraries, contract.bytecode)) {
-				throw new Error(`The bytecode of the contract doesn't contain the а library`);
-			}
+		if (!isValidBytecode(libraries, contract.bytecode)) {
+			throw new Error(`The bytecode of the contract doesn't contain а library`);
 		}
 
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
@@ -251,29 +250,11 @@ class Deployer {
 	 */
 	async _prepareBytecode(libraries, bytecode) {
 		if (isValidLibrary(libraries)) {
-			return await this._linkLibrary(libraries, bytecode);
+			return await linkLibrary(libraries, bytecode);
 		}
 
 		return bytecode;
 	}
-
-	async _linkLibrary(libraries, bytecode) {
-		if (bytecode === '' || bytecode === undefined) {
-			throw new Error(`"${bytecode}" is not a valid bytecode.`);
-		}
-
-		for (const libraryName in libraries) {
-			if (libraries.hasOwnProperty(libraryName)) {
-				const libraryAddress = libraries[libraryName];
-
-				var regex = new RegExp("__" + libraryName + "_+", "g");
-				bytecode = bytecode.replace(regex, libraryAddress.replace("0x", ""));
-			}
-		}
-
-		return bytecode;
-	}
-
 }
 
 module.exports = Deployer;
