@@ -81,8 +81,11 @@ class Deployer {
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
-		if (!isValidBytecode(libraries, contract.bytecode)) {
-			throw new Error(`The bytecode of the contract doesn't contain а library`);
+		if (isValidLibrary(libraries)) {
+			console.log('test 1');
+			if (!isValidBytecode(libraries, contract.bytecode)) {
+				throw new Error(`The bytecode of the contract doesn't contain а library`);
+			}
 		}
 
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
