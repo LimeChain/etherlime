@@ -41,7 +41,7 @@ describe('Linking library tests', () => {
         assert.ok(!bytecode.includes("2Be52D5d7A73FC183cF40053B95beD572519EBbC"));
     });
 
-    it('should throw', () => {
+    it('should not link a library if the object does not own the property', () => {
         var libraries = new Object();
         libraries.Queue = "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC";
         Object.prototype.LinkedList = "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC";
