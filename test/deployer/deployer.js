@@ -63,7 +63,7 @@ describe('Deployer tests', () => {
 			})
 
 			it('should deploy contract without params correctly', async () => {
-				const contractWrapper = await deployer.deploy(Greetings, {});
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -78,7 +78,7 @@ describe('Deployer tests', () => {
 
 			it('should deploy contract without default configs', async () => {
 				deployer = new etherlime.Deployer(wallet, provider);
-				const contractWrapper = await deployer.deploy(Greetings, {});
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -90,7 +90,7 @@ describe('Deployer tests', () => {
 				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
 				delete defaultConfigsCopy.gasPrice;
 				deployer.defaultOverrides = defaultConfigsCopy;
-				const contractWrapper = await deployer.deploy(Greetings, {});
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -102,7 +102,7 @@ describe('Deployer tests', () => {
 				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
 				delete defaultConfigsCopy.gasLimit;
 				deployer.defaultOverrides = defaultConfigsCopy;
-				const contractWrapper = await deployer.deploy(Greetings, {});
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -111,7 +111,7 @@ describe('Deployer tests', () => {
 			})
 
 			it('should deploy contract with params correctly', async () => {
-				const contractWrapper = await deployer.deploy(VestingContract, config.randomAddress, 1569426974);
+				const contractWrapper = await deployer.deploy(VestingContract, {}, config.randomAddress, 1569426974);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -139,7 +139,7 @@ describe('Deployer tests', () => {
 				delete contractCopy.abi;
 
 				try {
-					await deployer.deploy(contractCopy, {});
+					await deployer.deploy(contractCopy);
 					assert.fails("The deployer did not throw on broken contract passed");
 				} catch (e) {
 					console.log(e.message);
@@ -154,7 +154,7 @@ describe('Deployer tests', () => {
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
 				try {
-					await deployer.deploy(VestingContract, config.randomAddress, 69)
+					await deployer.deploy(VestingContract, {}, config.randomAddress, 69)
 					assert.fails("The deployment did not throw");
 				} catch (e) {
 					console.log(e.message);

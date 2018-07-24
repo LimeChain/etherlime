@@ -16,26 +16,10 @@ const isValidContract = function (contract) {
 	return true;
 };
 
-const isValidBytecode = function (libraries, bytecode) {
-	if (!isValidLibrary(libraries)) {
-		return false;
-	}
-
-	if (bytecode === undefined
-		|| bytecode === null
-		|| bytecode === {}
-		|| !isNaN(bytecode)) {
+const isValidBytecode = function (bytecode) {
+	if (typeof bytecode !== 'string' 
+		|| bytecode.length <= 0) {
 			return false;
-	}
-
-	for (const key in Object.keys(libraries)) {
-		if (libraries.hasOwnProperty(key)) {
-			continue;
-		}
-
-		if (!bytecode.includes(`__${key}`)) {
-			return false;
-		}
 	}
 
 	return true;

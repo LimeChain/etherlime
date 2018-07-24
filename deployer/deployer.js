@@ -47,13 +47,17 @@ class Deployer {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 2);
 
-		await this._preValidateArguments(contract, libraries, deploymentArguments);
+		if (!deploymentArguments) {
+			deploymentArguments = [];
+		}
+
+		await this._preValidateArguments(contract, deploymentArguments);
 
 		let contractCopy = JSON.parse(JSON.stringify(contract));
 
 		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
 
-		let deployTransaction = await this._prepareDeployTransaction(contractCopy, contractCopy.bytecode, deploymentArguments);
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, deploymentArguments);
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
@@ -75,21 +79,18 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	async _preValidateArguments(contract, libraries, deploymentArguments) {
+	async _preValidateArguments(contract, deploymentArguments) {
 		if (!(isValidContract(contract))) {
 			await this._logAction(this.constructor.name, contract.contractName, '', 1, '-', '-', 'Invalid contract object');
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
-		if (isValidLibrary(libraries)) {
-			console.log('test 1');
-			if (!isValidBytecode(libraries, contract.bytecode)) {
-				throw new Error(`The bytecode of the contract doesn't contain а library`);
-			}
+		if (!isValidBytecode(contract.bytecode)) {
+			throw new Error(`The bytecode of the contract doesn't contain а library`);
 		}
 
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
-		const argumentsEnd = (deploymentArguments.length == 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
+		const argumentsEnd = (deploymentArguments.length === 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 
 		console.log(`${deployContractStart}${argumentsEnd}`);
 	}
@@ -101,8 +102,8 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
  	 * @param {*} deploymentArguments the arguments to this contract
 	 */
-	async _prepareDeployTransaction(contract, bytecode, deploymentArguments) {
-		return ethers.Contract.getDeployTransaction(bytecode, contract.abi, ...deploymentArguments);
+	async _prepareDeployTransaction(contract, deploymentArguments) {
+		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
 	}
 
 	/**
@@ -225,14 +226,21 @@ class Deployer {
 	 * 
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile. Add the deployment params as comma separated values
 	 */
-	async estimateGas(contract) {
-
+	async estimateGas(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 1);
+		deploymentArguments.splice(0, 2);
+
+		if (!deploymentArguments) {
+			deploymentArguments = [];
+		}
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
-		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
+		let contractCopy = JSON.parse(JSON.stringify(contract));
+
+		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
+
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, deploymentArguments);
 
 		const gasBN = await this._estimateTransactionGas(deployTransaction);
 
