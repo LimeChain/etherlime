@@ -6,6 +6,7 @@ const store = require('./../../logs-store/logs-store');
 const isAddress = require('./../../utils/address-utils').isAddress;
 const config = require('./../config.json');
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
+const DataContract = require('./../testContracts/DataContract.json');
 const VestingContract = require('./../testContracts/Vesting.json');
 const Greetings = require('./../testContracts/Greetings.json');
 
@@ -215,6 +216,15 @@ describe('Deployer tests', () => {
 			const gas = 2470692;
 
 			const estimateGas = await deployer.estimateGas(ICOTokenContract);
+
+			assert.equal(gas, estimateGas.toString())
+		})
+
+		it('should wrap contracts correctly', async () => {
+			const gas = 1629070;
+
+			let libraries = {"LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC"};
+			const estimateGas = await deployer.estimateGas(DataContract, libraries);
 
 			assert.equal(gas, estimateGas.toString())
 		})
