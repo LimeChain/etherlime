@@ -43,7 +43,7 @@ Deployer Example
 
         const deployer = new etherlime.EtherlimeGanacheDeployer();
         
-        const result = await deployer.deploy(TestContract); // Add params with separated with ,
+        const result = await deployer.deploy(TestContract, {}); // Add params separated with ,
     }
     
     module.exports = { deploy }
