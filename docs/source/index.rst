@@ -28,9 +28,9 @@ Etherlime can be used as library and/or command line tool. The command line tool
 Milestones
 ~~~~~~~~~~~~~~~
 
-* Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- **We are here** 
-* [Not Ready] Being able to compile contracts to the desired formats for deployment 
-* [Not Ready] Being able to run unit tests on the compiled contracts
+* [Ready]Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- **Done** 
+* [Ready] Being able to compile contracts to the desired formats for deployment <---- **Done**
+* [Not Ready] Being able to run unit tests on the compiled contracts <---- **We are here**
 
 .. toctree::
    :maxdepth: 3
