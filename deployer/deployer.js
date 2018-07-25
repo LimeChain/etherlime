@@ -2,6 +2,9 @@ const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
 const isValidContract = require('./../utils/contract-utils').isValidContract;
+const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
+const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
+const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
 
@@ -40,31 +43,29 @@ class Deployer {
 	 * 
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile
 	 */
-	async deploy(contract) {
-
+	async deploy(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 1);
+		deploymentArguments.splice(0, 2);
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
-		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
+		let contractCopy = JSON.parse(JSON.stringify(contract));
 
+		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
+
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, deploymentArguments);
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-
 		await this._waitForDeployTransaction(transaction);
 
 		const transactionReceipt = await this._getTransactionReceipt(transaction);
+		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt)
 
-		await this._postValidateTransaction(contract, transaction, transactionReceipt)
-
-		const deploymentResult = await this._generateDeploymentResult(contract, transaction, transactionReceipt);
-
-		await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
+		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
 
 		return deploymentResult;
-
 	}
 
 	/**
@@ -80,8 +81,12 @@ class Deployer {
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
+		if (!isValidBytecode(contract.bytecode)) {
+			throw new Error(`The bytecode is invalid. It should be of type string with length bigger than 0`);
+		}
+
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
-		const argumentsEnd = (deploymentArguments.length == 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
+		const argumentsEnd = (deploymentArguments.length === 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 
 		console.log(`${deployContractStart}${argumentsEnd}`);
 	}
@@ -217,14 +222,17 @@ class Deployer {
 	 * 
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile. Add the deployment params as comma separated values
 	 */
-	async estimateGas(contract) {
-
+	async estimateGas(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 1);
+		deploymentArguments.splice(0, 2);
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
-		let deployTransaction = await this._prepareDeployTransaction(contract, deploymentArguments);
+		let contractCopy = JSON.parse(JSON.stringify(contract));
+
+		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
+
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, deploymentArguments);
 
 		const gasBN = await this._estimateTransactionGas(deployTransaction);
 
@@ -236,6 +244,20 @@ class Deployer {
 		return this.wallet.estimateGas(transaction);
 	}
 
+	/**
+	 * 
+	 * Link a library or number of libraries to a contract
+	 * 
+	 * @param {*} libraries The libraries which will be linked to the contract
+	 * @param {*} bytecode The contract's bytecode which be used for linking
+	 */
+	async _prepareBytecode(libraries, bytecode) {
+		if (isValidLibrary(libraries)) {
+			return await linkLibrary(libraries, bytecode);
+		}
+
+		return bytecode;
+	}
 }
 
 module.exports = Deployer;
