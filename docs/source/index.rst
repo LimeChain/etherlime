@@ -23,7 +23,7 @@ needed stability to the process. In our mind ethers is much more stable
 alternative than web3.js for the moment therefore this framework is
 born.
 
-Etherlime can be used as library and/or command line tool. The command line tools give you great boosts but you can skip them fully and use plain old node.js including the etherlime library.
+Etherlime can be used as library and/or command line tool. The command line tools give you great boosts but you can skip them fully and use plain old node.js including the etherlime library. 
 
 Milestones
 ~~~~~~~~~~~~~~~
