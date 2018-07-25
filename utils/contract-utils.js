@@ -14,6 +14,19 @@ const isValidContract = function (contract) {
 	return true;
 };
 
+const isValidBytecode = function (bytecode) {
+	if (typeof bytecode !== 'string') {
+		return false;
+	}
+
+	if (bytecode.length <= 0) {
+		return false;
+	}
+
+	return true;
+}
+
 module.exports = {
-	isValidContract
+	isValidContract,
+	isValidBytecode
 }
