@@ -242,7 +242,7 @@ describe('Deployer tests', () => {
 
 		})
 
-		it('should prepare the bytecode', async () => {
+		it('should not update the bytecode when an invalid library is used', async () => {
 			let invalidLibrary = 100;
 			let bytecode = await deployer._prepareBytecode(invalidLibrary, ICOTokenContract.bytecode);
 

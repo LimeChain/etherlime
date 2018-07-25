@@ -7,10 +7,6 @@ const DataContract = require('./../testContracts/DataContract.json');
 const Greetings = require('./../testContracts/Greetings.json');
 
 describe('Linking library tests', () => {
-	beforeEach(() => {
-		
-	})
-
     it('should return true if library is empty object', () => {
         assert.ok(isValidLibrary({}));
     });

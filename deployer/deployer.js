@@ -82,7 +82,7 @@ class Deployer {
 		}
 
 		if (!isValidBytecode(contract.bytecode)) {
-			throw new Error(`The bytecode of the contract doesn't contain а library`);
+			throw new Error(`The bytecode is invalid. It should be of type string with length bigger than 0`);
 		}
 
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
