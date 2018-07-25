@@ -5,6 +5,7 @@ const exec = util.promisify(require('child_process').exec);
 const deploymentDir = './deployment';
 const deploymentFileDestination = `${deploymentDir}/deploy.js`;
 const contractsDir = './contracts';
+const testsDir = './tests';
 
 const createDeploymentDir = () => {
 	console.log('===== Creating deployment file structure =====')
@@ -27,6 +28,13 @@ const createContractsFolder = () => {
 	console.log('===== Creating contracts file structure =====')
 	if (!fs.existsSync(contractsDir)) {
 		fs.mkdirSync(contractsDir);
+	}
+}
+
+const createTestsFolder = () => {
+	console.log('===== Creating tests file structure =====')
+	if (!fs.existsSync(testsDir)) {
+		fs.mkdirSync(testsDir);
 	}
 }
 
