@@ -7,7 +7,7 @@ Deployer functionality
 The main functionality the deployer exposes is (obviously) the ability
 to deploy compiled contract.
 
-This is achieved through the ``deploy(contract, [params])`` function. 
+This is achieved through the ``deploy(contract, libraries, [params])`` function. 
 
 deploy(contract, libraries, [params])
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
