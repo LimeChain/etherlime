@@ -6,6 +6,7 @@ const store = require('./../../logs-store/logs-store');
 const isAddress = require('./../../utils/address-utils').isAddress;
 const config = require('./../config.json');
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
+const DataContract = require('./../testContracts/DataContract.json');
 const VestingContract = require('./../testContracts/Vesting.json');
 const Greetings = require('./../testContracts/Greetings.json');
 
@@ -111,7 +112,7 @@ describe('Deployer tests', () => {
 			})
 
 			it('should deploy contract with params correctly', async () => {
-				const contractWrapper = await deployer.deploy(VestingContract, config.randomAddress, 1569426974);
+				const contractWrapper = await deployer.deploy(VestingContract, {}, config.randomAddress, 1569426974);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
@@ -147,6 +148,18 @@ describe('Deployer tests', () => {
 
 			})
 
+			it('should throw on incorrect bytecode', async () => {
+				const contractCopy = JSON.parse(JSON.stringify(ICOTokenContract));
+				contractCopy.bytecode = 100;
+
+				try {
+					await deployer.deploy(contractCopy);
+					assert.fails("The deployer did not throw on broken bytecode passed");
+				} catch (e) {
+					console.log(e.message);
+				}
+			})
+
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
 				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
@@ -154,7 +167,7 @@ describe('Deployer tests', () => {
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
 				try {
-					await deployer.deploy(VestingContract, config.randomAddress, 69)
+					await deployer.deploy(VestingContract, {}, config.randomAddress, 69)
 					assert.fails("The deployment did not throw");
 				} catch (e) {
 					console.log(e.message);
@@ -206,5 +219,34 @@ describe('Deployer tests', () => {
 
 			assert.equal(gas, estimateGas.toString())
 		})
+
+		it('should wrap contracts correctly', async () => {
+			const gas = 1629070;
+
+			let libraries = {"LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC"};
+			const estimateGas = await deployer.estimateGas(DataContract, libraries);
+
+			assert.equal(gas, estimateGas.toString())
+		})
+	})
+
+	describe('Preparing bytecode', async () => {
+		let wallet
+		let provider;
+		let deployer;
+
+		beforeEach(async () => {
+			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
+
+		})
+
+		it('should not update the bytecode when an invalid library is used', async () => {
+			let invalidLibrary = 100;
+			let bytecode = await deployer._prepareBytecode(invalidLibrary, ICOTokenContract.bytecode);
+
+			assert.equal(ICOTokenContract.bytecode, bytecode);
+		});
 	})
 });
