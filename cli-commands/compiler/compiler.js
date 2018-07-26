@@ -1,5 +1,6 @@
 let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
+let colors = require("./../../utils/colors");
 
 const performCompilation = (defaultPath) => {
     let resolverOptions = {
@@ -15,7 +16,17 @@ const performCompilation = (defaultPath) => {
     };
 
     compiler.compile(compileOptions, (error, artifacts, paths) => { 
-        
+        if (error) {
+            var stack = error['stack'].split(',/');
+
+            stack.forEach(message => {
+                console.log(message);
+            });
+
+            return;
+        }
+
+        console.log(colors.colorSuccess('Compilation finished successfully'));
     });
 }
 
