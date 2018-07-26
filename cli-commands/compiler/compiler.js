@@ -16,13 +16,17 @@ const performCompilation = (defaultPath) => {
     };
 
     compiler.compile(compileOptions, (error, artifacts, paths) => { 
-        if (!error) {
-            console.log(colors.colorSuccess('Compilation finished successfully'));
+        if (error) {
+            var stack = error['stack'].split(',/');
+
+            stack.forEach(message => {
+                console.log(message);
+            });
 
             return;
         }
 
-        console.log(colors.colorFailure('Compilation finished with an error:'), error);
+        console.log(colors.colorSuccess('Compilation finished successfully'));
     });
 }
 
