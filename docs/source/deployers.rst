@@ -10,7 +10,7 @@ to deploy compiled contract.
 This is achieved through the ``deploy(contract, [libraries], [params])`` function. 
 
 deploy(contract, [libraries], [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Parameters:
 
@@ -68,7 +68,7 @@ Skipping linking on contract with arguments
 
 
 estimateGas(contract, [libraries], [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Estimates the gas that this transaction is going to cost you.
 

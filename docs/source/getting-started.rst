@@ -18,7 +18,7 @@ Running embedded ganache-cli
 `Allows the use of EtherlimeGanacheDeployer`
 
 Deploying with etherlime
-------------------------------------------------
+------------------------
 
 Initialize etherlime
 ~~~~~~~~~~~~~~~~~~~~
