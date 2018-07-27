@@ -122,12 +122,12 @@ Parameters:
     }
 
 
-JSONRPCDeployer
-~~~~~~~~~~~~~~~
+JSONRPCPrivateKeyDeployer
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    JSONRPCDeployer(privateKey, nodeUrl, [defaultOverrides])
+    JSONRPCPrivateKeyDeployer(privateKey, nodeUrl, [defaultOverrides])
 
 Parameters:
 
@@ -148,7 +148,7 @@ Parameters:
 
     const deploy = async (network, secret) => {
 
-        const deployer = new etherlime.JSONRPCDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
+        const deployer = new etherlime.JSONRPCPrivateKeyDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
         
         const result = await deployer.deploy(TestContract);
     }
