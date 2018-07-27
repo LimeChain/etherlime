@@ -1,6 +1,8 @@
 const assert = require('assert');
 
 const isValidContract = require('./../../utils/contract-utils').isValidContract;
+const isValidBytecode = require('./../../utils/contract-utils').isValidBytecode;
+
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
 
 describe('Contract utils tests', () => {
@@ -31,5 +33,15 @@ describe('Contract utils tests', () => {
 		assert(!isValidContract(contractCopy), 'isValidContract did not return false on contract without bytecode')
 	})
 
+	it('should return true if it is a valid bytecode', () => {
+		assert(isValidBytecode(ICOTokenContract.bytecode), 'isValidBytecode did not return true on contract with valid bytecode')
+	});
 
+	it('should return false if bytecode is not a string', () => {
+		assert(!isValidBytecode(100), 'isValidBytecode did not return false on contract with invalid bytecode')
+	});
+
+	it('should return false if bytecode length is equal to zero (empty string)', () => {
+		assert(!isValidBytecode(''), 'isValidBytecode did not return false on contract with invalid bytecode')
+	});
 });

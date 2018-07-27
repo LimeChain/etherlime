@@ -7,14 +7,15 @@ Deployer functionality
 The main functionality the deployer exposes is (obviously) the ability
 to deploy compiled contract.
 
-This is achieved through the ``deploy(contract, [params])`` function. 
+This is achieved through the ``deploy(contract, [libraries], [params])`` function. 
 
-deploy(contract, [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+deploy(contract, [libraries], [params])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Parameters:
 
 * ``contract`` - descriptor object for contract to be deployed. More details below
+* ``libraries`` - key-value object containing all libraries which will be linked to the contract.
 * ``params`` - the constructor params you'd need to pass on deploy (if there are any)
 
 The contract is descriptor object that needs to have atleast the following three fields: 
@@ -23,17 +24,58 @@ The contract is descriptor object that needs to have atleast the following three
 * ``abi`` - the abi interface of the contract
 * ``bytecode`` - the compiled bytecode
 
-*All of these you can get by compiling with Truffle. We will soon expose
-you a way to do this through etherlime.*
+The libraries object should be in the following format:
 
-estimateGas(contract, [params])
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+::
+
+    {
+        libraryName0: '0xAddressOfLibrary0',
+        libraryName1: '0xAddressOfLibrary1'
+    }
+
+If the contract to be deployed doesn't contains any libraries, ``{}``, ``undefined``, ``null``, ``false`` or ``0`` can be passed. For convenience we have made the deploy function to work even without this parameter passed.
+
+Example
+
+Linking libraries
+
+::
+
+    const contractUsingQueueAndLinkedList = require('...');
+
+    const libraries = {
+        Queue: '0x655341AabD39a5ee0939796dF610aD685a984C53,
+        LinkedList: '0x619acBB5Dafc5aC340B6de4821835aF50adb29c1'
+    }
+
+    await deployer.deploy(contractUsingQueueAndLinkedList, libraries);
+
+Skipping linking on contract without arguments
+
+::
+
+    const contractWithoutLibraries = require('...');
+
+    await deployer.deploy(contractWithoutLibraries);
+
+Skipping linking on contract with arguments
+
+::
+
+    const contractWithoutLibraries = require('...');
+
+    await deployer.deploy(contractWithoutLibraries, false, param1, param2);
+
+
+estimateGas(contract, [libraries], [params])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Estimates the gas that this transaction is going to cost you.
 
 Parameters:
 
 * ``contract`` - descriptor object for contract to be deployed
+* ``libraries`` - key-value object containing all libraries which will be linked to the contract.
 * ``params`` - the constructor params you'd need to pass on deploy (if there are any)
 
 The contract is descriptor object is the same as above.

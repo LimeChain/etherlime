@@ -18,7 +18,7 @@ Running embedded ganache-cli
 `Allows the use of EtherlimeGanacheDeployer`
 
 Deploying with etherlime
-------------------------------------------------
+------------------------
 
 Initialize etherlime
 ~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ Deployer Example
 
         const deployer = new etherlime.EtherlimeGanacheDeployer();
         
-        const result = await deployer.deploy(TestContract); // Add params with separated with ,
+        const result = await deployer.deploy(TestContract, {}); // Add params separated with ,
     }
     
     module.exports = { deploy }

@@ -98,7 +98,9 @@ Parameters:
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
 
-**Note: Support of library linking is Work in Progress. Expect updates very soon**
+Here is example of result:
+
+|Compilation result|
 
 Testing
 -------
@@ -107,4 +109,7 @@ Not ready yet
 -----
 
 .. |Deployment result| image:: ./_docs_static/DeploymentResult.png
-   :target: https://imgur.com/a/NyLX9mH
+   :target: ./_images/DeploymentResult.png
+.. |Compilation result| image:: ./_docs_static/CompilationResult.png
+   :target: ./_images/CompilationResult.png
+   :width: 500
