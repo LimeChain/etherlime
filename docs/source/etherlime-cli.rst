@@ -92,11 +92,12 @@ Compiling
 
 ::
 
-    etherlime compile [dir]
+    etherlime compile [dir] [runs]
 
 Parameters:
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
+* ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
 
 Here is example of result:
 

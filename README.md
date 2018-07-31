@@ -39,12 +39,28 @@ etherlime ganache
 ```
 etherlime init
 ```
-This will create `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
+This will create `contracts` directory and `deployment` directory with `deploy.js` file inside. You can use this file to write your deployment procedure.
 
-In order to deploy using this file you can run the following command:
+## Compiling
+
 ```
-etherlime deploy
+etherlime compile [dir] [runs]
 ```
+
+* ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
+* ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
+
+## Deploying
+
+In order to deploy your deployment file following command:
+```
+etherlime deploy [file] [network] [secret] [-s]
+```
+
+* ``file`` - [Optional] By specifying ``--file`` you can use another file as long as you keep the structure of the file (exporting an ``async deploy`` function with ``network`` and ``secret`` params)
+* ``network`` - [Optional] By specifying ``--network`` you can specify the network param to be passed to your deploy method
+* ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
+* ``-s`` - [Optional] Silent - silences the verbose errors 
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
 
