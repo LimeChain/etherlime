@@ -4,7 +4,7 @@ const isUrl = require('./../../utils/url-utils').isUrl;
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
 
-class JSONRPCDeployer extends PrivateKeyDeployer {
+class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	/**
 	 * 
@@ -30,4 +30,4 @@ class JSONRPCDeployer extends PrivateKeyDeployer {
 	}
 }
 
-module.exports = JSONRPCDeployer;
+module.exports = JSONRPCPrivateKeyDeployer;

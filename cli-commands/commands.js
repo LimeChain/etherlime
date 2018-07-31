@@ -73,9 +73,14 @@ const commands = [
 				type: 'string',
 				default: '.'
 			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer and runs it the specified number of times',
+				type: 'number'
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir);
+			compiler.run(argv.dir, argv.runs);
 		}
 	},
 	{

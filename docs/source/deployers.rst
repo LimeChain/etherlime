@@ -24,6 +24,8 @@ The contract is descriptor object that needs to have atleast the following three
 * ``abi`` - the abi interface of the contract
 * ``bytecode`` - the compiled bytecode
 
+The easiest way to get such descriptor is to compile your solidity files via `etherlime compile`
+
 The libraries object should be in the following format:
 
 ::
@@ -122,12 +124,12 @@ Parameters:
     }
 
 
-JSONRPCDeployer
-~~~~~~~~~~~~~~~
+JSONRPCPrivateKeyDeployer
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
-    JSONRPCDeployer(privateKey, nodeUrl, [defaultOverrides])
+    JSONRPCPrivateKeyDeployer(privateKey, nodeUrl, [defaultOverrides])
 
 Parameters:
 
@@ -148,7 +150,7 @@ Parameters:
 
     const deploy = async (network, secret) => {
 
-        const deployer = new etherlime.JSONRPCDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
+        const deployer = new etherlime.JSONRPCPrivateKeyDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
         
         const result = await deployer.deploy(TestContract);
     }
