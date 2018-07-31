@@ -24,6 +24,8 @@ The contract is descriptor object that needs to have atleast the following three
 * ``abi`` - the abi interface of the contract
 * ``bytecode`` - the compiled bytecode
 
+The easiest way to get such descriptor is to compile your solidity files via `etherlime compile`
+
 The libraries object should be in the following format:
 
 ::
