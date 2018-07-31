@@ -3,6 +3,7 @@ const init = require('./init/init');
 const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
+const test = require('./test/test');
 
 const commands = [
 	{
@@ -75,6 +76,20 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 			compiler.run(argv.dir);
+		}
+	},
+	{
+		command: 'test [path]',
+		description: 'run the tests',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('path', {
+				describe: 'Specifies the path in which tests should be runned',
+				type: 'string',
+				default: './test'
+			})
+		},
+		commandProcessor: (argv) => {
+			test.run(argv.path);
 		}
 	}
 ]

@@ -5,7 +5,7 @@ const exec = util.promisify(require('child_process').exec);
 const deploymentDir = './deployment';
 const deploymentFileDestination = `${deploymentDir}/deploy.js`;
 const contractsDir = './contracts';
-const testsDir = './tests';
+const testsDir = './test';
 
 const createDeploymentDir = () => {
 	console.log('===== Creating deployment file structure =====')
