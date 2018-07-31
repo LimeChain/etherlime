@@ -4,8 +4,11 @@ const exec = util.promisify(require('child_process').exec);
 
 const deploymentDir = './deployment';
 const deploymentFileDestination = `${deploymentDir}/deploy.js`;
+
+const testDir = './test';
+const testFileDestination = `${testDir}/example.js`;
+
 const contractsDir = './contracts';
-const testsDir = './test';
 
 const createDeploymentDir = () => {
 	console.log('===== Creating deployment file structure =====')
@@ -24,6 +27,16 @@ const copyDeployFile = (libraryDirectory) => {
 	fs.copyFileSync(deploymentFileSource, deploymentFileDestination);
 }
 
+const copyTestFile = (libraryDirectory) => {
+	if (fs.existsSync(testFileDestination)) {
+		throw new Error(`example.js already exists in ${testDir} directory. You've probably already initialized etherlime for this project.`);
+	}
+
+	const testFileSource = `${libraryDirectory}/testTemplate.js`;
+
+	fs.copyFileSync(testFileSource, testFileDestination);
+}
+
 const createContractsFolder = () => {
 	console.log('===== Creating contracts file structure =====')
 	if (!fs.existsSync(contractsDir)) {
@@ -33,8 +46,8 @@ const createContractsFolder = () => {
 
 const createTestsFolder = () => {
 	console.log('===== Creating tests file structure =====')
-	if (!fs.existsSync(testsDir)) {
-		fs.mkdirSync(testsDir);
+	if (!fs.existsSync(testDir)) {
+		fs.mkdirSync(testDir);
 	}
 }
 
@@ -50,6 +63,7 @@ const run = async () => {
 		createTestsFolder();
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
+		copyTestFile(libraryDirectory);
 		console.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
 		console.error(e.message);
