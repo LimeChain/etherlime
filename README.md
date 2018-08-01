@@ -16,7 +16,8 @@ This framework was born out of necessity, hardships and trouble in the developme
 **Milestones:**
 1. [Ready]Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- Done
 2. [Ready]Being able to compile contracts to the desired formats for deployment <---- Done
-3. [Not Ready]Being able to run unit tests on the compiled contracts <---- We are here
+3. [Ready]Being able to run unit tests on the compiled contracts <---- Done
+4. [Not Ready]Being able to run unit tests with code coverage <---- We are here
 
 ## Installing
 
