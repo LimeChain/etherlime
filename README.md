@@ -16,7 +16,8 @@ This framework was born out of necessity, hardships and trouble in the developme
 **Milestones:**
 1. [Ready]Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- Done
 2. [Ready]Being able to compile contracts to the desired formats for deployment <---- Done
-3. [Not Ready]Being able to run unit tests on the compiled contracts <---- We are here
+3. [Ready]Being able to run unit tests on the compiled contracts <---- Done
+4. [Not Ready]Being able to run unit tests with code coverage <---- We are here
 
 ## Installing
 
@@ -63,6 +64,15 @@ etherlime deploy [file] [network] [secret] [-s]
 * ``-s`` - [Optional] Silent - silences the verbose errors 
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
+
+## Testing 
+
+To start your tests you need to run the following command:
+```
+etherlime test [path]
+```
+
+* ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``
 
 ### History of your deploys
 In order to see a list of what you've deployed you can run the following command:
