@@ -105,7 +105,14 @@ Here is example of result:
 
 Testing
 -------
-Not ready yet
+
+::
+
+    etherlime test [path]
+
+Parameters:
+
+* ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
 
 -----
 
