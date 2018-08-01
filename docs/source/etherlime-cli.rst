@@ -48,7 +48,7 @@ Project Initialization
     etherlime init
 
 Running this command will install ``etherlime`` in the directory you've run it and will create ``deployment`` directory with ``deploy.js`` prepared for you to use.
-You can use this file to write your deployment procedure.
+You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point.
 
 Deployment
 ----------

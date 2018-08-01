@@ -64,6 +64,15 @@ etherlime deploy [file] [network] [secret] [-s]
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
 
+## Testing 
+
+To start your tests you need to run the following command:
+```
+etherlime test [path]
+```
+
+* ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``
+
 ### History of your deploys
 In order to see a list of what you've deployed you can run the following command:
 ```
