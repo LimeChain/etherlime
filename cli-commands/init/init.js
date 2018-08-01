@@ -6,7 +6,7 @@ const deploymentDir = './deployment';
 const deploymentFileDestination = `${deploymentDir}/deploy.js`;
 
 const testDir = './test';
-const testFileDestination = `${testDir}/example.js`;
+const testFileDestination = `${testDir}/exampleTest.js`;
 
 const contractsDir = './contracts';
 

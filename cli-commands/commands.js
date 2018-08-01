@@ -85,7 +85,7 @@ const commands = [
 	},
 	{
 		command: 'test [path]',
-		description: 'run the tests',
+		description: 'Run, by default, all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be runned',
