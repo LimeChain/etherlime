@@ -3,7 +3,7 @@ const init = require('./init/init');
 const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
-const test = require('./test/test');
+const test = require('./etherlime-test/test');
 
 const commands = [
 	{
@@ -95,6 +95,20 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 			test.run(argv.path);
+		}
+	},
+	{
+		command: 'coverage [path]',
+		description: 'Run, by default, all tests with code coverage.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('path', {
+				describe: 'Specifies the path in which tests should be runned',
+				type: 'string',
+				default: './test'
+			})
+		},
+		commandProcessor: (argv) => {
+			test.runWithCoverage(argv.path);
 		}
 	}
 ]

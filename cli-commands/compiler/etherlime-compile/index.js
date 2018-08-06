@@ -172,7 +172,7 @@ var compile = function (sources, options, callback) {
       returnVal[contract_name] = contract_definition;
     });
   });
-  
+
   callback(null, returnVal, files);
 };
 
