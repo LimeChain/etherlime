@@ -3,7 +3,7 @@ const init = require('./init/init');
 const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
-const test = require('./test/test');
+const test = require('./etherlime-test/test');
 
 const commands = [
 	{
