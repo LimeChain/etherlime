@@ -31,6 +31,10 @@ const run = async (path) => {
 	});
 }
 
+const runCoverage = async (path) => {
+	
+}
+
 module.exports = {
 	run
 }
