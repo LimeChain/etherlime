@@ -3,6 +3,10 @@ let etherlimeTest = require('./etherlime-test');
 let dir = require('node-dir');
 let Config = require('./../compiler/etherlime-config');
 
+let App = require('./../../node_modules/solidity-coverage/lib/app');
+let config = require('./coverage-config.json');
+let accounts = require('./../ganache/setup.json').accounts;
+
 const run = async (path) => {
 	var config = Config.default();
 	var testDirectory = '';
@@ -31,10 +35,26 @@ const run = async (path) => {
 	});
 }
 
-const runCoverage = async (path) => {
+const runWithCoverage = async (path) => {
+	var accountsData = ''
+ 	accounts.forEach(account => {
+		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
+		accounts += accountData;
+	});
 	
+	config["testrpcOptions"] = accounts;
+	const app = new App(config);
+ 	app.generateCoverageEnvironment();
+	app.instrumentTarget();
+	app.launchTestrpc()
+		.then(() => {
+			app.runTestCommand();
+			app.generateReport();
+		})
+		.catch(err => log(err));
 }
 
 module.exports = {
-	run
+	run,
+	runWithCoverage
 }
