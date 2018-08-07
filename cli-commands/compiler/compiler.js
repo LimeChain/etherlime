@@ -2,23 +2,29 @@ let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
 let colors = require("./../../utils/colors");
 
-const run = async (defaultPath, runs) => {
+const run = async (defaultPath, runs, buildDir) => {
     defaultPath = `${process.cwd()}/${defaultPath}`;
 
-    performCompilation(defaultPath, runs);
+    performCompilation(defaultPath, runs, buildDir);
 }
 
-const performCompilation = (defaultPath, runs) => {
+const performCompilation = (defaultPath, runs, buildDir) => {
+    var buildDirectoryPath = `${defaultPath}/build`;
+
+    if (buildDir) {
+        buildDirectoryPath = `${defaultPath}${buildDir}`;
+    }
+
     let resolverOptions = {
         "working_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`
+        "contracts_build_directory": buildDirectoryPath
     };
 
     Resolver(resolverOptions);
 
     let compileOptions = {
         "contracts_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`
+        "contracts_build_directory": buildDirectoryPath
     };
 
     if (runs) {

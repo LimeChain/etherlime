@@ -1,7 +1,6 @@
 {
-    "compileCommand": "etherlime compile",
+    "compileCommand": "etherlime compile --runs=999 --build-dir=/build/contracts",
     "testCommand": "etherlime test",
     "copyPackages": ["zeppelin-solidity"],
-    "port": 8545,
-    "norpc": true
+    "port": 8545
 }

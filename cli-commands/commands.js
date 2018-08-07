@@ -65,7 +65,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir]',
+		command: 'compile [dir] [runs] [build-dir]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -78,9 +78,14 @@ const commands = [
 				describe: 'enables the optimizer and runs it the specified number of times',
 				type: 'number'
 			})
+
+			yargs.positional('build-dir', {
+				describe: 'Specifies the directory where the compiled contract will be places',
+				type: 'string'
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs);
+			compiler.run(argv.dir, argv.runs, argv.buildDir);
 		}
 	},
 	{

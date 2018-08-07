@@ -39,12 +39,12 @@ const runWithCoverage = async (path) => {
 	var accountsData = ''
  	accounts.forEach(account => {
 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
-		accounts += accountData;
+		accountsData += accountData;
 	});
 	
-	config["testrpcOptions"] = accounts;
+	config["testrpcOptions"] = `${accountsData}`;
 	const app = new App(config);
- 	app.generateCoverageEnvironment();
+	app.generateCoverageEnvironment();
 	app.instrumentTarget();
 	app.launchTestrpc()
 		.then(() => {
