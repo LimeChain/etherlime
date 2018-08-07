@@ -7,7 +7,7 @@ let App = require('./../../node_modules/solidity-coverage/lib/app');
 let config = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 
-const run = async (path) => {
+const run = async (path, runCompilation) => {
 	var config = Config.default();
 	var testDirectory = '';
 
@@ -31,7 +31,7 @@ const run = async (path) => {
 			return file.match(config.test_file_extension_regexp) != null;
 		});
 
-		etherlimeTest.run(files);
+		etherlimeTest.run(files, runCompilation);
 	});
 }
 

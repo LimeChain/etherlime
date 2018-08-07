@@ -65,7 +65,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [build-dir]',
+		command: 'compile [dir] [runs] [buildDir]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -79,7 +79,7 @@ const commands = [
 				type: 'number'
 			})
 
-			yargs.positional('build-dir', {
+			yargs.positional('buildDir', {
 				describe: 'Specifies the directory where the compiled contract will be places',
 				type: 'string'
 			})
@@ -89,7 +89,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path]',
+		command: 'test [path] [run-compilation]',
 		description: 'Run, by default, all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -97,9 +97,15 @@ const commands = [
 				type: 'string',
 				default: './test'
 			})
+
+			yargs.positional('run-compilation', {
+				describe: 'Specifies the path in which tests should be runned',
+				type: 'bool',
+				default: 'true'
+			})
 		},
 		commandProcessor: (argv) => {
-			test.run(argv.path);
+			test.run(argv.path, argv.runCompilation);
 		}
 	},
 	{
