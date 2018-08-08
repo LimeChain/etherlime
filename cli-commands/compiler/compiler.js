@@ -9,16 +9,24 @@ const run = async (defaultPath, runs) => {
 }
 
 const performCompilation = (defaultPath, runs) => {
+    let compilerSolcOptions = {
+        solc: {
+            version: "0.4.24"
+        }
+    };
+
     let resolverOptions = {
         "working_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`
+        "contracts_build_directory": `${defaultPath}/build`,
+        "compilers": compilerSolcOptions
     };
 
     Resolver(resolverOptions);
 
     let compileOptions = {
         "contracts_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`
+        "contracts_build_directory": `${defaultPath}/build`,
+        "compilers": compilerSolcOptions
     };
 
     if (runs) {
