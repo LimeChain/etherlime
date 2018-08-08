@@ -11,7 +11,7 @@ const run = async (defaultPath, runs) => {
 const performCompilation = (defaultPath, runs) => {
     let compilerSolcOptions = {
         solc: {
-            version: "0.4.24"
+            version: undefined
         }
     };
 
