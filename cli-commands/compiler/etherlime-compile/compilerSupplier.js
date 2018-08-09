@@ -36,8 +36,6 @@ CompilerSupplier.prototype.cachePath = findCacheDir({
  * OR specify that solc.compileStandard should wrap:
  * - dockerized solc               (config.version = "<image-name>" && config.docker: true)
  * - native built solc             (config.version = "native")
- *
- * @return {Module|Object}         solc
  */
 CompilerSupplier.prototype.load = function () {
     const self = this;
@@ -64,13 +62,11 @@ CompilerSupplier.prototype.getReleases = function () {
         .getVersions()
         .then(list => {
 
-            // Prereleases
             const prereleases = list
                 .builds
                 .filter(build => build['prerelease'])
                 .map(build => build['longVersion']);
 
-            // Releases
             const releases = Object.keys(list.releases);
 
             return {
