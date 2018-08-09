@@ -21,7 +21,7 @@ CompilerSupplier.prototype.config = {
 }
 
 CompilerSupplier.prototype.cachePath = findCacheDir({
-    name: 'truffle',
+    name: 'etherlime',
     cwd: __dirname,
     create: true,
 })
@@ -252,7 +252,7 @@ CompilerSupplier.prototype.normalizeVersion = function (version) {
 }
 
 CompilerSupplier.prototype.resolveCache = function (fileName) {
-    const thunk = findCacheDir({ name: 'truffle', cwd: __dirname, thunk: true });
+    const thunk = findCacheDir({ name: 'etherlime', cwd: __dirname, thunk: true });
     return thunk(fileName);
 }
 
@@ -293,7 +293,7 @@ CompilerSupplier.prototype.removeListener = function () {
 }
 
 CompilerSupplier.prototype.errors = function (kind, input, err) {
-    const info = 'Run `truffle compile --list` to see available versions.'
+    const info = 'Run `etherlime compile --list` to see available versions.'
 
     const kinds = {
 

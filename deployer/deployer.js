@@ -41,7 +41,7 @@ class Deployer {
 	 * 
 	 * @return DeploymentResult object
 	 * 
-	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile
+	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
 	async deploy(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
@@ -220,7 +220,7 @@ class Deployer {
 	 * 
 	 * @return the gas it is going to cost
 	 * 
-	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from truffle compile. Add the deployment params as comma separated values
+	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile. Add the deployment params as comma separated values
 	 */
 	async estimateGas(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);

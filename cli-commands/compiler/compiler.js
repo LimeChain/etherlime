@@ -2,16 +2,16 @@ let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
 let colors = require("./../../utils/colors");
 
-const run = async (defaultPath, runs, version) => {
+const run = async (defaultPath, runs, solcVersion) => {
     defaultPath = `${process.cwd()}/${defaultPath}`;
-    
-    performCompilation(defaultPath, runs);
+
+    performCompilation(defaultPath, runs, solcVersion);
 }
 
-const performCompilation = (defaultPath, runs, version) => {
+const performCompilation = (defaultPath, runs, solcVersion) => {
     let compilerSolcOptions = {
         solc: {
-            version: version
+            version: solcVersion
         }
     };
 
