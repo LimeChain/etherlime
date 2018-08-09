@@ -33,14 +33,14 @@
     "original-require": "^1.0.1",
     "readline-sync": "^1.4.9",
     "solc": "^0.4.24",
-    "yargs": "^11.0.0"
+    "yargs": "^11.0.0",
+    "mocha": "^5.2.0"
   },
   "bin": {
     "etherlime": "./cli.js"
   },
   "devDependencies": {
     "codecov": "^3.0.2",
-    "mocha": "^5.2.0",
     "nyc": "^12.0.2"
   }
 }
