@@ -4,6 +4,7 @@ let colors = require("./../../utils/colors");
 
 const run = async (defaultPath, runs) => {
     defaultPath = `${process.cwd()}/${defaultPath}`;
+    
     performCompilation(defaultPath, runs);
 }
 
