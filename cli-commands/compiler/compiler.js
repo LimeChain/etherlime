@@ -5,10 +5,10 @@ let colors = require("./../../utils/colors");
 const run = async (defaultPath, runs, solcVersion) => {
     defaultPath = `${process.cwd()}/${defaultPath}`;
 
-    performCompilation(defaultPath, runs, solcVersion);
+    return performCompilation(defaultPath, runs, solcVersion);
 }
 
-const performCompilation = (defaultPath, runs, solcVersion) => {
+const performCompilation = async (defaultPath, runs, solcVersion) => {
     let compilerSolcOptions = {
         solc: {
             version: solcVersion
@@ -38,18 +38,28 @@ const performCompilation = (defaultPath, runs, solcVersion) => {
         }
     }
 
-    compiler.compile(compileOptions, (error, artifacts, paths) => {
-        if (error) {
-            var stack = error['stack'].split(',/');
+    return compilePromise(compileOptions);
+}
 
-            stack.forEach(message => {
-                console.log(message);
-            });
+const compilePromise = async (compileOptions) => {
 
-            return;
-        }
+    return new Promise((resolve, reject) => {
+        compiler.compile(compileOptions, (error, artifacts, paths) => {
+            if (error) {
+                var stack = error['stack'].split(',/');
+    
+                stack.forEach(message => {
+                    console.log(message);
+                });
 
-        console.log(colors.colorSuccess('Compilation finished successfully'));
+                reject(stack);
+    
+                return;
+            }
+    
+            console.log(colors.colorSuccess('Compilation finished successfully'));
+            resolve();
+        });
     });
 }
 
