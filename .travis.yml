@@ -4,7 +4,7 @@ install:
   - npm install
   - npm link
 script:
-  - etherlime ganache &> /dev/null &
+  - etherlime ganache 
   - npm test
 after_success: 
   - npm run coverage
