@@ -65,7 +65,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion]',
+		command: 'compile [dir] [runs] [solcVersion] [docker]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -83,9 +83,15 @@ const commands = [
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
 			})
+
+			yargs.positional('docker', {
+				describe: 'Enable the usage of a docker. By default it is set to false.',
+				type: 'bool',
+				default: false
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker);
 		}
 	},
 	{

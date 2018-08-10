@@ -2,16 +2,21 @@ let compiler = require("./etherlime-workflow-compile/index");
 let Resolver = require("./etherlime-resolver/index");
 let colors = require("./../../utils/colors");
 
-const run = async (defaultPath, runs, solcVersion) => {
+const run = async (defaultPath, runs, solcVersion, useDocker) => {
     defaultPath = `${process.cwd()}/${defaultPath}`;
 
-    return performCompilation(defaultPath, runs, solcVersion);
+    return performCompilation(defaultPath, runs, solcVersion, useDocker);
 }
 
-const performCompilation = async (defaultPath, runs, solcVersion) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker) => {
+    if (useDocker && !solcVersion) {
+        throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
+    }
+
     let compilerSolcOptions = {
         solc: {
-            version: solcVersion
+            version: solcVersion,
+            docker: useDocker
         }
     };
 
