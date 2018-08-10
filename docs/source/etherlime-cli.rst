@@ -92,12 +92,20 @@ Compiling
 
 ::
 
-    etherlime compile [dir] [runs]
+    etherlime compile [dir] [runs] [solcVersion]
 
 Parameters:
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
 * ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
+* ``solcVersion`` - [Optional] By specifying ``solcVersion`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
+
+The ``solcVersion`` can accept the following values:
+
+* <undefined> - passing undefined or simply don't using the solcVersion argument will use the solc version from the local node_modules
+* <version> - you can pass directly the version of the solc. Example: ``--solcVersion=0.4.24``
+* <path> - you can pass the absolute path to a local solc
+* <native> - when you set the solc version argument to ``native`` the compiler is using the solc globally installed on your machine
 
 Here is example of result:
 
