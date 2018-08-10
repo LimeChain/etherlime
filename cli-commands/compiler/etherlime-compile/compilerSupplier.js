@@ -17,7 +17,7 @@ CompilerSupplier.prototype.config = {
     versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
     compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
     dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
-    cache: true,
+    cache: false,
 }
 
 CompilerSupplier.prototype.cachePath = findCacheDir({
@@ -30,8 +30,6 @@ CompilerSupplier.prototype.cachePath = findCacheDir({
  * Load solcjs from four possible locations:
  * - local node_modules            (config.version = <undefined>)
  * - absolute path to a local solc (config.version = <path>)
- * - a solc cache                  (config.version = <version-string> && cache contains version)
- * - a remote solc-bin source      (config.version = <version-string> && version not cached)
  *
  * OR specify that solc.compileStandard should wrap:
  * - dockerized solc               (config.version = "<image-name>" && config.docker: true)
@@ -44,8 +42,8 @@ CompilerSupplier.prototype.load = function () {
 
     return new Promise((accept, reject) => {
         const useDocker = self.config.docker;
-        const useDefault = !version;
-        const useLocal = !useDefault && self.isLocal(version);
+        const useDefault = !version; // Checking for version number
+        const useLocal = !useDefault && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
         const useNative = !useLocal && isNative;
         const useRemote = !useNative
 
@@ -95,6 +93,7 @@ CompilerSupplier.prototype.getDockerTags = function () {
 CompilerSupplier.prototype.getDefault = function () {
     const compiler = require('solc');
     this.removeListener();
+
     return compiler;
 }
 
@@ -228,6 +227,7 @@ CompilerSupplier.prototype.validateDocker = function () {
     const version = child.execSync('docker run ethereum/solc:' + image + ' --version');
     const normalized = this.normalizeVersion(version);
     this.addToCache(normalized, fileName);
+
     return normalized;
 }
 
@@ -248,16 +248,19 @@ CompilerSupplier.prototype.getCommitFromVersion = function (versionString) {
 
 CompilerSupplier.prototype.normalizeVersion = function (version) {
     version = String(version);
+
     return version.split(':')[1].trim();
 }
 
 CompilerSupplier.prototype.resolveCache = function (fileName) {
     const thunk = findCacheDir({ name: 'etherlime', cwd: __dirname, thunk: true });
+
     return thunk(fileName);
 }
 
 CompilerSupplier.prototype.isCached = function (fileName) {
     const file = this.resolveCache(fileName);
+
     return fs.existsSync(file);
 }
 
@@ -273,6 +276,7 @@ CompilerSupplier.prototype.getFromCache = function (fileName) {
     const soljson = originalRequire(filePath);
     const wrapped = solcWrap(soljson);
     this.removeListener();
+
     return wrapped;
 }
 
@@ -280,15 +284,16 @@ CompilerSupplier.prototype.compilerFromString = function (code) {
     const soljson = requireFromString(code);
     const wrapped = solcWrap(soljson);
     this.removeListener();
+
     return wrapped;
 }
 
 CompilerSupplier.prototype.removeListener = function () {
     const listeners = process.listeners("uncaughtException");
-    const execeptionHandler = listeners[listeners.length - 1];
+    const exceptionHandler = listeners[listeners.length - 1];
 
-    if (execeptionHandler) {
-        process.removeListener("uncaughtException", execeptionHandler);
+    if (exceptionHandler) {
+        process.removeListener("uncaughtException", exceptionHandler);
     }
 }
 
