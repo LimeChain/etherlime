@@ -57,7 +57,7 @@ Deploying
 ~~~~~~~~~
 ::
 
-    etherlime deploy [file] [network] [secret] [-s]
+    etherlime deploy [file] [network] [secret] [-s] [withCompilation]
 
 Parameters:
 
@@ -65,6 +65,7 @@ Parameters:
 * ``network`` - [Optional] By specifying ``--network`` you can specify the network param to be passed to your deploy method
 * ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
 * ``-s`` - [Optional] Silent - silences the verbose errors 
+* ``withCompilation`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done without preliminary compilation
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the
