@@ -28,7 +28,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret]',
+		command: 'deploy [file] [network] [secret] [compile]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -45,9 +45,15 @@ const commands = [
 				describe: 'secret string to be passed to your deployer. Useful for private keys or api keys',
 				type: 'string'
 			})
+
+			yargs.positional('compile', {
+				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
+				type: 'bool',
+				default: true
+			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile);
 		}
 	},
 	{
@@ -65,7 +71,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion] [docker]',
+		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -89,9 +95,20 @@ const commands = [
 				type: 'bool',
 				default: false
 			})
+
+			yargs.positional('list', {
+				describe: 'List available solc versions. The default is solcjs stable release',
+				type: 'string'
+			})
+
+			yargs.positional('all', {
+				describe: 'Print the full list',
+				type: 'bool',
+				default: false
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all);
 		}
 	},
 	{
