@@ -28,7 +28,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret]',
+		command: 'deploy [file] [network] [secret] [compile]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -45,9 +45,15 @@ const commands = [
 				describe: 'secret string to be passed to your deployer. Useful for private keys or api keys',
 				type: 'string'
 			})
+
+			yargs.positional('compile', {
+				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
+				type: 'bool',
+				default: true
+			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile);
 		}
 	},
 	{
