@@ -65,7 +65,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion] [docker]',
+		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -89,9 +89,20 @@ const commands = [
 				type: 'bool',
 				default: false
 			})
+
+			yargs.positional('list', {
+				describe: 'List available solc versions. The default is solcjs stable release',
+				type: 'string'
+			})
+
+			yargs.positional('all', {
+				describe: 'Print the full list',
+				type: 'bool',
+				default: false
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all);
 		}
 	},
 	{
