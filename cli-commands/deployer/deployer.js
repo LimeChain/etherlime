@@ -19,8 +19,8 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 }
 
-const run = async (deploymentFilePath, network, secret, silent, withCompilation) => {
-	if (withCompilation) {
+const run = async (deploymentFilePath, network, secret, silent, compile) => {
+	if (compile) {
 		await compiler.run('.');
 	}
 
