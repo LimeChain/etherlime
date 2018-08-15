@@ -35,7 +35,7 @@ const run = async (path, runCompilation) => {
 	});
 }
 
-const runWithCoverage = async (path) => {
+const runWithCoverage = async () => {
 	var accountsData = ''
  	accounts.forEach(account => {
 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
