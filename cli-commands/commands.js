@@ -48,7 +48,7 @@ const commands = [
 
 			yargs.positional('compile', {
 				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
-				type: 'bool',
+				type: 'boolean',
 				default: true
 			})
 		},
@@ -92,7 +92,7 @@ const commands = [
 
 			yargs.positional('docker', {
 				describe: 'Enable the usage of a docker. By default it is set to false.',
-				type: 'bool',
+				type: 'boolean',
 				default: false
 			})
 
@@ -103,7 +103,7 @@ const commands = [
 
 			yargs.positional('all', {
 				describe: 'Print the full list',
-				type: 'bool',
+				type: 'boolean',
 				default: false
 			})
 		},
