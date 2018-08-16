@@ -21,10 +21,8 @@ const getDeployMethod = (deploymentFilePath) => {
 
 const run = async (deploymentFilePath, network, secret, silent, compile, runs) => {
 	if (compile && typeof(runs) === 'number') {
-		console.log('test 1');
 		await compiler.run('.', runs);
 	} else if (compile) {
-		console.log('test 2');
 		await compiler.run('.');
 	}
 
