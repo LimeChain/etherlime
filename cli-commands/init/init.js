@@ -10,6 +10,8 @@ const testFileDestination = `${testDir}/exampleTest.js`;
 
 const contractsDir = './contracts';
 
+const packageJsonDestination = './package.json'
+
 const createDeploymentDir = () => {
 	console.log('===== Creating deployment file structure =====')
 	if (!fs.existsSync(deploymentDir)) {
@@ -51,6 +53,18 @@ const createTestsFolder = () => {
 	}
 }
 
+const copyPackageJsonFile = (libraryDirectory) => {
+	console.log('===== Generating package.json =====');
+
+	if (fs.existsSync(packageJsonDestination)) {
+		throw new Error(`package.json already exists in the main directory. You've probably already initialized etherlime for this project.`);
+	}
+
+	const packageJsonFileSource = `${libraryDirectory}/package.json`;
+
+	fs.copyFileSync(packageJsonFileSource, packageJsonDestination);
+}
+
 const run = async () => {
 
 	const libraryDirectory = __dirname;
@@ -64,6 +78,7 @@ const run = async () => {
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
+		copyPackageJsonFile(libraryDirectory);
 		console.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
 		console.error(e.message);
