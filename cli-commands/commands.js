@@ -28,7 +28,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret] [compile]',
+		command: 'deploy [file] [network] [secret] [compile] [runs]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -48,12 +48,17 @@ const commands = [
 
 			yargs.positional('compile', {
 				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
-				type: 'bool',
+				type: 'boolean',
 				default: true
+			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer and runs it the specified number of times',
+				type: 'number'
 			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs);
 		}
 	},
 	{
@@ -92,7 +97,7 @@ const commands = [
 
 			yargs.positional('docker', {
 				describe: 'Enable the usage of a docker. By default it is set to false.',
-				type: 'bool',
+				type: 'boolean',
 				default: false
 			})
 
@@ -103,7 +108,7 @@ const commands = [
 
 			yargs.positional('all', {
 				describe: 'Print the full list',
-				type: 'bool',
+				type: 'boolean',
 				default: false
 			})
 		},
