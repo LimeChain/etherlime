@@ -45,23 +45,30 @@ This will create `contracts` directory and `deployment` directory with `deploy.j
 ## Compiling
 
 ```
-etherlime compile [dir] [runs]
+etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]
 ```
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
 * ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
+* ``solcVersion`` - [Optional] By specifying ``solcVersion`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
+* ``docker`` - [Optional] When you want to use a docker image for your solc you should set ``docker=true`` in order ``solcVersion`` to accept the passed image.
+* ``list`` - [Optional] By specifying ``list`` you can list the available solc versions. The following values can be used: ``docker``, ``releases``, ``prereleases`` and ``latestRelease``. By default only 10 version are listed
+* ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
+* ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
 
 ## Deploying
 
 In order to deploy your deployment file following command:
 ```
-etherlime deploy [file] [network] [secret] [-s]
+etherlime deploy [file] [network] [secret] [-s] [compile] [runs]
 ```
 
 * ``file`` - [Optional] By specifying ``--file`` you can use another file as long as you keep the structure of the file (exporting an ``async deploy`` function with ``network`` and ``secret`` params)
 * ``network`` - [Optional] By specifying ``--network`` you can specify the network param to be passed to your deploy method
 * ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
 * ``-s`` - [Optional] Silent - silences the verbose errors 
+* ``compile`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation
+* ``runs`` - [Optional] Enables the optimizer and runs it the specified number of times
 
 The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes (as not all of us monitor the deployment process constantly);
 
