@@ -57,7 +57,7 @@ const copyPackageJsonFile = (libraryDirectory) => {
 	console.log('===== Generating package.json =====');
 
 	if (fs.existsSync(packageJsonDestination)) {
-		throw new Error(`package.json already exists in the main directory. You've probably already initialized etherlime for this project.`);
+		return;
 	}
 
 	const packageJsonFileSource = `${libraryDirectory}/package.json`;
