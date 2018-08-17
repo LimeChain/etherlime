@@ -48,7 +48,7 @@ Project Initialization
     etherlime init
 
 Running this command will install ``etherlime`` in the directory you've run it and will create ``deployment`` directory with ``deploy.js`` prepared for you to use.
-You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point.
+You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point. The init command generate and ``package.json`` for you which you can use for your npm modules.
 
 Deployment
 ----------
@@ -57,7 +57,7 @@ Deploying
 ~~~~~~~~~
 ::
 
-    etherlime deploy [file] [network] [secret] [-s] [compile]
+    etherlime deploy [file] [network] [secret] [-s] [compile] [runs]
 
 Parameters:
 
@@ -66,6 +66,7 @@ Parameters:
 * ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
 * ``-s`` - [Optional] Silent - silences the verbose errors 
 * ``compile`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation
+* ``runs`` - [Optional] Enables the optimizer and runs it the specified number of times
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the
@@ -93,7 +94,7 @@ Compiling
 
 ::
 
-    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all]
+    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]
 
 Parameters:
 
@@ -103,6 +104,7 @@ Parameters:
 * ``docker`` - [Optional] When you want to use a docker image for your solc you should set ``docker=true`` in order ``solcVersion`` to accept the passed image.
 * ``list`` - [Optional] By specifying ``list`` you can list the available solc versions. The following values can be used: ``docker``, ``releases``, ``prereleases`` and ``latestRelease``. By default only 10 version are listed
 * ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
+* ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
 
 The ``solcVersion`` can accept the following values:
 
