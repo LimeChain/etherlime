@@ -76,7 +76,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all]',
+		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -111,9 +111,15 @@ const commands = [
 				type: 'boolean',
 				default: false
 			})
+
+			yargs.positional('quite', {
+				describe: 'Disable verboseness during compilation. By the default is set to false.',
+				type: 'boolean',
+				default: false
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
 		}
 	},
 	{
