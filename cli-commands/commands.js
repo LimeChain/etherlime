@@ -28,7 +28,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret] [compile]',
+		command: 'deploy [file] [network] [secret] [compile] [runs]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -51,9 +51,14 @@ const commands = [
 				type: 'boolean',
 				default: true
 			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer and runs it the specified number of times',
+				type: 'number'
+			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs);
 		}
 	},
 	{
@@ -71,7 +76,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all]',
+		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -106,9 +111,15 @@ const commands = [
 				type: 'boolean',
 				default: false
 			})
+
+			yargs.positional('quite', {
+				describe: 'Disable verboseness during compilation. By the default is set to false.',
+				type: 'boolean',
+				default: false
+			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
 		}
 	},
 	{
