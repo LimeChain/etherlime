@@ -8,8 +8,8 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, runCompilation) => {
-  var mochaConfig = {'useColors': true};
+const run = async (files, skipCompilation) => {
+  var mochaConfig = { 'useColors': true };
   let mocha = createMocha(mochaConfig, files);
 
   files.forEach(function (file) {
@@ -17,9 +17,12 @@ const run = async (files, runCompilation) => {
 
     mocha.addFile(file);
   });
-  
+
   setJSTestGlobals();
-  await compiler.run('.', undefined, undefined, false, undefined, false, true);
+
+  if (!skipCompilation) {
+    await compiler.run('.', undefined, undefined, false, undefined, false, true);
+  }
 
   await runMocha(mocha);
 }
@@ -28,16 +31,16 @@ const createMocha = (config, files) => {
   var mocha = new Mocha(config);
 
   files.forEach(file => {
-		mocha.addFile(file);
+    mocha.addFile(file);
   });
-  
+
   return mocha;
 }
 
 const runMocha = (mocha) => {
-	mocha.run(failures => {
-		process.exitCode = failures ? -1 : 0;
-	});
+  mocha.run(failures => {
+    process.exitCode = failures ? -1 : 0;
+  });
 }
 
 const setJSTestGlobals = async () => {

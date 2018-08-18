@@ -76,7 +76,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -90,7 +90,7 @@ const commands = [
 				type: 'number'
 			})
 
-			yargs.positional('solcVersion', {
+			yargs.positional('solc-version', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
 			})
@@ -123,31 +123,31 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [run-compilation]',
-		description: 'Run, by default, all the tests that are in the test directory',
+		command: 'test [path] [skip-compilation]',
+		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
-				describe: 'Specifies the path in which tests should be runned',
+				describe: 'Specifies the path in which tests should be ran',
 				type: 'string',
 				default: './test'
 			})
 
-			yargs.positional('run-compilation', {
-				describe: 'Specifies the path in which tests should be runned',
-				type: 'bool',
-				default: 'true'
+			yargs.positional('skip-compilation', {
+				describe: 'Skips compilation of the contracts before running the tests',
+				type: 'boolean',
+				default: 'false'
 			})
 		},
 		commandProcessor: (argv) => {
-			test.run(argv.path, argv.runCompilation);
+			test.run(argv.path, argv.skipCompilation);
 		}
 	},
 	{
 		command: 'coverage [path]',
-		description: 'Run, by default, all tests with code coverage.',
+		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
-				describe: 'Specifies the path in which tests should be runned',
+				describe: 'Specifies the path in which tests should be ran',
 				type: 'string',
 				default: './test'
 			})
