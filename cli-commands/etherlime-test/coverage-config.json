@@ -1,0 +1,5 @@
+{
+    "compileCommand": "etherlime compile",
+    "testCommand": "etherlime test",
+    "buildDirPath": "/build"
+}
