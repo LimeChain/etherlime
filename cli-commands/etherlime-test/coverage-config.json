@@ -1,7 +1,5 @@
 {
-    "compileCommand": "etherlime compile --runs=999",
+    "compileCommand": "etherlime compile",
     "testCommand": "etherlime test",
-    "copyPackages": ["zeppelin-solidity"],
-    "port": 8545,
     "buildDirPath": "/build"
 }

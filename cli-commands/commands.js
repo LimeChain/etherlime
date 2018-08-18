@@ -143,17 +143,27 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path]',
+		command: 'coverage [path] [port] [runs]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
-				type: 'string',
-				default: './test'
+				type: 'string'
+			})
+
+			yargs.positional('port', {
+				describe: 'The port to run the solidity coverage testrpc (compatible with etherlime ganache deployer)',
+				type: 'number',
+				default: 8545
+			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer on the compiler and specifies the runs',
+				type: 'number'
 			})
 		},
 		commandProcessor: (argv) => {
-			test.runWithCoverage(argv.path);
+			test.runWithCoverage(argv.path, argv.port, argv.runs);
 		}
 	}
 ]
