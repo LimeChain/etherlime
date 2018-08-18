@@ -12,7 +12,8 @@ const run = async (path, runCompilation) => {
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		etherlimeTest.run([path]);
+		await etherlimeTest.run([path]);
+
 		return;
 	} 
 	
@@ -22,16 +23,27 @@ const run = async (path, runCompilation) => {
 		testDirectory = path;
 	}
 
-	dir.files(testDirectory, (error, files) => {
-		if (error) {
-			throw new Error(error);
-		}
+	const files = await getFiles(testDirectory, config);
 
-		files = files.filter(function (file) {
-			return file.match(config.test_file_extension_regexp) != null;
+	await etherlimeTest.run(files);
+}
+
+const getFiles = async function(testDirectory, config) {
+
+	return new Promise((resolve, reject) => {
+		dir.files(testDirectory, (error, files) => {
+			if (error) {
+				reject(new Error(error));
+
+				return;
+			}
+	
+			files = files.filter(function (file) {
+				return file.match(config.test_file_extension_regexp) != null;
+			});
+	
+			resolve(files);
 		});
-
-		etherlimeTest.run(files, runCompilation);
 	});
 }
 

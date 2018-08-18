@@ -19,10 +19,7 @@ const run = async (files, runCompilation) => {
   });
   
   setJSTestGlobals();
-
-  if (runCompilation) {
-    await compiler.run('.');
-  }
+  await compiler.run('.', undefined, undefined, false, undefined, false, true);
 
   await runMocha(mocha);
 }

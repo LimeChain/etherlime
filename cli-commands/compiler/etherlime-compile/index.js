@@ -8,6 +8,8 @@ var expect = require("./../etherlime-expect");
 var find_contracts = require("./../etherlime-contract-sources");
 var Config = require("./../etherlime-config");
 
+var CompilerSupplier = require("./compilerSupplier");
+
 var compile = function (sources, options, callback) {
   if (typeof options == "function") {
     callback = options;
@@ -81,99 +83,104 @@ var compile = function (sources, options, callback) {
     }
   });
 
-  var result = solc.compileStandard(JSON.stringify(solcStandardInput));
+  var supplier = new CompilerSupplier(options.compilers.solc);
 
-  var standardOutput = JSON.parse(result);
+  supplier.load().then(solc => {
+    var result = solc.compileStandard(JSON.stringify(solcStandardInput));
 
-  var errors = standardOutput.errors || [];
-  var warnings = [];
+    var standardOutput = JSON.parse(result);
 
-  if (options.strict !== true) {
-    warnings = errors.filter(function (error) {
-      return error.severity == "warning";
-    });
+    var errors = standardOutput.errors || [];
+    var warnings = [];
 
-    errors = errors.filter(function (error) {
-      return error.severity != "warning";
-    });
+    if (options.strict !== true) {
+      warnings = errors.filter(function (error) {
+        return error.severity == "warning";
+      });
 
-    if (options.quiet !== true && warnings.length > 0) {
-      options.logger.log(`${OS.EOL} Compilation warnings encountered: ${OS.EOL}`);
-      options.logger.log(warnings.map(function (warning) {
-        return warning.formattedMessage;
-      }).join());
-    }
-  }
+      errors = errors.filter(function (error) {
+        return error.severity != "warning";
+      });
 
-  if (errors.length > 0) {
-    options.logger.log("");
-    return callback(new CompileError(standardOutput.errors.map(function (error) {
-      return error.formattedMessage;
-    }).join()));
-  }
-
-  var contracts = standardOutput.contracts;
-
-  var files = [];
-  Object.keys(standardOutput.sources).forEach(function (filename) {
-    var source = standardOutput.sources[filename];
-    files[source.id] = originalPathMappings[filename];
-  });
-
-  var returnVal = {};
-
-  Object.keys(contracts).forEach(function (source_path) {
-    var files_contracts = contracts[source_path];
-
-    Object.keys(files_contracts).forEach(function (contract_name) {
-      var contract = files_contracts[contract_name];
-
-      var contract_definition = {
-        contract_name: contract_name,
-        sourcePath: originalPathMappings[source_path],
-        source: operatingSystemIndependentSources[source_path],
-        sourceMap: contract.evm.bytecode.sourceMap,
-        deployedSourceMap: contract.evm.deployedBytecode.sourceMap,
-        legacyAST: standardOutput.sources[source_path].legacyAST,
-        ast: standardOutput.sources[source_path].ast,
-        abi: contract.abi,
-        bytecode: "0x" + contract.evm.bytecode.object,
-        deployedBytecode: "0x" + contract.evm.deployedBytecode.object,
-        unlinked_binary: "0x" + contract.evm.bytecode.object,
-        compiler: {
-          "name": "solc",
-          "version": solc.version()
-        }
+      if (options.quiet !== true && warnings.length > 0) {
+        options.logger.log(`${OS.EOL} Compilation warnings encountered: ${OS.EOL}`);
+        options.logger.log(warnings.map(function (warning) {
+          return warning.formattedMessage;
+        }).join());
       }
+    }
 
-      contract_definition.abi = orderABI(contract_definition);
+    if (errors.length > 0) {
+      options.logger.log("");
+      return callback(new CompileError(standardOutput.errors.map(function (error) {
+        return error.formattedMessage;
+      }).join()));
+    }
 
-      Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
-        var fileLinks = contract.evm.bytecode.linkReferences[file_name];
+    var contracts = standardOutput.contracts;
 
-        Object.keys(fileLinks).forEach(function (library_name) {
-          var linkReferences = fileLinks[library_name] || [];
-
-          contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name);
-          contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name);
-        });
-      });
-
-      Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
-        var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
-
-        Object.keys(fileLinks).forEach(function (library_name) {
-          var linkReferences = fileLinks[library_name] || [];
-
-          contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name);
-        });
-      });
-
-      returnVal[contract_name] = contract_definition;
+    var files = [];
+    Object.keys(standardOutput.sources).forEach(function (filename) {
+      var source = standardOutput.sources[filename];
+      files[source.id] = originalPathMappings[filename];
     });
-  });
 
-  callback(null, returnVal, files);
+    var returnVal = {};
+
+    Object.keys(contracts).forEach(function (source_path) {
+      var files_contracts = contracts[source_path];
+
+      Object.keys(files_contracts).forEach(function (contract_name) {
+        var contract = files_contracts[contract_name];
+
+        var contract_definition = {
+          contract_name: contract_name,
+          sourcePath: originalPathMappings[source_path],
+          source: operatingSystemIndependentSources[source_path],
+          sourceMap: contract.evm.bytecode.sourceMap,
+          deployedSourceMap: contract.evm.deployedBytecode.sourceMap,
+          legacyAST: standardOutput.sources[source_path].legacyAST,
+          ast: standardOutput.sources[source_path].ast,
+          abi: contract.abi,
+          bytecode: "0x" + contract.evm.bytecode.object,
+          deployedBytecode: "0x" + contract.evm.deployedBytecode.object,
+          unlinked_binary: "0x" + contract.evm.bytecode.object,
+          compiler: {
+            "name": "solc",
+            "version": solc.version()
+          }
+        }
+
+        contract_definition.abi = orderABI(contract_definition);
+
+        Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
+          var fileLinks = contract.evm.bytecode.linkReferences[file_name];
+
+          Object.keys(fileLinks).forEach(function (library_name) {
+            var linkReferences = fileLinks[library_name] || [];
+
+            contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name);
+            contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name);
+          });
+        });
+
+        Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
+          var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
+
+          Object.keys(fileLinks).forEach(function (library_name) {
+            var linkReferences = fileLinks[library_name] || [];
+
+            contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name);
+          });
+        });
+
+        returnVal[contract_name] = contract_definition;
+      });
+    });
+
+    callback(null, returnVal, files);
+  })
+  .catch(callback);
 };
 
 function replaceLinkReferences(bytecode, linkReferences, libraryName) {
@@ -318,4 +325,5 @@ compile.with_dependencies = function (options, callback) {
   });
 };
 
+compile.CompilerSupplier = CompilerSupplier;
 module.exports = compile;

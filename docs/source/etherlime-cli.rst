@@ -48,7 +48,7 @@ Project Initialization
     etherlime init
 
 Running this command will install ``etherlime`` in the directory you've run it and will create ``deployment`` directory with ``deploy.js`` prepared for you to use.
-You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point.
+You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point. The init command generate and ``package.json`` for you which you can use for your npm modules.
 
 Deployment
 ----------
@@ -57,7 +57,7 @@ Deploying
 ~~~~~~~~~
 ::
 
-    etherlime deploy [file] [network] [secret] [-s]
+    etherlime deploy [file] [network] [secret] [-s] [compile] [runs]
 
 Parameters:
 
@@ -65,6 +65,8 @@ Parameters:
 * ``network`` - [Optional] By specifying ``--network`` you can specify the network param to be passed to your deploy method
 * ``secret`` - [Optional] By specifying ``secret`` you can specify the secret param to be passed to your deploy method. Comes in very handy for passing private keys.
 * ``-s`` - [Optional] Silent - silences the verbose errors 
+* ``compile`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation
+* ``runs`` - [Optional] Enables the optimizer and runs it the specified number of times
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the
@@ -92,12 +94,25 @@ Compiling
 
 ::
 
-    etherlime compile [dir] [runs]
+    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]
 
 Parameters:
 
 * ``dir`` - [Optional] By specifying ``dir`` you can set the root directory where to read the contracts and place the build folder. By default ``dir`` is set to the current working directory ``./``
 * ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
+* ``solcVersion`` - [Optional] By specifying ``solcVersion`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
+* ``docker`` - [Optional] When you want to use a docker image for your solc you should set ``docker=true`` in order ``solcVersion`` to accept the passed image.
+* ``list`` - [Optional] By specifying ``list`` you can list the available solc versions. The following values can be used: ``docker``, ``releases``, ``prereleases`` and ``latestRelease``. By default only 10 version are listed
+* ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
+* ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
+
+The ``solcVersion`` can accept the following values:
+
+* <undefined> - passing undefined or simply don't using the solcVersion argument will use the solc version from the local node_modules
+* <version> - you can pass directly the version of the solc. Example: ``--solcVersion=0.4.24``
+* <image> - the image which will be used to load the solc into the docker. Example: ``nightly-0.4.25-a2c754b3fed422b3d8027a5298624bcfed3744a5``
+* <path> - you can pass the absolute path to a local solc
+* <native> - when you set the solc version argument to ``native`` the compiler is using the solc globally installed on your machine
 
 Here is example of result:
 

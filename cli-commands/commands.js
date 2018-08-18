@@ -28,7 +28,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret]',
+		command: 'deploy [file] [network] [secret] [compile] [runs]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -45,9 +45,20 @@ const commands = [
 				describe: 'secret string to be passed to your deployer. Useful for private keys or api keys',
 				type: 'string'
 			})
+
+			yargs.positional('compile', {
+				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
+				type: 'boolean',
+				default: true
+			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer and runs it the specified number of times',
+				type: 'number'
+			})
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs);
 		}
 	},
 	{
@@ -65,7 +76,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [buildDir]',
+		command: 'compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -79,13 +90,36 @@ const commands = [
 				type: 'number'
 			})
 
-			yargs.positional('buildDir', {
-				describe: 'Specifies the directory where the compiled contract will be places',
+			yargs.positional('solcVersion', {
+				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
+			})
+
+			yargs.positional('docker', {
+				describe: 'Enable the usage of a docker. By default it is set to false.',
+				type: 'boolean',
+				default: false
+			})
+
+			yargs.positional('list', {
+				describe: 'List available solc versions. The default is solcjs stable release',
+				type: 'string'
+			})
+
+			yargs.positional('all', {
+				describe: 'Print the full list',
+				type: 'boolean',
+				default: false
+			})
+
+			yargs.positional('quite', {
+				describe: 'Disable verboseness during compilation. By the default is set to false.',
+				type: 'boolean',
+				default: false
 			})
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.buildDir);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
 		}
 	},
 	{
