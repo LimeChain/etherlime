@@ -71,6 +71,7 @@ const run = async () => {
 
 	try {
 		console.log('===== Installing etherlime =====');
+		copyPackageJsonFile(libraryDirectory);
 		const { stdout, stderr } = await exec('npm install etherlime');
 		console.log(stdout);
 		createContractsFolder();
@@ -78,7 +79,6 @@ const run = async () => {
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
-		copyPackageJsonFile(libraryDirectory);
 		console.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
 		console.error(e.message);
