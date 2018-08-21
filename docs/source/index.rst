@@ -31,7 +31,8 @@ Milestones
 * [Ready] Being able to deploy compiled contracts on local and infura nodes <---- **Done** 
 * [Ready] Being able to compile contracts to the desired formats for deployment <---- **Done**
 * [Ready] Being able to run unit tests on the compiled contracts <---- **Done**
-* [Not Ready] Being able to run unit tests with code coverage <---- **We are here**
+* [Ready] Being able to run unit tests with code coverage <---- **Done**
+* [Not Ready] Being able to debug transactions <---- **Next**
 
 .. toctree::
    :maxdepth: 3
