@@ -116,7 +116,7 @@ const deploy = async (network) => {
 
 	const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
 	
-	const result = await deployer.deploy(TestContract, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
+	const result = await deployer.deploy(TestContract, {}, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
 }
 
 ```
