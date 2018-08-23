@@ -14,11 +14,11 @@ This framework provides alternative to the other web3.js based frameworks and al
 This framework was born out of necessity, hardships and trouble in the development and deployment of ethereum smart contract. We are trying to ease the pain of deployment, compilation and unit testing and add much needed stability to the process. In our mind ethers is much more stable alternative than web3.js for the moment therefore this framework is born.
 
 **Milestones:**
-1. [Ready]Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- Done
-2. [Ready]Being able to compile contracts to the desired formats for deployment <---- Done
-3. [Ready]Being able to run unit tests on the compiled contracts <---- Done
-4. [Ready]Being able to run unit tests with code coverage <---- Done
-5. [Not Ready]Being able to debug transactions <---- Next
+1. [Ready] Being able to deploy compiled contracts (compiled in the truffle format) on local and infura nodes <---- Done
+2. [Ready] Being able to compile contracts to the desired formats for deployment <---- Done
+3. [Ready] Being able to run unit tests on the compiled contracts <---- Done
+4. [Ready] Being able to run unit tests with code coverage <---- Done
+5. [Not Ready] Being able to debug transactions <---- Next
 
 ## Installing
 

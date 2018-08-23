@@ -47,7 +47,14 @@ const setJSTestGlobals = async () => {
   global.ethers = ethers;
   global.assert = chai.assert;
   global.expect = chai.expect;
-  global.accounts = accounts;
+  const importedAccounts = new Array();
+  for (const acc of accounts) {
+    importedAccounts.push({
+      secretKey: acc.secretKey,
+      wallet: new ethers.Wallet(acc.secretKey)
+    })
+  }
+  global.accounts = importedAccounts;
 }
 
 module.exports = {
