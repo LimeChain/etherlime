@@ -1,18 +1,12 @@
-const unhandledRejection = process.on('unhandledRejection', err => {
-	console.error((new Date).toUTCString() + ' unhandledRejection:', err.message)
-	console.error(err.stack)
-});
+const handleRejection = (callback) => {
+	return process.on('unhandledRejection', callback);
+}
 
-const unhandledException = process.on('unhandledException', err => {
-	console.error((new Date).toUTCString() + ' unhandledException:', err.message)
-	console.error(err.stack)
-});
-
-const globalExceptionHandling = function () {
-	unhandledException;
-	unhandledRejection
-};
+const handleException = (callback) => {
+	return process.on('unhandledException', callback);
+}
 
 module.exports = {
-	globalExceptionHandling
+	handleRejection,
+	handleException
 };

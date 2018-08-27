@@ -35,7 +35,15 @@ run = () => {
 	menu.showHelpOnFail();
 	menu.argv;
 
-	globalExceptionHandling;
+	globalExceptionHandling.handleException(err => {
+		console.error(`${(new Date).toUTCString()} unhandledException:`, err.message)
+		console.error(err.stack)
+	})
+
+	globalExceptionHandling.handleRejection(err => {
+		console.error(`${(new Date).toUTCString()} unhandledRejection:`, err.message)
+		console.error(err.stack)
+	})
 };
 
 run();
