@@ -6,4 +6,3 @@ node_modules
 .testcases
 build
 docs/build
-.idea/*
