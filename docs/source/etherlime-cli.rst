@@ -130,6 +130,8 @@ Parameters:
 * ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
 
+In your unit tests you can use the global `accounts` object. It contains the secretKey (private key) and instance of ethers.Wallet of the account.
+
 Coverage
 --------
 

@@ -37,7 +37,7 @@ Deployer Example
 
     const etherlime = require('etherlime');
 
-    const TestContract = require('./TestContract.json'); // Your etherlime compiled contract here
+    const TestContract = require('../build/TestContract.json'); // Path to your etherlime compiled contract json file
 
     const deploy = async (network, secret) => {
 

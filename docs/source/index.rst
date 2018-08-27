@@ -39,8 +39,8 @@ Milestones
    :caption: Developer Documentation
 
    getting-started
-   etherlime-cli
    etherlime-api
+   etherlime-cli
 
 -----
 
