@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-const commands = require('./cli-commands/commands')
+const commands = require('./cli-commands/commands');
 const { exec } = require('child_process');
+const globalExceptionHandling = require('./utils/global-exception-handling');
 
 run = () => {
 
@@ -21,7 +22,7 @@ run = () => {
 				console.error(`${stderr}`);
 			});
 		}
-	})
+	});
 
 	menu.help('help');
 	menu.option('silent', {
@@ -33,6 +34,16 @@ run = () => {
 	menu.recommendCommands();
 	menu.showHelpOnFail();
 	menu.argv;
-}
+
+	globalExceptionHandling.handleException(err => {
+		console.error(`${(new Date).toUTCString()} unhandledException:`, err.message)
+		console.error(err.stack)
+	})
+
+	globalExceptionHandling.handleRejection(err => {
+		console.error(`${(new Date).toUTCString()} unhandledRejection:`, err.message)
+		console.error(err.stack)
+	})
+};
 
 run();

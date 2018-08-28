@@ -1,5 +1,5 @@
 const etherlime = require('./../../index.js');
-const ethers = require('ethers')
+const ethers = require('ethers');
 const assert = require('assert');
 const store = require('./../../logs-store/logs-store');
 
@@ -33,24 +33,24 @@ describe('Deployer tests', () => {
 			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
 				new etherlime.Deployer('Random Things Here', provider, defaultConfigs)
-			}
+			};
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
-		})
+		});
 
 		it('should throw on incorrect wallet input type', () => {
 			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			const throwingFunction = () => {
 				new etherlime.Deployer(69, provider, defaultConfigs)
-			}
+			};
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
 		})
-	})
+	});
 
 	describe('Deploying contract', async () => {
 
-		let wallet
+		let wallet;
 		let provider;
 		let deployer;
 
@@ -61,7 +61,7 @@ describe('Deployer tests', () => {
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
-			})
+			});
 
 			it('should deploy contract without params correctly', async () => {
 				const contractWrapper = await deployer.deploy(Greetings);
@@ -75,7 +75,7 @@ describe('Deployer tests', () => {
 				assert.strictEqual(lastAction.deployerType, 'Deployer', 'Deployer Type not set correctly');
 				assert.strictEqual(lastAction.nameOrLabel, 'Greetings', 'Label not set correctly');
 				assert(lastAction.status == 0, 'status not set correctly');
-			})
+			});
 
 			it('should deploy contract without default configs', async () => {
 				deployer = new etherlime.Deployer(wallet, provider);
@@ -85,7 +85,7 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-			})
+			});
 
 			it('should deploy contract without gasPrice correctly', async () => {
 				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
@@ -97,7 +97,7 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-			})
+			});
 
 			it('should deploy contract without gasLimit correctly', async () => {
 				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
@@ -109,7 +109,7 @@ describe('Deployer tests', () => {
 				assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
-			})
+			});
 
 			it('should deploy contract with params correctly', async () => {
 				const contractWrapper = await deployer.deploy(VestingContract, {}, config.randomAddress, 1569426974);
@@ -120,11 +120,11 @@ describe('Deployer tests', () => {
 				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
 			})
 
-		})
+		});
 
 		describe('Negative Cases', () => {
 
-			let wallet
+			let wallet;
 			let provider;
 			let deployer;
 
@@ -133,7 +133,7 @@ describe('Deployer tests', () => {
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
-			})
+			});
 
 			it('should throw on incorrect contract object', async () => {
 				const contractCopy = JSON.parse(JSON.stringify(ICOTokenContract));
@@ -146,7 +146,7 @@ describe('Deployer tests', () => {
 					console.log(e.message);
 				}
 
-			})
+			});
 
 			it('should throw on incorrect bytecode', async () => {
 				const contractCopy = JSON.parse(JSON.stringify(ICOTokenContract));
@@ -158,7 +158,7 @@ describe('Deployer tests', () => {
 				} catch (e) {
 					console.log(e.message);
 				}
-			})
+			});
 
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
@@ -176,11 +176,11 @@ describe('Deployer tests', () => {
 			})
 		})
 
-	})
+	});
 
 	describe('Wrapping deployed contract', async () => {
 
-		let wallet
+		let wallet;
 		let provider;
 		let deployer;
 
@@ -188,7 +188,7 @@ describe('Deployer tests', () => {
 			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
-		})
+		});
 
 		it('should wrap contracts correctly', async () => {
 			const contractWrapper = await deployer.wrapDeployedContract(ICOTokenContract, config.randomAddress);
@@ -198,11 +198,11 @@ describe('Deployer tests', () => {
 			assert.deepEqual(wallet, contractWrapper.wallet, "The stored wallet does not match the inputted one");
 			assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
 		})
-	})
+	});
 
 	describe('Estimating gas of deployment', async () => {
 
-		let wallet
+		let wallet;
 		let provider;
 		let deployer;
 
@@ -210,7 +210,7 @@ describe('Deployer tests', () => {
 			wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
 			infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
 			deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
-		})
+		});
 
 		it('should wrap contracts correctly', async () => {
 			const gas = 2470692;
@@ -218,20 +218,20 @@ describe('Deployer tests', () => {
 			const estimateGas = await deployer.estimateGas(ICOTokenContract);
 
 			assert.equal(gas, estimateGas.toString())
-		})
+		});
 
 		it('should wrap contracts correctly', async () => {
 			const gas = 1629070;
 
-			let libraries = {"LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC"};
+			let libraries = { "LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC" };
 			const estimateGas = await deployer.estimateGas(DataContract, libraries);
 
 			assert.equal(gas, estimateGas.toString())
 		})
-	})
+	});
 
 	describe('Preparing bytecode', async () => {
-		let wallet
+		let wallet;
 		let provider;
 		let deployer;
 
@@ -240,7 +240,7 @@ describe('Deployer tests', () => {
 			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
 			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
-		})
+		});
 
 		it('should not update the bytecode when an invalid library is used', async () => {
 			let invalidLibrary = 100;
