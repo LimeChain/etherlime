@@ -1,3 +1,4 @@
+const ethersUtils = require("ethers").utils;
 const colors = require('./../utils/colors');
 const Table = require('cli-table');
 const moment = require('moment');
@@ -14,7 +15,7 @@ const printReportTable = (recordActions) => {
 			`${colors.colorName(action.nameOrLabel)}`,
 			`${action.transactionHash}`,
 			`${getReadableStatus(action.status)}`,
-			`${action.gasPrice}`,
+			`${ethersUtils.formatUnits(action.gasPrice, 'gwei')} Gwei`,
 			`${action.gasUsed}`,
 			`${action.result}`
 		])
