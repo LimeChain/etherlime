@@ -15,6 +15,6 @@ contract LimeFactory {
 
     function createLime(string _name, uint8 _carbohydrates, uint8 _fat, uint8 _protein) internal {
         limes.push(Lime(_name, _carbohydrates, _fat, _protein));
-        FreshLime(_name);
+        emit FreshLime(_name);
     }
 }
