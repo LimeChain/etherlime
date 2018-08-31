@@ -7,7 +7,7 @@ const run = (inPort, logger) => {
 		accounts: setup.accounts,
 		logger
 	});
-	
+
 	server.listen(port, function (err, blockchain) {
 
 		if (err) {
@@ -24,8 +24,8 @@ const run = (inPort, logger) => {
 		console.log(`\nListening on http://localhost:${port}`);
 
 	});
-}
+};
 
 module.exports = {
 	run
-}
+};
