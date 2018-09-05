@@ -9,15 +9,16 @@ const testDir = './test';
 const testFileDestination = `${testDir}/exampleTest.js`;
 
 const contractsDir = './contracts';
+const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
 
-const packageJsonDestination = './package.json'
+const packageJsonDestination = './package.json';
 
 const createDeploymentDir = () => {
-	console.log('===== Creating deployment file structure =====')
+	console.log('===== Creating deployment file structure =====');
 	if (!fs.existsSync(deploymentDir)) {
 		fs.mkdirSync(deploymentDir);
 	}
-}
+};
 
 const copyDeployFile = (libraryDirectory) => {
 	if (fs.existsSync(deploymentFileDestination)) {
@@ -27,7 +28,7 @@ const copyDeployFile = (libraryDirectory) => {
 	const deploymentFileSource = `${libraryDirectory}/deploymentTemplate.js`;
 
 	fs.copyFileSync(deploymentFileSource, deploymentFileDestination);
-}
+};
 
 const copyTestFile = (libraryDirectory) => {
 	if (fs.existsSync(testFileDestination)) {
@@ -37,21 +38,31 @@ const copyTestFile = (libraryDirectory) => {
 	const testFileSource = `${libraryDirectory}/testTemplate.js`;
 
 	fs.copyFileSync(testFileSource, testFileDestination);
-}
+};
+
+const copyContractFile = (libraryDirectory) => {
+	if (fs.existsSync(contractFileDestination)) {
+		throw new Error(`LimeFactory.sol already exists in ${contractsDir} directory. You've probably already initialized etherlime for this project.`);
+	}
+
+	const contractFileSource = `${libraryDirectory}/LimeFactory.sol`;
+
+	fs.copyFileSync(contractFileSource, contractFileDestination);
+};
 
 const createContractsFolder = () => {
-	console.log('===== Creating contracts file structure =====')
+	console.log('===== Creating contracts file structure =====');
 	if (!fs.existsSync(contractsDir)) {
 		fs.mkdirSync(contractsDir);
 	}
-}
+};
 
 const createTestsFolder = () => {
-	console.log('===== Creating tests file structure =====')
+	console.log('===== Creating tests file structure =====');
 	if (!fs.existsSync(testDir)) {
 		fs.mkdirSync(testDir);
 	}
-}
+};
 
 const copyPackageJsonFile = (libraryDirectory) => {
 	console.log('===== Generating package.json =====');
@@ -63,7 +74,7 @@ const copyPackageJsonFile = (libraryDirectory) => {
 	const packageJsonFileSource = `${libraryDirectory}/package.json`;
 
 	fs.copyFileSync(packageJsonFileSource, packageJsonDestination);
-}
+};
 
 const run = async () => {
 
@@ -75,6 +86,7 @@ const run = async () => {
 		const { stdout, stderr } = await exec('npm install etherlime');
 		console.log(stdout);
 		createContractsFolder();
+		copyContractFile(libraryDirectory);
 		createTestsFolder();
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
@@ -83,8 +95,8 @@ const run = async () => {
 	} catch (e) {
 		console.error(e.message);
 	}
-}
+};
 
 module.exports = {
 	run
-}
+};
