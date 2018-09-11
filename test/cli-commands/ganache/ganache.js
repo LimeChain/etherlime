@@ -3,6 +3,7 @@ const assert = require('assert');
 
 let ganacheCommandOutput = '';
 let runningChildProcessPID = '';
+let portErrorOnProcess = false;
 
 function spawnProcess(dir, cmd) {
 	return spawnLinuxProcess(dir, cmd);
@@ -41,7 +42,13 @@ function runCmdHandler(dir, cmd, closable = true) {
 	});
 
 	process.stderr.on('data', function (data) {
-		console.log('error', data.toString('utf-8'));
+		const err = data.toString('utf-8');
+		if (err.includes('EADDRINUSE')) {
+			portErrorOnProcess = true;
+			console.log('Expected - the port is in use');
+		} else {
+			console.log(err);
+		}
 	});
 
 	process.on('exit', function (code) {
@@ -58,6 +65,7 @@ function timeout(ms) {
 }
 
 const RUNNING_GANACHE_TIMEOUT = 5000;
+const SECOND_TIMEOUT = 1000;
 
 const DEFAULT_PORT = '8545';
 const SPECIFIC_PORT = '8080';
@@ -132,13 +140,17 @@ describe('Ganache cli command', () => {
 		it('should throw if we are trying to start ganache server on used port', async () => {
 			runCmdHandler('./cli-commands/ganache', 'etherlime ganache', false);
 
+			await timeout(SECOND_TIMEOUT);
+
 			const stillRunningPID = runningChildProcessPID;
 
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache');
+			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 9999');
 
 			await timeout(RUNNING_GANACHE_TIMEOUT);
 
 			killProcessByPID(stillRunningPID);
+
+			assert(portErrorOnProcess, 'The ganache server is running on used port');
 		});
 	});
 

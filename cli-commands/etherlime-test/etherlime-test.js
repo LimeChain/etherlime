@@ -45,7 +45,7 @@ const runMocha = (mocha) => {
 
 const setJSTestGlobals = async () => {
   global.ethers = ethers;
-  global.assert = chai.assert;
+  global.assert = chai.asssert;
   global.expect = chai.expect;
   const importedAccounts = new Array();
   for (const acc of accounts) {
