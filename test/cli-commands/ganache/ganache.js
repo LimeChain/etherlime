@@ -1,5 +1,5 @@
 const spawn = require('child_process').spawn;
-const assert = require('assert');
+const assert = require("chai").assert;
 
 let ganacheCommandOutput = '';
 let runningChildProcessPID = '';
@@ -91,7 +91,7 @@ describe('Ganache cli command', () => {
 		ganacheCommandOutput = '';
 	});
 
-	xdescribe('Run ganache server on default or specific port', async () => {
+	describe('Run ganache server on default or specific port', async () => {
 		it('should start ganache server on default port', async () => {
 			runCmdHandler('./cli-commands/ganache', 'etherlime ganache');
 			await timeout(RUNNING_GANACHE_TIMEOUT);
@@ -109,7 +109,7 @@ describe('Ganache cli command', () => {
 		});
 	});
 
-	xdescribe('Run ganache server and check accounts', async () => {
+	describe('Run ganache server and check accounts', async () => {
 		it('should start ganache server and validate accounts', async () => {
 			runCmdHandler('./cli-commands/ganache', 'etherlime ganache');
 			await timeout(RUNNING_GANACHE_TIMEOUT);
@@ -144,13 +144,13 @@ describe('Ganache cli command', () => {
 
 			const stillRunningPID = runningChildProcessPID;
 
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 9999');
+			runCmdHandler('./cli-commands/ganache', 'etherlime ganache');
 
 			await timeout(RUNNING_GANACHE_TIMEOUT);
 
 			killProcessByPID(stillRunningPID);
 
-			assert(portErrorOnProcess, 'The ganache server is running on used port');
+			assert.isTrue(portErrorOnProcess, 'The ganache server is running on used port');
 		});
 	});
 
