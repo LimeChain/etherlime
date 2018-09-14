@@ -3,10 +3,12 @@ const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
 const getGanacheProcessState = require('../utils/child-process-states').getState;
 const timeout = require('../utils/timeout').timeout;
+const hook_stream = require('../utils/hookup-standard-output').hook_stream;
 
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
 const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
+const listenCallback = require('../../../cli-commands/ganache/ganache').listenCallback;
 
 const RUNNING_GANACHE_TIMEOUT = 5000;
 const SECOND_TIMEOUT = 1000;
@@ -96,28 +98,32 @@ describe('Ganache cli command', () => {
 		});
 	});
 
-	describe('Test ganache-cli server failed', async () => {
-		it('should return if ganache serve failed', async () => {
+	describe('Ganache server listen callback', async () => {
+		it('should return and log error if ganache serve callback failed', async () => {
 
-			ganacheRun(GANACHE_CLI_SERVER_PORT, console);
+			const errorMessage = 'This message should be logged, if error occurs in callback';
+			const err = new Error(errorMessage);
+			const logs = [];
+			let errorLogged = false;
 
-			// const server = ganache.server({
-			// 	accounts: setup.accounts,
-			// 	console
-			// });
-			//
-			// server.listen(GANACHE_CLI_SERVER_PORT, function (err, blockchain) {
-			// 	console.log('before if ----------------------------');
-			// 	err = new err();
-			// 	if (err) {
-			// 		console.log('inside if----------------------------');
-			// 		console.log(err);
-			// 		return;
-			// 	}
-			// });
-			//
-			// server.close();
+			// hook up standard output
+			const unhook_stdout = hook_stream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
 
+			listenCallback(err);
+
+			unhook_stdout();
+
+			for (let log of logs) {
+				errorLogged = log.includes(errorMessage);
+
+				if (errorLogged) {
+					break;
+				}
+			}
+
+			assert.isTrue(errorLogged, 'The error is not logged. Return statement does not work');
 		});
 	});
 

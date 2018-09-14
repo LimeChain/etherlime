@@ -1,31 +1,35 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
+let port;
 
 const run = (inPort, logger) => {
-	let port = (inPort) ? inPort : setup.defaultPort;
+	port = (inPort) ? inPort : setup.defaultPort;
 	const server = ganache.server({
 		accounts: setup.accounts,
 		logger
 	});
 
-	server.listen(port, function (err, blockchain) {
+	server.listen(port, listenCallback);
+};
 
-		if (err) {
-			console.log(err);
-			return;
-		}
+const listenCallback = (err, blockchain) => {
 
-		const accountsLength = blockchain.options.accounts.length;
+	if (err) {
+		console.log(err);
+		return;
+	}
 
-		for (let i = 0; i < accountsLength; i++) {
-			console.log(`[${i}] Address: ${Object.getOwnPropertyNames(blockchain.personal_accounts)[i]} Private key: ${blockchain.options.accounts[i].secretKey}`);
-		}
+	const accountsLength = blockchain.options.accounts.length;
 
-		console.log(`\nListening on http://localhost:${port}`);
+	for (let i = 0; i < accountsLength; i++) {
+		console.log(`[${i}] Address: ${Object.getOwnPropertyNames(blockchain.personal_accounts)[i]} Private key: ${blockchain.options.accounts[i].secretKey}`);
+	}
 
-	});
+	console.log(`\nListening on http://localhost:${port}`);
+
 };
 
 module.exports = {
-	run
+	run,
+	listenCallback
 };
