@@ -10,7 +10,7 @@ const setup = require('./setup.json');
 const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 const listenCallback = require('../../../cli-commands/ganache/ganache').listenCallback;
 
-const RUNNING_GANACHE_TIMEOUT = 5000 * 12;
+const RUNNING_GANACHE_TIMEOUT = 10000;
 const SECOND_TIMEOUT = 1000;
 
 const DEFAULT_PORT = '8545';
