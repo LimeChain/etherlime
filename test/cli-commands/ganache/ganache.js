@@ -1,21 +1,15 @@
 const assert = require('chai').assert;
+const tcpPortUsed = require('tcp-port-used');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
-const getGanacheProcessState = require('../utils/child-process-states').getState;
 const timeout = require('../utils/timeout').timeout;
-const hook_stream = require('../utils/hookup-standard-output').hook_stream;
+const hookStream = require('../utils/hookup-standard-output').hookStream;
 
 const ganache = require('ganache-cli');
-const setup = require('./setup.json');
-const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 const listenCallback = require('../../../cli-commands/ganache/ganache').listenCallback;
 
-const RUNNING_GANACHE_TIMEOUT = 10000;
-const SECOND_TIMEOUT = 1000;
-
-const DEFAULT_PORT = '8545';
-const SPECIFIC_PORT = '8123';
-const GANACHE_CLI_SERVER_PORT = '8130';
+const DEFAULT_PORT = 8545;
+const SPECIFIC_PORT = 8123;
 
 const ADDRESS_START_INDEX = 13;
 const ADDRESS_LENGTH = 42;
@@ -36,27 +30,37 @@ let ganacheCommandOutput = '';
 
 describe('Ganache cli command', () => {
 
-	beforeEach(() => {
-		ganacheCommandOutput = '';
+	describe('Ganache server used the default port', async () => {
+		it('the default port should be used by ganache server', async () => {
+
+			const defaultPortInUse = await tcpPortUsed.check(DEFAULT_PORT);
+
+			assert.isTrue(defaultPortInUse, `The default port ${DEFAULT_PORT} is free`);
+		});
 	});
 
 	describe('Run ganache server on specific port', async () => {
 		it('should start ganache server on specific port', async () => {
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 8123');
-			await timeout(RUNNING_GANACHE_TIMEOUT);
-			ganacheCommandOutput = getGanacheProcessState()['ganacheCommandOutput'];
-			const ganachePort = ganacheCommandOutput.substr(ganacheCommandOutput.length - 5).trim();
 
-			assert.equal(ganachePort, SPECIFIC_PORT, 'The ganache server is not running on specific port');
+			const portInUse = await tcpPortUsed.check(SPECIFIC_PORT);
+
+			assert.isFalse(portInUse, `The specific port ${SPECIFIC_PORT} is in use`);
+
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${SPECIFIC_PORT}`);
+
+			const portInUseAfterRunningGanache = await tcpPortUsed.check(SPECIFIC_PORT);
+
+			assert.isTrue(portInUseAfterRunningGanache, `The specific port ${SPECIFIC_PORT} is free`);
+
+			killProcessByPID(childResponse.process.pid);
 		});
 	});
 
 	describe('Run ganache server and check accounts', async () => {
 		it('should start ganache server and validate accounts', async () => {
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 8124');
-			await timeout(RUNNING_GANACHE_TIMEOUT);
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${SPECIFIC_PORT}`);
 
-			ganacheCommandOutput = getGanacheProcessState()['ganacheCommandOutput'];
+			ganacheCommandOutput = childResponse.output;
 
 			const rawAccountsString = ganacheCommandOutput.split(/\r?\n/).slice(0, 10);
 
@@ -77,24 +81,17 @@ describe('Ganache cli command', () => {
 
 			assert.equal(tenthOutputtedAddress, TENTH_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
 			assert.equal(tenthOutputtedPrivateKey, TENTH_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+			killProcessByPID(childResponse.process.pid);
 		});
 	});
 
-	describe('Run ganache server on already used port', async () => {
+	describe('Run ganache server on already used port e.g. the default port', async () => {
 		it('should throw if we are trying to start ganache server on used port', async () => {
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 8125', false);
 
-			await timeout(SECOND_TIMEOUT);
+			const childProcess = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT}`);
 
-			const stillRunningPID = getGanacheProcessState()['runningChildProcessPID'];
-
-			runCmdHandler('./cli-commands/ganache', 'etherlime ganache --port 8125');
-
-			await timeout(RUNNING_GANACHE_TIMEOUT);
-
-			killProcessByPID(stillRunningPID);
-
-			assert.isTrue(getGanacheProcessState()['portErrorOnProcess'], 'The ganache server is running on used port');
+			assert.isTrue(childProcess.portInUse, 'The ganache server is running on used port');
 		});
 	});
 
@@ -104,16 +101,16 @@ describe('Ganache cli command', () => {
 			const errorMessage = 'This message should be logged, if error occurs in callback';
 			const err = new Error(errorMessage);
 			const logs = [];
-			let errorLogged = false;
+			let errorLogged;
 
 			// hook up standard output
-			const unhook_stdout = hook_stream(process.stdout, function (string, encoding, fd) {
+			const unhookStdout = hookStream(process.stdout, function (string, encoding, fd) {
 				logs.push(string);
 			});
 
 			listenCallback(err);
 
-			unhook_stdout();
+			unhookStdout();
 
 			for (let log of logs) {
 				errorLogged = log.includes(errorMessage);
