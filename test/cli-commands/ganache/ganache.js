@@ -4,11 +4,13 @@ const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
 const timeout = require('../utils/timeout').timeout;
 const hookStream = require('../utils/hookup-standard-output').hookStream;
+const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
+const walletUtil = require('./../utils/wallet');
 
 const ganache = require('ganache-cli');
-const listenCallback = require('../../../cli-commands/ganache/ganache').listenCallback;
+const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
 
-const DEFAULT_PORT = 8545;
+const DEFAULT_PORT = ganacheSetupFile.defaultPort;
 const SPECIFIC_PORT = 8123;
 
 const ADDRESS_START_INDEX = 13;
@@ -17,16 +19,16 @@ const ADDRESS_LENGTH = 42;
 const PRIVATE_KEY_START_INDEX = 69;
 const PRIVATE_KEY_LENGTH = 66;
 
-const FIRST_ACCOUNT_ADDRESS = '0xd9995bae12fee327256ffec1e3184d492bd94c31';
-const FIRST_PRIVATE_KEY = '0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8';
+const FIRST_PRIVATE_KEY = ganacheSetupFile.accounts[0].secretKey;
+const FIRST_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[0].secretKey);
 
-const THIRD_ACCOUNT_ADDRESS = '0x760bf27cd45036a6c486802d30b5d90cffbe31fe';
-const THIRD_PRIVATE_KEY = '0x62ecd49c4ccb41a70ad46532aed63cf815de15864bc415c87d507afd6a5e8da2';
+const THIRD_PRIVATE_KEY = ganacheSetupFile.accounts[2].secretKey;
+const THIRD_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[2].secretKey);
 
-const TENTH_ACCOUNT_ADDRESS = '0x87e0ed760fb316eeb94bd9cf23d1d2be87ace3d8';
-const TENTH_PRIVATE_KEY = '0xfac0bc9325ad342033afe956e83f0bf8f1e863c1c3e956bc75d66961fe4cd186';
+const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
+const TENTH_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
 
-let ganacheCommandOutput = '';
+let ganacheCommandOutput;
 
 describe('Ganache cli command', () => {
 
@@ -108,7 +110,7 @@ describe('Ganache cli command', () => {
 				logs.push(string);
 			});
 
-			listenCallback(err);
+			ganacheServerListenCallback(err);
 
 			unhookStdout();
 

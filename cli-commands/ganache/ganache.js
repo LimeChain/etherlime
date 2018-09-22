@@ -9,10 +9,10 @@ const run = (inPort, logger) => {
 		logger
 	});
 
-	server.listen(port, listenCallback);
+	server.listen(port, ganacheServerListenCallback);
 };
 
-const listenCallback = (err, blockchain) => {
+const ganacheServerListenCallback = (err, blockchain) => {
 
 	if (err) {
 		console.log(err);
@@ -31,5 +31,5 @@ const listenCallback = (err, blockchain) => {
 
 module.exports = {
 	run,
-	listenCallback
+	ganacheServerListenCallback
 };
