@@ -130,7 +130,11 @@ Parameters:
 * ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
 
-In your unit tests you can use the global `accounts` object. It contains the secretKey (private key) and instance of ethers.Wallet of the account.
+We've augmented the test runner with the following things you can use:
+
+* In your unit tests you can use the global ``accounts`` object. It contains the secretKey (private key) and instance of ethers.Wallet of the account.
+* The assert object has ``assert.revert(promiseOfFailingTransaction)`` function for testing reverting transactions
+* There is a global utils object. There is currently only the ``timeTravel(provider, seconds)`` method allowing etherlime ganache to move ``seconds`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
 
 Coverage
 --------

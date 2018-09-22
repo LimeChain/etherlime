@@ -1,6 +1,7 @@
 var Mocha = require("mocha");
 var chai = require("chai");
 var originalRequire = require("original-require");
+let timeTravel = require('./time-travel').timeTravel;
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -47,6 +48,9 @@ const setJSTestGlobals = async () => {
   global.ethers = ethers;
   global.assert = chai.assert;
   global.expect = chai.expect;
+  global.utils = {
+    timeTravel
+  }
   const importedAccounts = new Array();
   for (const acc of accounts) {
     importedAccounts.push({
