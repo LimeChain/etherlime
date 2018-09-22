@@ -10,6 +10,8 @@ const walletUtil = require('./../utils/wallet');
 const ganache = require('ganache-cli');
 const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
 
+const START_SERVER_TIMEOUT = 10000;
+
 const DEFAULT_PORT = ganacheSetupFile.defaultPort;
 const SPECIFIC_PORT = 8123;
 
@@ -34,6 +36,7 @@ describe('Ganache cli command', () => {
 
 	describe('Ganache server used the default port', async () => {
 		it('the default port should be used by ganache server', async () => {
+			await timeout(START_SERVER_TIMEOUT);
 
 			const defaultPortInUse = await tcpPortUsed.check(DEFAULT_PORT);
 
