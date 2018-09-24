@@ -135,6 +135,7 @@ We've augmented the test runner with the following things you can use:
 
 * In your unit tests you can use the global ``accounts`` object. It contains the secretKey (private key) and instance of ethers.Wallet of the account.
 * The assert object has ``assert.revert(promiseOfFailingTransaction)`` function for testing reverting transactions
+
 * There is a global utils object. Holding the following util methods:
 	*  ``timeTravel(provider, seconds)`` method allowing etherlime ganache to move ``seconds`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``setTimeTo(provider, timestamp)`` method allowing etherlime ganache to move to the desired ``timestamp`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
@@ -143,6 +144,7 @@ We've augmented the test runner with the following things you can use:
 	* ``mineBlock(provider)`` method telling the etherlime ganache to mine the next block. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``hasEvent(tx, eventName)`` allowing the user to check if the desired event was broadcasted in the transaction. You need to pass the T ransaction and the Name of the Event.
 	* ``eventValue(tx, eventName, parName)`` allowing the user to check if the desired event exists in the transaction. You need to pass the Transaction, Name of the Event and optionally Parameter Name.
+
 Coverage
 --------
 

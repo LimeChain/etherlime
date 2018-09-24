@@ -10,10 +10,12 @@ async function latestTimestamp(provider) {
 
     return (await promisify(web3.eth.getBlock)("latest")).timestamp;
 }
+
 const timeTravel = async (provider, seconds) => {
 	await provider.send('evm_increaseTime', seconds);
 	await provider.send('evm_mine');
 }
+
 const setTimeTo = async (provider, timestamp) => {
     const ct = await latestTimestamp(provider);
     if (ct > timestamp) {
@@ -24,5 +26,5 @@ const setTimeTo = async (provider, timestamp) => {
 
 module.exports = {
 	timeTravel,
-    setTimeTo
+  setTimeTo
 }
