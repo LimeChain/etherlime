@@ -21,7 +21,7 @@ const printReportTable = (recordActions) => {
 	}
 
 	console.log(table.toString());
-}
+};
 
 const getReadableStatus = (status) => {
 	if (status === 0) {
@@ -29,9 +29,9 @@ const getReadableStatus = (status) => {
 	}
 
 	return `${colors.colorFailure('Fail')}`
-}
+};
 
 module.exports = {
 	printReportTable,
 	getReadableStatus
-}
+};
