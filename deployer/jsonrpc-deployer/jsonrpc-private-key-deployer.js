@@ -3,13 +3,16 @@ const isUrl = require('./../../utils/url-utils').isUrl;
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
+const loggerService = require('./../../logger-service/logger-service').loggerService;
+
+let outputParameter;
 
 class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	/**
-	 * 
+	 *
 	 * Instantiates new deployer based on the JSONRPC Provider Address (for example: 'http://localhost:8545/') and private key based deployment wallet
-	 * 
+	 *
 	 * @param {*} privateKey the private key for the deployer wallet
 	 * @param {*} nodeUrl url of the network to deploy on. This is the node url address that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
@@ -21,7 +24,10 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
-		console.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`)
+
+		outputParameter = loggerService.getOutputParameterValue();
+
+		loggerService.record(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`, outputParameter);
 	}
 
 	toString() {

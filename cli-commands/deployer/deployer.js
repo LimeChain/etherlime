@@ -3,23 +3,29 @@ const defaultDeploymentFilePath = `deployment/deploy.js`;
 const logsStore = require('./../../logs-store/logs-store');
 const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
+const loggerService = require('./../../logger-service/logger-service').loggerService;
+const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
 		throw new Error(`${deploymentFile} file not found. Probably you've not initialized etherlime. Please run etherlime init first.`)
 	}
-}
+};
 
 const getDeployMethod = (deploymentFilePath) => {
 	const _deploymentFilePath = (deploymentFilePath) ? deploymentFilePath : defaultDeploymentFilePath;
 	verifyDeploymentFile(_deploymentFilePath)
 	const deploymentFile = `${process.cwd()}/${_deploymentFilePath}`;
 	const deployModule = require(deploymentFile);
-	
-	return deployModule.deploy;
-}
 
-const run = async (deploymentFilePath, network, secret, silent, compile, runs) => {
+	return deployModule.deploy;
+};
+
+const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
+	if (output) {
+		loggerService.storeOutputParameter(output);
+	}
+
 	if (compile && typeof(runs) === 'number') {
 		await compiler.run('.', runs);
 	} else if (compile) {
@@ -31,13 +37,13 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs) =
 
 	try {
 		await deployMethod(network, secret);
-		console.log(`Your deployment script finished successfully!`);
+		loggerService.record(`Your deployment script finished successfully!`, output);
 	} catch (e) {
 		if (!silent) {
 			console.error(e);
 		}
 
-		console.log(`Your deployment script finished with failure!`);
+		loggerService.record(`Your deployment script finished with failure!`, output);
 	}
 
 	const records = logsStore.getHistory();
@@ -47,10 +53,15 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs) =
 	}
 
 	const currentRecord = records[records.length - 1];
-	console.log(`\nHere is your report:`);
-	utils.printReportTable(currentRecord.actions);
-}
+	loggerService.record(`\nHere is your report:`, output);
+
+	if (!output || output === loggerAppenderTypes.CONSOLE) {
+		utils.printReportTable(currentRecord.actions);
+	}
+
+	loggerService.removeOutputStorage();
+};
 
 module.exports = {
 	run
-}
+};

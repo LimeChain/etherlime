@@ -2,13 +2,16 @@ const ethers = require('ethers');
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
+const loggerService = require('./../../logger-service/logger-service').loggerService;
+
+let outputParameter;
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	/**
-	 * 
+	 *
 	 * Instantiates new deployer based on the Infura service and private key based deployment wallet
-	 * 
+	 *
 	 * @param {*} privateKey the private key for the deployer wallet
 	 * @param {*} network network to deploy on. Check ethers for all networks. Examples: mainnet, rinkeby, ropsten
 	 * @param {*} apiKey the apiKey given to you by Infura
@@ -17,7 +20,11 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	constructor(privateKey, network, apiKey, defaultOverrides) {
 		const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[network], apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
-		console.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`)
+
+		outputParameter = loggerService.getOutputParameterValue();
+
+		loggerService.record(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`, outputParameter);
+
 		this.network = network;
 		this.apiKey = apiKey;
 	}

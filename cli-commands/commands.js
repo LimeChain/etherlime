@@ -22,43 +22,49 @@ const commands = [
 	{
 		command: 'init',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
-		argumentsProcessor: (yargs) => { },
+		argumentsProcessor: (yargs) => {
+		},
 		commandProcessor: async (argv) => {
 			await init.run();
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret] [compile] [runs]',
+		command: 'deploy [file] [network] [secret] [compile] [runs] [output]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
 				describe: 'port to run ganache-cli on',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('network', {
 				describe: 'network param to pass to the deployment script',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('secret', {
 				describe: 'secret string to be passed to your deployer. Useful for private keys or api keys',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('compile', {
 				describe: 'Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation',
 				type: 'boolean',
 				default: true
-			})
+			});
 
 			yargs.positional('runs', {
 				describe: 'enables the optimizer and runs it the specified number of times',
 				type: 'number'
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the type of logger appender',
+				type: 'string'
+			});
 		},
 		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs);
+			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
 		}
 	},
 	{

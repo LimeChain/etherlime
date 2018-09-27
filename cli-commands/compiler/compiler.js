@@ -3,135 +3,140 @@ let Resolver = require("./etherlime-resolver/index");
 let colors = require("./../../utils/colors");
 var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 var supplier = new CompilerSupplier();
+const loggerService = require('./../../logger-service/logger-service').loggerService;
+
+let outputParameter;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) => {
-    if (list !== undefined) {
-        await listVersions(supplier, list, all);
+	outputParameter = loggerService.getOutputParameterValue();
 
-        return;
-    }
+	if (list !== undefined) {
+		await listVersions(supplier, list, all);
 
-    defaultPath = `${process.cwd()}/${defaultPath}`;
+		return;
+	}
 
-    return performCompilation(defaultPath, runs, solcVersion, useDocker, quite);
-}
+	defaultPath = `${process.cwd()}/${defaultPath}`;
+
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite);
+};
 
 const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quite) => {
-    if (useDocker && !solcVersion) {
-        throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
-    }
+	if (useDocker && !solcVersion) {
+		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
+	}
 
-    let compilerSolcOptions = {
-        solc: {
-            version: solcVersion,
-            docker: useDocker
-        }
-    };
+	let compilerSolcOptions = {
+		solc: {
+			version: solcVersion,
+			docker: useDocker
+		}
+	};
 
-    let resolverOptions = {
-        "working_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`,
-        "compilers": compilerSolcOptions,
-        "quiet": quite
-    };
+	let resolverOptions = {
+		"working_directory": `${defaultPath}/contracts`,
+		"contracts_build_directory": `${defaultPath}/build`,
+		"compilers": compilerSolcOptions,
+		"quiet": quite
+	};
 
-    Resolver(resolverOptions);
+	Resolver(resolverOptions);
 
-    let compileOptions = {
-        "contracts_directory": `${defaultPath}/contracts`,
-        "contracts_build_directory": `${defaultPath}/build`,
-        "compilers": compilerSolcOptions,
-        "quiet": quite
-    };
+	let compileOptions = {
+		"contracts_directory": `${defaultPath}/contracts`,
+		"contracts_build_directory": `${defaultPath}/build`,
+		"compilers": compilerSolcOptions,
+		"quiet": quite
+	};
 
-    if (runs) {
-        compileOptions.solc = {
-            optimizer: {
-                enabled: true,
-                runs: runs
-            }
-        }
-    }
+	if (runs) {
+		compileOptions.solc = {
+			optimizer: {
+				enabled: true,
+				runs: runs
+			}
+		}
+	}
 
-    return compilePromise(compileOptions, quite);
-}
+	return compilePromise(compileOptions, quite);
+};
 
 const compilePromise = async (compileOptions, quite) => {
 
-    return new Promise((resolve, reject) => {
-        compiler.compile(compileOptions, (error, artifacts, paths) => {
-            if (error) {
-                var stack = error['stack'].split(',/');
+	return new Promise((resolve, reject) => {
+		compiler.compile(compileOptions, (error, artifacts, paths) => {
+			if (error) {
+				var stack = error['stack'].split(',/');
 
-                stack.forEach(message => {
-                    console.log(message);
-                });
+				stack.forEach(message => {
+					loggerService.record(message, outputParameter);
+				});
 
-                reject(stack);
+				reject(stack);
 
-                return;
-            }
+				return;
+			}
 
-            if (!quite) {
-                console.log(colors.colorSuccess('Compilation finished successfully'));
-            }
+			if (!quite) {
+				loggerService.record(colors.colorSuccess('Compilation finished successfully'), outputParameter);
+			}
 
-            resolve();
-        });
-    });
-}
+			resolve();
+		});
+	});
+};
 
 const listVersions = async (supplier, list, all) => {
-    if (list === '') {
-        console.log(help());
+	if (list === '') {
+		loggerService.record(help());
 
-        return;
-    }
+		return;
+	}
 
-    if (list === 'docker') {
-        let tags = await supplier.getDockerTags();
-        tags.push('See more at: hub.docker.com/r/ethereum/solc/tags/');
+	if (list === 'docker') {
+		let tags = await supplier.getDockerTags();
+		tags.push('See more at: hub.docker.com/r/ethereum/solc/tags/');
 
-        console.log(JSON.stringify(tags, null, ' '));
+		loggerService.record(JSON.stringify(tags, null, ' '), outputParameter);
 
-        return;
-    }
+		return;
+	}
 
-    let releases = await supplier.getReleases();
-    const replacer = all ? null : shortener;
-    const versionsList = JSON.stringify(releases[list], replacer, ' ');
+	let releases = await supplier.getReleases();
+	const replacer = all ? null : shortener;
+	const versionsList = JSON.stringify(releases[list], replacer, ' ');
 
-    console.log(versionsList);
-}
+	loggerService.record(versionsList, outputParameter);
+};
 
 const shortener = (key, value) => {
-    const defaultLength = 10;
+	const defaultLength = 10;
 
-    if (Array.isArray(value) && value.length > defaultLength){
-      const length = value.length;
-      const remaining = length - defaultLength;
-      const more = `.. and ${remaining} more. Use \`--all\` to see full list.`;
-      value.length = defaultLength;
-      value.push(more);
-    }
+	if (Array.isArray(value) && value.length > defaultLength) {
+		const length = value.length;
+		const remaining = length - defaultLength;
+		const more = `.. and ${remaining} more. Use \`--all\` to see full list.`;
+		value.length = defaultLength;
+		value.push(more);
+	}
 
-    return value;
+	return value;
 }
 
-const help = () => { 
-    return "\n" +
-        "See available solc versions. (Default: solcjs stable releases)\n\n" +
+const help = () => {
+	return "\n" +
+		"See available solc versions. (Default: solcjs stable releases)\n\n" +
 
-        "USAGE:\n" +
-        "   --list [option] [--all]\n\n" +
+		"USAGE:\n" +
+		"   --list [option] [--all]\n\n" +
 
-        "OPTIONS:\n" +
-        " `docker`         recently published docker tags\n" +
-        " `releases`       solcjs stable releases\n" +
-        " `prereleases`    solcjs nightly builds\n" +
-        " `latestRelease`  solcjs latest\n\n";
+		"OPTIONS:\n" +
+		" `docker`         recently published docker tags\n" +
+		" `releases`       solcjs stable releases\n" +
+		" `prereleases`    solcjs nightly builds\n" +
+		" `latestRelease`  solcjs latest\n\n";
 }
 
 module.exports = {
-    run
+	run
 }
