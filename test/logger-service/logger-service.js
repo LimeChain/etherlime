@@ -5,12 +5,12 @@ const hookStream = require('./../utils/hookup-standard-output').hookStream;
 const timeout = require('./../utils/timeout').timeout;
 const fsExtra = require('fs-extra');
 
-describe('Logger service ', () => {
+const testData = 'This is test data';
+const outputParameter = 'normal';
+const timeoutToRemoveFileAsync = 1000;
+const outputParameterStoragePath = `${process.cwd()}/.outputParameter.txt`;
 
-	const testData = 'This is test data';
-	const outputParameter = 'normal';
-	const timeoutToRemoveFileAsync = 1000;
-	const outputParameterStoragePath = `${process.cwd()}/.outputParameter.txt`;
+describe('Logger service ', () => {
 
 	beforeEach(() => {
 	});
@@ -64,4 +64,55 @@ describe('Logger service ', () => {
 		assert.equal(outputStoredValue, '', 'Get method does not return empty string when the storage file is missing');
 	});
 
+	it('should record data based on appender type', async () => {
+		// NONE appender type
+		const noneAppenderTypeLoggedToConsole = hookStdout(loggerAppenderTypes.NONE);
+		assert.isUndefined(noneAppenderTypeLoggedToConsole, 'The data is log to console');
+
+		const outputStoredValue = loggeService.getOutputParameterValue();
+
+		assert.equal(outputStoredValue, '', 'There is stored output value');
+
+		// ToDo: Update this case when implement structured option
+		// STRUCTURED appender type
+		loggeService.record(testData, loggerAppenderTypes.STRUCTURED);
+
+		// NORMAL appender type
+		const normalAppenderTypeLoggedToConsole = hookStdout(loggerAppenderTypes.NORMAL);
+
+		assert.isTrue(normalAppenderTypeLoggedToConsole, 'The normal type does not log data to console');
+
+		// DEFAULT appender type
+		const defaultTypeLoggedToConsole = hookStdout('');
+
+		assert.isTrue(defaultTypeLoggedToConsole, 'The normal type does not log data to console');
+	});
+
 });
+
+function hookStdout(appenderType) {
+	let logs = [];
+	let dataLoggedToConsole;
+
+	const unhookStdoutDefaultType = hookStream(process.stdout, function (string) {
+		logs.push(string);
+	});
+
+	if (appenderType) {
+		loggeService.record(testData, appenderType);
+	} else {
+		loggeService.record(testData);
+	}
+
+	unhookStdoutDefaultType();
+
+	for (let log of logs) {
+		dataLoggedToConsole = log.includes(testData);
+
+		if (dataLoggedToConsole) {
+			break;
+		}
+	}
+
+	return dataLoggedToConsole;
+}
