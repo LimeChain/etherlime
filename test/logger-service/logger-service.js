@@ -86,6 +86,8 @@ describe('Logger service ', () => {
 		const defaultTypeLoggedToConsole = hookStdout('');
 
 		assert.isTrue(defaultTypeLoggedToConsole, 'The normal type does not log data to console');
+
+		loggeService.removeOutputStorage();
 	});
 
 });
