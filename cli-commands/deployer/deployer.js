@@ -55,7 +55,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 	const currentRecord = records[records.length - 1];
 	loggerService.record(`\nHere is your report:`, output);
 
-	if (!output || output === loggerAppenderTypes.CONSOLE) {
+	if (!output || output === loggerAppenderTypes.NORMAL) {
 		utils.printReportTable(currentRecord.actions);
 	}
 

@@ -2,9 +2,9 @@ const fs = require('fs');
 const fsExtra = require('fs-extra');
 
 const AppenderTypes = {
-	NONE: 'silence',
-	CONSOLE: 'console',
-	STRUCTURED_FILE: 'file'
+	NONE: 'none',
+	NORMAL: 'normal',
+	STRUCTURED: 'structured'
 };
 
 const outputParameterStoragePath = `${process.cwd()}/.outputParameter.txt`;
@@ -14,12 +14,12 @@ class LoggerService {
 	constructor() {
 	}
 
-	record(data, appenderType = AppenderTypes.CONSOLE) {
+	record(data, appenderType = AppenderTypes.NORMAL) {
 		if (appenderType === AppenderTypes.NONE) {
 			return;
 		}
 
-		if (appenderType === AppenderTypes.STRUCTURED_FILE) {
+		if (appenderType === AppenderTypes.STRUCTURED) {
 			this.logToFile(data);
 			return;
 		}
@@ -42,7 +42,7 @@ class LoggerService {
 
 	getOutputParameterValue() {
 		if (!fsExtra.existsSync(outputParameterStoragePath)) {
-			return;
+			return '';
 		}
 
 		const fileContent = fs.readFileSync(outputParameterStoragePath).toString('utf-8');
