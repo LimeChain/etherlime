@@ -3,13 +3,9 @@ let Resolver = require("./etherlime-resolver/index");
 let colors = require("./../../utils/colors");
 var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 var supplier = new CompilerSupplier();
-const loggerService = require('./../../logger-service/logger-service').loggerService;
-
-let outputParameter;
+const logger = require('./../../logger-service/logger-service').logger;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) => {
-	outputParameter = loggerService.getOutputParameterValue();
-
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -21,7 +17,7 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) 
 	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quite) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -37,7 +33,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"working_directory": `${defaultPath}/contracts`,
 		"contracts_build_directory": `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
-		"quiet": quite
+		"quiet": quiet
 	};
 
 	Resolver(resolverOptions);
@@ -46,7 +42,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"contracts_directory": `${defaultPath}/contracts`,
 		"contracts_build_directory": `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
-		"quiet": quite
+		"quiet": quiet
 	};
 
 	if (runs) {
@@ -58,10 +54,10 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return compilePromise(compileOptions, quite);
+	return compilePromise(compileOptions, quiet);
 };
 
-const compilePromise = async (compileOptions, quite) => {
+const compilePromise = async (compileOptions, quiet) => {
 
 	return new Promise((resolve, reject) => {
 		compiler.compile(compileOptions, (error, artifacts, paths) => {
@@ -69,7 +65,7 @@ const compilePromise = async (compileOptions, quite) => {
 				var stack = error['stack'].split(',/');
 
 				stack.forEach(message => {
-					loggerService.record(message, outputParameter);
+					logger.log(message);
 				});
 
 				reject(stack);
@@ -77,8 +73,8 @@ const compilePromise = async (compileOptions, quite) => {
 				return;
 			}
 
-			if (!quite) {
-				loggerService.record(colors.colorSuccess('Compilation finished successfully'), outputParameter);
+			if (!quiet) {
+				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}
 
 			resolve();
@@ -88,7 +84,7 @@ const compilePromise = async (compileOptions, quite) => {
 
 const listVersions = async (supplier, list, all) => {
 	if (list === '') {
-		loggerService.record(help());
+		logger.log(help());
 
 		return;
 	}
@@ -97,7 +93,7 @@ const listVersions = async (supplier, list, all) => {
 		let tags = await supplier.getDockerTags();
 		tags.push('See more at: hub.docker.com/r/ethereum/solc/tags/');
 
-		loggerService.record(JSON.stringify(tags, null, ' '), outputParameter);
+		logger.log(JSON.stringify(tags, null, ' '));
 
 		return;
 	}
@@ -106,7 +102,7 @@ const listVersions = async (supplier, list, all) => {
 	const replacer = all ? null : shortener;
 	const versionsList = JSON.stringify(releases[list], replacer, ' ');
 
-	loggerService.record(versionsList, outputParameter);
+	logger.log(versionsList);
 };
 
 const shortener = (key, value) => {

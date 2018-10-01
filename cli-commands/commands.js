@@ -60,7 +60,9 @@ const commands = [
 
 			yargs.positional('output', {
 				describe: 'Defines the type of logger appender',
-				type: 'string'
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
 			});
 		},
 		commandProcessor: (argv) => {

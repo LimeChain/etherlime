@@ -3,9 +3,7 @@ const isUrl = require('./../../utils/url-utils').isUrl;
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
-const loggerService = require('./../../logger-service/logger-service').loggerService;
-
-let outputParameter;
+const logger = require('./../../logger-service/logger-service').logger;
 
 class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 
@@ -25,9 +23,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 
-		outputParameter = loggerService.getOutputParameterValue();
-
-		loggerService.record(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`, outputParameter);
+		logger.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`);
 	}
 
 	toString() {

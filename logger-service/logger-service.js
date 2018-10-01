@@ -1,5 +1,5 @@
-const fs = require('fs');
 const fsExtra = require('fs-extra');
+const outputCache = new Map();
 
 const AppenderTypes = {
 	NONE: 'none',
@@ -7,47 +7,66 @@ const AppenderTypes = {
 	STRUCTURED: 'structured'
 };
 
-const outputParameterStoragePath = `${process.cwd()}/.outputParameter.txt`;
+const outputParameterStoragePath = `${process.cwd()}/.outputParameter`;
 
-class LoggerService {
+class Logger {
 
 	constructor() {
 	}
 
-	record(data, appenderType = AppenderTypes.NORMAL) {
+	log() {
+		const appenderType = this.getOutputParameterValue();
+		const args = Array.prototype.slice.call(arguments);
+
 		if (appenderType === AppenderTypes.NONE) {
 			return;
 		}
 
 		if (appenderType === AppenderTypes.STRUCTURED) {
-			this.logToFile(data);
+			this.logToFile(args);
 			return;
 		}
 
-		this.logToConsole(data);
+		this.logToConsole(args);
 	}
 
-	logToConsole(data) {
-		console.log(data.toString());
+	logToConsole(args) {
+		console.log.apply(console, args);
 	}
 
-	logToFile(data) {
+	logToFile(args) {
 		//ToDO: Log to file implementation
 	}
 
-
 	storeOutputParameter(value) {
-		fs.writeFileSync(outputParameterStoragePath, value);
+		fsExtra.writeFileSync(outputParameterStoragePath, value);
+		this.updateOutputCache(value);
 	}
 
 	getOutputParameterValue() {
-		if (!fsExtra.existsSync(outputParameterStoragePath)) {
-			return '';
+		let fileContent;
+
+		if (outputCache.has(outputParameterStoragePath)) {
+			fileContent = outputCache.get(outputParameterStoragePath);
+			return fileContent;
 		}
 
-		const fileContent = fs.readFileSync(outputParameterStoragePath).toString('utf-8');
+		if (!fsExtra.existsSync(outputParameterStoragePath)) {
+			throw new Error('Missing the storage file for output parameter.');
+		}
+
+		fileContent = fsExtra.readFileSync(outputParameterStoragePath).toString('utf-8');
+		this.updateOutputCache(fileContent);
 
 		return fileContent;
+	}
+
+	updateOutputCache(value) {
+		outputCache.set(outputParameterStoragePath, value);
+	}
+
+	clearOutputCache() {
+		outputCache.clear();
 	}
 
 	removeOutputStorage() {
@@ -55,9 +74,9 @@ class LoggerService {
 	}
 }
 
-const loggerService = new LoggerService();
+const logger = new Logger();
 
 module.exports = {
-	loggerService,
+	logger,
 	AppenderTypes
 };

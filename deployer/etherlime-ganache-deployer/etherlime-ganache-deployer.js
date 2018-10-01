@@ -3,9 +3,7 @@ const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deplo
 const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
-const loggerService = require('./../../logger-service/logger-service').loggerService;
-
-let outputParameter;
+const logger = require('./../../logger-service/logger-service').logger;
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
@@ -22,8 +20,6 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 		}
 		const nodeUrl = `http://localhost:${port}/`;
 
-		outputParameter = loggerService.getOutputParameterValue();
-
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 	}
@@ -39,12 +35,12 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	}
 
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
-		loggerService.record(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`, outputParameter);
+		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
 	}
 
 	wrapDeployedContract(contract, contractAddress) {
-		loggerService.record(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`, outputParameter);
+		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 }

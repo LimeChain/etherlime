@@ -7,9 +7,7 @@ const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
 const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
-const loggerService = require('./../logger-service/logger-service').loggerService;
-
-let outputParameter;
+const logger = require('./../logger-service/logger-service').logger;
 
 class Deployer {
 
@@ -47,8 +45,6 @@ class Deployer {
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
 	async deploy(contract, libraries) {
-		outputParameter = loggerService.getOutputParameterValue();
-
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 2);
 
@@ -93,7 +89,7 @@ class Deployer {
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
 		const argumentsEnd = (deploymentArguments.length === 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 
-		loggerService.record(`${deployContractStart}${argumentsEnd}`, outputParameter);
+		logger.log(`${deployContractStart}${argumentsEnd}`);
 	}
 
 	/**
@@ -147,7 +143,7 @@ class Deployer {
 	 * @param {*} transaction The sent transaction object to be waited for
 	 */
 	async _waitForDeployTransaction(transaction) {
-		loggerService.record(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`, outputParameter);
+		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 		await this.provider.waitForTransaction(transaction.hash);
 	}
 
@@ -183,7 +179,7 @@ class Deployer {
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
-		loggerService.record(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`, outputParameter);
+		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
 	}
 
@@ -215,7 +211,7 @@ class Deployer {
 	 * @return
 	 */
 	wrapDeployedContract(contract, contractAddress) {
-		loggerService.record(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`, outputParameter);
+		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new DeployedContractWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 

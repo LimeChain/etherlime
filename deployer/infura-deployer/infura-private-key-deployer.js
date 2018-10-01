@@ -2,9 +2,7 @@ const ethers = require('ethers');
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
-const loggerService = require('./../../logger-service/logger-service').loggerService;
-
-let outputParameter;
+const logger = require('./../../logger-service/logger-service').logger;
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
@@ -21,9 +19,7 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 		const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[network], apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
 
-		outputParameter = loggerService.getOutputParameterValue();
-
-		loggerService.record(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`, outputParameter);
+		logger.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`);
 
 		this.network = network;
 		this.apiKey = apiKey;

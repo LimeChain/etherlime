@@ -7,4 +7,4 @@ node_modules
 build
 docs/build
 .idea/
-.outputParameter.txt
+.outputParameter

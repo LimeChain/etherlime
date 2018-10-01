@@ -3,7 +3,7 @@ const defaultDeploymentFilePath = `deployment/deploy.js`;
 const logsStore = require('./../../logs-store/logs-store');
 const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
-const loggerService = require('./../../logger-service/logger-service').loggerService;
+const logger = require('./../../logger-service/logger-service').logger;
 const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
 
 const verifyDeploymentFile = (deploymentFile) => {
@@ -23,7 +23,7 @@ const getDeployMethod = (deploymentFilePath) => {
 
 const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
 	if (output) {
-		loggerService.storeOutputParameter(output);
+		logger.storeOutputParameter(output);
 	}
 
 	if (compile && typeof(runs) === 'number') {
@@ -37,13 +37,13 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 
 	try {
 		await deployMethod(network, secret);
-		loggerService.record(`Your deployment script finished successfully!`, output);
+		logger.log(`Your deployment script finished successfully!`);
 	} catch (e) {
 		if (!silent) {
 			console.error(e);
 		}
 
-		loggerService.record(`Your deployment script finished with failure!`, output);
+		logger.log(`Your deployment script finished with failure!`);
 	}
 
 	const records = logsStore.getHistory();
@@ -53,13 +53,13 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 	}
 
 	const currentRecord = records[records.length - 1];
-	loggerService.record(`\nHere is your report:`, output);
+	logger.log(`\nHere is your report:`);
 
 	if (!output || output === loggerAppenderTypes.NORMAL) {
 		utils.printReportTable(currentRecord.actions);
 	}
 
-	loggerService.removeOutputStorage();
+	logger.removeOutputStorage();
 };
 
 module.exports = {
