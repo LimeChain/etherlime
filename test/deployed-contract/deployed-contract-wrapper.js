@@ -9,12 +9,23 @@ const VestingContract = require('./../testContracts/Vesting.json');
 const Greetings = require('./../testContracts/Greetings.json');
 const store = require('./../../logs-store/logs-store');
 
+const logger = require('./../../logger-service/logger-service').logger;
+const normalOutput = 'normal';
+
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
 }
 
 describe('Deployed Contracts Wrapper tests', () => {
+	before(async () => {
+		logger.storeOutputParameter(normalOutput);
+	});
+
+	after(async () => {
+		logger.removeOutputStorage();
+	});
+
 	store.initHistoryRecord();
 
 	describe('Initialization', async () => {
