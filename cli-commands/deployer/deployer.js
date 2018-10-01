@@ -22,9 +22,7 @@ const getDeployMethod = (deploymentFilePath) => {
 };
 
 const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
-	if (output) {
-		logger.storeOutputParameter(output);
-	}
+	logger.storeOutputParameter(output);
 
 	if (compile && typeof(runs) === 'number') {
 		await compiler.run('.', runs);

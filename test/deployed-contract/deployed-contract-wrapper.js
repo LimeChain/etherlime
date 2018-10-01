@@ -18,14 +18,6 @@ const defaultConfigs = {
 }
 
 describe('Deployed Contracts Wrapper tests', () => {
-	before(async () => {
-		logger.storeOutputParameter(normalOutput);
-	});
-
-	after(async () => {
-		logger.removeOutputStorage();
-	});
-
 	store.initHistoryRecord();
 
 	describe('Initialization', async () => {

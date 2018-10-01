@@ -52,7 +52,7 @@ class Logger {
 		}
 
 		if (!fsExtra.existsSync(outputParameterStoragePath)) {
-			throw new Error('Missing the storage file for output parameter.');
+			return AppenderTypes.NONE;
 		}
 
 		fileContent = fsExtra.readFileSync(outputParameterStoragePath).toString('utf-8');

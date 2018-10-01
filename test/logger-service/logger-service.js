@@ -34,14 +34,12 @@ describe('Logger service ', () => {
 		assert.isFalse(fileExistsAfter, 'The output parameter is still stored');
 	});
 
-	it('should return if the value is missing', async () => {
+	it('should skip logging  if the output parameter is missing', async () => {
 		logger.clearOutputCache();
 
-		const throwingFunction = () => {
-			logger.getOutputParameterValue();
-		};
+		const appenderType = logger.getOutputParameterValue();
 
-		assert.throws(throwingFunction, 'Missing the storage file for output parameter');
+		assert.equal(loggerAppenderTypes.NONE, appenderType, 'The appender type is not none');
 	});
 
 	it('should log data based on output parameter', async () => {
