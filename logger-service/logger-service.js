@@ -1,5 +1,5 @@
 const fsExtra = require('fs-extra');
-const outputCache = new Map();
+let outputCache; // = new Map();
 
 const AppenderTypes = {
 	NONE: 'none',
@@ -31,7 +31,7 @@ class Logger {
 	}
 
 	logToConsole(args) {
-		console.log.apply(console, args);
+		console.log(...args);
 	}
 
 	logToFile(args) {
@@ -46,8 +46,8 @@ class Logger {
 	getOutputParameterValue() {
 		let fileContent;
 
-		if (outputCache.has(outputParameterStoragePath)) {
-			fileContent = outputCache.get(outputParameterStoragePath);
+		if (outputCache) {
+			fileContent = outputCache;
 			return fileContent;
 		}
 
@@ -62,11 +62,11 @@ class Logger {
 	}
 
 	updateOutputCache(value) {
-		outputCache.set(outputParameterStoragePath, value);
+		outputCache = value;
 	}
 
 	clearOutputCache() {
-		outputCache.clear();
+		outputCache = '';
 	}
 
 	removeOutputStorage() {

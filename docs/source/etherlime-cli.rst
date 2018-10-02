@@ -58,7 +58,7 @@ Deploying
 ~~~~~~~~~
 ::
 
-    etherlime deploy [file] [network] [secret] [-s] [compile] [runs]
+    etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output]
 
 Parameters:
 
@@ -68,6 +68,7 @@ Parameters:
 * ``-s`` - [Optional] Silent - silences the verbose errors 
 * ``compile`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation
 * ``runs`` - [Optional] Enables the optimizer and runs it the specified number of times
+* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none``, ``normal`` and ``structured``.
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the
