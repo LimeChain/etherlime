@@ -2,6 +2,7 @@ const ethers = require('ethers');
 const colors = require('./../utils/colors');
 
 const Deployer = require('./deployer');
+const logger = require('./../logger-service/logger-service').logger;
 
 class PrivateKeyDeployer extends Deployer {
 
@@ -16,8 +17,9 @@ class PrivateKeyDeployer extends Deployer {
 		const wallet = new ethers.Wallet(sanitizedPrivateKey);
 		super(wallet, provider, defaultOverrides);
 
-		console.log(`Deployer set to deploy from address: ${colors.colorAddress(this.wallet.address)}\n`)
+		logger.log(`Deployer set to deploy from address: ${colors.colorAddress(this.wallet.address)}\n`);
 	}
+
 	toString() {
 		return `Deployer set to deploy from address: ${colors.colorAddress(this.wallet.address)}`;
 	}

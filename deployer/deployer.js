@@ -7,13 +7,14 @@ const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
 const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
 const Wallet = ethers.Wallet;
+const logger = require('./../logger-service/logger-service').logger;
 
 class Deployer {
 
 	/**
-	 * 
+	 *
 	 * Instantiates new deployer. You probably should not use this class directly but use something inheriting this
-	 * 
+	 *
 	 * @param {*} wallet ethers.Wallet instance
 	 * @param {*} provider ethers.provider instance
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
@@ -36,11 +37,11 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Use this function to deploy a contract.
-	 * 
+	 *
 	 * @return DeploymentResult object
-	 * 
+	 *
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
 	async deploy(contract, libraries) {
@@ -60,7 +61,7 @@ class Deployer {
 		await this._waitForDeployTransaction(transaction);
 
 		const transactionReceipt = await this._getTransactionReceipt(transaction);
-		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt)
+		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
 
 		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
 		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
@@ -69,7 +70,7 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Override for custom pre-send validation
 	 *
 	 * @param {*} contract the contract to be deployed
@@ -88,24 +89,24 @@ class Deployer {
 		const deployContractStart = `\nDeploying contract: ${colors.colorName(contract.contractName)}`;
 		const argumentsEnd = (deploymentArguments.length === 0) ? '' : ` with parameters: ${colors.colorParams(deploymentArguments)}`;
 
-		console.log(`${deployContractStart}${argumentsEnd}`);
+		logger.log(`${deployContractStart}${argumentsEnd}`);
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this to include custom logic for deploy transaction generation
-	 * 
+	 *
 	 * @param {*} contract the contract to be deployed
- 	 * @param {*} deploymentArguments the arguments to this contract
+	 * @param {*} deploymentArguments the arguments to this contract
 	 */
 	async _prepareDeployTransaction(contract, deploymentArguments) {
 		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this for custom deploy transaction configuration
-	 * 
+	 *
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
 	async _overrideDeployTransactionConfig(deployTransaction) {
@@ -126,9 +127,9 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this to include custom logic for sending the deploy transaction
-	 * 
+	 *
 	 * @param {*} deployTransaction the transaction that is to be sent
 	 */
 	async _sendDeployTransaction(deployTransaction) {
@@ -136,20 +137,20 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this to include custom logic for waiting for deployed transaction. For example you could trigger mined block for testrpc/ganache-cli
-	 * 
+	 *
 	 * @param {*} transaction The sent transaction object to be waited for
 	 */
 	async _waitForDeployTransaction(transaction) {
-		console.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
+		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 		await this.provider.waitForTransaction(transaction.hash);
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this to include custom receipt getting logic
-	 * 
+	 *
 	 * @param {*} transaction the already mined transaction
 	 */
 	async _getTransactionReceipt(transaction) {
@@ -157,7 +158,7 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {*} contract the contract being deployed
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
@@ -170,22 +171,22 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this for custom deployment result objects
-	 * 
+	 *
 	 * @param {*} contract the contract that has been deployed
 	 * @param {*} transaction the transaction object that was sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
-		console.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
+		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
 	}
 
 	/**
-	 * 
+	 *
 	 * Override this for custom logging functionality
-	 * 
+	 *
 	 * @param {*} deployerType type of deployer
 	 * @param {*} nameOrLabel name of the contract or label of the transaction
 	 * @param {*} transactionHash transaction hash if available
@@ -199,27 +200,27 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Use this method to wrap an existing address in DeployedContractWrapper. You can use the goodies of the DeployedContractWrapper the same way you can do with a contract you've just deployed.
-	 * 
-	 * @dev Useful for upgradability 
-	 * 
-	 * @param {*} contract 
-	 * @param {*} contractAddress 
-	 * 
+	 *
+	 * @dev Useful for upgradability
+	 *
+	 * @param {*} contract
+	 * @param {*} contractAddress
+	 *
 	 * @return
 	 */
 	wrapDeployedContract(contract, contractAddress) {
-		console.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
+		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new DeployedContractWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 
 	/**
-	 * 
+	 *
 	 * Use this estimate deployment gas cost for given transaction
-	 * 
+	 *
 	 * @return the gas it is going to cost
-	 * 
+	 *
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile. Add the deployment params as comma separated values
 	 */
 	async estimateGas(contract, libraries) {
@@ -245,9 +246,9 @@ class Deployer {
 	}
 
 	/**
-	 * 
+	 *
 	 * Link a library or number of libraries to a contract
-	 * 
+	 *
 	 * @param {*} libraries The libraries which will be linked to the contract
 	 * @param {*} bytecode The contract's bytecode which be used for linking
 	 */

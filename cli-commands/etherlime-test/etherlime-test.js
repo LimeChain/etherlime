@@ -1,6 +1,10 @@
 var Mocha = require("mocha");
 var chai = require("chai");
 var originalRequire = require("original-require");
+let timeTravel = require('./time-travel');
+let events = require('./events');
+let evmCommands = require('./evm-commands');
+
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -47,6 +51,15 @@ const setJSTestGlobals = async () => {
   global.ethers = ethers;
   global.assert = chai.assert;
   global.expect = chai.expect;
+  global.utils = {
+    timeTravel: timeTravel.timeTravel,
+    setTimeTo: timeTravel.setTimeTo,
+    eventValue: events.eventValue,
+    hasEvent: events.hasEvent,
+    snapshot: evmCommands.snapshot,
+    revertState: evmCommands.revertState,
+    mineBlock: evmCommands.mineBlock
+  }
   const importedAccounts = new Array();
   for (const acc of accounts) {
     importedAccounts.push({
