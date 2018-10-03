@@ -3,12 +3,13 @@ const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deplo
 const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
+const logger = require('./../../logger-service/logger-service').logger;
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
-	 * 
+	 *
 	 * Instantiates new deployer based on the GanacheCli Provider; If no privateKey and nodeUrl are specified, the deployer will be instantiated with the default values from cli-commands/ganache/setup.json
-	 * 
+	 *
 	 * @param {*} privateKey the private key for the deployer wallet
 	 * @param {*} port port number of the network to deploy on. This is the port number that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
@@ -18,6 +19,7 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 			throw new Error(`Passed port (${port}) is not valid port`);
 		}
 		const nodeUrl = `http://localhost:${port}/`;
+
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 	}
@@ -33,12 +35,12 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	}
 
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
-		console.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
+		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
 	}
 
 	wrapDeployedContract(contract, contractAddress) {
-		console.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
+		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, this.wallet, this.provider);
 	}
 }
