@@ -2,8 +2,8 @@ const assert = require('chai').assert;
 const tcpPortUsed = require('tcp-port-used');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
-const timeout = require('../utils/timeout').timeout;
-const hookStream = require('../utils/hookup-standard-output').hookStream;
+const timeout = require('../../utils/timeout').timeout;
+const hookStream = require('../../utils/hookup-standard-output').hookStream;
 const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
 const walletUtil = require('./../utils/wallet');
 
