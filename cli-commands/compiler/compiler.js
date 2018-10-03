@@ -5,9 +5,13 @@ var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 var supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, output) => {
+	logger.storeOutputParameter(output);
+
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
+
+		logger.removeOutputStorage();
 
 		return;
 	}
@@ -68,6 +72,8 @@ const compilePromise = async (compileOptions, quiet) => {
 					logger.log(message);
 				});
 
+				logger.removeOutputStorage();
+
 				reject(stack);
 
 				return;
@@ -76,6 +82,8 @@ const compilePromise = async (compileOptions, quiet) => {
 			if (!quiet) {
 				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}
+
+			logger.removeOutputStorage();
 
 			resolve();
 		});

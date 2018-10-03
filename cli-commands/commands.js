@@ -84,50 +84,57 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
 				describe: 'Specifies the root dir to read the contracts and place the build folder',
 				type: 'string',
 				default: '.'
-			})
+			});
 
 			yargs.positional('runs', {
 				describe: 'enables the optimizer and runs it the specified number of times',
 				type: 'number'
-			})
+			});
 
 			yargs.positional('solc-version', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('docker', {
 				describe: 'Enable the usage of a docker. By default it is set to false.',
 				type: 'boolean',
 				default: false
-			})
+			});
 
 			yargs.positional('list', {
 				describe: 'List available solc versions. The default is solcjs stable release',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('all', {
 				describe: 'Print the full list',
 				type: 'boolean',
 				default: false
-			})
+			});
 
 			yargs.positional('quite', {
 				describe: 'Disable verboseness during compilation. By the default is set to false.',
 				type: 'boolean',
 				default: false
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.output);
 		}
 	},
 	{
