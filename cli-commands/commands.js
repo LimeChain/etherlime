@@ -138,23 +138,30 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation]',
+		command: 'test [path] [skip-compilation] [output]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
 				type: 'string',
 				default: './test'
-			})
+			});
 
 			yargs.positional('skip-compilation', {
 				describe: 'Skips compilation of the contracts before running the tests',
 				type: 'boolean',
 				default: 'false'
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: (argv) => {
-			test.run(argv.path, argv.skipCompilation);
+			test.run(argv.path, argv.skipCompilation, argv.output);
 		}
 	},
 	{

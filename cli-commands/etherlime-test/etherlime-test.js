@@ -4,7 +4,7 @@ var originalRequire = require("original-require");
 let timeTravel = require('./time-travel');
 let events = require('./events');
 let evmCommands = require('./evm-commands');
-
+const logger = require('./../../logger-service/logger-service').logger;
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -12,64 +12,65 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation) => {
-  var mochaConfig = { 'useColors': true };
-  let mocha = createMocha(mochaConfig, files);
+const run = async (files, skipCompilation, output) => {
+	var mochaConfig = { 'useColors': true };
+	let mocha = createMocha(mochaConfig, files);
 
-  files.forEach(function (file) {
-    delete originalRequire.cache[file];
+	files.forEach(function (file) {
+		delete originalRequire.cache[file];
 
-    mocha.addFile(file);
-  });
+		mocha.addFile(file);
+	});
 
-  setJSTestGlobals();
+	setJSTestGlobals();
 
-  if (!skipCompilation) {
-    await compiler.run('.', undefined, undefined, false, undefined, false, true);
-  }
+	if (!skipCompilation) {
+		await compiler.run('.', undefined, undefined, false, undefined, false, true, output);
+	}
 
-  await runMocha(mocha);
+	await runMocha(mocha);
 }
 
 const createMocha = (config, files) => {
-  var mocha = new Mocha(config);
+	var mocha = new Mocha(config);
 
-  files.forEach(file => {
-    mocha.addFile(file);
-  });
+	files.forEach(file => {
+		mocha.addFile(file);
+	});
 
-  return mocha;
+	return mocha;
 }
 
 const runMocha = (mocha) => {
-  mocha.run(failures => {
-    process.exitCode = failures ? -1 : 0;
-  });
+	mocha.run(failures => {
+		process.exitCode = failures ? -1 : 0;
+		logger.removeOutputStorage();
+	});
 }
 
 const setJSTestGlobals = async () => {
-  global.ethers = ethers;
-  global.assert = chai.assert;
-  global.expect = chai.expect;
-  global.utils = {
-    timeTravel: timeTravel.timeTravel,
-    setTimeTo: timeTravel.setTimeTo,
-    eventValue: events.eventValue,
-    hasEvent: events.hasEvent,
-    snapshot: evmCommands.snapshot,
-    revertState: evmCommands.revertState,
-    mineBlock: evmCommands.mineBlock
-  }
-  const importedAccounts = new Array();
-  for (const acc of accounts) {
-    importedAccounts.push({
-      secretKey: acc.secretKey,
-      wallet: new ethers.Wallet(acc.secretKey)
-    })
-  }
-  global.accounts = importedAccounts;
+	global.ethers = ethers;
+	global.assert = chai.assert;
+	global.expect = chai.expect;
+	global.utils = {
+		timeTravel: timeTravel.timeTravel,
+		setTimeTo: timeTravel.setTimeTo,
+		eventValue: events.eventValue,
+		hasEvent: events.hasEvent,
+		snapshot: evmCommands.snapshot,
+		revertState: evmCommands.revertState,
+		mineBlock: evmCommands.mineBlock
+	}
+	const importedAccounts = new Array();
+	for (const acc of accounts) {
+		importedAccounts.push({
+			secretKey: acc.secretKey,
+			wallet: new ethers.Wallet(acc.secretKey)
+		})
+	}
+	global.accounts = importedAccounts;
 }
 
 module.exports = {
-  run
+	run
 }

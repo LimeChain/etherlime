@@ -6,13 +6,16 @@ let Config = require('./../compiler/etherlime-config');
 let App = require('./../../node_modules/solidity-coverage/lib/app');
 let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
+const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (path, skipCompilation) => {
+const run = async (path, skipCompilation, output) => {
+	logger.storeOutputParameter(output);
+
 	var config = Config.default();
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		await etherlimeTest.run([path]);
+		await etherlimeTest.run([path], skipCompilation, output);
 
 		return;
 	}
@@ -25,7 +28,7 @@ const run = async (path, skipCompilation) => {
 
 	const files = await getFiles(testDirectory, config);
 
-	await etherlimeTest.run(files, skipCompilation);
+	await etherlimeTest.run(files, skipCompilation, output);
 }
 
 const getFiles = async function (testDirectory, config) {
