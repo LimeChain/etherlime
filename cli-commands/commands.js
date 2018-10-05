@@ -7,25 +7,38 @@ const test = require('./etherlime-test/test');
 
 const commands = [
 	{
-		command: 'ganache [port]',
+		command: 'ganache [port] [output]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
 				describe: 'port to run ganache-cli on',
 				type: 'number'
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: (argv) => {
-			ganache.run(argv.port, console);
+			ganache.run(argv.port, argv.output, console);
 		}
 	},
 	{
-		command: 'init',
+		command: 'init [output]',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => {
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: async (argv) => {
-			await init.run();
+			await init.run(argv.output);
 		}
 	},
 	{
@@ -70,17 +83,24 @@ const commands = [
 		}
 	},
 	{
-		command: 'history [limit]',
+		command: 'history [limit] [output]',
 		description: 'Show historical log of execution and reports of the executions.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('limit', {
 				describe: 'Limit to the execution logs',
 				type: 'number',
 				default: 5
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: (argv) => {
-			history.run(argv.limit, console);
+			history.run(argv.limit, argv.output);
 		}
 	},
 	{
