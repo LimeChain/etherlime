@@ -4,6 +4,7 @@ const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
+const logger = require('./../logger-service/logger-service').logger;
 
 const commands = [
 	{
@@ -23,7 +24,15 @@ const commands = [
 			});
 		},
 		commandProcessor: (argv) => {
-			ganache.run(argv.port, argv.output, console);
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				ganache.run(argv.port, argv.output, console);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -38,7 +47,15 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			await init.run(argv.output);
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await init.run(argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -78,8 +95,16 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
-		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -99,8 +124,16 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
-		commandProcessor: (argv) => {
-			history.run(argv.limit, argv.output);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await history.run(argv.limit, argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -153,8 +186,16 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
-		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.output);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -180,8 +221,16 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
-		commandProcessor: (argv) => {
-			test.run(argv.path, argv.skipCompilation, argv.output);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await test.run(argv.path, argv.skipCompilation);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -204,8 +253,8 @@ const commands = [
 				type: 'number'
 			})
 		},
-		commandProcessor: (argv) => {
-			test.runWithCoverage(argv.path, argv.port, argv.runs);
+		commandProcessor: async (argv) => {
+			await test.runWithCoverage(argv.path, argv.port, argv.runs);
 		}
 	}
 ]

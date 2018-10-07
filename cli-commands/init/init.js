@@ -78,9 +78,7 @@ const copyPackageJsonFile = (libraryDirectory) => {
 	fs.copyFileSync(packageJsonFileSource, packageJsonDestination);
 };
 
-const run = async (output) => {
-	logger.storeOutputParameter(output);
-
+const run = async () => {
 	const libraryDirectory = __dirname;
 
 	try {
@@ -95,10 +93,8 @@ const run = async (output) => {
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
 		logger.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
-		logger.removeOutputStorage();
 	} catch (e) {
-		console.error(e.message);
-		logger.removeOutputStorage();
+		throw new Error(e.message);
 	}
 };
 

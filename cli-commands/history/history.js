@@ -4,8 +4,6 @@ const logger = require('./../../logger-service/logger-service').logger;
 const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
 
 const run = async (limit, output) => {
-	logger.storeOutputParameter(output);
-
 	const history = logsStore.getHistory();
 	const start = (history.length > limit) ? history.length - limit : 0;
 	for (let i = start; i < history.length; i++) {
@@ -17,8 +15,6 @@ const run = async (limit, output) => {
 			logger.log();
 		}
 	}
-
-	logger.removeOutputStorage();
 };
 
 

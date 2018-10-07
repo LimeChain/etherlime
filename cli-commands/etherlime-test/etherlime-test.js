@@ -4,7 +4,6 @@ var originalRequire = require("original-require");
 let timeTravel = require('./time-travel');
 let events = require('./events');
 let evmCommands = require('./evm-commands');
-const logger = require('./../../logger-service/logger-service').logger;
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -12,7 +11,7 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation, output) => {
+const run = async (files, skipCompilation) => {
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 
@@ -25,7 +24,7 @@ const run = async (files, skipCompilation, output) => {
 	setJSTestGlobals();
 
 	if (!skipCompilation) {
-		await compiler.run('.', undefined, undefined, false, undefined, false, true, output);
+		await compiler.run('.', undefined, undefined, false, undefined, false, true);
 	}
 
 	await runMocha(mocha);
@@ -44,7 +43,6 @@ const createMocha = (config, files) => {
 const runMocha = (mocha) => {
 	mocha.run(failures => {
 		process.exitCode = failures ? -1 : 0;
-		logger.removeOutputStorage();
 	});
 }
 
