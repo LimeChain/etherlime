@@ -19,8 +19,8 @@ describe('Deployer tests', () => {
 
 	describe('Initialization', async () => {
 		it('should initialize the wallet with correct values', () => {
-			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey, provider);
 			const deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			assert.deepEqual(wallet, deployer.wallet, "The stored wallet does not match the inputted one");
@@ -30,7 +30,7 @@ describe('Deployer tests', () => {
 		})
 
 		it('should throw on incorrect wallet string', () => {
-			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 			const throwingFunction = () => {
 				new etherlime.Deployer('Random Things Here', provider, defaultConfigs)
 			};
@@ -39,7 +39,7 @@ describe('Deployer tests', () => {
 		});
 
 		it('should throw on incorrect wallet input type', () => {
-			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 			const throwingFunction = () => {
 				new etherlime.Deployer(69, provider, defaultConfigs)
 			};
@@ -57,8 +57,8 @@ describe('Deployer tests', () => {
 		describe('Positive Cases', () => {
 
 			beforeEach(async () => {
-				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+				wallet = new ethers.Wallet('0x' + config.randomPrivateKey, provider);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			});
@@ -130,7 +130,7 @@ describe('Deployer tests', () => {
 
 			beforeEach(async () => {
 				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 			});
@@ -162,12 +162,12 @@ describe('Deployer tests', () => {
 
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
-				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
-				const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
+				const infuraProvider = new ethers.providers.InfuraProvider(ethers.utils.getNetwork(config.infuraNetwork), config.infuraAPIKey);
+				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey, infuraProvider);
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
 				try {
-					await deployer.deploy(VestingContract, {}, config.randomAddress, 69)
+					await deployer.deploy(VestingContract, {}, config.randomAddress, 69);
 					assert.fails("The deployment did not throw");
 				} catch (e) {
 					console.log(e.message);
@@ -186,7 +186,7 @@ describe('Deployer tests', () => {
 
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 		});
 
@@ -208,12 +208,12 @@ describe('Deployer tests', () => {
 
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
-			infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[config.infuraNetwork], config.infuraAPIKey);
+			infuraProvider = new ethers.providers.InfuraProvider(ethers.utils.getNetwork(config.infuraNetwork), config.infuraAPIKey);
 			deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 		});
 
 		it('should wrap contracts correctly', async () => {
-			const gas = 2470692;
+			const gas = 2455692;
 
 			const estimateGas = await deployer.estimateGas(ICOTokenContract);
 
@@ -237,7 +237,7 @@ describe('Deployer tests', () => {
 
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
-			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 			deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
 
 		});

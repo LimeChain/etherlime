@@ -52,17 +52,17 @@ class DeployedContractWrapper {
 		let labelPart = (transactionLabel) ? `labeled ${colors.colorName(transactionLabel)} ` : '';
 		logger.log(`Waiting for transaction ${labelPart}to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 
-		const transactionResult = await this.provider.waitForTransaction(transaction.hash);
-		const transactionReceipt = await this._postValidateTransaction(transaction);
+		const gasPrice = await this.provider.getGasPrice();
+		const transactionReceipt = await this._postValidateTransaction(transaction, gasPrice);
 		const actionLabel = (transactionLabel) ? transactionLabel : this.constructor.name;
-		await this._logAction(this.constructor.name, actionLabel, transaction.hash, 0, transactionResult.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Successfully Waited For Transaction');
+		await this._logAction(this.constructor.name, actionLabel, transaction.hash, 0, gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Successfully Waited For Transaction');
 		return transactionReceipt;
 	}
 
-	async _postValidateTransaction(transaction) {
+	async _postValidateTransaction(transaction, gasPrice) {
 		const transactionReceipt = await this.provider.getTransactionReceipt(transaction.hash);
 		if (transactionReceipt.status === 0) {
-			await this._logAction(this.constructor.name, this._contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
+			await this._logAction(this.constructor.name, this._contract.contractName, transaction.hash, 1, gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
 		return transactionReceipt;

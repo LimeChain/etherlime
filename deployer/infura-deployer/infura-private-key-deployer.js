@@ -16,7 +16,7 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, network, apiKey, defaultOverrides) {
-		const infuraProvider = new ethers.providers.InfuraProvider(ethers.providers.networks[network], apiKey);
+		const infuraProvider = new ethers.providers.InfuraProvider(ethers.utils.getNetwork(network), apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
 
 		logger.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`);

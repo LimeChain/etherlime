@@ -20,12 +20,10 @@ class Deployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(wallet, provider, defaultOverrides) {
-		this._validateInput(wallet, provider, defaultOverrides);
+		this._validateInput(wallet, defaultOverrides);
 
 		this.wallet = wallet;
 		this.provider = provider;
-		this.wallet.provider = provider;
-
 		this.defaultOverrides = defaultOverrides;
 		logsStore.initHistoryRecord();
 	}
@@ -100,7 +98,8 @@ class Deployer {
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
 	async _prepareDeployTransaction(contract, deploymentArguments) {
-		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
+		let factory = new ethers.ContractFactory(contract.abi, contract.bytecode);
+		return factory.getDeployTransaction(...deploymentArguments);
 	}
 
 	/**
@@ -242,7 +241,7 @@ class Deployer {
 	}
 
 	async _estimateTransactionGas(transaction) {
-		return this.wallet.estimateGas(transaction);
+		return this.provider.estimateGas(transaction);
 	}
 
 	/**
