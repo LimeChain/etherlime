@@ -4,28 +4,58 @@ const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
+const logger = require('./../logger-service/logger-service').logger;
 
 const commands = [
 	{
-		command: 'ganache [port]',
+		command: 'ganache [port] [output]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
 				describe: 'port to run ganache-cli on',
 				type: 'number'
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: (argv) => {
-			ganache.run(argv.port, console);
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				ganache.run(argv.port, argv.output, console);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
-		command: 'init',
+		command: 'init [output]',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => {
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
 		commandProcessor: async (argv) => {
-			await init.run();
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await init.run(argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -65,89 +95,142 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
-		commandProcessor: (argv) => {
-			deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
-		command: 'history [limit]',
+		command: 'history [limit] [output]',
 		description: 'Show historical log of execution and reports of the executions.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('limit', {
 				describe: 'Limit to the execution logs',
 				type: 'number',
 				default: 5
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
-		commandProcessor: (argv) => {
-			history.run(argv.limit, console);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await history.run(argv.limit, argv.output);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
 				describe: 'Specifies the root dir to read the contracts and place the build folder',
 				type: 'string',
 				default: '.'
-			})
+			});
 
 			yargs.positional('runs', {
 				describe: 'enables the optimizer and runs it the specified number of times',
 				type: 'number'
-			})
+			});
 
 			yargs.positional('solc-version', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('docker', {
 				describe: 'Enable the usage of a docker. By default it is set to false.',
 				type: 'boolean',
 				default: false
-			})
+			});
 
 			yargs.positional('list', {
 				describe: 'List available solc versions. The default is solcjs stable release',
 				type: 'string'
-			})
+			});
 
 			yargs.positional('all', {
 				describe: 'Print the full list',
 				type: 'boolean',
 				default: false
-			})
+			});
 
 			yargs.positional('quite', {
 				describe: 'Disable verboseness during compilation. By the default is set to false.',
 				type: 'boolean',
 				default: false
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
-		commandProcessor: (argv) => {
-			compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation]',
+		command: 'test [path] [skip-compilation] [output]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
 				type: 'string',
 				default: './test'
-			})
+			});
 
 			yargs.positional('skip-compilation', {
 				describe: 'Skips compilation of the contracts before running the tests',
 				type: 'boolean',
 				default: 'false'
-			})
+			});
+
+			yargs.positional('output', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+				default: 'normal',
+				choices: ['none', 'normal', 'structured']
+			});
 		},
-		commandProcessor: (argv) => {
-			test.run(argv.path, argv.skipCompilation);
+		commandProcessor: async (argv) => {
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				await test.run(argv.path, argv.skipCompilation);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	},
 	{
@@ -170,8 +253,8 @@ const commands = [
 				type: 'number'
 			})
 		},
-		commandProcessor: (argv) => {
-			test.runWithCoverage(argv.path, argv.port, argv.runs);
+		commandProcessor: async (argv) => {
+			await test.runWithCoverage(argv.path, argv.port, argv.runs);
 		}
 	}
 ]
