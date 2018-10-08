@@ -9,7 +9,7 @@ const printReportTable = (recordActions) => {
 	let actionIndex = 0;
 
 	for (const action of recordActions) {
-		actionIndex = actionIndex + 1;
+		actionIndex++;
 
 		table.push(
 			{ 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:MM:ss')}` },
