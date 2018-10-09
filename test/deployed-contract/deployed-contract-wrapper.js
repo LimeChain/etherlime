@@ -12,7 +12,7 @@ const store = require('./../../logs-store/logs-store');
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
-}
+};
 
 describe('Deployed Contracts Wrapper tests', () => {
 	store.initHistoryRecord();
@@ -22,7 +22,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		beforeEach(async () => {
 			deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
-		})
+		});
 
 		it('should create correct wrapper', () => {
 			const wrapper = new etherlime.DeployedContractWrapper(Greetings, config.randomAddress, deployer.wallet, deployer.provider);
@@ -32,7 +32,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert.deepEqual(wrapper.wallet, deployer.wallet, "The stored wallet was not the inputted one")
 			assert.deepEqual(wrapper.provider, deployer.provider, "The stored provider was not the inputted one")
 			assert.deepEqual(wrapper.contractAddress, config.randomAddress, "The stored contract address was not the inputted one")
-		})
+		});
 
 		it('should throw on initialization invalid wallet', () => {
 			const invalidWallet = 69;
@@ -42,7 +42,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			} catch (e) {
 				assert.strictEqual(e.message, 'Passed wallet is not instance of ethers Wallet');
 			}
-		})
+		});
 
 		it('should throw on initialization invalid address', () => {
 			const invalidAddress = 69;
@@ -52,7 +52,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			} catch (e) {
 				assert.strictEqual(e.message, `Passed contract address (${invalidAddress}) is not valid address`);
 			}
-		})
+		});
 
 		it('should throw on initialization invalid contract', () => {
 			const invalidContract = 69;
@@ -63,7 +63,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 				assert.strictEqual(e.message, `Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 			}
 		})
-	})
+	});
 
 	describe('Verbose waiting for transaction', async () => {
 
@@ -73,7 +73,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 		beforeEach(async () => {
 			deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
 			contractWrapper = await deployer.deploy(ICOTokenContract);
-		})
+		});
 
 		it('should wait for transaction correctly', async () => {
 			const label = 'Transfer Ownership';
@@ -89,7 +89,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert.strictEqual(lastAction.nameOrLabel, label, 'Label not set correctly');
 			assert.strictEqual(lastAction.transactionHash, transferTransaction.hash, 'Transaction hash not set correctly');
 			assert(lastAction.status == 0, 'status not set correctly');
-		})
+		});
 
 		it('should wait for transaction without label', async () => {
 			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
@@ -98,20 +98,16 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('logs'), 'There is no logs property of the result');
 			assert(result.hasOwnProperty('status'), 'There is no status property of the result');
-		})
+		});
 
-		it('should throw on transaction receipt status being 0', async () => {
-
-			const transferTransaction = await contractWrapper.contract.transfer(config.randomAddress, 69);
+		it('should throw on failed transaction', async () => {
 			try {
-				await contractWrapper.verboseWaitForTransaction(transferTransaction, 'Throwing transfer function');
-				assert.fail('The transaction was supposed to throw an error on receipt status being 0')
-			} catch (e) {
-				assert(e.message.startsWith('Transaction '), 'Incorrect error thrown by wait for transaction')
+				await contractWrapper.contract.transfer(config.randomAddress, 69);
+				assert.fails('The failed transaction did not throw');
+			} catch (err) {
+				assert(err.message.includes('always failing transaction'), 'Incorrect error was thrown');
 			}
-
-		})
-
+		});
 	})
 
 });
