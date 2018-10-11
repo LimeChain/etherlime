@@ -162,7 +162,8 @@ describe('Deployer tests', () => {
 
 			// This test can only be executed on infura as ganache-cli reverts directly
 			it('should throw error on transaction receipt status 0', async () => {
-				const infuraProvider = new ethers.providers.InfuraProvider(ethers.utils.getNetwork(config.infuraNetwork), config.infuraAPIKey);
+				const network = ethers.utils.getNetwork(config.infuraNetwork);
+				const infuraProvider = new ethers.providers.InfuraProvider(network, config.infuraAPIKey);
 				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey, infuraProvider);
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
@@ -173,7 +174,7 @@ describe('Deployer tests', () => {
 					console.log(e.message);
 					assert(e.message.includes("failed"), "Incorrect error was thrown");
 				}
-			})
+			});
 		})
 
 	});
@@ -208,7 +209,8 @@ describe('Deployer tests', () => {
 
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
-			infuraProvider = new ethers.providers.InfuraProvider(ethers.utils.getNetwork(config.infuraNetwork), config.infuraAPIKey);
+			const network = ethers.utils.getNetwork(config.infuraNetwork);
+			infuraProvider = new ethers.providers.InfuraProvider(network, config.infuraAPIKey);
 			deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 		});
 
