@@ -142,7 +142,7 @@ class Deployer {
 	 */
 	async _waitForDeployTransaction(transaction) {
 		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
-		return await this.provider.waitForTransaction(transaction.hash);
+		return this.provider.waitForTransaction(transaction.hash);
 	}
 
 	/**
