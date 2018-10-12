@@ -108,6 +108,19 @@ describe('Deployed Contracts Wrapper tests', () => {
 				assert(err.message.includes('always failing transaction'), 'Incorrect error was thrown');
 			}
 		});
+
+		it('should throw error on transaction receipt status 0', async () => {
+			const dummyTransaction = { gasPrice: 2000000 };
+			const dummyTransactionReceipt = { status: 0, gasUsed: 300000 };
+
+			try {
+				await contractWrapper._postValidateTransaction(dummyTransaction, dummyTransactionReceipt);
+				assert.fails("The deployment did not throw");
+			} catch (e) {
+				console.log(e.message);
+				assert(e.message.includes("failed"), "Incorrect error was thrown");
+			}
+		});
 	})
 
 });

@@ -24,6 +24,7 @@ class Deployer {
 
 		this.wallet = wallet;
 		this.provider = provider;
+		this.wallet = this.wallet.connect(this.provider);
 		this.defaultOverrides = defaultOverrides;
 		logsStore.initHistoryRecord();
 	}
@@ -142,7 +143,7 @@ class Deployer {
 	 */
 	async _waitForDeployTransaction(transaction) {
 		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
-		return this.provider.waitForTransaction(transaction.hash);
+		return transaction.wait();
 	}
 
 	/**
