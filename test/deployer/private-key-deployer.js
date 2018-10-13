@@ -20,7 +20,7 @@ describe('Private key deployer tests', () => {
 		let provider;
 
 		beforeEach(() => {
-			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl, ethers.providers.networks.unspecified);
+			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 		})
 
 		it('should initialize the wallet with correct private key without 0x', () => {
