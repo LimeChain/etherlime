@@ -19,7 +19,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		if (!(isUrl(nodeUrl))) {
 			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
 		}
-		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl, ethers.providers.networks.unspecified);
+		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 
