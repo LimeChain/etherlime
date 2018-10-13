@@ -117,7 +117,6 @@ describe('Deployed Contracts Wrapper tests', () => {
 				await contractWrapper._postValidateTransaction(dummyTransaction, dummyTransactionReceipt);
 				assert.fails("The deployment did not throw");
 			} catch (e) {
-				console.log(e.message);
 				assert(e.message.includes("failed"), "Incorrect error was thrown");
 			}
 		});
