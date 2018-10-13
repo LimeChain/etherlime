@@ -171,7 +171,6 @@ describe('Deployer tests', () => {
 					await deployer.deploy(VestingContract, {}, config.randomAddress, 69);
 					assert.fails("The deployment did not throw");
 				} catch (e) {
-					console.log(e.message);
 					assert(e.message.includes("failed"), "Incorrect error was thrown");
 				}
 			});
