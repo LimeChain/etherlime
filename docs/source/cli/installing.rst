@@ -1,6 +1,6 @@
 
-Installing Etherlime
-********************
+Installing & Help
+*****************
 
 ::
 
