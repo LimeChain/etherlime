@@ -27,7 +27,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, argv.output);
+				ganache.run(argv.port, logger);
 			} catch (err) {
 				console.error(err);
 			} finally {
