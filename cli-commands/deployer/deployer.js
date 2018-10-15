@@ -22,8 +22,6 @@ const getDeployMethod = (deploymentFilePath) => {
 };
 
 const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
-	logger.storeOutputParameter(output);
-
 	if (compile && typeof(runs) === 'number') {
 		await compiler.run('.', runs);
 	} else if (compile) {
@@ -56,8 +54,6 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 	if (output === loggerAppenderTypes.NORMAL) {
 		utils.printReportTable(currentRecord.actions);
 	}
-
-	logger.removeOutputStorage();
 };
 
 module.exports = {
