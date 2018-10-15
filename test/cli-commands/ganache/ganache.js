@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 const tcpPortUsed = require('tcp-port-used');
+const findProcess = require('find-process');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
 const timeout = require('../../utils/timeout').timeout;
@@ -186,13 +187,37 @@ describe('Ganache cli command', () => {
 		});
 	});
 
-	describe('Ganache run function', async () => {
+	describe('Ganache run function with specific port', async () => {
 		it('should run ganache server on passed port', async () => {
 			ganacheRun(RUN_DIRECT_PORT);
 
 			const portInUseAfterDirectCallRun = await tcpPortUsed.check(RUN_DIRECT_PORT);
 
 			assert.isTrue(portInUseAfterDirectCallRun, `The specific port ${RUN_DIRECT_PORT} is free`);
+		});
+	});
+
+	describe('Ganache run function with default port', async () => {
+		it('should run ganache server on default port', async () => {
+			const processes = await findProcess('port', 8545);
+
+			for (let foundProcess of processes) {
+				killProcessByPID(foundProcess.pid);
+			}
+
+			ganacheRun();
+
+			const processesCreatedDirectly = await findProcess('port', 8545);
+
+			const defaultPortInUse = await tcpPortUsed.check(DEFAULT_PORT);
+
+			assert.isTrue(defaultPortInUse, `The default port ${DEFAULT_PORT} is free`);
+
+			for (let foundProcess of processesCreatedDirectly) {
+				killProcessByPID(foundProcess.pid);
+			}
+
+			await runCmdHandler('./cli-commands/ganache', `etherlime ganache`);
 		});
 	});
 
