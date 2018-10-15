@@ -20,12 +20,11 @@ class Deployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(wallet, provider, defaultOverrides) {
-		this._validateInput(wallet, provider, defaultOverrides);
+		this._validateInput(wallet, defaultOverrides);
 
 		this.wallet = wallet;
 		this.provider = provider;
-		this.wallet.provider = provider;
-
+		this.wallet = this.wallet.connect(this.provider);
 		this.defaultOverrides = defaultOverrides;
 		logsStore.initHistoryRecord();
 	}
@@ -58,9 +57,8 @@ class Deployer {
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-		await this._waitForDeployTransaction(transaction);
+		const transactionReceipt = await this._waitForDeployTransaction(transaction);
 
-		const transactionReceipt = await this._getTransactionReceipt(transaction);
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
 
 		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
@@ -100,7 +98,8 @@ class Deployer {
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
 	async _prepareDeployTransaction(contract, deploymentArguments) {
-		return ethers.Contract.getDeployTransaction(contract.bytecode, contract.abi, ...deploymentArguments);
+		let factory = new ethers.ContractFactory(contract.abi, contract.bytecode);
+		return factory.getDeployTransaction(...deploymentArguments);
 	}
 
 	/**
@@ -144,17 +143,7 @@ class Deployer {
 	 */
 	async _waitForDeployTransaction(transaction) {
 		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
-		await this.provider.waitForTransaction(transaction.hash);
-	}
-
-	/**
-	 *
-	 * Override this to include custom receipt getting logic
-	 *
-	 * @param {*} transaction the already mined transaction
-	 */
-	async _getTransactionReceipt(transaction) {
-		return await this.provider.getTransactionReceipt(transaction.hash);
+		return transaction.wait();
 	}
 
 	/**
@@ -242,7 +231,7 @@ class Deployer {
 	}
 
 	async _estimateTransactionGas(transaction) {
-		return this.wallet.estimateGas(transaction);
+		return this.provider.estimateGas(transaction);
 	}
 
 	/**

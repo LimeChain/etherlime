@@ -6,7 +6,6 @@ const Greetings = require('./../../testContracts/Greetings.json');
 const isAddress = require('./../../../utils/address-utils').isAddress;
 
 
-
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
@@ -20,19 +19,19 @@ describe('GanacheCli-Deployer tests', () => {
 	describe('Initialization', async () => {
 		it('Should take default values on empty privateKey, port and defaultConfigs', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer();
-			assert.deepEqual(config.nodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 
 		it('Should initialize the wallet with correct values', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(config.ganacheCliPrivateKey, config.ganacheCliPort, defaultConfigs);
-			assert.deepEqual(config.nodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
 		})
 
 		it('Should take default value on empty port', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(config.ganacheCliPrivateKey, undefined, defaultConfigs);
-			assert.deepEqual(config.nodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 
 		})
 
@@ -44,7 +43,7 @@ describe('GanacheCli-Deployer tests', () => {
 
 		it('Should take default values on empty privateKey and port', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
-			assert.deepEqual(config.nodeUrl, deployer.provider.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 

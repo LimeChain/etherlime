@@ -31,7 +31,8 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 
 
 	async _waitForDeployTransaction(transaction) {
-		return this.provider.send('evm_mine');
+		await this.provider.send('evm_mine');
+		return this.provider.getTransactionReceipt(transaction.hash);
 	}
 
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
