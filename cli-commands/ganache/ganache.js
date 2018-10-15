@@ -4,7 +4,7 @@ const logger = require('./../../logger-service/logger-service').logger;
 
 let port;
 
-const run = (inPort, logger) => {
+const run = (inPort) => {
 	port = (inPort) ? inPort : setup.defaultPort;
 	const server = ganache.server({
 		accounts: setup.accounts

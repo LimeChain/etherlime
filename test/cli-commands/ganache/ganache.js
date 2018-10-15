@@ -9,11 +9,13 @@ const walletUtil = require('./../utils/wallet');
 
 const ganache = require('ganache-cli');
 const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
+const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 
 const START_SERVER_TIMEOUT = 10000;
 
 const DEFAULT_PORT = ganacheSetupFile.defaultPort;
 const SPECIFIC_PORT = 8123;
+const RUN_DIRECT_PORT = 8124;
 
 const ADDRESS_START_INDEX = 13;
 const ADDRESS_LENGTH = 42;
@@ -113,9 +115,13 @@ describe('Ganache cli command', () => {
 				logs.push(string);
 			});
 
-			ganacheServerListenCallback(err);
-
-			unhookStdout();
+			try {
+				ganacheServerListenCallback(err);
+				unhookStdout();
+			} catch (err) {
+				unhookStdout();
+				console.error(err);
+			}
 
 			for (let log of logs) {
 				errorLogged = log.includes(errorMessage);
@@ -126,6 +132,67 @@ describe('Ganache cli command', () => {
 			}
 
 			assert.isTrue(errorLogged, 'The error is not logged. Return statement does not work');
+
+
+		});
+	});
+
+	describe('Ganache server listen callback with accounts', async () => {
+		it('should listen with dummy loaded accounts', async () => {
+			const dummyBlockchainParam = {
+				options: {
+					accounts: ganacheSetupFile.accounts
+				},
+				personal_accounts: {
+					secretKey1: ganacheSetupFile.accounts.secretKey,
+					secretKey2: ganacheSetupFile.accounts.secretKey,
+					secretKey3: ganacheSetupFile.accounts.secretKey,
+					secretKey4: ganacheSetupFile.accounts.secretKey,
+					secretKey5: ganacheSetupFile.accounts.secretKey,
+					secretKey6: ganacheSetupFile.accounts.secretKey,
+					secretKey7: ganacheSetupFile.accounts.secretKey,
+					secretKey8: ganacheSetupFile.accounts.secretKey,
+					secretKey9: ganacheSetupFile.accounts.secretKey,
+					secretKey10: ganacheSetupFile.accounts.secretKey,
+				}
+			};
+
+			const logs = [];
+			let serverListen;
+			const ganacheServerListening = 'Listening on';
+
+			// hook up standard output
+			const unhookDummyConsole = hookStream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
+
+			try {
+				ganacheServerListenCallback(false, dummyBlockchainParam);
+				unhookDummyConsole();
+			} catch (err) {
+				unhookDummyConsole();
+				console.error(err);
+			}
+
+			for (let log of logs) {
+				serverListen = log.includes(ganacheServerListening);
+
+				if (serverListen) {
+					break;
+				}
+			}
+
+			assert.isTrue(serverListen, 'The callback function with accounts - failed');
+		});
+	});
+
+	describe('Ganache run function', async () => {
+		it('should run ganache server on passed port', async () => {
+			ganacheRun(RUN_DIRECT_PORT);
+
+			const portInUseAfterDirectCallRun = await tcpPortUsed.check(RUN_DIRECT_PORT);
+
+			assert.isTrue(portInUseAfterDirectCallRun, `The specific port ${RUN_DIRECT_PORT} is free`);
 		});
 	});
 
