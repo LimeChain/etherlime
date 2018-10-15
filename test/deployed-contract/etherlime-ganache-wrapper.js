@@ -41,7 +41,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		beforeEach(async () => {
 			deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
 			contractWrapper = await deployer.deploy(ICOTokenContract);
-		});
+		})
 
 		it('should wait for transaction correctly', async () => {
 			const label = 'Transfer Ownership';
@@ -57,7 +57,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			assert.strictEqual(lastAction.nameOrLabel, label, 'Label not set correctly');
 			assert.strictEqual(lastAction.transactionHash, transferTransaction.hash, 'Transaction hash not set correctly');
 			assert(lastAction.status == 0, 'status not set correctly');
-		});
+		})
 
 		it('should wait for transaction without label correctly', async () => {
 			const label = 'Transfer Ownership';

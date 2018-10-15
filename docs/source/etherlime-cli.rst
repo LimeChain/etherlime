@@ -34,13 +34,11 @@ Running embedded ganache-cli
 
 ::
 
-    etherlime ganache [port] [output]
+    etherlime ganache [port]
 
 Parameters:
 
 * ``port`` - [Optional] By specifying ``--port`` you can specify port to run the etherlime ganache. Default: 8545
-* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
-
 
 For easier integration and usage of ``EtherlimeGanacheDeployer`` and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of ETH (191408831393027885698 to be precise)
 
@@ -48,14 +46,10 @@ Project Initialization
 ----------------------
 ::
 
-    etherlime init [output]
+    etherlime init
 
 Running this command will install ``etherlime`` in the directory you've run it and will create ``deployment`` directory with ``deploy.js`` prepared for you to use.
 You can use this file to write your deployment procedure. It also create ``test`` directory where you can write your tests. It comes with an ``exampleTest.js`` file which you can use as a start point. The init command generate and ``package.json`` for you which you can use for your npm modules.
-
-Parameters:
-
-* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 
 Deployment
 ----------
@@ -89,12 +83,11 @@ Deployment History
 
 ::
 
-    etherlime history [limit] [output]
+    etherlime history [limit]
 
 Parameters:
 
 * ``limit`` - [Optional] By specifying ``-limit`` you can set the max number of historical records to be shown. Default is 5.
-* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 
 Using this command will print you historical list of execution reports
 
@@ -103,7 +96,7 @@ Compiling
 
 ::
 
-    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite] [output]
+    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite]
 
 Parameters:
 
@@ -114,7 +107,6 @@ Parameters:
 * ``list`` - [Optional] By specifying ``list`` you can list the available solc versions. The following values can be used: ``docker``, ``releases``, ``prereleases`` and ``latestRelease``. By default only 10 version are listed
 * ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
 * ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
-* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 
 The ``solcVersion`` can accept the following values:
 
@@ -133,13 +125,12 @@ Testing
 
 ::
 
-    etherlime test [path] [skip-compilation] [output]
+    etherlime test [path] [skip-compilation]
 
 Parameters:
 
 * ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
-* ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 
 We've augmented the test runner with the following things you can use:
 

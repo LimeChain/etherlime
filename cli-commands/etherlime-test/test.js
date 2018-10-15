@@ -12,7 +12,7 @@ const run = async (path, skipCompilation) => {
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		await etherlimeTest.run([path], skipCompilation);
+		await etherlimeTest.run([path]);
 
 		return;
 	}

@@ -13,10 +13,8 @@ const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
 
 const packageJsonDestination = './package.json';
 
-const logger = require('./../../logger-service/logger-service').logger;
-
 const createDeploymentDir = () => {
-	logger.log('===== Creating deployment file structure =====');
+	console.log('===== Creating deployment file structure =====');
 	if (!fs.existsSync(deploymentDir)) {
 		fs.mkdirSync(deploymentDir);
 	}
@@ -53,21 +51,21 @@ const copyContractFile = (libraryDirectory) => {
 };
 
 const createContractsFolder = () => {
-	logger.log('===== Creating contracts file structure =====');
+	console.log('===== Creating contracts file structure =====');
 	if (!fs.existsSync(contractsDir)) {
 		fs.mkdirSync(contractsDir);
 	}
 };
 
 const createTestsFolder = () => {
-	logger.log('===== Creating tests file structure =====');
+	console.log('===== Creating tests file structure =====');
 	if (!fs.existsSync(testDir)) {
 		fs.mkdirSync(testDir);
 	}
 };
 
 const copyPackageJsonFile = (libraryDirectory) => {
-	logger.log('===== Generating package.json =====');
+	console.log('===== Generating package.json =====');
 
 	if (fs.existsSync(packageJsonDestination)) {
 		return;
@@ -79,22 +77,23 @@ const copyPackageJsonFile = (libraryDirectory) => {
 };
 
 const run = async () => {
+
 	const libraryDirectory = __dirname;
 
 	try {
-		logger.log('===== Installing etherlime =====');
+		console.log('===== Installing etherlime =====');
 		copyPackageJsonFile(libraryDirectory);
 		const { stdout, stderr } = await exec('npm install etherlime');
-		logger.log(stdout);
+		console.log(stdout);
 		createContractsFolder();
 		copyContractFile(libraryDirectory);
 		createTestsFolder();
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
-		logger.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
+		console.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
-		throw new Error(e.message);
+		console.error(e.message);
 	}
 };
 
