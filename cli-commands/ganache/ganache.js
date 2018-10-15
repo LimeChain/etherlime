@@ -5,7 +5,8 @@ const logger = require('./../../logger-service/logger-service').logger;
 const run = (inPort) => {
 	let port = (inPort) ? inPort : setup.defaultPort;
 	const server = ganache.server({
-		accounts: setup.accounts
+		accounts: setup.accounts,
+		logger
 	});
 
 	server.listen(port, function (err, blockchain) {
