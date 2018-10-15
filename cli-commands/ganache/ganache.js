@@ -5,8 +5,7 @@ let port;
 const run = (inPort, logger) => {
 	port = (inPort) ? inPort : setup.defaultPort;
 	const server = ganache.server({
-		accounts: setup.accounts,
-		logger
+		accounts: setup.accounts
 	});
 
 	server.listen(port, ganacheServerListenCallback);

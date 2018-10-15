@@ -6,8 +6,11 @@ const moment = require('moment');
 const printReportTable = (recordActions) => {
 
 	const table = new Table();
+	let actionIndex = 0;
 
 	for (const action of recordActions) {
+		actionIndex++;
+
 		table.push(
 			{ 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:MM:ss')}` },
 			{ 'Executor': `${action.deployerType}` },
@@ -17,7 +20,11 @@ const printReportTable = (recordActions) => {
 			{ 'Gas Price': `${ethersUtils.formatUnits(action.gasPrice, 'gwei')} Gwei` },
 			{ 'Gas Used': `${action.gasUsed}` },
 			{ 'Result': `${action.result}` }
-		)
+		);
+
+		if (recordActions.length > 1 && actionIndex < recordActions.length) {
+			table.push({ '': '' });
+		}
 	}
 
 	console.log(table.toString());
