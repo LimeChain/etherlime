@@ -4,6 +4,6 @@ Etherlime Library API
 .. toctree::
    :maxdepth: 3
 
-   deployers
-   wrappers
+   api/deployers
+   api/wrappers
 

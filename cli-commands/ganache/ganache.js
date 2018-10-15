@@ -1,13 +1,12 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
-const logger = require('./../../logger-service/logger-service').logger;
-
 let port;
 
-const run = (inPort) => {
+const run = (inPort, logger) => {
 	port = (inPort) ? inPort : setup.defaultPort;
 	const server = ganache.server({
-		accounts: setup.accounts
+		accounts: setup.accounts,
+		logger
 	});
 
 	server.listen(port, ganacheServerListenCallback);
