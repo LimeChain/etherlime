@@ -139,7 +139,7 @@ describe('Ganache cli command', () => {
 
 	describe('Ganache server listen callback with accounts', async () => {
 		it('should listen with dummy loaded accounts', async () => {
-			const dummyBlockchainParam = {
+			const dummyBlockchainParams = {
 				options: {
 					accounts: ganacheSetupFile.accounts
 				},
@@ -158,8 +158,8 @@ describe('Ganache cli command', () => {
 			};
 
 			const logs = [];
-			let serverListen;
-			const ganacheServerListening = 'Listening on';
+			let isServerListening = false;
+			const serverListeningMessageStart = 'Listening on';
 
 			// hook up standard output
 			const unhookDummyConsole = hookStream(process.stdout, function (string, encoding, fd) {
@@ -167,7 +167,7 @@ describe('Ganache cli command', () => {
 			});
 
 			try {
-				ganacheServerListenCallback(false, dummyBlockchainParam);
+				ganacheServerListenCallback(false, dummyBlockchainParams);
 				unhookDummyConsole();
 			} catch (err) {
 				unhookDummyConsole();
@@ -175,18 +175,16 @@ describe('Ganache cli command', () => {
 			}
 
 			for (let log of logs) {
-				serverListen = log.includes(ganacheServerListening);
+				isServerListening = log.includes(serverListeningMessageStart);
 
-				if (serverListen) {
+				if (isServerListening) {
 					break;
 				}
 			}
 
-			assert.isTrue(serverListen, 'The callback function with accounts - failed');
+			assert.isTrue(isServerListening, 'The callback function with accounts - failed');
 		});
-	});
 
-	describe('Ganache run function with specific port', async () => {
 		it('should run ganache server on passed port', async () => {
 			ganacheRun(RUN_DIRECT_PORT);
 
@@ -195,5 +193,4 @@ describe('Ganache cli command', () => {
 			assert.isTrue(portInUseAfterDirectCallRun, `The specific port ${RUN_DIRECT_PORT} is free`);
 		});
 	});
-
 });
