@@ -1,6 +1,9 @@
 etherlime deploy
 ****************
 
+Syntax
+------
+
 ::
 
     etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output]
@@ -22,6 +25,11 @@ deployment finishes (as not all of us monitor the deployment process
 constantly):
 
 |Deployment result|
+
+Examples
+--------
+
+
 
 -----
 

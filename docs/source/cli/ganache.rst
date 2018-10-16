@@ -1,6 +1,9 @@
 etherlime ganache
 *****************
 
+Syntax
+------
+
 ::
 
     etherlime ganache [port] [output]
