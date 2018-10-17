@@ -26,9 +26,11 @@ describe('Init cli command', () => {
     before( async function() {
         currentDir = process.cwd();
         process.chdir('/tmp');
-
-        await init.run()
     });
+
+    it('should execute run function', async() => {
+        await assert.isFulfilled(init.run(), 'It is successfully executed');
+    })
 
     it('contracts folder and example file should be created', async() => {
         let dirExists = fs.existsSync(contractsDir);
