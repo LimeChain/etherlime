@@ -45,6 +45,7 @@
     "etherlime": "./cli.js"
   },
   "devDependencies": {
+    "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
     "nyc": "^12.0.2",
     "tcp-port-used": "^1.0.0"

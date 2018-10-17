@@ -48,7 +48,6 @@ const copyContractFile = (libraryDirectory) => {
 	}
 
 	const contractFileSource = `${libraryDirectory}/LimeFactory.sol`;
-
 	fs.copyFileSync(contractFileSource, contractFileDestination);
 };
 
@@ -99,5 +98,5 @@ const run = async () => {
 };
 
 module.exports = {
-	run
+	run,
 };
