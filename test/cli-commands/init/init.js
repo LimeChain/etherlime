@@ -58,12 +58,12 @@ describe('Init cli command', () => {
         await assert.isRejected(init.run(), contractError, "Expected throw not received");
     });
 
-    it('should throw error if deployment exampel file already exists', async () => {
+    it('should throw error if deployment example file already exists', async () => {
         fs.removeSync(contractsDir);
         await assert.isRejected(init.run(), deploymentError, "Expected throw not received");
     });
 
-    it('should throw error if test exampel file already exists', async () => {
+    it('should throw error if test example file already exists', async () => {
         fs.removeSync(contractsDir);
         fs.removeSync(deploymentDir);
         await assert.isRejected(init.run(), testError, "Expected throw not received");
