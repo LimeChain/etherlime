@@ -19,15 +19,11 @@ const testError = "example.js already exists in ./test directory. You've probabl
 
 const packageJsonDestination = './package.json';
 
-const secondsScope = 50000;
-
 
 describe('Init cli command', () => {
-
     let currentDir;
 
     before( async function() {
-        this.timeout(secondsScope);
         currentDir = process.cwd();
         process.chdir('/tmp');
 
