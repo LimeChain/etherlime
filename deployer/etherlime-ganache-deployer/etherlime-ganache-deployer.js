@@ -4,6 +4,9 @@ const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 const logger = require('./../../logger-service/logger-service').logger;
+const setPrivateKey = require('./../../utils/default-utils').setPrivateKey;
+const setPort = require('./../../utils/default-utils').setPort;
+const setDefaultOverrides = require('./../../utils/default-utils').setDefaultOverrides;
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
@@ -14,14 +17,27 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * @param {*} port port number of the network to deploy on. This is the port number that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
-		if (!(isNumber(port))) {
+	constructor(privateKey = this.privateKey, port = this.port, defaultOverrides = this.defaultOverrides) {
+		if (!(isNumber(setPort(port)))) {
 			throw new Error(`Passed port (${port}) is not valid port`);
 		}
-		const nodeUrl = `http://localhost:${port}/`;
+		
+		const nodeUrl = `http://localhost:${setPort(port)}/`;
 
-		super(privateKey, nodeUrl, defaultOverrides);
+		super(setPrivateKey(privateKey), nodeUrl, setDefaultOverrides(defaultOverrides));
 		this.nodeUrl = nodeUrl;
+	}
+
+	set privateKey(privateKey) {
+		this.privateKey = (privateKey) ? privateKey : ganacheSetupConfig.accounts[0].secretKey;
+	}
+
+	set port(port) {
+		this.port = (port) ? port : ganacheSetupConfig.defaultPort;
+	}
+
+	set defaultOverrides(defaultOverrides) {
+		this.port = (defaultOverrides) ? defaultOverrides : undefined;
 	}
 
 	toString() {
