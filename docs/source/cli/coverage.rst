@@ -1,6 +1,9 @@
 etherlime coverage
 ******************
 
+Syntax
+------
+
 ::
 
     etherlime coverage [path] [port] [runs]

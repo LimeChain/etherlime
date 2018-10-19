@@ -1,6 +1,9 @@
 etherlime history
 *****************
 
+Syntax
+------
+
 ::
 
     etherlime history [limit] [output]

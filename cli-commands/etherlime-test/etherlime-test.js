@@ -53,7 +53,7 @@ const setJSTestGlobals = async () => {
 	global.utils = {
 		timeTravel: timeTravel.timeTravel,
 		setTimeTo: timeTravel.setTimeTo,
-		eventValue: events.eventValue,
+		parseLogs: events.parseLogs,
 		hasEvent: events.hasEvent,
 		snapshot: evmCommands.snapshot,
 		revertState: evmCommands.revertState,

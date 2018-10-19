@@ -1,6 +1,9 @@
 etherlime init
 **************
 
+Syntax
+------
+
 ::
 
     etherlime init [output]

@@ -1,6 +1,9 @@
 etherlime deploy
 ****************
 
+Syntax
+------
+
 ::
 
     etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output]

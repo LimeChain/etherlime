@@ -2,6 +2,9 @@
 Installing & Help
 *****************
 
+Syntax
+------
+
 ::
 
     npm i -g etherlime

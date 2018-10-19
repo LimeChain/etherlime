@@ -1,6 +1,9 @@
 etherlime compile
 *****************
 
+Syntax
+------
+
 ::
 
     etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite] [output]
