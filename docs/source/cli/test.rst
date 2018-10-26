@@ -32,8 +32,8 @@ On your disposal there is a global available utils object. Here are the methods 
 	* ``utils.snapshot(provider)`` method allowing etherlime ganache to take a **Snapshot** of the current Blockchain data. You can revert back to this snapshot when desired. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.revertState(provider)`` method allowing etherlime ganache to **revert** back to the most recent snapshot. In case you don't have a snapshot it will reset the entire chain data. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.mineBlock(provider)`` method telling the etherlime ganache to mine the next block. You need to pass your provider from the EtherlimeGanacheDeployer
-	* ``utils.hasEvent(receipt, contract, eventName)`` allowing the user to check if the desired event was broadcasted in the transaction receipt. You need to pass the T ransaction receipt, the contract that emits it and the name of the Event.
-	* ``utils.parseLogs(receipt, contract, eventName)`` allowing the user get parsed events from a transaction receipt. You need to pass the T ransaction receipt, the contract that emits it and the name of the Event. Always returns an event.
+	* ``utils.hasEvent(receipt, contract, eventName)`` allowing the user to check if the desired event was broadcasted in the transaction receipt. You need to pass the Transaction receipt, the contract that emits it and the name of the Event.
+	* ``utils.parseLogs(receipt, contract, eventName)`` allowing the user get parsed events from a transaction receipt. You need to pass the Transaction receipt, the contract that emits it and the name of the Event. Always returns an event.
 
 Examples
 --------
