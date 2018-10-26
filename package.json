@@ -28,6 +28,7 @@
     "fs-extra": "^6.0.1",
     "ganache-cli": "^6.1.4",
     "graphlib": "^2.1.5",
+    "keen-tracking": "^4.0.7",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
