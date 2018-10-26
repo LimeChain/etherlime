@@ -110,6 +110,11 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+			const statistics = {
+				argv
+			}
+			delete statistics.argv.secret;
+			console.log(statistics);
 			analyticsClient.recordEvent('etherlime deploy', {
 				argv
 			});
