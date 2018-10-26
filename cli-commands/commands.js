@@ -110,14 +110,6 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			const statistics = {
-				argv
-			}
-			delete statistics.argv.secret;
-			console.log(statistics);
-			analyticsClient.recordEvent('etherlime deploy', {
-				argv
-			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -126,6 +118,14 @@ const commands = [
 				console.error(err);
 			} finally {
 				logger.removeOutputStorage();
+				const statistics = {
+					argv
+				}
+				delete statistics.argv.secret;
+
+				analyticsClient.recordEvent('etherlime deploy', {
+					argv
+				});
 			}
 		}
 	},
