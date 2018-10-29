@@ -1,5 +1,4 @@
 const assert = require('chai').assert;
-const etherlime = require('./../../../index.js');
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
@@ -21,7 +20,7 @@ const contractFolder = './contracts';
 
 
 describe('Deploy cli command', () => {
-
+    
     it('should deploy with no parameters', async function() {
         fs.mkdirSync(deployFolder)
         fs.copyFileSync(`${__dirname}/testDeploy2.js`, `${deployFolder}/deploy.js`);
@@ -29,7 +28,7 @@ describe('Deploy cli command', () => {
         await fs.removeSync(deployFolder)
     });
 
-    it('should throw error if "./deployment" file does not exist', async function () {
+    it('should throw error if "./deploy.js" file does not exist', async function () {
         await assert.isRejected(deployer.run(), deployError, "Expected throw not received");
     });
 
@@ -45,7 +44,7 @@ describe('Deploy cli command', () => {
         await assert.isFulfilled(deployer.run(specificFile, undefined, privateKey), 'It was not successfully executed');
     });
 
-    it('should throw error on deployment failure', async function () {    
+    it('should throw error on deployment failure if silent is false', async function () {    
         let consoleSpy = sinon.spy(console, "error");
         await deployer.run(specificFile, undefined, wrongPrivateKey, false);
         let logs = consoleSpy.getCall(0);
@@ -54,26 +53,27 @@ describe('Deploy cli command', () => {
         assert.isTrue(errorLogged, 'The error is not logged.');
         sinon.assert.calledOnce(consoleSpy);
         consoleSpy.restore();
-    })
+    });
+
+    it('should not throw error on deployment failure if silent is true', async function () {
+        let consoleSpy = sinon.spy(console, "error");
+        await deployer.run(specificFile, undefined, wrongPrivateKey, true);
+        sinon.assert.notCalled(consoleSpy);
+        consoleSpy.restore();
+    });
 
     it('should deploy with compile parameter', async function () {
         fs.mkdirSync(contractFolder)
         await deployer.run(specificFile, undefined, undefined, undefined, true);
         sinon.assert.calledWith(compileSpy, '.');
-        fs.removeSync(contractFolder);
     });
 
     it('should deploy with compile and run parameters', async function () {
-        fs.mkdirSync(contractFolder)
         let run = 99;
         await deployer.run(specificFile, undefined, undefined, undefined, true, run);
         sinon.assert.calledWithExactly(compileSpy, ".", run);
         fs.removeSync(contractFolder);
         compileSpy.restore();
-    });
-
-    it('should deploy with specific output parameter "structured"', async function () {
-        await assert.isFulfilled(deployer.run(specificFile, undefined, undefined, undefined, undefined, undefined, 'structured'), 'It was not successfully executed')
     });
 
     it('should deploy with specific otuput parameter "normal"', async function () {
