@@ -2,6 +2,7 @@ const etherlime = require('./../../index.js');
 const ethers = require('ethers');
 const assert = require('assert');
 const store = require('./../../logs-store/logs-store');
+const sinon = require('sinon');
 
 const isAddress = require('./../../utils/address-utils').isAddress;
 const config = require('./../config.json');
@@ -13,7 +14,12 @@ const Greetings = require('./../testContracts/Greetings.json');
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
-}
+};
+
+let sandbox = sinon.createSandbox();
+
+const GAS_DEPLOY_TX = 2455692;
+const GAS_DEPLOY_WITH_LINK = 1629070;
 
 describe('Deployer tests', () => {
 
@@ -132,7 +138,10 @@ describe('Deployer tests', () => {
 				wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 				deployer = new etherlime.Deployer(wallet, provider, defaultConfigs);
+			});
 
+			afterEach(() => {
+				sandbox.restore();
 			});
 
 			it('should throw on incorrect contract object', async () => {
@@ -167,12 +176,17 @@ describe('Deployer tests', () => {
 				const wallet = new ethers.Wallet('0x' + config.infuraPrivateKey, infuraProvider);
 				const deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 
+				const mockedFailedTransaction = await mockFailedSendTransaction(deployer.wallet);
+
 				try {
 					await deployer.deploy(VestingContract, {}, config.randomAddress, 69);
 					assert.fails("The deployment did not throw");
 				} catch (e) {
+					console.log(e.message);
 					assert(e.message.includes("failed"), "Incorrect error was thrown");
 				}
+
+				sandbox.assert.calledOnce(mockedFailedTransaction);
 			});
 
 			it('should throw error on transaction receipt status 0', async () => {
@@ -216,8 +230,8 @@ describe('Deployer tests', () => {
 	describe('Estimating gas of deployment', async () => {
 
 		let wallet;
-		let provider;
 		let deployer;
+		let infuraProvider;
 
 		beforeEach(async () => {
 			wallet = new ethers.Wallet('0x' + config.infuraPrivateKey);
@@ -226,21 +240,27 @@ describe('Deployer tests', () => {
 			deployer = new etherlime.Deployer(wallet, infuraProvider, defaultConfigs);
 		});
 
-		it('should wrap contracts correctly', async () => {
-			const gas = 2455692;
+		afterEach(() => {
+			sandbox.restore();
+		});
 
+
+		it('should wrap contracts correctly', async () => {
+			const mockedEstimateGas = await mockEstimateGas(infuraProvider, GAS_DEPLOY_TX);
 			const estimateGas = await deployer.estimateGas(ICOTokenContract);
 
-			assert.equal(gas, estimateGas.toString())
+			assert.equal(GAS_DEPLOY_TX, estimateGas.toString());
+			sandbox.assert.calledOnce(mockedEstimateGas);
 		});
 
 		it('should wrap contracts correctly', async () => {
-			const gas = 1629070;
+			const mockedEstimateGas = await mockEstimateGas(infuraProvider, GAS_DEPLOY_WITH_LINK);
 
 			let libraries = { "LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC" };
 			const estimateGas = await deployer.estimateGas(DataContract, libraries);
 
-			assert.equal(gas, estimateGas.toString())
+			assert.equal(GAS_DEPLOY_WITH_LINK, estimateGas.toString());
+			sandbox.assert.calledOnce(mockedEstimateGas);
 		})
 	});
 
@@ -264,3 +284,30 @@ describe('Deployer tests', () => {
 		});
 	})
 });
+
+function mockEstimateGas(provider, gas) {
+	const GAS = ethers.utils.bigNumberify(gas);
+	let estimateGasStub = sandbox.stub(provider, 'estimateGas');
+	estimateGasStub.callsFake(() => {
+		return new Promise((resolve, reject) => {
+			resolve(GAS);
+		});
+	});
+	return estimateGasStub;
+}
+
+function mockFailedSendTransaction(wallet) {
+	let sendTransactionStub = sandbox.stub(wallet, 'sendTransaction');
+	sendTransactionStub.callsFake(() => {
+		return new Promise((resolve, reject) => {
+			resolve({
+				wait: () => {
+					return new Promise((resolve, reject) => {
+						reject(new Error('error on failed transaction execution'))
+					});
+				}
+			});
+		});
+	});
+	return sendTransactionStub;
+}
