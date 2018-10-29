@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 
 const deployer = require('../../../cli-commands/deployer/deployer');
 const compiler = require('../../../cli-commands/compiler/compiler');
+const file = require('./testDeploy2').file;
 let compileSpy = sinon.spy(compiler, "run");
 
 let privateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8";
@@ -23,7 +24,7 @@ describe('Deploy cli command', () => {
     
     it('should deploy with no parameters', async function() {
         fs.mkdirSync(deployFolder)
-        fs.copyFileSync(`${__dirname}/testDeploy2.js`, `${deployFolder}/deploy.js`);
+        fs.writeFileSync(`${deployFolder}/deploy.js`, file);
         await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
         await fs.removeSync(deployFolder)
     });

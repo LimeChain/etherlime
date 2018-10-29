@@ -1,4 +1,4 @@
-const etherlime = require('./../index.js');
+const file = `const etherlime = require('./../index.js');
 
 const ICOToken = require('../test/testContracts/ICOToken.json')
 
@@ -11,4 +11,8 @@ const deploy = async (network, secret) => {
 
 module.exports = {
     deploy,
-};
+};`
+
+module.exports = {
+    file
+}
