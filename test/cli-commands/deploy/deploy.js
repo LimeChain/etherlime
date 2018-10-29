@@ -1,12 +1,11 @@
 const assert = require('chai').assert;
-const etherlime = require('./../../../index.js');
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const sinon = require('sinon');
 const fs = require('fs-extra');
 
-const deployer = require('../../../cli-commands/deployer/deployer');
+let deployer;
 const compiler = require('../../../cli-commands/compiler/compiler');
 let compileSpy = sinon.spy(compiler, "run");
 
@@ -22,7 +21,11 @@ const contractFolder = './contracts';
 
 describe('Deploy cli command', () => {
 
-    it('should deploy with no parameters', async function() {
+    beforeEach(function () {
+        deployer = require('../../../cli-commands/deployer/deployer');
+    })
+
+    it('should deploy with no parameters', async function () {
         fs.mkdirSync(deployFolder)
         fs.copyFileSync(`${__dirname}/testDeploy2.js`, `${deployFolder}/deploy.js`);
         await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
@@ -37,6 +40,10 @@ describe('Deploy cli command', () => {
         await assert.isFulfilled(deployer.run(specificFile), 'It was not successfully executed');
     });
 
+    it('should deploy specific file', async function () {
+        await assert.isFulfilled(deployer.run(specificFile, undefined, wrongPrivateKey, true), 'It was not successfully executed');
+    });
+
     it('should deploy on specific network', async function () {
         await assert.isFulfilled(deployer.run(specificFile, 'local'), 'It was not successfully executed');
     });
@@ -45,7 +52,7 @@ describe('Deploy cli command', () => {
         await assert.isFulfilled(deployer.run(specificFile, undefined, privateKey), 'It was not successfully executed');
     });
 
-    it('should throw error on deployment failure', async function () {    
+    it('should throw error on deployment failure', async function () {
         let consoleSpy = sinon.spy(console, "error");
         await deployer.run(specificFile, undefined, wrongPrivateKey, false);
         let logs = consoleSpy.getCall(0);
