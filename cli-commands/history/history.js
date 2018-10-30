@@ -5,7 +5,7 @@ const loggerAppenderTypes = require('./../../logger-service/logger-service').App
 
 const run = async (limit, output) => {
 	const history = logsStore.getHistory();
-	const start = (history.length > limit) ? history.length - limit : 0;
+	const start = (history.length > limit) ? history.length - limit : 0;	
 	for (let i = start; i < history.length; i++) {
 		logger.log(`Execution ID: ${i}:`)
 		const currentRecord = history[i];
