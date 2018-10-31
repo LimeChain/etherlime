@@ -53,7 +53,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 			}
 		}
 	}
-
+	
 	return compilePromise(compileOptions, quiet);
 };
 

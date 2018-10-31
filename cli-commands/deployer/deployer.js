@@ -28,7 +28,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 		await compiler.run('.');
 	}
 
-	const initialRecordsCount = logsStore.getHistory().length;
+	const initialRecords = logsStore.getHistory();
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {
@@ -44,8 +44,10 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 
 	const records = logsStore.getHistory();
 
-	if (records.length == initialRecordsCount) {
-		return;
+	if (initialRecords && initialRecords.length > 0) {
+		if (records[records.length - 1]['actions'].length === initialRecords[initialRecords.length - 1]['actions'].length) {
+			return
+		}
 	}
 
 	const currentRecord = records[records.length - 1];
