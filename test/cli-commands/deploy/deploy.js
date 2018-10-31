@@ -7,13 +7,13 @@ const fs = require('fs-extra');
 
 const deployer = require('../../../cli-commands/deployer/deployer');
 const compiler = require('../../../cli-commands/compiler/compiler');
-const file = require('./testDeploy2').file;
+const file = require('./deploymentScriptsFile').file;
 let compileSpy = sinon.spy(compiler, "run");
 
 let privateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8";
 let wrongPrivateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee9";
 
-const specificFile = 'test/cli-commands/deploy/testDeploy.js';
+const specificFile = 'test/cli-commands/deploy/deploymentScripts.js';
 const deployError = "deployment/deploy.js file not found. Probably you've not initialized etherlime. Please run etherlime init first.";
 const errorMessage = "sender doesn't have enough funds to send tx.";
 const deployFolder = './deployment';
