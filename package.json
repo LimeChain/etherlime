@@ -37,8 +37,9 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "require-from-string": "^2.0.2",
+    "sinon": "^7.1.0",
     "solc": "^0.4.25",
-    "solidity-coverage": "LimeChain/solidity-coverage#master",
+    "solidity-coverage": "github:LimeChain/solidity-coverage#master",
     "yargs": "^11.0.0"
   },
   "bin": {

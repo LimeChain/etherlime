@@ -26,7 +26,7 @@ const run = async (files, skipCompilation) => {
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, undefined, false, undefined, false, true);
 	}
-
+	
 	await runMocha(mocha);
 }
 
