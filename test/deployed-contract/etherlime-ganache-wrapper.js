@@ -50,6 +50,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			assert(result.hasOwnProperty('transactionHash'), 'There is no transactionHash property of the result');
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('logs'), 'There is no logs property of the result');
+			assert(result.hasOwnProperty('events'), 'There is no events property of the result');
 			assert(result.hasOwnProperty('status'), 'There is no status property of the result');
 			const currentRecord = store.getCurrentWorkingRecord();
 			const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
@@ -66,6 +67,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			assert(result.hasOwnProperty('transactionHash'), 'There is no transactionHash property of the result');
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('logs'), 'There is no logs property of the result');
+			assert(result.hasOwnProperty('events'), 'There is no events property of the result');
 			assert(result.hasOwnProperty('status'), 'There is no status property of the result');
 			const currentRecord = store.getCurrentWorkingRecord();
 			const lastAction = currentRecord.actions[currentRecord.actions.length - 1];

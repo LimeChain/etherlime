@@ -92,19 +92,30 @@ assert.revert
 		assert.revert(contract.throwingMethod());
 	});
 
-utils.parseLogs
+Check if the desired event was broadcasted in the transaction receipt
 ~~~~~~~~~~~~~~~
 
 ::
 
-	it('should emit correct logs', async () => {
-		let tx = await contract.someMethodWithEvents();
+    const etherlime = require('etherlime');
+    const Billboard = require('../build/Billboard.json');
+    const assert = require('chai').assert;
 
-		let txReceipt = await provider.getTransactionReceipt(tx.hash);
+    describe('Billboard', () => {
+        let owner = accounts[5];
 
-		const logs = utils.parseLogs(txReceipt, contract, 'CertainEvent');
+        it('should emit event', async () => {
+            const deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
+            const deployedContractWrapper = await deployer.deploy(Billboard, {});
 
-		assert(logs.length > 0, "No event was thrown")
-	});
+            const buyTransaction = await deployedContractWrapper.contract.buy('Billboard slogan', { value: ONE_ETHER });
+
+            const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
+
+            const expectedEvent = 'LogBillboardBought';
+
+            assert.isDefined(transactionReceipt.events.find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
+        });
+    });
 
     
