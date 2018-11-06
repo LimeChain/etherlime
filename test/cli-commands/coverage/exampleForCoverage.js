@@ -1,5 +1,8 @@
-const etherlime = require('../../index.js');
-const LimeFactory = require('../../test/testContracts/LimeFactory.json')
+const assert = require('chai').assert;
+const fs = require('fs-extra');
+
+const etherlime = require('../../../index.js');
+const LimeFactory = require('../../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {
 

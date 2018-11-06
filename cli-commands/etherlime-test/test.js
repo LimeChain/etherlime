@@ -67,6 +67,10 @@ const runWithCoverage = async (path, port, runs) => {
 	config['port'] = port;
 
 	config["testrpcOptions"] = `${accountsData}`;
+
+	if(port){
+		config["testrpcOptions"] += `--port ${port}`
+	}
 	const app = new App(config);
 	app.generateCoverageEnvironment();
 	app.instrumentTarget();
