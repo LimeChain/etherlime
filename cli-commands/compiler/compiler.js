@@ -62,6 +62,7 @@ const compilePromise = async (compileOptions, quiet) => {
 	return new Promise((resolve, reject) => {
 		compiler.compile(compileOptions, (error, artifacts, paths) => {
 			if (error) {
+				consoole.log(error)
 				var stack = error['stack'].split(',/');
 
 				stack.forEach(message => {
