@@ -47,7 +47,7 @@ const getFiles = async function (testDirectory, config) {
 	});
 }
 
-const runWithCoverage = async (path, port, runs) => {
+const runWithCoverage = async (path, port, runs, dontKillProcess) => {
 	var accountsData = ''
 	accounts.forEach(account => {
 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
@@ -57,11 +57,11 @@ const runWithCoverage = async (path, port, runs) => {
 	const config = JSON.parse(JSON.stringify(defaultCoverageConfig));
 
 	if (path) {
-		config['testCommand'] = `${config['testCommand']} --path ${path}`
+		config['testCommand'] = `${config['testCommand']} --path ${path}`;
 	}
 
 	if (runs) {
-		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`
+		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`;
 	}
 
 	config['port'] = port;
@@ -69,14 +69,15 @@ const runWithCoverage = async (path, port, runs) => {
 	config["testrpcOptions"] = `${accountsData}`;
 
 	if(port){
-		config["testrpcOptions"] += `--port ${port}`
+		config["testrpcOptions"] += `--port ${port}`;
 	}
 	const app = new App(config);
 	app.generateCoverageEnvironment();
 	app.instrumentTarget();
-	await app.launchTestrpc()
+	await app.launchTestrpc(dontKillProcess);
 	app.runTestCommand();
-	app.generateReport();
+	await app.generateReport(dontKillProcess);
+
 }
 
 module.exports = {

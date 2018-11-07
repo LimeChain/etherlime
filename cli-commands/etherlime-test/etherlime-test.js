@@ -40,10 +40,17 @@ const createMocha = (config, files) => {
 	return mocha;
 }
 
-const runMocha = (mocha) => {
-	mocha.run(failures => {
-		process.exitCode = failures ? -1 : 0;
-	});
+const runMocha = async (mocha) => {
+	return new Promise((resolve, reject) => {
+		mocha.run(failures => {
+			process.exitCode = failures ? -1 : 0;
+			if(failures){
+				reject()
+			} else {
+				resolve()
+			}
+		});
+	})
 }
 
 const setJSTestGlobals = async () => {

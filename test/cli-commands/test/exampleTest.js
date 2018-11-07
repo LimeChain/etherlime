@@ -1,5 +1,6 @@
 const etherlime = require('../../index.js');
 const LimeFactory = require('../../test/testContracts/LimeFactory.json')
+const fs = require('fs-extra');
 
 describe('Lime Factory example', function () {
 
@@ -16,5 +17,5 @@ describe('Lime Factory example', function () {
         await limeFactoryInstance.contract.createLime("limeDessy", 6, 8, 2)
         let lime = await limeFactoryInstance.contract.limes(0);
         assert.equal(lime.name, 'limeDessy');
-    })
+    });
 });
