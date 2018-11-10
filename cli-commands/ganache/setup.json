@@ -41,5 +41,6 @@
 			"balance": "0x90000000000000000000000000000000"
 		}
 	],
-	"defaultPort": 8545
+	"defaultPort": 8545,
+	"forkParams": null
 }

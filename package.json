@@ -1,6 +1,6 @@
 {
   "name": "etherlime",
-  "version": "0.9.8",
+  "version": "0.9.12",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,7 @@
     "fs-extra": "^6.0.1",
     "ganache-cli": "^6.1.4",
     "graphlib": "^2.1.5",
+    "keen-tracking": "^4.0.7",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
@@ -52,7 +53,7 @@
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
     "nyc": "^12.0.2",
-    "sinon": "^7.0.0",
-    "tcp-port-used": "^1.0.0"
+    "tcp-port-used": "^1.0.0",
+    "sinon": "^7.1.0"
   }
 }
