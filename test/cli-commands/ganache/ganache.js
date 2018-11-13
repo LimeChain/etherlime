@@ -57,8 +57,6 @@ describe('Ganache cli command', () => {
 
 			const childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT}`, expectedOutput);
 
-			console.log("11", childResponse.output)
-
 			const portInUseAfterRunningGanache = await tcpPortUsed.check(SPECIFIC_PORT);
 
 			assert.isTrue(portInUseAfterRunningGanache, `The specific port ${SPECIFIC_PORT} is free`);
