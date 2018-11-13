@@ -8,6 +8,7 @@ let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 
 const run = async (path, skipCompilation) => {
+	
 	var config = Config.default();
 	var testDirectory = '';
 
@@ -47,7 +48,7 @@ const getFiles = async function (testDirectory, config) {
 	});
 }
 
-const runWithCoverage = async (path, port, runs, dontKillProcess) => {
+const runWithCoverage = async (path, port, runs) => {
 	var accountsData = ''
 	accounts.forEach(account => {
 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
@@ -74,9 +75,9 @@ const runWithCoverage = async (path, port, runs, dontKillProcess) => {
 	const app = new App(config);
 	app.generateCoverageEnvironment();
 	app.instrumentTarget();
-	await app.launchTestrpc(dontKillProcess);
+	await app.launchTestrpc();
 	app.runTestCommand();
-	await app.generateReport(dontKillProcess);
+	await app.generateReport();
 
 }
 

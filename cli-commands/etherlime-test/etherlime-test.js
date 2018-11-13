@@ -59,7 +59,6 @@ const setJSTestGlobals = async () => {
 	global.expect = chai.expect;
 	global.utils = {
 		timeTravel: timeTravel.timeTravel,
-		setTimeTo: timeTravel.setTimeTo,
 		parseLogs: events.parseLogs,
 		hasEvent: events.hasEvent,
 		snapshot: evmCommands.snapshot,

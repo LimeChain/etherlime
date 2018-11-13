@@ -6,10 +6,10 @@ const fs = require('fs-extra');
 const test = require('../../../cli-commands/etherlime-test/test');
 const sinon = require('sinon');
 
-const BlockingJSONStore = require('../../../logs-store/blocking-json-store');
 let etherlimeTest = require('../../../cli-commands/etherlime-test/etherlime-test');
-let calledArgs = [ `${process.cwd()}/tmpTest/testsToRun/exampleTest.js` ];
-
+let calledArgs = [ `${process.cwd()}/tmpTest/exampleToRun/exampleTest.js` ];
+let exampleTest = require('../examples/exampleTest').exampleTest;
+let path = 'exampleToRun/exampleTest.js';
 let currentDir;
 
     describe('test cli command', () => {
@@ -19,31 +19,26 @@ let currentDir;
             fs.mkdirpSync('./tmpTest')
             process.chdir('./tmpTest');
             fs.mkdirSync('./contracts');
-            fs.copyFileSync('../test/cli-commands/test/LimeFactory.sol', './contracts/LimeFactory.sol');
-            fs.mkdirSync('./testsToRun');
-            fs.copyFileSync('../test/cli-commands/test/exampleTest.js', './testsToRun/exampleTest.js');
+            fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+            fs.mkdirSync('./exampleToRun');
+            fs.writeFileSync('./exampleToRun/exampleTest.js', exampleTest);
             fs.mkdirSync('./build');
-        })
-    
-        it('should work on unexisting test folder', async function() {
-            await assert.isFulfilled(test.run('./testsToRun'))
         })
     
         it('should execute test cli command with specific path', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isFulfilled(test.run('testsToRun/exampleTest.js'))
-            sinon.assert.calledWith(etherlimeTestSpy, ['testsToRun/exampleTest.js'], undefined)
+            await assert.isFulfilled(test.run(path))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], undefined)
             etherlimeTestSpy.restore();
         });
     
         it('shpuld throw on wrong path', async function() {
-            await assert.isRejected(test.run('wrongTestDirectory'));
-    
+            await assert.isRejected(test.run('wrongTestDirectory'));  
         });
     
-        it('should execute test cli command without specific js file', async function() {
+        it('should execute test cli command when path does not inclues specific .js file', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isFulfilled(test.run('./testsToRun'))
+            await assert.isFulfilled(test.run('./exampleToRun'))
             sinon.assert.calledWith(etherlimeTestSpy, calledArgs)
             etherlimeTestSpy.restore();
         });

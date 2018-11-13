@@ -1,6 +1,8 @@
-const etherlime = require('../../index.js');
-const LimeFactory = require('../../test/testContracts/LimeFactory.json')
+const exampleTestForCoverage = `const assert = require('chai').assert;
 const fs = require('fs-extra');
+
+const etherlime = require('../../../index.js');
+const LimeFactory = require('../../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {
 
@@ -14,8 +16,13 @@ describe('Lime Factory example', function () {
     });
 
     it('should create lime', async () =>  {
-        await limeFactoryInstance.contract.createLime("limeDessy", 6, 8, 2)
+        await limeFactoryInstance.contract.createLime("newLime", 6, 8, 2)
         let lime = await limeFactoryInstance.contract.limes(0);
-        assert.equal(lime.name, 'limeDessy');
-    });
+        assert.equal(lime.name, 'newLime');
+    })
 });
+`
+module.exports = {
+    exampleTestForCoverage
+}
+
