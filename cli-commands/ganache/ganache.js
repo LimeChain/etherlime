@@ -1,12 +1,12 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
-const logger = require('./../../logger-service/logger-service').logger;
 const colors = require('./../../utils/colors');
 
 
-const run = (inPort, logger, forkParams) => {
-	let port = (inPort) ? inPort : setup.defaultPort;
-	let fork = (forkParams) ? forkParams : setup.forkParams;
+const run = (inPort, inLogger, forkParams) => {
+	port = (inPort) ? inPort : setup.defaultPort;
+	fork = (forkParams) ? forkParams : setup.forkParams;
+	logger = inLogger;
 	const server = ganache.server({
 		accounts: setup.accounts,
 		logger,
@@ -17,7 +17,6 @@ const run = (inPort, logger, forkParams) => {
 };
 
 const ganacheServerListenCallback = (err, blockchain) => {
-
 	if (err) {
 		logger.log(err);
 		return;
@@ -31,7 +30,7 @@ const ganacheServerListenCallback = (err, blockchain) => {
 
 	logger.log(`\nListening on http://localhost:${port}`);
 	forkedNetwork ? logger.log(`Etherlime ganache is forked from network: ${colors.colorSuccess(forkedNetwork)}`) : null;
-	forkedBlockNumber ? logger.log(`\nNetwork is forked from block number: ${colors.colorSuccess(forkedBlockNumber)}`) : null;
+	forkedBlockNumber ? logger.log(`Network is forked from block number: ${colors.colorSuccess(forkedBlockNumber)}`) : null;
 
 };
 

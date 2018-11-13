@@ -29,6 +29,7 @@ function runCmdHandler(dir, cmd) {
 			let outputLoaded;
 
 			ganacheCommandOutput += data.toString('utf-8');
+			console.log(ganacheCommandOutput)
 
 			outputLoaded = data.toString('utf-8').includes('Listening on');
 
