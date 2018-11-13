@@ -3,7 +3,6 @@ var chai = require("chai");
 var originalRequire = require("original-require");
 let timeTravel = require('./time-travel');
 let events = require('./events');
-let evmCommands = require('./evm-commands');
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -60,10 +59,7 @@ const setJSTestGlobals = async () => {
 	global.utils = {
 		timeTravel: timeTravel.timeTravel,
 		parseLogs: events.parseLogs,
-		hasEvent: events.hasEvent,
-		snapshot: evmCommands.snapshot,
-		revertState: evmCommands.revertState,
-		mineBlock: evmCommands.mineBlock
+		hasEvent: events.hasEvent
 	}
 	const importedAccounts = new Array();
 	for (const acc of accounts) {

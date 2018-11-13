@@ -38,28 +38,12 @@ describe('Lime Factory example', function () {
         await utils.timeTravel(deployer.provider, 6000)
         const createTransaction = await limeFactoryInstance.contract.createLime("newLime", 5, 8, 2);
         const transactionReceipt = await limeFactoryInstance.verboseWaitForTransaction(createTransaction);
-        let logs = utils.parseLogs(transactionReceipt, limeFactoryInstance, 'FreshLime')
+        let logs = utils.parseLogs(transactionReceipt, limeFactoryInstance.contract, 'FreshLime')
         assert(logs.length > 0, "No event was thrown")
         
-        let event = utils.hasEvent(transactionReceipt, limeFactoryInstance, 'FreshLime')
+        let event = utils.hasEvent(transactionReceipt, limeFactoryInstance.contract, 'FreshLime')
         assert.isTrue(event);
     });
-
-    it('should take a snapshop of current Blockchain data and revert to it', async () => {
-        let currentBlockNumber = await deployer.provider.getBlockNumber()
-        let snapshotID = await utils.snapshot(deployer.provider)
-        await limeFactoryInstance.contract.createLime("newLime", 5, 8, 2);
-        await utils.revertState(deployer.provider, snapshotID)
-        let revertedBlockNumber = await deployer.provider.getBlockNumber()
-        assert.equal(currentBlockNumber, revertedBlockNumber)
-    });
-
-    it('should force a block to be mined', async () => {
-        let currentBlockNumber = await deployer.provider.getBlockNumber()
-        await utils.mineBlock(deployer.provider)
-        let newBlockNumber = await deployer.provider.getBlockNumber()
-        assert.notEqual(currentBlockNumber,newBlockNumber)
-    })
 
 });`
 
