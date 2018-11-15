@@ -7,11 +7,14 @@ const hookStream = require('../../utils/hookup-standard-output').hookStream;
 const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
 const walletUtil = require('./../utils/wallet');
 
-const ganache = require('ganache-cli');
 const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
 const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 const config = require('../../config.json');
 const ethers = require('ethers')
+let logger = require('../../logger-service/logger-service').logger;
+let ganache = require("ganache-cli");
+
+
 
 
 
@@ -20,6 +23,7 @@ const START_SERVER_TIMEOUT = 10000;
 const DEFAULT_PORT = ganacheSetupFile.defaultPort;
 const SPECIFIC_PORT = 8123;
 const RUN_DIRECT_PORT = 8124;
+const RUN_FORK_PORT = 8125;
 
 const ADDRESS_START_INDEX = 13;
 const ADDRESS_LENGTH = 42;
@@ -180,6 +184,7 @@ describe('Ganache cli command', () => {
 			}
 
 			for (let log of logs) {
+				console.log(log);
 				isServerListening = log.includes(serverListeningMessageStart);
 
 				if (isServerListening) {
@@ -201,8 +206,11 @@ describe('Ganache cli command', () => {
 
 	describe('Ganache server forking straight test', async () => {
 		it('should start ganache server forking from specific network', async () => {
-
-			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
+			const unhookStdout = hookStream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
+			unhookStdout();
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
@@ -212,8 +220,11 @@ describe('Ganache cli command', () => {
 		});
 
 		it('should start ganache server forking from specific block number', async () => {
-
-			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`);
+			const unhookStdout = hookStream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
+			unhookStdout();
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
@@ -225,8 +236,11 @@ describe('Ganache cli command', () => {
 
 	describe('Ganache server forking reverse test', async () => {
 		it('should start normal ganache server when empty parameter for forking is specified', async () => {
-
-			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT} --fork`);
+			const unhookStdout = hookStream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
+			unhookStdout();
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${RUN_FORK_PORT} --fork`);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
 			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
@@ -236,8 +250,11 @@ describe('Ganache cli command', () => {
 		});
 
 		it('should start normal ganache server when no parameter for forking is specified', async () => {
-
-			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT}`);
+			const unhookStdout = hookStream(process.stdout, function (string, encoding, fd) {
+				logs.push(string);
+			});
+			unhookStdout();
+			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${RUN_FORK_PORT}`);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
 			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
@@ -260,17 +277,27 @@ describe('Ganache cli command', () => {
 
 			// console.log(infuraInitializedWallet.provider)
 			console.log(ethers.utils.formatEther(balance.toString()));
+
+
 		});
 
 		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same ballance', async () => {
-			childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port=${SPECIFIC_PORT} --fork=https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
-			console.log(childResponse);
 
-			const localNetworkToListen = `http://localhost:${SPECIFIC_PORT}`;
-			const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
-			const balanceInForkedWallet = await forkedWallet.getBalance();
-			console.log(ethers.utils.formatEther(balanceInForkedWallet.toString()))
+			// ganacheRun(RUN_FORK_PORT, logger, `https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
+			var server = ganache.server({ fork: `https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}` });
+			server.listen(`${RUN_FORK_PORT}`, function (err, blockchain) {
+				console.log(err);
+				console.log(blockchain);
+			});
+
+			// childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port=${SPECIFIC_PORT} --fork=https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
+			// console.log(childResponse);
+
+			// const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			// const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
+			// const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			// const balanceInForkedWallet = await forkedWallet.getBalance();
+			// console.log(ethers.utils.formatEther(balanceInForkedWallet.toString()))
 
 
 
@@ -281,8 +308,17 @@ describe('Ganache cli command', () => {
 
 
 			// assert.equal('5', '4', 'test')
-			killProcessByPID(childResponse.process.pid);
+			// killProcessByPID(childResponse.process.pid);
 		});
+
+		it('test', async () => {
+			await timeout(START_SERVER_TIMEOUT);
+			const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
+			const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			const balanceInForkedWallet = await forkedWallet.getBalance();
+			console.log(ethers.utils.formatEther(balanceInForkedWallet.toString()))
+		})
 
 		// after(async () => {
 		// 	killProcessByPID(childResponse.process.pid);

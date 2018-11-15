@@ -1,15 +1,15 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
 const colors = require('./../../utils/colors');
-
+const logger = require('../../logger-service/logger-service').logger;
+let port;
 
 const run = (inPort, inLogger, forkParams) => {
 	port = (inPort) ? inPort : setup.defaultPort;
 	fork = (forkParams) ? forkParams : setup.forkParams;
-	logger = inLogger;
 	const server = ganache.server({
 		accounts: setup.accounts,
-		logger,
+		logger: inLogger,
 		fork: fork
 	});
 
@@ -18,6 +18,7 @@ const run = (inPort, inLogger, forkParams) => {
 
 const ganacheServerListenCallback = (err, blockchain) => {
 	if (err) {
+		console.log("here error")
 		logger.log(err);
 		return;
 	}

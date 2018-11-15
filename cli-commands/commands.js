@@ -4,7 +4,7 @@ const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
-const logger = require('./../logger-service/logger-service').logger;
+let logger = require('./../logger-service/logger-service').logger;
 const KeenTracking = require('keen-tracking');
 const analyticsKeys = require('./analytics.json');
 
