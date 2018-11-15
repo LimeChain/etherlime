@@ -251,6 +251,7 @@ describe('Ganache cli command', () => {
 		let infuraProvider;
 		let infuraInitializedWallet;
 		let balance;
+		let childResponse;
 
 		before(async () => {
 			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
@@ -258,18 +259,20 @@ describe('Ganache cli command', () => {
 			balance = await infuraInitializedWallet.getBalance();
 
 			// console.log(infuraInitializedWallet.provider)
-			// console.log(ethers.utils.formatEther(balance.toString()))
+			console.log(ethers.utils.formatEther(balance.toString()));
 		});
 
-		it.only('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same ballance', async () => {
-			const childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port ${DEFAULT_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
-			console.log(childResponse)
+		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same ballance', async () => {
+			childResponse = await runCmdHandler('./cli-commands/ganache', `etherlime ganache --port=${SPECIFIC_PORT} --fork=https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`);
+			console.log(childResponse);
 
-			const localNetworkToListen = `http://localhost:${DEFAULT_PORT}`;
-			const jsonRpcProvider = await new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			const forkedWallet = await new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			const localNetworkToListen = `http://localhost:${SPECIFIC_PORT}`;
+			const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
+			const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
 			const balanceInForkedWallet = await forkedWallet.getBalance();
-			// console.log(ethers.utils.formatEther(balanceInForkedWallet.toString()))
+			console.log(ethers.utils.formatEther(balanceInForkedWallet.toString()))
+
+
 
 
 			// assert.notDeepEqual(infuraInitializedWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
@@ -280,5 +283,9 @@ describe('Ganache cli command', () => {
 			// assert.equal('5', '4', 'test')
 			killProcessByPID(childResponse.process.pid);
 		});
+
+		// after(async () => {
+		// 	killProcessByPID(childResponse.process.pid);
+		// })
 	});
 });
