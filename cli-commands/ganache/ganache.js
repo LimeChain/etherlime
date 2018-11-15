@@ -9,7 +9,7 @@ const run = (inPort, logger, forkParams) => {
 	const server = ganache.server({
 		accounts: setup.accounts,
 		logger,
-		fork: fork
+		fork
 	});
 
 	server.listen(port, function (err, blockchain) {
