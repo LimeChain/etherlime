@@ -4,7 +4,7 @@
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
-    "test": "nyc --check-coverage --lines 100 mocha 'test/**/*.js' --exit",
+    "test": "nyc --check-coverage --lines 100 mocha 'test/**/*.js'",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
@@ -32,6 +32,7 @@
     "ganache-cli": "^6.1.8",
     "graphlib": "^2.1.5",
     "keen-tracking": "^4.0.7",
+    "kill-port": "^1.3.2",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "moment": "^2.22.2",
@@ -42,8 +43,9 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "require-from-string": "^2.0.2",
+    "sinon": "^7.1.0",
     "solc": "^0.4.25",
-    "solidity-coverage": "LimeChain/solidity-coverage#master",
+    "solidity-coverage": "github:LimeChain/solidity-coverage#master",
     "yargs": "^11.0.0"
   },
   "bin": {
