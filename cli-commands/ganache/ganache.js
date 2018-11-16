@@ -18,7 +18,6 @@ const run = (inPort, inLogger, forkParams) => {
 
 const ganacheServerListenCallback = (err, blockchain) => {
 	if (err) {
-		console.log("here error")
 		logger.log(err);
 		return;
 	}
