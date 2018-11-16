@@ -28,11 +28,11 @@ describe('Init cli command', () => {
         process.chdir('/tmp');
     });
 
-    it('should execute run function', async() => {
+    it('should execute init without parameters', async() => {
         await assert.isFulfilled(init.run(), 'It is successfully executed');
     })
 
-    it('contracts folder and example file should be created', async() => {
+    it('should have contracts folder and example file', async() => {
         let dirExists = fs.existsSync(contractsDir);
         assert.isTrue(dirExists, "The 'contracts' folder should exist.");
 
@@ -40,7 +40,7 @@ describe('Init cli command', () => {
         assert.isTrue(fileExists, "The 'contract example file' should be copied in deployment folder")
     });
 
-    it('test folder and example file should be created', async() => {
+    it('should have test folder and example file', async() => {
         let dirExists = fs.existsSync(testDir);
         assert.isTrue(dirExists, "The 'contracts' folder should exist.");
 
@@ -48,7 +48,7 @@ describe('Init cli command', () => {
         assert.isTrue(fileExists, "The 'test example file' should be copied in deployment folder")
     });
 
-    it('deployment folder and example file should be created', async () => {
+    it('should have deployment folder and example file', async () => {
         let dirExists = fs.existsSync(deploymentDir);
         let fileExists = fs.existsSync(deploymentFileDestination);
 

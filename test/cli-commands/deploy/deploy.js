@@ -82,7 +82,6 @@ describe('Deploy cli command', () => {
     });
 
     afterEach(async function () {
-        await fs.removeSync('./.etherlime-store')
-        await fs.removeSync('./.etherlime-store/.history.json');
+        await fs.removeSync('./.etherlime-store');
     })
 })

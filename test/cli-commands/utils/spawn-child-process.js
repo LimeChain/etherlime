@@ -1,22 +1,22 @@
 const spawn = require('child_process').spawn;
 
-function spawnProcess(dir, cmd) {
-	return spawnLinuxProcess(dir, cmd);
+function spawnProcess(cmd) {
+	return spawnLinuxProcess(cmd);
 }
 
-function spawnLinuxProcess(dir, cmd) {
+function spawnLinuxProcess(cmd) {
 	let cmdParts = cmd.split(/\s+/);
 
-	return spawn(cmdParts[0], cmdParts.slice(1), { node: dir });
+	return spawn(cmdParts[0], cmdParts.slice(1));
 }
 
-function runCmdHandler(dir, cmd) {
+function runCmdHandler(cmd, outputCondition) {
 	return new Promise((resolve, reject) => {
 		let process = null;
-		let ganacheCommandOutput = '';
+		let commandOutput = '';
 
 		try {
-			process = spawnProcess(dir, cmd);
+			process = spawnProcess(cmd);
 		} catch (e) {
 			console.error(`Error trying to execute command ${cmd} in directory ${dir}`);
 			console.error(e);
@@ -28,14 +28,15 @@ function runCmdHandler(dir, cmd) {
 		process.stdout.on('data', function (data) {
 			let outputLoaded;
 
-			ganacheCommandOutput += data.toString('utf-8');
+			commandOutput += data.toString('utf-8');
 
-			outputLoaded = data.toString('utf-8').includes('Listening on');
+			outputLoaded = data.toString('utf-8').includes(outputCondition);
 
 			if (outputLoaded) {
 				const processRespond = {
 					process: process,
-					output: ganacheCommandOutput
+					output: commandOutput,
+					result: true
 				};
 
 				resolve(processRespond);
