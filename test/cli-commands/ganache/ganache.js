@@ -12,8 +12,8 @@ const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganac
 const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 const config = require('../../config.json');
 const ethers = require('ethers')
-let logger = require('../../logger-service/logger-service').logger;
-let ganache = require("ganache-cli");
+const logger = require('../../logger-service/logger-service').logger;
+const ganache = require("ganache-cli");
 const Billboard = require('../../testContracts/Billboard.json');
 
 

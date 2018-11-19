@@ -28,7 +28,6 @@ Available Utils
 On your disposal there is a global available utils object. Here are the methods it exposes:
 
 	* ``utils.timeTravel(provider, seconds)`` method allowing etherlime ganache to move ``seconds`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
-	* ``utils.setTimeTo(provider, timestamp)`` method allowing etherlime ganache to move to the desired ``timestamp`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.snapshot(provider)`` method allowing etherlime ganache to take a **Snapshot** of the current Blockchain data. You can revert back to this snapshot when desired. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.revertState(provider)`` method allowing etherlime ganache to **revert** back to the most recent snapshot. In case you don't have a snapshot it will reset the entire chain data. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.mineBlock(provider)`` method telling the etherlime ganache to mine the next block. You need to pass your provider from the EtherlimeGanacheDeployer
