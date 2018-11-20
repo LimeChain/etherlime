@@ -15,7 +15,7 @@ const analyticsClient = new KeenTracking({
 
 const commands = [
 	{
-		command: 'ganache [port] [output]',
+		command: 'ganache [port] [output] [fork]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -29,6 +29,11 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('fork', {
+				describe: 'Define the fork network where etherlime ganache-cli can fork and continue to exists',
+				type: 'string'
+			})
 		},
 		commandProcessor: (argv) => {
 			analyticsClient.recordEvent('etherlime ganache', {
@@ -38,7 +43,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, logger);
+				ganache.run(argv.port, logger, argv.fork);
 			} catch (err) {
 				console.error(err);
 			} finally {
