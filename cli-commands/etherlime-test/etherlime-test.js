@@ -40,7 +40,7 @@ const createMocha = (config, files) => {
 	return mocha;
 }
 
-const runMocha = (mocha) => {
+const runMocha = async (mocha) => {
 	mocha.run(failures => {
 		process.exitCode = failures ? -1 : 0;
 	});
