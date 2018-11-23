@@ -147,6 +147,24 @@ describe('Compile dependencies', () => {
 
         });
 
+        it("should throw error if try to resolve non-existing file without passing 'imported_from' param", function () {
+            let expectedError = "Could not find Unexisting.sol from any sources";
+            const fnExecution = new Promise((resolve, reject) => {
+                compileOptions.resolver.resolve("Unexisting.sol", function (err) {
+                    if (!err) {
+                        resolve();
+                        return;
+                    }
+
+                    reject(err)
+                })
+            });
+
+            assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
+
+        });
+
+
         //EPM Source
         it('should find resource file in Eth package manager', function () {
             let library = 'library SafeMath'
@@ -201,14 +219,14 @@ describe('Compile dependencies', () => {
 
     describe("Schema tests", () => {
 
-        it('should normalize the schema if version is bigger than v2.0.0', function () {
+        it('should not change legasyAST object if schemaVersion is bigger than v2.0.0', function () {
             compiledContract.schemaVersion = "4.9.8"
             let normalizedResult = schema.normalize(compiledContract)
-            assert.equal(normalizedResult.schemaVersion, '0.9.8')
+            assert.equal(compiledContract.legacyAST, normalizedResult.legacyAST)
         });
 
         it('should normalize to string "updateAt" date if it is a number', function () {
-            compiledContract.updatedAt = 2018 - 11 - 25;
+            compiledContract.updatedAt = 20181125;
             let normalizedResult = schema.normalize(compiledContract)
             assert.isString(normalizedResult.updatedAt)
         });
@@ -238,7 +256,7 @@ describe('Compile dependencies', () => {
             let normalizedResult = schema.normalize(compiledContract)
             let propertyValue = normalizedResult["x-NewProperty"]
             assert.equal(propertyValue, "someValue")    
-        })
+        });
 
     })
 

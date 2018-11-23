@@ -49,7 +49,7 @@ let compiledContract = {
     "version": "0.4.25+commit.59dbf8f1.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "4.9.8",
+  "schemaVersion": "0.9.8",
   "updatedAt": "2018-11-20T14:06:14.046Z"
 }
 

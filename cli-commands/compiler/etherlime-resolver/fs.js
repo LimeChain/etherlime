@@ -14,10 +14,11 @@ FS.prototype.getContractName = function (sourcePath, searchPath) {
   for (var i = 0; i < filenames.length; i++) {
     var filename = filenames[i];
 
+    
     var artifact = JSON.parse(
       fs.readFileSync(path.resolve(searchPath, filename))
     );
-    
+
     if (artifact.sourcePath == sourcePath) {
       return artifact.contractName;
     }
@@ -33,7 +34,7 @@ FS.prototype.resolve = function (import_path, imported_from, callback) {
     import_path,
     path.join(path.dirname(imported_from), import_path)
   ];
-  
+
   var resolved_body = null;
   var resolved_path = null;
 
@@ -42,7 +43,9 @@ FS.prototype.resolve = function (import_path, imported_from, callback) {
       return finished();
     }
 
-    fs.readFile(possible_path, { encoding: "utf8" }, function (err, body) {    
+    fs.readFile(possible_path, {
+      encoding: "utf8"
+    }, function (err, body) {
       if (body) {
         resolved_body = body;
         resolved_path = possible_path;
@@ -50,8 +53,7 @@ FS.prototype.resolve = function (import_path, imported_from, callback) {
 
       return finished();
     });
-  }, function (err) {
-    if (err) return callback(err);
+  }, function () {
     callback(null, resolved_body, resolved_path);
   });
 };

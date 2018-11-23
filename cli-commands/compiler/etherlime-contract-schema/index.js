@@ -78,7 +78,7 @@ var properties = {
   "legacyAST": {
     "transform": function (value, obj) {
       var schemaVersion = obj.schemaVersion || "0.0.0";
-      
+  
       // legacyAST introduced in v2.0.0
       if (schemaVersion[0] < 2) {
         return obj.ast;
@@ -116,17 +116,14 @@ var properties = {
  *
  * @return {Function} Accepting dirty object and returning value || undefined
  */
-function getter(key, transform) {
-  if (transform === undefined) {
-    transform = function (x) { return x };
-  }
+function getter(key) {
 
-  return function (obj) {
-    try {
-      return transform(obj[key]);
-    } catch (e) {
-      return undefined;
-    }
+  const transform = (x) => {
+    return x
+  };
+
+  return (obj) => {
+    return transform(obj[key]);
   }
 }
 
@@ -169,16 +166,18 @@ var EtherlimeContractSchema = {
 
     Object.keys(properties).forEach(function (key) {
       var property = properties[key];
-      var value;  
-      
+      var value;
+
       var sources = property.sources || [key];
 
       for (var i = 0; value === undefined && i < sources.length; i++) {
         var source = sources[i];
-        
+       
         if (typeof source === "string") {
           var traversals = source.split(".")
-            .map(function (k) { return getter(k) });
+            .map(function (k) {
+              return getter(k)
+            });
           source = chain.apply(null, traversals);
         }
 

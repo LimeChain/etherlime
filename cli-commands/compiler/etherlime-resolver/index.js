@@ -33,6 +33,7 @@ Resolver.prototype.resolve = function (import_path, imported_from, callback) {
   var current_index = -1;
   var current_source;
 
+  // TODO refactor with while
   whilst(function () {
     return !resolved_body && current_index < self.sources.length - 1;
   }, function (next) {
@@ -48,9 +49,9 @@ Resolver.prototype.resolve = function (import_path, imported_from, callback) {
         next(error);
       });
     }, function (error) {
-      if (error) {
-        return callback(error);
-      }
+      // if (error) {
+      //   return callback(error);
+      // }
 
       if (!resolved_body) {
         var message = `Could not find ${import_path} from any sources`;
