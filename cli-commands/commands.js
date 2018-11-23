@@ -5,10 +5,17 @@ const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
 const logger = require('./../logger-service/logger-service').logger;
+const KeenTracking = require('keen-tracking');
+const analyticsKeys = require('./analytics.json');
+
+const analyticsClient = new KeenTracking({
+	projectId: analyticsKeys.projectId,
+	writeKey: analyticsKeys.writeKey
+});
 
 const commands = [
 	{
-		command: 'ganache [port] [output]',
+		command: 'ganache [port] [output] [fork]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -22,12 +29,21 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('fork', {
+				describe: 'Define the fork network where etherlime ganache-cli can fork and continue to exists',
+				type: 'string'
+			})
 		},
 		commandProcessor: (argv) => {
+			analyticsClient.recordEvent('etherlime ganache', {
+				argv
+			});
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port);
+				ganache.run(argv.port, logger, argv.fork);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -47,6 +63,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+			analyticsClient.recordEvent('etherlime init', {
+				argv
+			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -104,6 +123,14 @@ const commands = [
 				console.error(err);
 			} finally {
 				logger.removeOutputStorage();
+				const statistics = {
+					argv
+				}
+				delete statistics.argv.secret;
+
+				analyticsClient.recordEvent('etherlime deploy', {
+					argv
+				});
 			}
 		}
 	},
@@ -125,6 +152,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+			analyticsClient.recordEvent('etherlime history', {
+				argv
+			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -187,6 +217,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+			analyticsClient.recordEvent('etherlime compile', {
+				argv
+			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -222,6 +255,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+			analyticsClient.recordEvent('etherlime test', {
+				argv
+			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -254,6 +290,9 @@ const commands = [
 			})
 		},
 		commandProcessor: async (argv) => {
+			analyticsClient.recordEvent('etherlime coverage', {
+				argv
+			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
 		}
 	}

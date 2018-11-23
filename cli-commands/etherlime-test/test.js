@@ -3,11 +3,12 @@ let etherlimeTest = require('./etherlime-test');
 let dir = require('node-dir');
 let Config = require('./../compiler/etherlime-config');
 
-let App = require('./../../node_modules/solidity-coverage/lib/app');
+let App = require('solidity-coverage/lib/app');
 let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 
 const run = async (path, skipCompilation) => {
+	
 	var config = Config.default();
 	var testDirectory = '';
 
@@ -57,22 +58,27 @@ const runWithCoverage = async (path, port, runs) => {
 	const config = JSON.parse(JSON.stringify(defaultCoverageConfig));
 
 	if (path) {
-		config['testCommand'] = `${config['testCommand']} --path ${path}`
+		config['testCommand'] = `${config['testCommand']} --path ${path}`;
 	}
 
 	if (runs) {
-		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`
+		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`;
 	}
 
 	config['port'] = port;
 
 	config["testrpcOptions"] = `${accountsData}`;
+
+	if(port){
+		config["testrpcOptions"] += `--port ${port}`;
+	}
 	const app = new App(config);
 	app.generateCoverageEnvironment();
 	app.instrumentTarget();
-	await app.launchTestrpc()
+	await app.launchTestrpc();
 	app.runTestCommand();
-	app.generateReport();
+	await app.generateReport();
+
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 const etherlime = require('./../../index.js');
 const ethers = require('ethers')
 const assert = require('assert');
+const sinon = require('sinon');
 
 const isAddress = require('./../../utils/address-utils').isAddress;
 const config = require('./../config.json');
@@ -13,6 +14,8 @@ const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
 };
+
+let sandbox = sinon.createSandbox();
 
 describe('Deployed Contracts Wrapper tests', () => {
 	store.initHistoryRecord();
@@ -69,10 +72,16 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		let deployer;
 		let contractWrapper;
+		let mockedSendTransaction;
 
 		beforeEach(async () => {
 			deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
+			mockedSendTransaction = await mockSendTransaction(deployer.wallet);
 			contractWrapper = await deployer.deploy(ICOTokenContract);
+		});
+
+		afterEach(() => {
+			sandbox.restore();
 		});
 
 		it('should wait for transaction correctly', async () => {
@@ -82,6 +91,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert(result.hasOwnProperty('transactionHash'), 'There is no transactionHash property of the result');
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('logs'), 'There is no logs property of the result');
+			assert(result.hasOwnProperty('events'), 'There is no events property of the result');
 			assert(result.hasOwnProperty('status'), 'There is no status property of the result');
 			const currentRecord = store.getCurrentWorkingRecord();
 			const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
@@ -89,6 +99,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert.strictEqual(lastAction.nameOrLabel, label, 'Label not set correctly');
 			assert.strictEqual(lastAction.transactionHash, transferTransaction.hash, 'Transaction hash not set correctly');
 			assert(lastAction.status == 0, 'status not set correctly');
+			sandbox.assert.calledTwice(mockedSendTransaction);
 		});
 
 		it('should wait for transaction without label', async () => {
@@ -97,16 +108,9 @@ describe('Deployed Contracts Wrapper tests', () => {
 			assert(result.hasOwnProperty('transactionHash'), 'There is no transactionHash property of the result');
 			assert(result.hasOwnProperty('blockHash'), 'There is no blockHash property of the result');
 			assert(result.hasOwnProperty('logs'), 'There is no logs property of the result');
+			assert(result.hasOwnProperty('events'), 'There is no events property of the result');
 			assert(result.hasOwnProperty('status'), 'There is no status property of the result');
-		});
-
-		it('should throw on failed transaction', async () => {
-			try {
-				await contractWrapper.contract.transfer(config.randomAddress, 69);
-				assert.fails('The failed transaction did not throw');
-			} catch (err) {
-				assert(err.message.includes('always failing transaction'), 'Incorrect error was thrown');
-			}
+			sandbox.assert.calledTwice(mockedSendTransaction);
 		});
 
 		it('should throw error on transaction receipt status 0', async () => {
@@ -123,3 +127,26 @@ describe('Deployed Contracts Wrapper tests', () => {
 	})
 
 });
+
+function mockSendTransaction(wallet) {
+	let sendTransactionStub = sandbox.stub(wallet, 'sendTransaction');
+	sendTransactionStub.callsFake(() => {
+		return new Promise((resolve, reject) => {
+			resolve({
+				wait: async () => {
+					return {
+						contractAddress: config.randomDeployedAddress,
+						gasUsed: config.defaultGasLimit,
+						transactionHash: config.randomTxHash,
+						blockHash: config.randomTxHash,
+						logs: [],
+						events: [],
+						status: 1
+					};
+				},
+				gasPrice: config.defaultGasPrice
+			});
+		});
+	});
+	return sendTransactionStub;
+}
