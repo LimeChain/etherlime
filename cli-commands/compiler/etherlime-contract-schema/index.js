@@ -78,7 +78,7 @@ var properties = {
   "legacyAST": {
     "transform": function (value, obj) {
       var schemaVersion = obj.schemaVersion || "0.0.0";
-
+      
       // legacyAST introduced in v2.0.0
       if (schemaVersion[0] < 2) {
         return obj.ast;
@@ -150,20 +150,21 @@ function chain() {
 }
 
 var EtherlimeContractSchema = {
-  validate: function (contractObj) {
-    var ajv = new Ajv({ useDefaults: true });
-    ajv.addSchema(abiSchema);
-    ajv.addSchema(networkObjectSchema);
-    ajv.addSchema(contractObjectSchema);
-    if (ajv.validate("contract-object.spec.json", contractObj)) {
-      return contractObj;
-    } else {
-      throw ajv.errors;
-    }
-  },
+  // validate: function (contractObj) {
+  //   var ajv = new Ajv({ useDefaults: true });
+  //   ajv.addSchema(abiSchema);
+  //   ajv.addSchema(networkObjectSchema);
+  //   ajv.addSchema(contractObjectSchema);
+  //   if (ajv.validate("contract-object.spec.json", contractObj)) {
+  //     return contractObj;
+  //   } else {
+  //     console.log("Err", ajv.errors)
+  //     throw ajv.errors;
+  //   }
+  // },
 
   normalize: function (objDirty, options) {
-    options = options || {};
+    // options = options || {};
     var normalized = {};
 
     Object.keys(properties).forEach(function (key) {
@@ -199,9 +200,9 @@ var EtherlimeContractSchema = {
 
     normalized.schemaVersion = pkgVersion;
 
-    if (options.validate) {
-      this.validate(normalized);
-    }
+    // if (options.validate) {
+    //   this.validate(normalized);
+    // }
 
     return normalized
   }

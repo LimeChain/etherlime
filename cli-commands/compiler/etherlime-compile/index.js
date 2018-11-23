@@ -147,7 +147,7 @@ var compile = function (sources, options, callback) {
 						"version": solc.version()
 					}
 				}
-
+		
 				contract_definition.abi = orderABI(contract_definition);
 
 				Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
@@ -228,7 +228,7 @@ function orderABI(contract) {
 
 	var functions_to_remove = ordered_function_names.reduce((obj, value, index) => {
 		obj[value] = index;
-
+		
 		return obj;
 	}, {});
 
@@ -314,7 +314,7 @@ compile.with_dependencies = function (options, callback) {
 				logger.log(`Compiling ${display_path}...`);
 			});
 		}
-
+				
 		compile(result, options, callback);
 	});
 };
