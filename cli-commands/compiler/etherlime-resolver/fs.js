@@ -7,30 +7,6 @@ function FS(working_directory, contracts_build_directory) {
   this.contracts_build_directory = contracts_build_directory;
 }
 
-FS.prototype.require = function (import_path, search_path) {
-  search_path = search_path || this.contracts_build_directory;
-
-  import_path = import_path.replace(/\//g, path.sep);
-
-  var contract_name = this.getContractName(import_path, search_path);
-
-  if (path.isAbsolute(import_path)) {
-    if (import_path.indexOf(this.working_directory) != 0) {
-      return null;
-    }
-
-    import_path = "./" + import_path.replace(this.working_directory);
-  }
-
-  try {
-    var result = fs.readFileSync(path.join(search_path, contract_name + ".json"), "utf8");
-
-    return JSON.parse(result);
-  } catch (e) {
-    return null;
-  }
-};
-
 FS.prototype.getContractName = function (sourcePath, searchPath) {
   searchPath = searchPath || this.contracts_build_directory;
 
@@ -38,6 +14,7 @@ FS.prototype.getContractName = function (sourcePath, searchPath) {
   for (var i = 0; i < filenames.length; i++) {
     var filename = filenames[i];
 
+    
     var artifact = JSON.parse(
       fs.readFileSync(path.resolve(searchPath, filename))
     );
@@ -66,7 +43,9 @@ FS.prototype.resolve = function (import_path, imported_from, callback) {
       return finished();
     }
 
-    fs.readFile(possible_path, { encoding: "utf8" }, function (err, body) {
+    fs.readFile(possible_path, {
+      encoding: "utf8"
+    }, function (err, body) {
       if (body) {
         resolved_body = body;
         resolved_path = possible_path;
@@ -74,8 +53,7 @@ FS.prototype.resolve = function (import_path, imported_from, callback) {
 
       return finished();
     });
-  }, function (err) {
-    if (err) return callback(err);
+  }, function () {
     callback(null, resolved_body, resolved_path);
   });
 };
