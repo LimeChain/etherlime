@@ -42,10 +42,12 @@ const THIRD_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile
 const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
 const TENTH_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
 const NETWORK_FORK_ADDRESS = "https://rinkeby.infura.io/v3/abca6d1110b443b08ef271545f24b80d";
+const LOCAL_NETWORK_FORK_ADDRESS = "http://localhost:8545";
 
 let ganacheCommandOutput;
 let expectedOutput = 'Listening on';
 let forkingExpectedOutput = 'Network is forked from block number';
+let localForkingExpectedOutput = 'Etherlime ganache is forked from network';
 
 describe('Ganache cli command', () => {
 
@@ -209,10 +211,11 @@ describe('Ganache cli command', () => {
 		});
 	});
 
-	describe('Ganache server forking straight test', async () => {
+	describe('Ganache server forking through Infura Provaider - straight test', async () => {
 
 		it('should start ganache server forking from specific network', async () => {
-			const portInUseAfterDirectCallRun = await tcpPortUsed.check(RUN_FORK_PORT);
+			await timeout(START_SERVER_TIMEOUT);
+
 			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
@@ -223,6 +226,7 @@ describe('Ganache cli command', () => {
 		});
 
 		it('should start ganache server forking from specific block number', async () => {
+			await timeout(START_SERVER_TIMEOUT);
 
 			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`, forkingExpectedOutput);
 
@@ -232,6 +236,20 @@ describe('Ganache cli command', () => {
 			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
 
 			killProcessByPID(childResponse.process.pid);
+		});
+	});
+
+	describe('Ganache server forking from local RPC network - straight test', async () => {
+
+		it('should start ganache server forking from specific network', async () => {
+
+			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
+
+			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
+			assert.equal(forkedNetwork, LOCAL_NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
+
+			await killProcessByPID(childResponse.process.pid);
 		});
 	});
 
