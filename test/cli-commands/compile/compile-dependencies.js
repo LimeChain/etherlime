@@ -1,6 +1,5 @@
 const assert = require('chai').assert;
 let chai = require("chai");
-let ex = chai.expect;
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
@@ -10,8 +9,8 @@ const sinon = require('sinon');
 const compiler = require('../../../cli-commands/compiler/compiler');
 const contracts = require('../../../cli-commands/compiler/etherlime-workflow-compile/index');
 const etherlimeCompile = require('../../../cli-commands/compiler/etherlime-compile/index');
-let Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
-let Resolver = require('../../../cli-commands/compiler/etherlime-resolver');
+const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
+const Resolver = require('../../../cli-commands/compiler/etherlime-resolver');
 const EPMSource = require("../../../cli-commands/compiler/etherlime-resolver/epm");
 const FSSource = require("../../../cli-commands/compiler/etherlime-resolver/fs");
 const NPMSource = require('../../../cli-commands/compiler/etherlime-resolver/npm');
@@ -91,7 +90,7 @@ describe('Compile dependencies', () => {
 
         it('should save artifacts of compiled contract', async function () {
             await assert.isFulfilled(compileOptions.artifactor.save(compiledContract), "Artifacts are not saved")
-        })
+        });
 
         it('should throw error if contractName is null', async function () {
             compiledContract.contractName = null;
