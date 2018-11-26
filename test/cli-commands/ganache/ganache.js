@@ -48,6 +48,7 @@ let ganacheCommandOutput;
 let expectedOutput = 'Listening on';
 let forkingExpectedOutput = 'Network is forked from block number';
 let localForkingExpectedOutput = 'Etherlime ganache is forked from network';
+let childResponse;
 
 describe('Ganache cli command', () => {
 
@@ -68,19 +69,23 @@ describe('Ganache cli command', () => {
 
 			assert.isFalse(portInUse, `The specific port ${SPECIFIC_PORT} is in use`);
 
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT}`, expectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT}`, expectedOutput);
 
 			const portInUseAfterRunningGanache = await tcpPortUsed.check(SPECIFIC_PORT);
 
 			assert.isTrue(portInUseAfterRunningGanache, `The specific port ${SPECIFIC_PORT} is free`);
 
-			killProcessByPID(childResponse.process.pid);
 		});
+		after(async () => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid);
+			}
+		})
 	});
 
 	describe('Run ganache server and check accounts', async () => {
 		it('should start ganache server and validate accounts', async () => {
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT}`, expectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT}`, expectedOutput);
 
 			ganacheCommandOutput = childResponse.output;
 
@@ -104,16 +109,20 @@ describe('Ganache cli command', () => {
 			assert.equal(tenthOutputtedAddress, TENTH_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
 			assert.equal(tenthOutputtedPrivateKey, TENTH_PRIVATE_KEY, 'There is mismatch of tenth account private key');
 
-			killProcessByPID(childResponse.process.pid);
 		});
+		after(async () => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid);
+			}
+		})
 	});
 
 	describe('Run ganache server on already used port e.g. the default port', async () => {
 		it('should throw if we are trying to start ganache server on used port', async () => {
 
-			const childProcess = await runCmdHandler(`etherlime ganache --port ${DEFAULT_PORT}`, expectedOutput);
+			const childResponse = await runCmdHandler(`etherlime ganache --port ${DEFAULT_PORT}`, expectedOutput);
 
-			assert.isTrue(childProcess.portInUse, 'The ganache server is running on used port');
+			assert.isTrue(childResponse.portInUse, 'The ganache server is running on used port');
 		});
 	});
 
@@ -201,85 +210,100 @@ describe('Ganache cli command', () => {
 		});
 
 		it('should run ganache server on passed port', async () => {
-			const childProcess = await runCmdHandler(`etherlime ganache --port ${RUN_DIRECT_PORT}`, expectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_DIRECT_PORT}`, expectedOutput);
 
 			const portInUseAfterDirectCallRun = await tcpPortUsed.check(RUN_DIRECT_PORT);
 
 			assert.isTrue(portInUseAfterDirectCallRun, `The specific port ${RUN_DIRECT_PORT} is free`);
 
-			killProcessByPID(childProcess.process.pid)
 		});
+		after(async () => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid)
+			}
+		})
 	});
+});
 
+describe('Ganache fork command', () => {
 	describe('Ganache server forking through Infura Provaider - straight test', async () => {
-
 		it('should start ganache server forking from specific network', async () => {
 			await timeout(START_SERVER_TIMEOUT);
 
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
 			assert.equal(forkedNetwork, NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
 
-			await killProcessByPID(childResponse.process.pid);
 		});
+
 
 		it('should start ganache server forking from specific block number', async () => {
 			await timeout(START_SERVER_TIMEOUT);
 
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`, forkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`, forkingExpectedOutput);
 
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
 			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
+		});
 
-			killProcessByPID(childResponse.process.pid);
+
+		afterEach(() => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid);
+			}
 		});
 	});
 
 	describe('Ganache server forking from local RPC network - straight test', async () => {
-
 		it('should start ganache server forking from specific network', async () => {
 
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
 			assert.equal(forkedNetwork, LOCAL_NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
 
-			await killProcessByPID(childResponse.process.pid);
 		});
+		after(async () => {
+			if (childResponse) {
+				await killProcessByPID(childResponse.process.pid);
+			}
+		})
 	});
 
 	describe('Ganache server forking reverse test', async () => {
 		it('should start normal ganache server when empty parameter for forking is specified', async () => {
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork`, expectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
 			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
-			killProcessByPID(childResponse.process.pid);
 		});
 
 		it('should start normal ganache server when no parameter for forking is specified', async () => {
-			const childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT}`, expectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT}`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
 			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
-			killProcessByPID(childResponse.process.pid);
 		});
+		afterEach(async () => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid);
+			}
+		})
 	});
 
 	describe('Ganache server forking initializing wallet test', async () => {
 		let infuraProvider;
 		let infuraInitializedWallet;
 		let balance;
-		let childResponse;
 
 		before(async () => {
 			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
@@ -301,8 +325,13 @@ describe('Ganache cli command', () => {
 			assert.deepEqual(balance, balanceInForkedWallet, 'The balance in the two wallets is not equal');
 
 
-			killProcessByPID(childResponse.process.pid);
 		});
+
+		after(async () => {
+			if (childResponse) {
+				killProcessByPID(childResponse.process.pid);
+			}
+		})
 	});
 
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {

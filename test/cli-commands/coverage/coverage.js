@@ -26,12 +26,12 @@ describe('coverage cli command', () => {
         fs.mkdirSync('./testsToRun')
         fs.writeFileSync('./testsToRun/exampleTestForCoverage.js', exampleTestForCoverage)
         fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
-    })
+    });
 
     it('should run coverage cli command', async function () {
         let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
         assert.isTrue(childProcess.result)
-    })
+    });
 
     it('should run coverage cli command by specifying number runs', async function () {
         let runs = 10;
@@ -39,16 +39,16 @@ describe('coverage cli command', () => {
         assert.isTrue(childProcess.result)
     });
 
-    it('should run coverage cli command on specific port', async function() {
+    it('should run coverage cli command on specific port', async function () {
         let port = 5000;
         let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
         assert.isTrue(childProcess.result)
-    })
+    });
 
     after(async function () {
         process.chdir(currentDir);
         fs.removeSync('./tmpTest')
 
-    })
+    });
 
 })
