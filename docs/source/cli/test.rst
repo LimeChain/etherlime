@@ -29,11 +29,9 @@ On your disposal there is a global available utils object. Here are the methods 
 
 	* ``utils.timeTravel(provider, seconds)`` method allowing etherlime ganache to move ``seconds`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.setTimeTo(provider, timestamp)`` method allowing etherlime ganache to move to the desired ``timestamp`` ahead. You need to pass your provider from the EtherlimeGanacheDeployer
-	* ``utils.snapshot(provider)`` method allowing etherlime ganache to take a **Snapshot** of the current Blockchain data. You can revert back to this snapshot when desired. You need to pass your provider from the EtherlimeGanacheDeployer
-	* ``utils.revertState(provider)`` method allowing etherlime ganache to **revert** back to the most recent snapshot. In case you don't have a snapshot it will reset the entire chain data. You need to pass your provider from the EtherlimeGanacheDeployer
 	* ``utils.mineBlock(provider)`` method telling the etherlime ganache to mine the next block. You need to pass your provider from the EtherlimeGanacheDeployer
-	* ``utils.hasEvent(receipt, contract, eventName)`` allowing the user to check if the desired event was broadcasted in the transaction receipt. You need to pass the T ransaction receipt, the contract that emits it and the name of the Event.
-	* ``utils.parseLogs(receipt, contract, eventName)`` allowing the user get parsed events from a transaction receipt. You need to pass the T ransaction receipt, the contract that emits it and the name of the Event. Always returns an event.
+	* ``utils.hasEvent(receipt, contract, eventName)`` allowing the user to check if the desired event was broadcasted in the transaction receipt. You need to pass the Transaction receipt, the contract that emits it and the name of the Event.
+	* ``utils.parseLogs(receipt, contract, eventName)`` allowing the user get parsed events from a transaction receipt. You need to pass the Transaction receipt, the contract that emits it and the name of the Event. Always returns an event.
 
 Examples
 --------
@@ -92,19 +90,30 @@ assert.revert
 		assert.revert(contract.throwingMethod());
 	});
 
-utils.parseLogs
+Check if the desired event was broadcasted in the transaction receipt
 ~~~~~~~~~~~~~~~
 
 ::
 
-	it('should emit correct logs', async () => {
-		let tx = await contract.someMethodWithEvents();
+    const etherlime = require('etherlime');
+    const Billboard = require('../build/Billboard.json');
+    const assert = require('chai').assert;
 
-		let txReceipt = await provider.getTransactionReceipt(tx.hash);
+    describe('Billboard', () => {
+        let owner = accounts[5];
 
-		const logs = utils.parseLogs(txReceipt, contract, 'CertainEvent');
+        it('should emit event', async () => {
+            const deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
+            const deployedContractWrapper = await deployer.deploy(Billboard, {});
 
-		assert(logs.length > 0, "No event was thrown")
-	});
+            const buyTransaction = await deployedContractWrapper.contract.buy('Billboard slogan', { value: ONE_ETHER });
+
+            const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
+
+            const expectedEvent = 'LogBillboardBought';
+
+            assert.isDefined(transactionReceipt.events.find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
+        });
+    });
 
     

@@ -57,6 +57,7 @@ class Deployer {
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
+
 		const transactionReceipt = await this._waitForDeployTransaction(transaction);
 
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
