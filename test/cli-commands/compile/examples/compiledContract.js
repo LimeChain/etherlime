@@ -2013,13 +2013,8 @@ let compiledContract = {
     "version": "0.4.25+commit.59dbf8f1.Emscripten.clang"
   },
   "networks": {},
-<<<<<<< HEAD
   "schemaVersion": "0.9.12",
   "updatedAt": "2018-11-26T11:56:01.796Z"
-=======
-  "schemaVersion": "0.9.8",
-  "updatedAt": "2018-11-20T14:06:14.046Z"
->>>>>>> test-cli-commands
 }
 
 module.exports = compiledContract;
