@@ -275,29 +275,30 @@ describe('Ganache fork command', () => {
 	});
 
 	describe('Ganache server forking initializing wallet test', async () => {
-		let infuraProvider;
-		let infuraInitializedWallet;
+
+		let jsonRpcProvider;
+		let localInitializedWallet;
 		let balance;
+		let localNetworkToListen = `http://localhost:${DEFAULT_PORT}`;
 
 		before(async () => {
-			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
-			infuraInitializedWallet = new ethers.Wallet(config.infuraPrivateKey, infuraProvider);
-			balance = await infuraInitializedWallet.getBalance();
+			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
+			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+			balance = await localInitializedWallet.getBalance();
 		});
 
 		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same ballance', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port=${RUN_FORK_PORT} --fork=https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port=${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
 
-			const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
-			const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			const forkedLocalNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(forkedLocalNetworkToListen);
+			const forkedWallet = new ethers.Wallet(config.localPrivateKey, forkedJsonRpcProvider);
 			const balanceInForkedWallet = await forkedWallet.getBalance();
 
-			assert.notDeepEqual(infuraInitializedWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
-			assert.deepEqual(infuraInitializedWallet.address, forkedWallet.address, 'The stored walled address from the forked network is not the stored wallet address from the network, that the fork is made from');
+			assert.notDeepEqual(localInitializedWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
+			assert.deepEqual(localInitializedWallet.address, forkedWallet.address, 'The stored walled address from the forked network is not the stored wallet address from the network, that the fork is made from');
 			assert.deepEqual(balance, balanceInForkedWallet, 'The balance in the two wallets is not equal');
-
 
 		});
 	});
@@ -310,12 +311,17 @@ describe('Ganache fork command', () => {
 });
 describe('Ganace fork existing contract tests', async () => {
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {
-		let infuraProvider;
-		let deployedContract;
-		let deployedContractAddress;
-		let deployedContractSlogan;
 
 		let jsonRpcProvider;
+		let localInitializedWallet;
+		let localNetworkToListen = `http://localhost:${DEFAULT_PORT}`;
+		let localDeployedContract;
+		let localDeployedContractResult;
+		let localDeployedContractAddress;
+		let localConnectedContract;
+		let localDeployedContractSlogan;
+
+		let forkedJsonRpcProvider;
 		let forkedDeployedContract;
 		let forkedDeployedContractAddress;
 		let forkedDeployedContractSlogan;
@@ -323,34 +329,45 @@ describe('Ganace fork existing contract tests', async () => {
 		let forkedConnectedContract;
 
 		before(async () => {
-			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
-			deployedContract = new ethers.Contract(config.deployedContractAddress, Billboard.abi, infuraProvider);
-			deployedContractAddress = deployedContract.address;
-			deployedContractSlogan = await deployedContract.slogan();
-
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
-			const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			//Deploy contract on locally started etherlime ganache
 			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			forkedDeployedContract = new ethers.Contract(config.deployedContractAddress, Billboard.abi, jsonRpcProvider);
+			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+			let factory = new ethers.ContractFactory(Billboard.abi, Billboard.bytecode, localInitializedWallet);
+			let contract = await factory.deploy();
+			localDeployedContractResult = await contract.deployed();
+			localDeployedContractAddress = localDeployedContractResult.address;
+			localDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, jsonRpcProvider);
+			localConnectedContract = localDeployedContract.connect(localInitializedWallet);
+			await localConnectedContract.setPrice(50);
+			const sentTransaction = await localConnectedContract.buy('I love Sisi', { value: 51 });
+			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
+			localDeployedContractSlogan = await localDeployedContract.slogan();
+
+			//fork locally started etherlime ganache network
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const forkedLocalNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(forkedLocalNetworkToListen);
+			forkedDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, forkedJsonRpcProvider);
 			forkedDeployedContractAddress = forkedDeployedContract.address;
 			forkedDeployedContractSlogan = await forkedDeployedContract.slogan();
-			forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			forkedWallet = new ethers.Wallet(config.localPrivateKey, forkedJsonRpcProvider);
 			forkedConnectedContract = forkedDeployedContract.connect(forkedWallet);
+
 
 		});
 		it('should fetch the same contract in the forked network, that is deployed on the main network', async () => {
 
-			assert.strictEqual(deployedContractAddress, forkedDeployedContractAddress, 'The contracts of the networks are not the same (addresses are different)');
+			assert.strictEqual(localDeployedContractAddress, forkedDeployedContractAddress, 'The contracts of the networks are not the same (addresses are different)');
 		});
 		it('should read smart contract data written in the network before the fork, from the forked network', async () => {
 
-			assert.strictEqual(deployedContractSlogan, forkedDeployedContractSlogan, 'Contracts slogans are not the same');
+			assert.strictEqual(localDeployedContractSlogan, forkedDeployedContractSlogan, 'Contracts slogans are not the same');
 		});
 
 		it('should be able to send transaction to the already deployed smart contract in the forked network', async () => {
 			const newSlogan = 'Ogi naistina li e majstor?';
 			const sentTransaction = await forkedConnectedContract.buy(newSlogan, { value: 51 });
-			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
+			const transactionComplete = await forkedJsonRpcProvider.waitForTransaction(sentTransaction.hash);
 			const newBuyedSlogan = await forkedDeployedContract.slogan();
 			assert.strictEqual(newSlogan, newBuyedSlogan, 'The slogan of the already deployed smart contract and the new buyed slogan are not the same');
 
