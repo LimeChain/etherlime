@@ -1,0 +1,3 @@
+let sources = "{ '/Users/desimiramitkova/Projects/etherlime/specific/contracts/LimeFactory.sol': 'pragma solidity ^0.4.24;\n\ncontract LimeFactory {\n\n    event FreshLime(string name);\n\n    struct Lime {\n        string name;\n        uint8 carbohydrates;\n        uint8 fat;\n        uint8 protein;\n    }\n\n    Lime[] public limes;\n\n    function createLime(string _name, uint8 _carbohydrates, uint8 _fat, uint8 _protein) internal {\n        limes.push(Lime(_name, _carbohydrates, _fat, _protein));\n        emit FreshLime(_name);\n    }\n}' }"
+
+module.exports = sources;

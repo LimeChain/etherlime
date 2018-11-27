@@ -41,7 +41,7 @@ describe('Deploy cli command', () => {
         await assert.isFulfilled(deployer.run(specificFile, 'local'), 'It was not successfully executed');
     });
 
-    it('should deploy wiht secret parameter', async function () {
+    it('should deploy with secret parameter', async function () {
         await assert.isFulfilled(deployer.run(specificFile, undefined, privateKey), 'It was not successfully executed');
     });
 

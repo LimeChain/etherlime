@@ -16,7 +16,10 @@ const FSSource = require("../../../cli-commands/compiler/etherlime-resolver/fs")
 const NPMSource = require('../../../cli-commands/compiler/etherlime-resolver/npm');
 const expect = require('../../../cli-commands/compiler/etherlime-expect/index');
 const schema = require('../../../cli-commands/compiler/etherlime-contract-schema/index');
-
+const error = require('../../../cli-commands/compiler/etherlime-error/index');
+const compileError = require('../../../cli-commands/compiler/etherlime-compile/compile-error');
+const etherlimeCompiler = require('../../../cli-commands/compiler/etherlime-compile/index');
+const sources = require('./examples/sources');
 
 let compiledContract = require('./examples/compiledContract');
 
@@ -88,6 +91,10 @@ describe('Compile dependencies', () => {
 
     describe('Artifactor tests', () => {
 
+        afterEach(async function() {
+            fs.removeSync('./build/BillboardService.json')
+        })
+
         it('should save artifacts of compiled contract', async function () {
             await assert.isFulfilled(compileOptions.artifactor.save(compiledContract), "Artifacts are not saved")
         });
@@ -99,8 +106,7 @@ describe('Compile dependencies', () => {
         });
 
         it('should save artifacts if compiled objects are passed as an array', async function () {
-            let arrayCompiledContracts = _.castArray(compiledContract)
-            await assert.isFulfilled(compileOptions.artifactor.saveAll(arrayCompiledContracts), "Artifacts are not saved")
+            await assert.isFulfilled(compileOptions.artifactor.saveAll([compiledContract]), "Artifacts are not saved")
         })
     });
 
@@ -114,7 +120,7 @@ describe('Compile dependencies', () => {
             fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './installed_contracts/math/contracts/SafeMath.sol');
         });
 
-        it('should resolve files if second parameter is function', function () {
+        it('should resolve files if second parameter is function', async function () {
             let fnExecution = new Promise((resolve, reject) => {
                 compileOptions.resolver.resolve("SafeMath.sol", function (err) {
                     if (!err) {
@@ -126,10 +132,10 @@ describe('Compile dependencies', () => {
                 })
             })
 
-            assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
+            await assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
         });
 
-        it("should throw error if try to resolve non-existing file", function () {
+        it("should throw error if try to resolve non-existing file", async function () {
             let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
             const fnExecution = new Promise((resolve, reject) => {
                 compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts", function (err) {
@@ -142,11 +148,11 @@ describe('Compile dependencies', () => {
                 })
             });
 
-            assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
+            await assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
 
         });
 
-        it("should throw error if try to resolve non-existing file without passing 'imported_from' param", function () {
+        it("should throw error if try to resolve non-existing file without passing 'imported_from' param", async function () {
             let expectedError = "Could not find Unexisting.sol from any sources";
             const fnExecution = new Promise((resolve, reject) => {
                 compileOptions.resolver.resolve("Unexisting.sol", function (err) {
@@ -159,7 +165,7 @@ describe('Compile dependencies', () => {
                 })
             });
 
-            assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
+            await assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
 
         });
 
@@ -277,6 +283,40 @@ describe('Compile dependencies', () => {
             }, expectedError)
         });
     });
+
+    describe('Error tests', () => {
+        
+        it('should create new extendable error', function() {
+            let errorMessage = "Can not compile contracts";
+            let extendableError = new error(errorMessage);
+            assert.include(JSON.stringify(extendableError), errorMessage)
+        });
+
+        it('should add tab if error message has a new line', function() {
+            let errorMessage = `Can not compile contracts.
+            Please, check your code`;
+        
+            let extendableError = new error(errorMessage);
+            let errorLengthBeforeFormat = extendableError.message.length
+            extendableError.formatForMocha()
+            let errorLengthAfterFormat = extendableError.message.length;
+            assert.equal(errorLengthBeforeFormat, errorLengthAfterFormat - 5)
+        });
+
+        it('should create new compile error', function() {
+            let errorMessage = "Can not compile contracts";
+            let compilerError = new compileError(errorMessage);
+            assert.include(JSON.stringify(compilerError), errorMessage);
+        });
+    });
+
+    // describe("Etherlime compiler tests", () => {
+
+    //     it.only('should compile if second parameter is function', () => {
+    //         etherlimeCompiler(sources, callback)
+    //     });
+        
+    // })
 
 
     after(async function () {
