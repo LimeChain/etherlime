@@ -232,7 +232,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation] [output]',
+		command: 'test [path] [skip-compilation] [solc-version] [output]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -246,6 +246,11 @@ const commands = [
 				type: 'boolean',
 				default: 'false'
 			});
+
+            yargs.positional('solc-version', {
+                describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
+                type: 'string'
+            });
 
 			yargs.positional('output', {
 				describe: 'Defines the way that the logs are shown',
@@ -261,7 +266,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation);
+				await test.run(argv.path, argv.skipCompilation, argv.solcVersion);
 			} catch (err) {
 				console.error(err);
 			} finally {
