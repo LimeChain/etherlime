@@ -76,11 +76,6 @@ describe('Ganache cli command', () => {
 			assert.isTrue(portInUseAfterRunningGanache, `The specific port ${SPECIFIC_PORT} is free`);
 
 		});
-		after(async () => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid);
-			}
-		})
 	});
 
 	describe('Run ganache server and check accounts', async () => {
@@ -110,11 +105,6 @@ describe('Ganache cli command', () => {
 			assert.equal(tenthOutputtedPrivateKey, TENTH_PRIVATE_KEY, 'There is mismatch of tenth account private key');
 
 		});
-		after(async () => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid);
-			}
-		})
 	});
 
 	describe('Run ganache server on already used port e.g. the default port', async () => {
@@ -217,11 +207,12 @@ describe('Ganache cli command', () => {
 			assert.isTrue(portInUseAfterDirectCallRun, `The specific port ${RUN_DIRECT_PORT} is free`);
 
 		});
-		after(async () => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid)
-			}
-		})
+	});
+	afterEach(async () => {
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
 	});
 });
 
@@ -249,13 +240,6 @@ describe('Ganache fork command', () => {
 			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
 			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
 		});
-
-
-		afterEach(() => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid);
-			}
-		});
 	});
 
 	describe('Ganache server forking from local RPC network - straight test', async () => {
@@ -268,11 +252,6 @@ describe('Ganache fork command', () => {
 			assert.equal(forkedNetwork, LOCAL_NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
 
 		});
-		after(async () => {
-			if (childResponse) {
-				await killProcessByPID(childResponse.process.pid);
-			}
-		})
 	});
 
 	describe('Ganache server forking reverse test', async () => {
@@ -293,11 +272,6 @@ describe('Ganache fork command', () => {
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
 		});
-		afterEach(async () => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid);
-			}
-		})
 	});
 
 	describe('Ganache server forking initializing wallet test', async () => {
@@ -326,14 +300,15 @@ describe('Ganache fork command', () => {
 
 
 		});
-
-		after(async () => {
-			if (childResponse) {
-				killProcessByPID(childResponse.process.pid);
-			}
-		})
 	});
-
+	afterEach(async () => {
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
+	});
+});
+describe('Ganace fork existing contract tests', async () => {
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {
 		let infuraProvider;
 		let deployedContract;
