@@ -247,10 +247,10 @@ const commands = [
 				default: 'false'
 			});
 
-            yargs.positional('solc-version', {
-                describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
-                type: 'string'
-            });
+			yargs.positional('solc-version', {
+				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
+				type: 'string'
+			});
 
 			yargs.positional('output', {
 				describe: 'Defines the way that the logs are shown',
