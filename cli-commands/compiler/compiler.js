@@ -72,7 +72,7 @@ const compilePromise = async (compileOptions, quiet) => {
 
 				return;
 			}
-
+			
 			if (!quiet) {
 				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}

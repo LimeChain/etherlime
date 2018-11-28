@@ -3,7 +3,7 @@ let etherlimeTest = require('./etherlime-test');
 let dir = require('node-dir');
 let Config = require('./../compiler/etherlime-config');
 
-let App = require('./../../node_modules/solidity-coverage/lib/app');
+let App = require('solidity-coverage/lib/app');
 let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 

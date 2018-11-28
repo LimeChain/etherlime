@@ -26,7 +26,7 @@ Artifactor.prototype.save = async function (object) {
   
   try {
     let json = await fs.readFile(output_path, { encoding: "utf8" });
-    
+
     var existingObjDirty = JSON.parse(json);
 
     finalObject = Schema.normalize(existingObjDirty);
@@ -36,7 +36,7 @@ Artifactor.prototype.save = async function (object) {
     _.assign(finalObject, object);
 
     finalObject.networks = finalNetworks;
-
+  
   } catch (error) {
 
   }
@@ -50,13 +50,13 @@ Artifactor.prototype.saveAll = async function (objects) {
 
   if (Array.isArray(objects)) {
     var array = objects;
-    objects = {};
+    objects = {};   
 
     array.forEach(function (item) {
       objects[item.contract_name] = item;
     })
   }
-
+  
   try {
     await fs.stat(self.destination);
 
@@ -68,7 +68,7 @@ Artifactor.prototype.saveAll = async function (objects) {
       object.contractName = contractName;
       promises.push(self.save(object));
     });
-
+    
     return Promise.all(promises);
 
   } catch (error) {
