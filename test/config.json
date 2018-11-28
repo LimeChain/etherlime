@@ -12,7 +12,7 @@
   "ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
   "ganacheCliPort": 8545,
   "infuraForkAPIKey": "abca6d1110b443b08ef271545f24b80d",
-  "specificblockNumber": 2,
+  "specificBlockNumber": 2,
   "deployedContractAddress": "0x78ed7A34D67fB3eAc745e7af78aE1bcA770C26de",
   "localPrivateKey": "0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8"
 }

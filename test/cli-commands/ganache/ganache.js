@@ -262,7 +262,6 @@ describe('Ganache fork command', () => {
 		before(async () => {
 			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
 			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
-			// balance = await localInitializedWallet.getBalance();
 
 			randomWallet = ethers.Wallet.createRandom();
 			const transaction = await localInitializedWallet.sendTransaction({
@@ -376,7 +375,7 @@ describe('Ganache fork from specific block number', async () => {
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
-			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
+			assert.equal(forkedBlockNumber, config.specificBlockNumber, 'The block number that the network is forked from, does not match');
 		});
 	});
 	after(async () => {
