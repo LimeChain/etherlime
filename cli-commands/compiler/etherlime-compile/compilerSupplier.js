@@ -39,18 +39,21 @@ CompilerSupplier.prototype.load = function () {
     const self = this;
     const version = self.config.version;
     const isNative = self.config.version === 'native';
+    const nodeModulesSolc = `${process.cwd()}/node_modules/solc`;
 
     return new Promise((accept, reject) => {
         const useDocker = self.config.docker;
-        const useDefault = !version; // Checking for version number
-        const useLocal = !useDefault && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
+        const useDefaultEtherlime = !version; // Checking for version number
+        const useDefaultNodeModules = useDefaultEtherlime && self.isLocal(nodeModulesSolc); // Checking for version number
+        const useLocal = !useDefaultEtherlime && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
         const useNative = !useLocal && isNative;
         const useRemote = !useNative
 
         if (useDocker) return accept(self.getBuilt("docker"));
         if (useNative) return accept(self.getBuilt("native"));
-        if (useDefault) return accept(self.getDefault());
         if (useLocal) return accept(self.getLocal(version));
+        if (useDefaultNodeModules) return accept(self.getLocal(nodeModulesSolc));
+        if (useDefaultEtherlime) return accept(self.getDefaultEtherlime());
         if (useRemote) return accept(self.getByUrl(version));
     });
 }
@@ -90,7 +93,7 @@ CompilerSupplier.prototype.getDockerTags = function () {
 
 //------------------------------------ Getters -----------------------------------------------------
 
-CompilerSupplier.prototype.getDefault = function () {
+CompilerSupplier.prototype.getDefaultEtherlime = function () {
     const compiler = require('solc');
     this.removeListener();
 
