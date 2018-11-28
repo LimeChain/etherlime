@@ -30,7 +30,6 @@ describe('coverage cli command', () => {
 
     it('should run coverage cli command', async function () {
         let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
-        console.log(childProcess.output)
         assert.isTrue(childProcess.result)
     });
 
