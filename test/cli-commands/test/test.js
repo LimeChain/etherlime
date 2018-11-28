@@ -14,37 +14,37 @@ let currentDir;
 
     describe('test cli command', () => {
 
-        // before(async function() {
-        //     currentDir = process.cwd();
-        //     fs.mkdirpSync('./tmpTest')
-        //     process.chdir('./tmpTest');
-        //     fs.mkdirSync('./contracts');
-        //     fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
-        //     fs.mkdirSync('./exampleToRun');
-        //     fs.writeFileSync('./exampleToRun/exampleTest.js', exampleTest);
-        //     fs.mkdirSync('./build');
-        // })
+        before(async function() {
+            currentDir = process.cwd();
+            fs.mkdirpSync('./tmpTest')
+            process.chdir('./tmpTest');
+            fs.mkdirSync('./contracts');
+            fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+            fs.mkdirSync('./exampleToRun');
+            fs.writeFileSync('./exampleToRun/exampleTest.js', exampleTest);
+            fs.mkdirSync('./build');
+        })
     
-        // it('should execute test cli command with specific path', async function() {
-        //     let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-        //     await assert.isFulfilled(test.run(path))
-        //     sinon.assert.calledWith(etherlimeTestSpy, [path], undefined)
-        //     etherlimeTestSpy.restore();
-        // });
+        it('should execute test cli command with specific path', async function() {
+            let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
+            await assert.isFulfilled(test.run(path))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], undefined)
+            etherlimeTestSpy.restore();
+        });
     
-        // it('shpuld throw on wrong path', async function() {
-        //     await assert.isRejected(test.run('wrongTestDirectory'));  
-        // });
+        it('should throw on wrong path', async function() {
+            await assert.isRejected(test.run('wrongTestDirectory'));  
+        });
     
-        // it('should execute test cli command when path does not inclues specific .js file', async function() {
-        //     let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-        //     await assert.isFulfilled(test.run('./exampleToRun'))
-        //     sinon.assert.calledWith(etherlimeTestSpy, calledArgs)
-        //     etherlimeTestSpy.restore();
-        // });
+        it('should execute test cli command when path does not inclues specific .js file', async function() {
+            let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
+            await assert.isFulfilled(test.run('./exampleToRun'))
+            sinon.assert.calledWith(etherlimeTestSpy, calledArgs)
+            etherlimeTestSpy.restore();
+        });
     
-        // after(async function () {
-        //     process.chdir(currentDir);
-        //     fs.removeSync('./tmpTest');
-        // })
+        after(async function () {
+            process.chdir(currentDir);
+            fs.removeSync('./tmpTest');
+        })
     })

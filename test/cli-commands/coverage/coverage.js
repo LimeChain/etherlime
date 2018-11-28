@@ -12,6 +12,8 @@ let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let pathToExampleWithPort = './testsToRun/exampleTestForCoverageWithPort.js'
 let currentDir;
 
+let port = 5000;
+
 let expectedOutput = 'Istanbul coverage reports generated';
 
 describe('coverage cli command', () => {
@@ -29,21 +31,16 @@ describe('coverage cli command', () => {
     });
 
     it('should run coverage cli command', async function () {
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
         assert.isTrue(childProcess.result)
     });
 
     it('should run coverage cli command by specifying number runs', async function () {
         let runs = 10;
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest} --runs ${runs}`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --runs ${runs} --port ${port}`, expectedOutput);
         assert.isTrue(childProcess.result)
     });
 
-    it('should run coverage cli command on specific port', async function () {
-        let port = 5000;
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
-        assert.isTrue(childProcess.result)
-    });
 
     after(async function () {
         process.chdir(currentDir);
