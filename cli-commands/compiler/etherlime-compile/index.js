@@ -22,8 +22,6 @@ var compile = function (sources, options, callback) {
 		"solc"
 	]);
 
-	var solc = require("solc");
-
 	var listeners = process.listeners("uncaughtException");
 	var solc_listener = listeners[listeners.length - 1];
 
