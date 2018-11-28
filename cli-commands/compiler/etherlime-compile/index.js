@@ -16,13 +16,14 @@ var compile = function (sources, options, callback) {
 		callback = options;
 		options = {};
 	}
-
+	console.log(options)
 	expect.options(options, [
 		"contracts_directory",
 		"solc"
 	]);
 
 	var solc = require("solc");
+	
 
 	var listeners = process.listeners("uncaughtException");
 	var solc_listener = listeners[listeners.length - 1];
@@ -87,12 +88,13 @@ var compile = function (sources, options, callback) {
 
 		var standardOutput = JSON.parse(result);
 
-		console.log("ST", standardOutput.sources)
+		// le.log("SconsoT", standardOutput.sources)
 
 		var errors = standardOutput.errors || [];
 		var warnings = [];
-
+		console.log("2 ", options)
 		if (options.strict !== true) {
+			console.log("hdhdhdd")
 			warnings = errors.filter(function (error) {
 				return error.severity == "warning";
 			});

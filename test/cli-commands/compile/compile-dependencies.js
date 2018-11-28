@@ -45,13 +45,13 @@ let callback = (er, res) => {
 
 describe('Compile dependencies', () => {
 
-    before(async function () {
-        fs.mkdirSync('./contracts')
-        fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
-        fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
-        fs.copyFileSync('./test/cli-commands/compile/examples/Empty.sol', './contracts/Empty.sol');
-    });
+    // before(async function () {
+    //     fs.mkdirSync('./contracts')
+    //     fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
+    //     fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
+    //     fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
+    //     fs.copyFileSync('./test/cli-commands/compile/examples/Empty.sol', './contracts/Empty.sol');
+    // });
 
     describe('Contracts workflow compile tests', () => {
 
@@ -310,19 +310,28 @@ describe('Compile dependencies', () => {
 
     describe("Etherlime compiler tests", () => {
 
-        // it.only('should compile if one of the contracts is empty', async function() {
-        //     compileOptions.working_directory = `${process.cwd()}/contracts`
-        //     compileOptions.resolver = new Resolver(compileOptions)
-           
-        //     etherlimeCompile.all(compileOptions, callback)
-        // })
+        it.only('should return warning on error', async function() {
+            compileOptions.working_directory = `${process.cwd()}/contracts`
+            compileOptions.resolver = new Resolver(compileOptions)
+            compileOptions.strict = false;
+            let fnExecution = new Promise((resolve, reject) => {
+                etherlimeCompile.all(compileOptions, function(err) {
+                    if(!err){
+                        resolve()
+                        return
+                    }
+                    reject(err)
+                })
+            })
+            console.log(await fnExecution)
+        })
         
     })
 
 
     after(async function () {
-        fs.removeSync('./contracts')
-        fs.removeSync('./build');
+        // fs.removeSync('./contracts')
+        // fs.removeSync('./build');
     });
 
 })
