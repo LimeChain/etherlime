@@ -18,7 +18,6 @@ const expect = require('../../../cli-commands/compiler/etherlime-expect/index');
 const schema = require('../../../cli-commands/compiler/etherlime-contract-schema/index');
 const error = require('../../../cli-commands/compiler/etherlime-error/index');
 const compileError = require('../../../cli-commands/compiler/etherlime-compile/compile-error');
-const etherlimeCompiler = require('../../../cli-commands/compiler/etherlime-compile/index');
 const sources = require('./examples/sources');
 
 let compiledContract = require('./examples/compiledContract');
@@ -51,6 +50,7 @@ describe('Compile dependencies', () => {
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
+        fs.copyFileSync('./test/cli-commands/compile/examples/Empty.sol', './contracts/Empty.sol');
     });
 
     describe('Contracts workflow compile tests', () => {
@@ -285,19 +285,17 @@ describe('Compile dependencies', () => {
     });
 
     describe('Error tests', () => {
+        let errorMessage = `Can not compile contracts.
+        Please, check your code`;
+        let extendableError = new error(errorMessage);
+        
         
         it('should create new extendable error', function() {
-            let errorMessage = "Can not compile contracts";
-            let extendableError = new error(errorMessage);
-            assert.include(JSON.stringify(extendableError), errorMessage)
+            assert.include(JSON.stringify(extendableError), "Can not compile contracts.")
         });
 
         it('should add tab if error message has a new line', function() {
-            let errorMessage = `Can not compile contracts.
-            Please, check your code`;
-        
-            let extendableError = new error(errorMessage);
-            let errorLengthBeforeFormat = extendableError.message.length
+            let errorLengthBeforeFormat = extendableError.message.length;
             extendableError.formatForMocha()
             let errorLengthAfterFormat = extendableError.message.length;
             assert.equal(errorLengthBeforeFormat, errorLengthAfterFormat - 5)
@@ -310,13 +308,16 @@ describe('Compile dependencies', () => {
         });
     });
 
-    // describe("Etherlime compiler tests", () => {
+    describe("Etherlime compiler tests", () => {
 
-    //     it.only('should compile if second parameter is function', () => {
-    //         etherlimeCompiler(sources, callback)
-    //     });
+        // it.only('should compile if one of the contracts is empty', async function() {
+        //     compileOptions.working_directory = `${process.cwd()}/contracts`
+        //     compileOptions.resolver = new Resolver(compileOptions)
+           
+        //     etherlimeCompile.all(compileOptions, callback)
+        // })
         
-    // })
+    })
 
 
     after(async function () {

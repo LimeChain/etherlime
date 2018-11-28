@@ -87,6 +87,8 @@ var compile = function (sources, options, callback) {
 
 		var standardOutput = JSON.parse(result);
 
+		console.log("ST", standardOutput.sources)
+
 		var errors = standardOutput.errors || [];
 		var warnings = [];
 
@@ -199,6 +201,7 @@ function orderABI(contract) {
 	var contract_definition;
 	var ordered_function_names = [];
 	var ordered_functions = [];
+
 
 	for (var i = 0; i < contract.legacyAST.children.length; i++) {
 		var definition = contract.legacyAST.children[i];
