@@ -32,7 +32,7 @@ let currentDir;
             etherlimeTestSpy.restore();
         });
     
-        it('shpuld throw on wrong path', async function() {
+        it('should throw on wrong path', async function() {
             await assert.isRejected(test.run('wrongTestDirectory'));  
         });
     
