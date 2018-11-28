@@ -69,6 +69,8 @@ const runWithCoverage = async (path, port, runs) => {
 
 	config["testrpcOptions"] = `${accountsData}`;
 
+	console.log("run port  ", port)
+
 	if(port){
 		config["testrpcOptions"] += `--port ${port}`;
 	}
