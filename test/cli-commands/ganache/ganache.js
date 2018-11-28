@@ -42,6 +42,7 @@ const THIRD_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile
 const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
 const TENTH_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
 const LOCAL_NETWORK_FORK_ADDRESS = "http://localhost:8545";
+const LOCAL_NETWORK_URL = "http://localhost";
 
 let ganacheCommandOutput;
 let expectedOutput = 'Listening on';
@@ -220,7 +221,7 @@ describe('Ganache fork command', () => {
 	describe('Ganache server forking from local RPC network - straight test', async () => {
 		it('should start ganache server forking from specific network', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
@@ -254,7 +255,7 @@ describe('Ganache fork command', () => {
 		let jsonRpcProvider;
 		let localInitializedWallet;
 		let balance;
-		let localNetworkToListen = `http://localhost:${DEFAULT_PORT}`;
+		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
 
 		let randomWallet;
 		let balanceRandomWallet
@@ -276,9 +277,9 @@ describe('Ganache fork command', () => {
 
 		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same balance', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
-			const forkedLocalNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
-			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider('http://localhost:8125');
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
+			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(`${LOCAL_NETWORK_URL}:8125`);
 			const forkedWallet = new ethers.Wallet(randomWallet.privateKey, forkedJsonRpcProvider);
 			const balanceInForkedWallet = await forkedWallet.getBalance();
 
@@ -300,7 +301,7 @@ describe('Ganace fork existing contract tests', async () => {
 
 		let jsonRpcProvider;
 		let localInitializedWallet;
-		let localNetworkToListen = `http://localhost:${DEFAULT_PORT}`;
+		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
 		let localDeployedContract;
 		let localDeployedContractResult;
 		let localDeployedContractAddress;
@@ -330,8 +331,8 @@ describe('Ganace fork existing contract tests', async () => {
 			localDeployedContractSlogan = await localDeployedContract.slogan();
 
 			//fork locally started etherlime ganache network
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
-			const forkedLocalNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
 			forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(forkedLocalNetworkToListen);
 			forkedDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, forkedJsonRpcProvider);
 			forkedDeployedContractAddress = forkedDeployedContract.address;
@@ -370,7 +371,7 @@ describe('Ganache fork from specific block number', async () => {
 
 		it('should start ganache server forking from specific block number', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork http://localhost:${DEFAULT_PORT}@2`, localForkingFromSpecificBlockNumberOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}@2`, localForkingFromSpecificBlockNumberOutput);
 
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
