@@ -16,39 +16,39 @@ let expectedOutput = 'Istanbul coverage reports generated';
 
 describe('coverage cli command', () => {
 
-    // before(async function () {
-    //     fs.mkdirSync('./tmpTest')
-    //     currentDir = process.cwd();
-    //     process.chdir('./tmpTest')
-    //     fs.mkdirSync('./build')
-    //     fs.mkdirSync('./contracts')
-    //     fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
-    //     fs.mkdirSync('./testsToRun')
-    //     fs.writeFileSync('./testsToRun/exampleTestForCoverage.js', exampleTestForCoverage)
-    //     fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
-    // });
+    before(async function () {
+        fs.mkdirSync('./tmpTest')
+        currentDir = process.cwd();
+        process.chdir('./tmpTest')
+        fs.mkdirSync('./build')
+        fs.mkdirSync('./contracts')
+        fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
+        fs.mkdirSync('./testsToRun')
+        fs.writeFileSync('./testsToRun/exampleTestForCoverage.js', exampleTestForCoverage)
+        fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
+    });
 
-    // it('should run coverage cli command', async function () {
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
-    //     assert.isTrue(childProcess.result)
-    // });
+    it('should run coverage cli command', async function () {
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
+        assert.isTrue(childProcess.result)
+    });
 
-    // it('should run coverage cli command by specifying number runs', async function () {
-    //     let runs = 10;
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest} --runs ${runs}`, expectedOutput);
-    //     assert.isTrue(childProcess.result)
-    // });
+    it('should run coverage cli command by specifying number runs', async function () {
+        let runs = 10;
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest} --runs ${runs}`, expectedOutput);
+        assert.isTrue(childProcess.result)
+    });
 
-    // it('should run coverage cli command on specific port', async function () {
-    //     let port = 5000;
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
-    //     assert.isTrue(childProcess.result)
-    // });
+    it('should run coverage cli command on specific port', async function () {
+        let port = 5000;
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
+        assert.isTrue(childProcess.result)
+    });
 
-    // after(async function () {
-    //     process.chdir(currentDir);
-    //     fs.removeSync('./tmpTest')
+    after(async function () {
+        process.chdir(currentDir);
+        fs.removeSync('./tmpTest')
 
-    // });
+    });
 
 })

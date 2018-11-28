@@ -25,75 +25,75 @@ const contractFolder = './contracts';
 
 describe('Deploy cli command', () => {
     
-    it('should deploy with no parameters', async function() {
-        fs.mkdirSync(deployFolder)
-        fs.writeFileSync(`${deployFolder}/deploy.js`, file);
-        await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-        await fs.removeSync(deployFolder)
-    });
+    // it('should deploy with no parameters', async function() {
+    //     fs.mkdirSync(deployFolder)
+    //     fs.writeFileSync(`${deployFolder}/deploy.js`, file);
+    //     await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    //     await fs.removeSync(deployFolder)
+    // });
 
-    it('should throw error if "./deploy.js" file does not exist', async function () {
-        await assert.isRejected(deployer.run(), deployError, "Expected throw not received");
-    });
+    // it('should throw error if "./deploy.js" file does not exist', async function () {
+    //     await assert.isRejected(deployer.run(), deployError, "Expected throw not received");
+    // });
 
-    it('should deploy specific file', async function () {
-        await assert.isFulfilled(deployer.run(specificFile), 'It was not successfully executed');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-    });
+    // it('should deploy specific file', async function () {
+    //     await assert.isFulfilled(deployer.run(specificFile), 'It was not successfully executed');
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    // });
 
-    it('should deploy on specific network', async function () {
-        await assert.isFulfilled(deployer.run(specificFile, 'local'), 'It was not successfully executed');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-    });
+    // it('should deploy on specific network', async function () {
+    //     await assert.isFulfilled(deployer.run(specificFile, 'local'), 'It was not successfully executed');
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    // });
 
-    it('should deploy with secret parameter', async function () {
-        await assert.isFulfilled(deployer.run(specificFile, undefined, privateKey), 'It was not successfully executed');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-    });
+    // it('should deploy with secret parameter', async function () {
+    //     await assert.isFulfilled(deployer.run(specificFile, undefined, privateKey), 'It was not successfully executed');
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    // });
 
-    it('should throw error on deployment failure if silent is false', async function () {    
-        let consoleSpy = sinon.spy(console, "error");
-        await deployer.run(specificFile, undefined, wrongPrivateKey, false);
-        let logs = consoleSpy.getCall(0);
-        let error = JSON.stringify(logs.args[0])
-        let errorLogged = error.includes(errorMessage);
-        assert.isTrue(errorLogged, 'The error is not logged.');
-        sinon.assert.calledOnce(consoleSpy);
-        consoleSpy.restore();
-    });
+    // it('should throw error on deployment failure if silent is false', async function () {    
+    //     let consoleSpy = sinon.spy(console, "error");
+    //     await deployer.run(specificFile, undefined, wrongPrivateKey, false);
+    //     let logs = consoleSpy.getCall(0);
+    //     let error = JSON.stringify(logs.args[0])
+    //     let errorLogged = error.includes(errorMessage);
+    //     assert.isTrue(errorLogged, 'The error is not logged.');
+    //     sinon.assert.calledOnce(consoleSpy);
+    //     consoleSpy.restore();
+    // });
 
-    it('should not throw error on deployment failure if silent is true', async function () {
-        let consoleSpy = sinon.spy(console, "error");
-        await deployer.run(specificFile, undefined, wrongPrivateKey, true);
-        sinon.assert.notCalled(consoleSpy);
-        consoleSpy.restore();
-    });
+    // it('should not throw error on deployment failure if silent is true', async function () {
+    //     let consoleSpy = sinon.spy(console, "error");
+    //     await deployer.run(specificFile, undefined, wrongPrivateKey, true);
+    //     sinon.assert.notCalled(consoleSpy);
+    //     consoleSpy.restore();
+    // });
 
-    it('should deploy with compile parameter', async function () {
-        fs.mkdirSync(contractFolder)
-        await deployer.run(specificFile, undefined, undefined, undefined, true);
-        sinon.assert.calledWith(compileSpy, '.');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-    });
+    // it('should deploy with compile parameter', async function () {
+    //     fs.mkdirSync(contractFolder)
+    //     await deployer.run(specificFile, undefined, undefined, undefined, true);
+    //     sinon.assert.calledWith(compileSpy, '.');
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    // });
 
-    it('should deploy with compile and run parameters', async function () {
-        let run = 99;
-        await deployer.run(specificFile, undefined, undefined, undefined, true, run);
-        sinon.assert.calledWithExactly(compileSpy, ".", run);
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-        fs.removeSync(contractFolder);
-        compileSpy.restore();
-    });
+    // it('should deploy with compile and run parameters', async function () {
+    //     let run = 99;
+    //     await deployer.run(specificFile, undefined, undefined, undefined, true, run);
+    //     sinon.assert.calledWithExactly(compileSpy, ".", run);
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    //     fs.removeSync(contractFolder);
+    //     compileSpy.restore();
+    // });
 
-    it('should deploy with specific output parameter "normal"', async function () {
-        await assert.isFulfilled(deployer.run(specificFile, undefined, undefined, undefined, undefined, undefined, 'normal'), 'It was not successfully executed')
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
-    });
+    // it('should deploy with specific output parameter "normal"', async function () {
+    //     await assert.isFulfilled(deployer.run(specificFile, undefined, undefined, undefined, undefined, undefined, 'normal'), 'It was not successfully executed')
+    //     sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+    // });
 
-    afterEach(async function () {
-        loggerSpy.restore();
-        await fs.removeSync('./.etherlime-store')
-        await fs.removeSync('./.etherlime-store/.history.json');
-    })
+    // afterEach(async function () {
+    //     loggerSpy.restore();
+    //     await fs.removeSync('./.etherlime-store')
+    //     await fs.removeSync('./.etherlime-store/.history.json');
+    // })
 })
