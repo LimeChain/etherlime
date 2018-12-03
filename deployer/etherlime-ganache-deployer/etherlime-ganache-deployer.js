@@ -1,6 +1,6 @@
 const colors = require('./../../utils/colors');
 const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
+const ganacheSetupConfig = require('./setup.json');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 const logger = require('./../../logger-service/logger-service').logger;

@@ -74,9 +74,56 @@ class Logger {
 	}
 }
 
+class dummyLogger {
+
+	constructor() {
+	}
+
+	log() {
+		return;
+	}
+
+	logToConsole(args) {
+		return;
+	}
+
+	logToFile(args) {
+		return;
+	}
+
+	storeOutputParameter(value) {
+		return;
+	}
+
+	getOutputParameterValue() {
+		return;
+	}
+
+	updateOutputCache(value) {
+		return;
+	}
+
+	clearOutputCache() {
+		return;
+	}
+
+	removeOutputStorage() {
+		return;
+	}
+}
+
 const logger = new Logger();
 
-module.exports = {
-	logger,
-	AppenderTypes
-};
+if (typeof window === 'undefined') {
+	const logger = new Logger();
+	module.exports = {
+		logger,
+		AppenderTypes
+	};
+} else {
+	const logger = new dummyLogger();
+	module.exports = {
+		logger,
+		AppenderTypes
+	};
+}

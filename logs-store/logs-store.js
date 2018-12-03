@@ -86,6 +86,36 @@ class LogsStore {
 	}
 }
 
-const store = new LogsStore();
+class dummyLogsStore {
 
-module.exports = store;
+	constructor() {
+	}
+	initHistoryRecord() {
+		return;
+	}
+
+	getHistory() {
+		return;
+	}
+
+	getCurrentWorkingRecord() {
+		return;
+	}
+
+	getLastWorkingRecord() {
+		return;
+	}
+
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+		return;
+
+	}
+}
+
+if (typeof window === 'undefined') {
+	const store = new LogsStore();
+	module.exports = store;
+} else {
+	const store = new dummyLogsStore();
+	module.exports = store;
+}
