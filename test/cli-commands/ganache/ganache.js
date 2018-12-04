@@ -41,13 +41,13 @@ const THIRD_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile
 
 const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
 const TENTH_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
-const NETWORK_FORK_ADDRESS = "https://rinkeby.infura.io/v3/abca6d1110b443b08ef271545f24b80d";
 const LOCAL_NETWORK_FORK_ADDRESS = "http://localhost:8545";
+const LOCAL_NETWORK_URL = "http://localhost";
 
 let ganacheCommandOutput;
 let expectedOutput = 'Listening on';
-let forkingExpectedOutput = 'Network is forked from block number';
 let localForkingExpectedOutput = 'Etherlime ganache is forked from network';
+let localForkingFromSpecificBlockNumberOutput = 'Network is forked from block number'
 let childResponse;
 
 describe('Ganache cli command', () => {
@@ -217,35 +217,11 @@ describe('Ganache cli command', () => {
 });
 
 describe('Ganache fork command', () => {
-	describe('Ganache server forking through Infura Provaider - straight test', async () => {
-		it('should start ganache server forking from specific network', async () => {
-			await timeout(START_SERVER_TIMEOUT);
-
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
-			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
-
-			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
-			assert.equal(forkedNetwork, NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
-
-		});
-
-
-		it('should start ganache server forking from specific block number', async () => {
-			await timeout(START_SERVER_TIMEOUT);
-
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`, forkingExpectedOutput);
-
-			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
-
-			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
-			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
-		});
-	});
 
 	describe('Ganache server forking from local RPC network - straight test', async () => {
 		it('should start ganache server forking from specific network', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork=http://localhost:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
@@ -275,29 +251,41 @@ describe('Ganache fork command', () => {
 	});
 
 	describe('Ganache server forking initializing wallet test', async () => {
-		let infuraProvider;
-		let infuraInitializedWallet;
+
+		let jsonRpcProvider;
+		let localInitializedWallet;
 		let balance;
+		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
+
+		let randomWallet;
+		let balanceRandomWallet
 
 		before(async () => {
-			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
-			infuraInitializedWallet = new ethers.Wallet(config.infuraPrivateKey, infuraProvider);
-			balance = await infuraInitializedWallet.getBalance();
+			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
+			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+
+			randomWallet = ethers.Wallet.createRandom();
+			const transaction = await localInitializedWallet.sendTransaction({
+				to: randomWallet.address,
+				value: ethers.utils.parseEther("1.0")
+			});
+			await transaction.wait();
+			newRandomWallet = randomWallet.connect(jsonRpcProvider);
+			balanceRandomWallet = await newRandomWallet.getBalance();
+
 		});
 
-		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same ballance', async () => {
+		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same balance', async () => {
 
-			childResponse = await runCmdHandler(`etherlime ganache --port=${RUN_FORK_PORT} --fork=https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
-
-			const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
-			const jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			const forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
+			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(`${LOCAL_NETWORK_URL}:8125`);
+			const forkedWallet = new ethers.Wallet(randomWallet.privateKey, forkedJsonRpcProvider);
 			const balanceInForkedWallet = await forkedWallet.getBalance();
 
-			assert.notDeepEqual(infuraInitializedWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
-			assert.deepEqual(infuraInitializedWallet.address, forkedWallet.address, 'The stored walled address from the forked network is not the stored wallet address from the network, that the fork is made from');
-			assert.deepEqual(balance, balanceInForkedWallet, 'The balance in the two wallets is not equal');
-
+			assert.notDeepEqual(randomWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
+			assert.deepEqual(randomWallet.address, forkedWallet.address, 'The stored walled address from the forked network is not the stored wallet address from the network, that the fork is made from');
+			assert.deepEqual(balanceRandomWallet, balanceInForkedWallet, 'The balance in the two wallets is not equal');
 
 		});
 	});
@@ -310,12 +298,17 @@ describe('Ganache fork command', () => {
 });
 describe('Ganace fork existing contract tests', async () => {
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {
-		let infuraProvider;
-		let deployedContract;
-		let deployedContractAddress;
-		let deployedContractSlogan;
 
 		let jsonRpcProvider;
+		let localInitializedWallet;
+		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
+		let localDeployedContract;
+		let localDeployedContractResult;
+		let localDeployedContractAddress;
+		let localConnectedContract;
+		let localDeployedContractSlogan;
+
+		let forkedJsonRpcProvider;
 		let forkedDeployedContract;
 		let forkedDeployedContractAddress;
 		let forkedDeployedContractSlogan;
@@ -323,34 +316,45 @@ describe('Ganace fork existing contract tests', async () => {
 		let forkedConnectedContract;
 
 		before(async () => {
-			infuraProvider = new ethers.providers.InfuraProvider(config.infuraNetwork, config.infuraForkAPIKey);
-			deployedContract = new ethers.Contract(config.deployedContractAddress, Billboard.abi, infuraProvider);
-			deployedContractAddress = deployedContract.address;
-			deployedContractSlogan = await deployedContract.slogan();
-
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}`, forkingExpectedOutput);
-			const localNetworkToListen = `http://localhost:${RUN_FORK_PORT}`;
+			//Deploy contract on locally started etherlime ganache
 			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			forkedDeployedContract = new ethers.Contract(config.deployedContractAddress, Billboard.abi, jsonRpcProvider);
+			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+			let factory = new ethers.ContractFactory(Billboard.abi, Billboard.bytecode, localInitializedWallet);
+			let contract = await factory.deploy();
+			localDeployedContractResult = await contract.deployed();
+			localDeployedContractAddress = localDeployedContractResult.address;
+			localDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, jsonRpcProvider);
+			localConnectedContract = localDeployedContract.connect(localInitializedWallet);
+			await localConnectedContract.setPrice(50);
+			const sentTransaction = await localConnectedContract.buy('I love Sisi', { value: 51 });
+			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
+			localDeployedContractSlogan = await localDeployedContract.slogan();
+
+			//fork locally started etherlime ganache network
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
+			forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(forkedLocalNetworkToListen);
+			forkedDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, forkedJsonRpcProvider);
 			forkedDeployedContractAddress = forkedDeployedContract.address;
 			forkedDeployedContractSlogan = await forkedDeployedContract.slogan();
-			forkedWallet = new ethers.Wallet(config.infuraPrivateKey, jsonRpcProvider);
+			forkedWallet = new ethers.Wallet(config.localPrivateKey, forkedJsonRpcProvider);
 			forkedConnectedContract = forkedDeployedContract.connect(forkedWallet);
+
 
 		});
 		it('should fetch the same contract in the forked network, that is deployed on the main network', async () => {
 
-			assert.strictEqual(deployedContractAddress, forkedDeployedContractAddress, 'The contracts of the networks are not the same (addresses are different)');
+			assert.strictEqual(localDeployedContractAddress, forkedDeployedContractAddress, 'The contracts of the networks are not the same (addresses are different)');
 		});
 		it('should read smart contract data written in the network before the fork, from the forked network', async () => {
 
-			assert.strictEqual(deployedContractSlogan, forkedDeployedContractSlogan, 'Contracts slogans are not the same');
+			assert.strictEqual(localDeployedContractSlogan, forkedDeployedContractSlogan, 'Contracts slogans are not the same');
 		});
 
 		it('should be able to send transaction to the already deployed smart contract in the forked network', async () => {
 			const newSlogan = 'Ogi naistina li e majstor?';
 			const sentTransaction = await forkedConnectedContract.buy(newSlogan, { value: 51 });
-			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
+			const transactionComplete = await forkedJsonRpcProvider.waitForTransaction(sentTransaction.hash);
 			const newBuyedSlogan = await forkedDeployedContract.slogan();
 			assert.strictEqual(newSlogan, newBuyedSlogan, 'The slogan of the already deployed smart contract and the new buyed slogan are not the same');
 
@@ -359,5 +363,23 @@ describe('Ganace fork existing contract tests', async () => {
 		after(async () => {
 			killProcessByPID(childResponse.process.pid);
 		});
+	});
+});
+
+describe('Ganache fork from specific block number', async () => {
+	describe('Ganache server forking from specific block number', async () => {
+
+		it('should start ganache server forking from specific block number', async () => {
+
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}@2`, localForkingFromSpecificBlockNumberOutput);
+
+			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
+
+			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
+			assert.equal(forkedBlockNumber, config.specificBlockNumber, 'The block number that the network is forked from, does not match');
+		});
+	});
+	after(async () => {
+		killProcessByPID(childResponse.process.pid);
 	});
 });
