@@ -1,7 +1,7 @@
 var BlockingJSONStore = require('./blocking-json-store');
 
 const storageDir = './.etherlime-store'
-
+let store;
 /**
  * Store for the logs created by the deployment scripts.
  */
@@ -86,6 +86,36 @@ class LogsStore {
 	}
 }
 
-const store = new LogsStore();
+class WindowCompatibleLogsStore {
+
+	constructor() {
+	}
+	initHistoryRecord() {
+		return;
+	}
+
+	getHistory() {
+		return;
+	}
+
+	getCurrentWorkingRecord() {
+		return;
+	}
+
+	getLastWorkingRecord() {
+		return;
+	}
+
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+		return;
+
+	}
+}
+
+if (typeof window === 'undefined') {
+	store = new LogsStore();
+} else {
+	store = new WindowCompatibleLogsStore();
+}
 
 module.exports = store;

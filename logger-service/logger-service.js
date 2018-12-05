@@ -1,5 +1,6 @@
 const fsExtra = require('fs-extra');
 let outputCache; // = new Map();
+let logger;
 
 const AppenderTypes = {
 	NONE: 'none',
@@ -74,7 +75,49 @@ class Logger {
 	}
 }
 
-const logger = new Logger();
+class WindowCompatibleLogger {
+
+	constructor() {
+	}
+
+	log() {
+		return;
+	}
+
+	logToConsole(args) {
+		return;
+	}
+
+	logToFile(args) {
+		return;
+	}
+
+	storeOutputParameter(value) {
+		return;
+	}
+
+	getOutputParameterValue() {
+		return;
+	}
+
+	updateOutputCache(value) {
+		return;
+	}
+
+	clearOutputCache() {
+		return;
+	}
+
+	removeOutputStorage() {
+		return;
+	}
+}
+
+if (typeof window === 'undefined') {
+	logger = new Logger();
+} else {
+	logger = new WindowCompatibleLogger();
+}
 
 module.exports = {
 	logger,
