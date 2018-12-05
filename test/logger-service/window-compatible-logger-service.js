@@ -5,11 +5,10 @@ global.window = {
 		}
 	}
 }
-let loggerWindow;
-loggerWindow = require('./../../logger-service/logger-service').logger;
+
 const assert = require('chai').assert;
 delete require.cache[require.resolve('./../../logger-service/logger-service')];
-loggerWindow = require('./../../logger-service/logger-service').logger;
+let loggerWindow = require('./../../logger-service/logger-service').logger;
 
 
 describe('Window compatible logger service', async () => {
@@ -66,7 +65,7 @@ describe('Window compatible logger service', async () => {
 
 		assert.deepEqual(outputStoredValue, undefined, 'The returned value is not undefined');
 	});
-	it('should return undefined calling test', async () => {
+	it('should return undefined calling removeOutputStorage', async () => {
 
 		const outputStoredValue = loggerWindow.removeOutputStorage();
 

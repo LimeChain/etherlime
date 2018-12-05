@@ -5,12 +5,10 @@ global.window = {
 		}
 	}
 }
-let store;
 
 const assert = require('assert');
-store = require('./../../logs-store/logs-store');
 delete require.cache[require.resolve('./../../logs-store/logs-store')];
-store = require('./../../logs-store/logs-store');
+let store = require('./../../logs-store/logs-store');
 
 describe('Window compatible logs store', async () => {
 	it('should return undefined calling initHistoryRecord', async () => {
