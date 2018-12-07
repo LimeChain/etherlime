@@ -30,6 +30,7 @@ module.exports = {
 
     var updatedFiles = [];
 
+    // TODO rewrite with await
     async.series([
       function (c) {
         getFiles(function (error, files) {
@@ -155,7 +156,7 @@ module.exports = {
       "resolver"
     ]);
 
-    
+
 
     // = = = = = = = = = = NEW CODE = = = = = = = = = = = 
 
@@ -196,7 +197,7 @@ module.exports = {
           } else if (!options.paths.length) {
             return callback(null, {}, {});
           }
-
+          
           // Seed compilationTargets with known updates
           updates.forEach(update => compilationTargets.push(update));
 
@@ -212,7 +213,7 @@ module.exports = {
             async.whilst(() => files.length > 0, fileFinished => {
 
               var currentFile = files.shift();
-
+            
               // Ignore targets already selected.
               if (compilationTargets.includes(currentFile)) {
                 return fileFinished();
@@ -222,7 +223,7 @@ module.exports = {
               try {
                 imports = self.getImports(currentFile, resolved[currentFile], solc);
               } catch (err) {
-                err.message = "Error parsing " + currentFile + ": " + e.message;
+                err.message = "Error parsing " + currentFile + ": " + err.message;
                 return fileFinished(err);
               }
 
@@ -249,7 +250,7 @@ module.exports = {
     var mapping = {};
     var allPaths = initialPaths.slice();
 
-    function generateMapping(finished){
+   function generateMapping(finished){
       var promises = [];
 
       // Dequeue all the known paths, generating resolver promises,
@@ -323,9 +324,9 @@ module.exports = {
 
     // Convert explicitly relative dependencies of modules back into module paths.
     return imports.map(dependencyPath => {
-      return (self.isExplicitlyRelative(dependencyPath))
-        ? resolved.source.resolve_dependency_path(file, dependencyPath)
-        : dependencyPath;
+        return (self.isExplicitlyRelative(dependencyPath))
+          ? resolved.source.resolve_dependency_path(file, dependencyPath)
+          : dependencyPath;
     });
   },
 
@@ -343,7 +344,7 @@ module.exports = {
       if (path.isAbsolute(p)) {
         return p;
       }
-
+      
       if (!self.isExplicitlyRelative(p)) {
         return p;
       }

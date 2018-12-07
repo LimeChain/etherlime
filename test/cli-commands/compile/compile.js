@@ -17,7 +17,7 @@ describe('Compile cli command', () => {
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
     });
 
-    it.only('should run compile without parameters', async function() {
+    it('should run compile without parameters', async function() {
         await assert.isFulfilled(compiler.run('.'), "It is not successfully executed!");
     });
 

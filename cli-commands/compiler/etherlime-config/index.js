@@ -17,12 +17,7 @@ function Config(etherlime_directory, working_directory, network) {
   this._values = {
     etherlime_directory: etherlime_directory || path.resolve(path.join(__dirname, "../")),
     working_directory: working_directory || process.cwd(),
-    network: network,
-    networks: {},
     verboseRpc: false,
-    gas: null,
-    gasPrice: null,
-    from: null,
     build: null,
     resolver: null,
     artifactor: null,
@@ -39,10 +34,9 @@ function Config(etherlime_directory, working_directory, network) {
   };
 
   var props = {
+
     etherlime_directory: function () { },
     working_directory: function () { },
-    network: function () { },
-    networks: function () { },
     verboseRpc: function () { },
     build: function () { },
     resolver: function () { },
@@ -56,12 +50,6 @@ function Config(etherlime_directory, working_directory, network) {
     contracts_directory: function () {
       return path.join(self.working_directory, "contracts");
     },
-    contracts_build_directory: function () {
-      return path.join(self.build_directory, "contracts");
-    },
-    migrations_directory: function () {
-      return path.join(self.working_directory, "migrations");
-    },
     test_directory: function () {
       return path.join(self.working_directory, "test");
     },
@@ -70,76 +58,6 @@ function Config(etherlime_directory, working_directory, network) {
     },
     example_project_directory: function () {
       return path.join(self.etherlime_directory, "example");
-    },
-    network_id: {
-      get: function () {
-        try {
-          return self.network_config.network_id;
-        } catch (e) {
-          return null;
-        }
-      },
-      set: function (val) {
-        throw new Error("Do not set config.network_id. Instead, set config.networks and then config.networks[<network name>].network_id");
-      }
-    },
-    network_config: {
-      get: function () {
-        var network = self.network;
-
-        if (network == null) {
-          throw new Error("Network not set. Cannot determine network to use.");
-        }
-
-        var conf = self.networks[network];
-
-        if (conf == null) {
-          config = {};
-        }
-
-        conf = _.extend({}, default_tx_values, conf);
-
-        return conf;
-      },
-      set: function (val) {
-        throw new Error("Don't set config.network_config. Instead, set config.networks with the desired values.");
-      }
-    },
-    from: {
-      get: function () {
-        try {
-          return self.network_config.from;
-        } catch (e) {
-          return default_tx_values.from;
-        }
-      },
-      set: function (val) {
-        throw new Error("Don't set config.from directly. Instead, set config.networks and then config.networks[<network name>].from")
-      }
-    },
-    gas: {
-      get: function () {
-        try {
-          return self.network_config.gas;
-        } catch (e) {
-          return default_tx_values.gas;
-        }
-      },
-      set: function (val) {
-        throw new Error("Don't set config.gas directly. Instead, set config.networks and then config.networks[<network name>].gas")
-      }
-    },
-    gasPrice: {
-      get: function () {
-        try {
-          return self.network_config.gasPrice;
-        } catch (e) {
-          return default_tx_values.gasPrice;
-        }
-      },
-      set: function (val) {
-        throw new Error("Don't set config.gasPrice directly. Instead, set config.networks and then config.networks[<network name>].gasPrice")
-      }
     }
   };
 
@@ -201,18 +119,18 @@ Config.default = function () {
   return new Config();
 };
 
-Config.load = function (file, options) {
-  var config = new Config();
+// Config.load = function (file, options) {
+//   var config = new Config();
 
-  config.working_directory = path.dirname(path.resolve(file));
+//   config.working_directory = path.dirname(path.resolve(file));
 
-  delete require.cache[Module._resolveFilename(file, module)];
-  var static_config = originalRequire(file);
+//   delete require.cache[Module._resolveFilename(file, module)];
+//   var static_config = originalRequire(file);
 
-  config.merge(static_config);
-  config.merge(options);
+//   config.merge(static_config);
+//   config.merge(options);
 
-  return config;
-};
+//   return config;
+// };
 
 module.exports = Config;

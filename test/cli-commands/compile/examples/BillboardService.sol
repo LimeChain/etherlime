@@ -18,7 +18,7 @@ contract BillboardService {
     function buy(string inSlogan) public payable {
         require(msg.value > price, "The ether sent was too low");
         billboardOwner = msg.sender;
-        price = msg.value;
+        price = price.add(msg.value);
         slogan = inSlogan;
     }
 

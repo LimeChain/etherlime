@@ -62,7 +62,7 @@ Resolver.prototype.resolve = function (import_path, imported_from, callback) {
 
         return callback(new Error(message));
       }
-
+     
       callback(null, resolved_body, resolved_path, current_source);
   })
 };
