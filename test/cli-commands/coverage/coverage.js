@@ -6,12 +6,12 @@ const fs = require('fs-extra');
 const coverage = require('../../../cli-commands/etherlime-test/test')
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 
-let exampleTestForCoverage = require('../examples/exampleTestForCoverage').exampleTestForCoverage;
 let exampleTestForCoverageWithPort = require('../examples/exampleTestForCoverageWithPort').exampleTestForCoverageWithPort;
 let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let pathToExampleWithPort = './testsToRun/exampleTestForCoverageWithPort.js'
 let currentDir;
 
+let port = 5000;
 let expectedOutput = 'Istanbul coverage reports generated';
 
 describe('coverage cli command', () => {
@@ -24,26 +24,19 @@ describe('coverage cli command', () => {
         fs.mkdirSync('./contracts')
         fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
         fs.mkdirSync('./testsToRun')
-        fs.writeFileSync('./testsToRun/exampleTestForCoverage.js', exampleTestForCoverage)
         fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
     })
 
     it('should run coverage cli command', async function () {
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
         assert.isTrue(childProcess.result)
     })
 
     it('should run coverage cli command by specifying number runs', async function () {
         let runs = 10;
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest} --runs ${runs}`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --runs ${runs} --port ${port}`, expectedOutput);
         assert.isTrue(childProcess.result)
     });
-
-    it('should run coverage cli command on specific port', async function() {
-        let port = 5000;
-        let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --port ${port}`, expectedOutput);
-        assert.isTrue(childProcess.result)
-    })
 
     after(async function () {
         process.chdir(currentDir);
