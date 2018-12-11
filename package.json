@@ -52,6 +52,7 @@
     "etherlime": "./cli.js"
   },
   "devDependencies": {
+    "zeppelin-solidity": "^1.12.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
     "nyc": "^12.0.2",
