@@ -39,7 +39,8 @@ CompilerSupplier.prototype.load = function () {
     const self = this;
     const version = self.config.version;
     const isNative = self.config.version === 'native';
-    // const nodeModulesSolc = `${process.cwd()}/node_modules/solc`;
+
+    // We check for current working directory and if contains 'coverageEnv' we return one level up, because when 'etherlime coverage' is running, it makes temporary directory for coverage tests otherwise return just the current working directory
     const nodeModulesSolc = ((process.cwd().indexOf('coverageEnv')) > -1 ? (path.resolve(process.cwd() + '/../node_modules/solc')) : (process.cwd() + '/node_modules/solc'));
 
 
