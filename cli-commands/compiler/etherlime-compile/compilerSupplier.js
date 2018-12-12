@@ -12,6 +12,19 @@ function CompilerSupplier(_config) {
     this.config = Object.assign(this.config, _config);
 }
 
+// Check for current working directory if includes 'coverageEnv'
+function isCoverage() {
+    return process.cwd().includes('coverageEnv');
+}
+
+// If isCoverage() return true, we are moving one level up because 'etherlime coverage' makes a temporary folder 'coverageEnv' where all the tests are stored, but there is no node_modules folder
+function getLocalSolcPath() {
+    if (isCoverage()) {
+        return `${path.resolve(`${process.cwd()}/../node_modules/solc`)}`;
+    }
+    return `${process.cwd()}/node_modules/solc`;
+}
+
 CompilerSupplier.prototype.config = {
     version: null,
     versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
@@ -39,7 +52,10 @@ CompilerSupplier.prototype.load = function () {
     const self = this;
     const version = self.config.version;
     const isNative = self.config.version === 'native';
-    const nodeModulesSolc = `${process.cwd()}/node_modules/solc`;
+
+    // We get local solc path
+    const nodeModulesSolc = getLocalSolcPath();
+
 
     return new Promise((accept, reject) => {
         const useDocker = self.config.docker;
@@ -196,7 +212,7 @@ CompilerSupplier.prototype.getBuilt = function (buildType) {
 //------------------------------------ Utils -------------------------------------------------------
 
 CompilerSupplier.prototype.isLocal = function (localPath) {
-    return fs.existsSync(localPath) || path.isAbsolute(localPath);
+    return fs.existsSync(localPath);
 }
 
 CompilerSupplier.prototype.validateDocker = function () {
