@@ -39,7 +39,9 @@ CompilerSupplier.prototype.load = function () {
     const self = this;
     const version = self.config.version;
     const isNative = self.config.version === 'native';
-    const nodeModulesSolc = `${process.cwd()}/node_modules/solc`;
+    // const nodeModulesSolc = `${process.cwd()}/node_modules/solc`;
+    const nodeModulesSolc = ((process.cwd().indexOf('coverageEnv')) > -1 ? (path.resolve(process.cwd() + '/../node_modules/solc')) : (process.cwd() + '/node_modules/solc'));
+
 
     return new Promise((accept, reject) => {
         const useDocker = self.config.docker;
@@ -196,7 +198,7 @@ CompilerSupplier.prototype.getBuilt = function (buildType) {
 //------------------------------------ Utils -------------------------------------------------------
 
 CompilerSupplier.prototype.isLocal = function (localPath) {
-    return fs.existsSync(localPath) || path.isAbsolute(localPath);
+    return fs.existsSync(localPath);
 }
 
 CompilerSupplier.prototype.validateDocker = function () {
