@@ -7,7 +7,7 @@ let App = require('solidity-coverage/lib/app');
 let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 
-const run = async (path, skipCompilation) => {
+const run = async (path, skipCompilation, solcVersion) => {
 	
 	var config = Config.default();
 	var testDirectory = '';

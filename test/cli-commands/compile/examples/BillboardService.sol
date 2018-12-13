@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.1;
 
 import './SafeMath.sol';
 
@@ -15,14 +15,14 @@ contract BillboardService {
         _;
     }
     
-    function buy(string inSlogan) public payable {
+    function buy(string memory inSlogan) public payable {
         require(msg.value > price, "The ether sent was too low");
         billboardOwner = msg.sender;
         price = price.add(msg.value);
         slogan = inSlogan;
     }
 
-    function changeSlogan(string newSlogan) public payable onlyPositive(msg.value) {
+    function changeSlogan(string memory newSlogan) public payable onlyPositive(msg.value) {
         require(msg.sender == billboardOwner);
         slogan = newSlogan;
     }

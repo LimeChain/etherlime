@@ -1,4 +1,4 @@
-const contractWithExternalImports = `pragma solidity ^0.4.24;
+const contractWithExternalImports = `pragma solidity ^0.5.0;
 
 import '../node_modules/zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol';
 import './SafeMath.sol';
