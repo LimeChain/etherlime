@@ -10,7 +10,7 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation) => {
+const run = async (files, skipCompilation, solcVersion) => {
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 
@@ -23,7 +23,7 @@ const run = async (files, skipCompilation) => {
 	setJSTestGlobals();
 
 	if (!skipCompilation) {
-		await compiler.run('.', undefined, undefined, false, undefined, false, true);
+		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
 	}
 	
 	await runMocha(mocha);

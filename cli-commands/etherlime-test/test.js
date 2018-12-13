@@ -13,7 +13,7 @@ const run = async (path, skipCompilation) => {
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		await etherlimeTest.run([path], skipCompilation);
+		await etherlimeTest.run([path], skipCompilation, solcVersion);
 
 		return;
 	}
@@ -26,7 +26,7 @@ const run = async (path, skipCompilation) => {
 
 	const files = await getFiles(testDirectory, config);
 
-	await etherlimeTest.run(files, skipCompilation);
+	await etherlimeTest.run(files, skipCompilation, solcVersion);
 }
 
 const getFiles = async function (testDirectory, config) {

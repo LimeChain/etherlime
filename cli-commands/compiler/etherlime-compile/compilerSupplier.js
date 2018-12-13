@@ -12,6 +12,19 @@ function CompilerSupplier(_config) {
     this.config = Object.assign(this.config, _config);
 }
 
+// Check for current working directory if includes 'coverageEnv'
+function isCoverage() {
+    return process.cwd().includes('coverageEnv');
+}
+
+// If isCoverage() return true, we are moving one level up because 'etherlime coverage' makes a temporary folder 'coverageEnv' where all the tests are stored, but there is no node_modules folder
+function getLocalSolcPath() {
+    if (isCoverage()) {
+        return `${path.resolve(`${process.cwd()}/../node_modules/solc`)}`;
+    }
+    return `${process.cwd()}/node_modules/solc`;
+}
+
 CompilerSupplier.prototype.config = {
     version: null,
     versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
@@ -40,17 +53,23 @@ CompilerSupplier.prototype.load = function () {
     const version = self.config.version;
     const isNative = self.config.version === 'native';
 
+    // We get local solc path
+    const nodeModulesSolc = getLocalSolcPath();
+
+
     return new Promise((accept, reject) => {
         const useDocker = self.config.docker;
-        const useDefault = !version; // Checking for version number
-        const useLocal = !useDefault && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
+        const useDefaultEtherlime = !version; // Checking for version number
+        const useDefaultNodeModules = useDefaultEtherlime && self.isLocal(nodeModulesSolc); // Checking for version number
+        const useLocal = !useDefaultEtherlime && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
         const useNative = !useLocal && isNative;
         const useRemote = !useNative
 
         if (useDocker) return accept(self.getBuilt("docker"));
         if (useNative) return accept(self.getBuilt("native"));
-        if (useDefault) return accept(self.getDefault());
         if (useLocal) return accept(self.getLocal(version));
+        if (useDefaultNodeModules) return accept(self.getLocal(nodeModulesSolc));
+        if (useDefaultEtherlime) return accept(self.getDefaultEtherlime());
         if (useRemote) return accept(self.getByUrl(version));
     });
 }
@@ -90,7 +109,7 @@ CompilerSupplier.prototype.getDockerTags = function () {
 
 //------------------------------------ Getters -----------------------------------------------------
 
-CompilerSupplier.prototype.getDefault = function () {
+CompilerSupplier.prototype.getDefaultEtherlime = function () {
     const compiler = require('solc');
     this.removeListener();
 
@@ -193,7 +212,7 @@ CompilerSupplier.prototype.getBuilt = function (buildType) {
 //------------------------------------ Utils -------------------------------------------------------
 
 CompilerSupplier.prototype.isLocal = function (localPath) {
-    return fs.existsSync(localPath) || path.isAbsolute(localPath);
+    return fs.existsSync(localPath);
 }
 
 CompilerSupplier.prototype.validateDocker = function () {
