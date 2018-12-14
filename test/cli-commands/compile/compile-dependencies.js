@@ -21,6 +21,8 @@ const compileError = require('../../../cli-commands/compiler/etherlime-compile/c
 const profiler = require('../../../cli-commands/compiler/etherlime-compile/profiler');
 const parser = require('../../../cli-commands/compiler/etherlime-compile/parser');
 const Config = require('../../../cli-commands/compiler/etherlime-config');
+const CompilerSupplier = require('../../../cli-commands/compiler/etherlime-compile/compilerSupplier');
+let compilerSupplier;
 
 let compiledContract = require('./examples/compiledContract');
 let contractForFailCompilation = require('./examples/ContractForFailCompilation').contractForFailCompilation;
@@ -707,7 +709,80 @@ describe('Compile dependencies', () => {
 
     });
 
+    describe('CompilerSupplier tests', () => {
+
+        it('should throw err', async function() {
+            let options = { version: undefined,
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: false,
+                docker: undefined }
+            
+            compilerSupplier = new CompilerSupplier(options);
+            let expectedError = "Failed to complete request";
+            let errMessage;
+            try{
+                await compilerSupplier.getVersions()
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError);
+            
+        });
+
+        it('should throw err if con not find local path', async function() {
+            compilerSupplier = new CompilerSupplier();
+            let expectedError = "Could not find compiler"
+            let errMessage;
+            let path = `${process.cwd()}/unexisting`
+            try{
+                await compilerSupplier.getLocal(path)
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError)
+        });
+
+        // it.only('should compile', async function() {
+        //     let options = { version: "native",
+        //         versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+        //         compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+        //         dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+        //         cache: false,
+        //         docker: undefined }
+
+        //     compilerSupplier = new CompilerSupplier(options);
+        //     let expectedError = "Could not find compiler"
+        //     let errMessage;
+        //     let path = `${process.cwd()}/unexisting`
+        //     try{
+        //         await compilerSupplier.getLocal(path)
+        //     }catch(e){
+        //         if(e){
+        //             errMessage = e.message
+        //         }
+        //     }
+
+        //     // assert.include(errMessage, expectedError)
+        // });
+
+    })
+
     after(async function () {
+        compilerSupplier = new CompilerSupplier({
+            version: null,
+            versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+            compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+            dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+            cache: false,
+        })
         fs.removeSync('./contracts')
         fs.removeSync('./build');
     });
