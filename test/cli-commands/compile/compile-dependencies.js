@@ -709,7 +709,7 @@ describe('Compile dependencies', () => {
 
     });
 
-    describe('CompilerSupplier tests', () => {
+    describe.only('CompilerSupplier tests', () => {
 
         it('should throw err', async function() {
             let options = { version: undefined,
@@ -750,30 +750,46 @@ describe('Compile dependencies', () => {
             assert.include(errMessage, expectedError)
         });
 
-        // it.only('should compile', async function() {
-        //     let options = { version: "native",
-        //         versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
-        //         compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
-        //         dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
-        //         cache: false,
-        //         docker: undefined }
+        it('should compile and save cache of specific version', async function() {
+            let options = {
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: true,
+                docker: undefined }
 
-        //     compilerSupplier = new CompilerSupplier(options);
-        //     let expectedError = "Could not find compiler"
-        //     let errMessage;
-        //     let path = `${process.cwd()}/unexisting`
-        //     try{
-        //         await compilerSupplier.getLocal(path)
-        //     }catch(e){
-        //         if(e){
-        //             errMessage = e.message
-        //         }
-        //     }
+            compilerSupplier = new CompilerSupplier(options);
+            let result = await compilerSupplier.getByUrl("0.4.21");
+            assert.isObject(result)
 
-        //     // assert.include(errMessage, expectedError)
-        // });
+        });
 
-    })
+        it('should get cached version', async function() {
+            let result = await compilerSupplier.getByUrl("0.4.21");
+            assert.isObject(result)
+
+        });
+
+        it('should get build native version', async function() {
+            let options = {
+                vesrions: "native",
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: false,
+                docker: undefined }
+
+            compilerSupplier = new CompilerSupplier(options);
+
+            let err = "/bin/sh: solc: command not found"
+
+            assert.throws(() => {
+                compilerSupplier.getBuilt("native")
+            }, err)
+
+        });
+
+    });
 
     after(async function () {
         compilerSupplier = new CompilerSupplier({
@@ -783,6 +799,7 @@ describe('Compile dependencies', () => {
             dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
             cache: false,
         })
+        fs.removeSync('./node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js')
         fs.removeSync('./contracts')
         fs.removeSync('./build');
     });

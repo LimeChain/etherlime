@@ -135,7 +135,7 @@ CompilerSupplier.prototype.getVersions = function () {
 
     return request(self.config.versionsUrl)
         .then(list => JSON.parse(list))
-        .catch(err => { throw self.errors('noRequest', url, err) });
+        .catch(err => { throw self.errors('noRequest', self.config.versionsUrl, err) });
 }
 
 CompilerSupplier.prototype.getVersionUrlSegment = function (version, allVersions) {
@@ -164,12 +164,14 @@ CompilerSupplier.prototype.getByUrl = function (version) {
         .getVersions(self.config.versionsUrl)
         .then(allVersions => {
             const file = self.getVersionUrlSegment(version, allVersions);
+            console.log("file", file)
 
             if (!file) throw self.errors('noVersion', version);
 
             if (self.isCached(file)) return self.getFromCache(file);
 
             const url = self.config.compilerUrlRoot + file;
+            console.log("url", url)
 
             return request
                 .get(url)
@@ -262,6 +264,7 @@ CompilerSupplier.prototype.validateNative = function () {
 }
 
 CompilerSupplier.prototype.getCommitFromVersion = function (versionString) {
+    console.log("versionString", versionString)
     return 'commit.' + versionString.match(/commit\.(.*?)\./)[1]
 }
 
@@ -279,13 +282,11 @@ CompilerSupplier.prototype.resolveCache = function (fileName) {
 
 CompilerSupplier.prototype.isCached = function (fileName) {
     const file = this.resolveCache(fileName);
-
     return fs.existsSync(file);
 }
 
 CompilerSupplier.prototype.addToCache = function (code, fileName) {
     if (!this.config.cache) return;
-
     const filePath = this.resolveCache(fileName);
     fs.writeFileSync(filePath, code);
 }
@@ -293,6 +294,7 @@ CompilerSupplier.prototype.addToCache = function (code, fileName) {
 CompilerSupplier.prototype.getFromCache = function (fileName) {
     const filePath = this.resolveCache(fileName);
     const soljson = originalRequire(filePath);
+    console.log("1", soljson)
     const wrapped = solcWrap(soljson);
     this.removeListener();
 
@@ -301,6 +303,7 @@ CompilerSupplier.prototype.getFromCache = function (fileName) {
 
 CompilerSupplier.prototype.compilerFromString = function (code) {
     const soljson = requireFromString(code);
+    console.log("soljson", soljson)
     const wrapped = solcWrap(soljson);
     this.removeListener();
 
