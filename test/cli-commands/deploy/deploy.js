@@ -10,7 +10,7 @@ const compiler = require('../../../cli-commands/compiler/compiler');
 const logger = require('../../../logger-service/logger-service').logger;
 const file = require('./deploymentScriptsFile').file;
 let compileSpy = sinon.spy(compiler, "run");
-let loggerSpy = sinon.spy(logger, "log")
+let loggerSpy = sinon.spy(logger, "log");
 
 let privateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8";
 let wrongPrivateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee9";

@@ -46,12 +46,10 @@ CompilerSupplier.prototype.cachePath = findCacheDir({
  *
  * OR specify that solc.compileStandard should wrap:
  * - dockerized solc               (config.version = "<image-name>" && config.docker: true)
- * - native built solc             (config.version = "native")
  */
 CompilerSupplier.prototype.load = function () {
     const self = this;
     const version = self.config.version;
-    const isNative = self.config.version === 'native';
 
     // We get local solc path
     const nodeModulesSolc = getLocalSolcPath();
@@ -62,11 +60,9 @@ CompilerSupplier.prototype.load = function () {
         const useDefaultEtherlime = !version; // Checking for version number
         const useDefaultNodeModules = useDefaultEtherlime && self.isLocal(nodeModulesSolc); // Checking for version number
         const useLocal = !useDefaultEtherlime && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
-        const useNative = !useLocal && isNative;
-        const useRemote = !useNative
+        const useRemote = !useLocal;
 
         if (useDocker) return accept(self.getBuilt("docker"));
-        if (useNative) return accept(self.getBuilt("native"));
         if (useLocal) return accept(self.getLocal(version));
         if (useDefaultNodeModules) return accept(self.getLocal(nodeModulesSolc));
         if (useDefaultEtherlime) return accept(self.getDefaultEtherlime());
@@ -159,20 +155,18 @@ CompilerSupplier.prototype.getVersionUrlSegment = function (version, allVersions
 
 CompilerSupplier.prototype.getByUrl = function (version) {
     const self = this;
-
+    
     return self
         .getVersions(self.config.versionsUrl)
         .then(allVersions => {
             const file = self.getVersionUrlSegment(version, allVersions);
-            console.log("file", file)
-
+            
             if (!file) throw self.errors('noVersion', version);
 
             if (self.isCached(file)) return self.getFromCache(file);
 
             const url = self.config.compilerUrlRoot + file;
-            console.log("url", url)
-
+            
             return request
                 .get(url)
                 .then(response => {
@@ -188,10 +182,6 @@ CompilerSupplier.prototype.getBuilt = function (buildType) {
     let command;
 
     switch (buildType) {
-        case "native":
-            versionString = this.validateNative();
-            command = 'solc --standard-json';
-            break;
         case "docker":
             versionString = this.validateDocker();
             command = 'docker run -i ethereum/solc:' + this.config.version + ' --standard-json';
@@ -252,25 +242,12 @@ CompilerSupplier.prototype.validateDocker = function () {
     return normalized;
 }
 
-CompilerSupplier.prototype.validateNative = function () {
-    let version;
-    try {
-        version = child.execSync('solc --version');
-    } catch (err) {
-        throw this.errors('noNative', null, err);
-    }
-
-    return this.normalizeVersion(version);
-}
-
 CompilerSupplier.prototype.getCommitFromVersion = function (versionString) {
-    console.log("versionString", versionString)
     return 'commit.' + versionString.match(/commit\.(.*?)\./)[1]
 }
 
 CompilerSupplier.prototype.normalizeVersion = function (version) {
     version = String(version);
-
     return version.split(':')[1].trim();
 }
 
@@ -301,9 +278,8 @@ CompilerSupplier.prototype.getFromCache = function (fileName) {
     return wrapped;
 }
 
-CompilerSupplier.prototype.compilerFromString = function (code) {
+CompilerSupplier.prototype.compilerFromString = async function (code) {
     const soljson = requireFromString(code);
-    console.log("soljson", soljson)
     const wrapped = solcWrap(soljson);
     this.removeListener();
 

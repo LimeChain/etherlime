@@ -35,15 +35,34 @@ describe('Lime Factory example', function () {
     });
 
     it('should emit event', async () => {
-        await utils.timeTravel(deployer.provider, 6000)
+        await utils.timeTravel(deployer.provider, 60000000)
         const createTransaction = await limeFactoryInstance.contract.createLime("newLime", 5, 8, 2);
         const transactionReceipt = await limeFactoryInstance.verboseWaitForTransaction(createTransaction);
         let logs = utils.parseLogs(transactionReceipt, limeFactoryInstance.contract, 'FreshLime')
         assert(logs.length > 0, "No event was thrown")
-        
         let event = utils.hasEvent(transactionReceipt, limeFactoryInstance.contract, 'FreshLime')
         assert.isTrue(event);
     });
+
+
+    it('should time travel', async () => {
+        let latestTimestamp = await utils.latestTimestamp(deployer.provider);
+        let timeStamp = latestTimestamp + 600000
+        await utils.setTimeTo(deployer.provider, timeStamp)
+    });
+
+    it('should throw err if try to set time with less timestamp', async() => {
+        let timeStamp = 17274372
+        let result;
+        try{
+            await utils.setTimeTo(deployer.provider, timeStamp)
+        }catch(e){
+            result = e.message
+        }
+        
+        assert.include(result, "cannot decrease time")
+    });
+
 
 });`
 

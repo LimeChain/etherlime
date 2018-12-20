@@ -1,4 +1,5 @@
-pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
+pragma solidity ^0.5.1;
 
 contract ContractWithWarning {
 
@@ -10,13 +11,9 @@ contract ContractWithWarning {
         owner = msg.sender;
     }
     
-    function someFunction(uint256 value) public payable {
-        initialValue += value;
+    function someFunction() public payable {
+        initialValue += msg.value;
         emit SomeEvent(initialValue);
-    }
-
-    function withdrow() public {
-        owner.transfer(this.balance);
     }
 
 }
