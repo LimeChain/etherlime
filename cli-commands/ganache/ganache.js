@@ -10,12 +10,11 @@ const run = (inPort, inLogger, forkParams) => {
 	const server = ganache.server({
 		accounts: setup.accounts,
 		logger: inLogger,
-		fork: fork
+		fork
 	});
 
 	server.listen(port, ganacheServerListenCallback);
 };
-
 const ganacheServerListenCallback = (err, blockchain) => {
 	if (err) {
 		logger.log(err);
@@ -27,14 +26,13 @@ const ganacheServerListenCallback = (err, blockchain) => {
 	for (let i = 0; i < accountsLength; i++) {
 		logger.log(`[${i}] Address: ${Object.getOwnPropertyNames(blockchain.personal_accounts)[i]} Private key: ${blockchain.options.accounts[i].secretKey}`);
 	}
-
 	logger.log(`\nListening on http://localhost:${port}`);
 	forkedNetwork ? logger.log(`Etherlime ganache is forked from network: ${colors.colorSuccess(forkedNetwork)}`) : null;
 	forkedBlockNumber ? logger.log(`Network is forked from block number: ${colors.colorSuccess(forkedBlockNumber)}`) : null;
-
 };
 
 module.exports = {
 	run,
 	ganacheServerListenCallback
 };
+

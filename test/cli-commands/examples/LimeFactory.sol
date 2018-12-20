@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 contract LimeFactory {
 
@@ -13,7 +13,7 @@ contract LimeFactory {
 
     Lime[] public limes;
 
-    function createLime(string _name, uint8 _carbohydrates, uint8 _fat, uint8 _protein) public {
+    function createLime(string memory _name, uint8 _carbohydrates, uint8 _fat, uint8 _protein) public {
         require(_carbohydrates != 0);
         limes.push(Lime(_name, _carbohydrates, _fat, _protein));
         emit FreshLime(_name);

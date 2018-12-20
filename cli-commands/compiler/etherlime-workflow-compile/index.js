@@ -56,7 +56,7 @@ var Contracts = {
     var logger = options.logger || console;
 
     try {
-      await mkdirp(options.contracts_build_directory);
+      mkdirp.sync(options.contracts_build_directory);
 
       if (options.quiet != true && options.quietWrite != true) {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);

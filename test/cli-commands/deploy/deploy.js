@@ -10,7 +10,7 @@ const compiler = require('../../../cli-commands/compiler/compiler');
 const logger = require('../../../logger-service/logger-service').logger;
 const file = require('./deploymentScriptsFile').file;
 let compileSpy = sinon.spy(compiler, "run");
-let loggerSpy = sinon.spy(logger, "log")
+let loggerSpy = sinon.spy(logger, "log");
 
 let privateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8";
 let wrongPrivateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee9";
@@ -24,8 +24,8 @@ const contractFolder = './contracts';
 
 
 describe('Deploy cli command', () => {
-    
-    it('should deploy with no parameters', async function() {
+
+    it('should deploy with no parameters', async function () {
         fs.mkdirSync(deployFolder)
         fs.writeFileSync(`${deployFolder}/deploy.js`, file);
         await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
@@ -52,7 +52,7 @@ describe('Deploy cli command', () => {
         sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
     });
 
-    it('should throw error on deployment failure if silent is false', async function () {    
+    it('should throw error on deployment failure if silent is false', async function () {
         let consoleSpy = sinon.spy(console, "error");
         await deployer.run(specificFile, undefined, wrongPrivateKey, false);
         let logs = consoleSpy.getCall(0);
@@ -94,6 +94,5 @@ describe('Deploy cli command', () => {
     afterEach(async function () {
         loggerSpy.restore();
         await fs.removeSync('./.etherlime-store')
-        await fs.removeSync('./.etherlime-store/.history.json');
     })
 })

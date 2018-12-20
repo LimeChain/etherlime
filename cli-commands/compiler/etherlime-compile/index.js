@@ -1,4 +1,3 @@
-var Profiler = require("./profiler");
 var OS = require("os");
 
 var path = require("path");
@@ -12,31 +11,17 @@ var CompilerSupplier = require("./compilerSupplier");
 const logger = require('./../../../logger-service/logger-service').logger;
 
 var compile = function (sources, options, callback) {
-	if (typeof options == "function") {
-		callback = options;
-		options = {};
-	}
-
 	expect.options(options, [
 		"contracts_directory",
 		"solc"
 	]);
-
-	var solc = require("solc");
-
-	var listeners = process.listeners("uncaughtException");
-	var solc_listener = listeners[listeners.length - 1];
-
-	if (solc_listener) {
-		process.removeListener("uncaughtException", solc_listener);
-	}
 
 	var operatingSystemIndependentSources = {};
 	var originalPathMappings = {};
 
 	Object.keys(sources).forEach(function (source) {
 		var replacement = source.replace(/\\/g, "/");
-
+		
 		if (replacement.length >= 2 && replacement[1] == ":") {
 			replacement = "/" + replacement;
 			replacement = replacement.replace(":", "");
@@ -89,7 +74,6 @@ var compile = function (sources, options, callback) {
 
 		var errors = standardOutput.errors || [];
 		var warnings = [];
-
 		if (options.strict !== true) {
 			warnings = errors.filter(function (error) {
 				return error.severity == "warning";
@@ -150,27 +134,6 @@ var compile = function (sources, options, callback) {
 		
 				contract_definition.abi = orderABI(contract_definition);
 
-				Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
-					var fileLinks = contract.evm.bytecode.linkReferences[file_name];
-
-					Object.keys(fileLinks).forEach(function (library_name) {
-						var linkReferences = fileLinks[library_name] || [];
-
-						contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name);
-						contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name);
-					});
-				});
-
-				Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
-					var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
-
-					Object.keys(fileLinks).forEach(function (library_name) {
-						var linkReferences = fileLinks[library_name] || [];
-
-						contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name);
-					});
-				});
-
 				returnVal[contract_name] = contract_definition;
 			});
 		});
@@ -180,25 +143,12 @@ var compile = function (sources, options, callback) {
 		.catch(callback);
 };
 
-function replaceLinkReferences(bytecode, linkReferences, libraryName) {
-	var linkId = "__" + libraryName;
-
-	while (linkId.length < 40) {
-		linkId += "_";
-	}
-
-	linkReferences.forEach((ref) => {
-		var start = (ref.start * 2) + 2;
-		bytecode = bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
-	});
-
-	return bytecode;
-};
 
 function orderABI(contract) {
 	var contract_definition;
 	var ordered_function_names = [];
 	var ordered_functions = [];
+
 
 	for (var i = 0; i < contract.legacyAST.children.length; i++) {
 		var definition = contract.legacyAST.children[i];
@@ -293,7 +243,7 @@ compile.with_dependencies = function (options, callback) {
 	]);
 
 	var config = Config.default().merge(options);
-
+	
 	Profiler.required_sources(config.with({
 		paths: options.paths,
 		base_path: options.contracts_directory,
@@ -305,11 +255,7 @@ compile.with_dependencies = function (options, callback) {
 
 		if (options.quiet != true) {
 			Object.keys(result).sort().forEach((import_path) => {
-				var display_path = import_path;
-
-				if (path.isAbsolute(import_path)) {
-					display_path = "." + path.sep + path.relative(options.working_directory, import_path);
-				}
+				let display_path = "." + path.sep + path.relative(options.working_directory, import_path);
 
 				logger.log(`Compiling ${display_path}...`);
 			});
