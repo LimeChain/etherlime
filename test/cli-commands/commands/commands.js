@@ -8,6 +8,7 @@ const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache')
 
 const commands = require('../../../cli-commands/commands')
+const history = require('./historyExample.js')
 
 
 describe('root calling cli commands', () => {
@@ -31,8 +32,8 @@ describe('root calling cli commands', () => {
     });
 
     it('should throw err if history failed', async function () {
-        let expectedError = "ENOENT: no such file or directory"
-        let childProcess = await runCmdHandler(`etherlime history --limit=1.4`, expectedError);
+        let expectedError = " Cannot read property 'actions' of undefined"
+        let childProcess = await runCmdHandler(`etherlime history --limit=0.2`, expectedError);
         assert.include(JSON.stringify(childProcess), expectedError)
     });
 
