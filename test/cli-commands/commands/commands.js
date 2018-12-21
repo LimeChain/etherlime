@@ -32,7 +32,7 @@ describe('root calling cli commands', () => {
 
     it('should throw err if history failed', async function () {
         let expectedError = "Cannot read property"
-        let childProcess = await runCmdHandler(`etherlime history --limit=1.4`, expectedError);
+        let childProcess = await runCmdHandler(`etherlime history --limit=0.4`, expectedError);
         assert.include(JSON.stringify(childProcess), expectedError)
     });
 
