@@ -271,7 +271,6 @@ CompilerSupplier.prototype.addToCache = function (code, fileName) {
 CompilerSupplier.prototype.getFromCache = function (fileName) {
     const filePath = this.resolveCache(fileName);
     const soljson = originalRequire(filePath);
-    console.log("1", soljson)
     const wrapped = solcWrap(soljson);
     this.removeListener();
 
