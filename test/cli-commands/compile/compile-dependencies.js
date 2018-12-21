@@ -800,6 +800,22 @@ describe('Compile dependencies', () => {
                 compilerSupplier.getBuilt(version)
             })
     
+        });
+
+        it('should throw if try to get wrong version by URL', async () => {
+            let version = "0.3"
+            let expectedError = "Could not find compiler"
+            let errMessage;
+            let path = `${process.cwd()}/unexisting`
+            try{
+                await compilerSupplier.getByUrl(version)
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError)
         })
 
         it('should get commit form version', async () => {
