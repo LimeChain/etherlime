@@ -3,7 +3,6 @@ var chai = require("chai");
 var originalRequire = require("original-require");
 let timeTravel = require('./time-travel');
 let events = require('./events');
-let evmCommands = require('./evm-commands');
 
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
@@ -26,7 +25,7 @@ const run = async (files, skipCompilation, solcVersion) => {
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
 	}
-
+	
 	await runMocha(mocha);
 }
 
@@ -41,9 +40,16 @@ const createMocha = (config, files) => {
 }
 
 const runMocha = async (mocha) => {
-	mocha.run(failures => {
-		process.exitCode = failures ? -1 : 0;
-	});
+	return new Promise((resolve, reject) => {
+		mocha.run(failures => {
+			process.exitCode = failures ? -1 : 0;
+			if(failures){
+				reject()
+			} else {
+				resolve()
+			}
+		});
+	})
 }
 
 const setJSTestGlobals = async () => {
@@ -53,11 +59,9 @@ const setJSTestGlobals = async () => {
 	global.utils = {
 		timeTravel: timeTravel.timeTravel,
 		setTimeTo: timeTravel.setTimeTo,
+		latestTimestamp: timeTravel.latestTimestamp,
 		parseLogs: events.parseLogs,
-		hasEvent: events.hasEvent,
-		snapshot: evmCommands.snapshot,
-		revertState: evmCommands.revertState,
-		mineBlock: evmCommands.mineBlock
+		hasEvent: events.hasEvent
 	}
 	const importedAccounts = new Array();
 	for (const acc of accounts) {

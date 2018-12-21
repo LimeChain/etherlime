@@ -37,14 +37,14 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	};
 
 	Resolver(resolverOptions);
-
+	
 	let compileOptions = {
 		"contracts_directory": `${defaultPath}/contracts`,
 		"contracts_build_directory": `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
 	};
-
+	
 	if (runs) {
 		compileOptions.solc = {
 			optimizer: {
@@ -53,12 +53,12 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 			}
 		}
 	}
-
+	
 	return compilePromise(compileOptions, quiet);
 };
 
 const compilePromise = async (compileOptions, quiet) => {
-
+	
 	return new Promise((resolve, reject) => {
 		compiler.compile(compileOptions, (error, artifacts, paths) => {
 			if (error) {
@@ -72,7 +72,7 @@ const compilePromise = async (compileOptions, quiet) => {
 
 				return;
 			}
-
+			
 			if (!quiet) {
 				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}

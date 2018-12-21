@@ -26,11 +26,6 @@ constantly):
 
 |Deployment result|
 
-Examples
---------
-
-
-
 -----
 
 .. |Deployment result| image:: ../_docs_static/DeploymentResult.png

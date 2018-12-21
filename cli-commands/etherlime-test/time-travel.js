@@ -25,6 +25,7 @@ const setTimeTo = async (provider, timestamp) => {
 }
 
 module.exports = {
-	timeTravel,
-  setTimeTo
+    timeTravel,
+    setTimeTo,
+    latestTimestamp
 }
