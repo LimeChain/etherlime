@@ -118,7 +118,7 @@ describe('Deployer tests', () => {
 			});
 
 			it('should deploy contract with params correctly', async () => {
-				const contractWrapper = await deployer.deploy(VestingContract, {}, config.randomAddress, 1569426974);
+				const contractWrapper = await deployer.deploy(Greetings);
 
 				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
 				assert.deepEqual(wallet.signingKey, contractWrapper.wallet.signingKey, "The stored wallet does not match the inputted one");

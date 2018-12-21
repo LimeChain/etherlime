@@ -5,6 +5,7 @@ chai.use(chaiAsPromised);
 const sinon = require('sinon');
 const fs = require('fs-extra');
 const util = require('util');
+const request = require('request-promise');
 
 const compiler = require('../../../cli-commands/compiler/compiler');
 const contracts = require('../../../cli-commands/compiler/etherlime-workflow-compile/index');
@@ -21,6 +22,12 @@ const compileError = require('../../../cli-commands/compiler/etherlime-compile/c
 const profiler = require('../../../cli-commands/compiler/etherlime-compile/profiler');
 const parser = require('../../../cli-commands/compiler/etherlime-compile/parser');
 const Config = require('../../../cli-commands/compiler/etherlime-config');
+const CompilerSupplier = require('../../../cli-commands/compiler/etherlime-compile/compilerSupplier');
+const solcWraper = require('../../../cli-commands/compiler/etherlime-compile/solcWrap')
+let compilerSupplier;
+let soljson = require('./examples/soljson');
+let soljsonDifVersion = require('./examples/soljsonDifVersion');
+let file;
 
 let compiledContract = require('./examples/compiledContract');
 let contractForFailCompilation = require('./examples/ContractForFailCompilation').contractForFailCompilation;
@@ -375,20 +382,20 @@ describe('Compile dependencies', () => {
             compileOptions.contracts_directory = `${process.cwd()}/contracts`;
         });
 
-        // it('should compile with warnings on contract', async function() {
-        //     compileOptions.quiet = false;
-        //     fs.copyFileSync('./test/cli-commands/compile/examples/ContractWithWarning.sol', './contracts/ContractWithWarning.sol');
-        //     let fnExecution = new Promise((resolve, reject) => {
-        //         etherlimeCompile.all(compileOptions, function(err) {
-        //             if(!err){
-        //                 resolve()
-        //                 return
-        //             }
-        //             reject(err)
-        //         });
-        //     });
-        //     await assert.isFulfilled(fnExecution, "Warnings on contract should not throw error")
-        // });
+        it('should compile with warnings on contract', async function() {
+            compileOptions.quiet = false;
+            fs.copyFileSync('./test/cli-commands/compile/examples/ContractWithWarning.sol', './contracts/ContractWithWarning.sol');
+            let fnExecution = new Promise((resolve, reject) => {
+                etherlimeCompile.all(compileOptions, function(err) {
+                    if(!err){
+                        resolve()
+                        return
+                    }
+                    reject(err)
+                });
+            });
+            await assert.isFulfilled(fnExecution, "Warnings on contract should not throw error")
+        });
 
         it('should throw error if compilation fail', async function() {
             compileOptions.paths = [ `${process.cwd()}/contracts/BillboardService.sol`,
@@ -707,7 +714,143 @@ describe('Compile dependencies', () => {
 
     });
 
+    describe('CompilerSupplier tests', () => {
+
+        it('should throw err if versions url is wrong', async function() {
+            let options = { version: undefined,
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: false,
+                docker: undefined }
+            
+            compilerSupplier = new CompilerSupplier(options);
+            let expectedError = "Failed to complete request";
+            let errMessage;
+            try{
+                await compilerSupplier.getVersions()
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError);
+            
+        });
+
+        it('should throw err if con not find local path', async function() {
+            let options = {
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: true,
+                docker: undefined }
+            compilerSupplier = new CompilerSupplier(options);
+            let expectedError = "Could not find compiler"
+            let errMessage;
+            let path = `${process.cwd()}/unexisting`
+            try{
+                await compilerSupplier.getLocal(path)
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError)
+        });
+
+        it('should save cache of specific version', async function() {
+            let options = {
+                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+                cache: true,
+                docker: undefined }
+
+            compilerSupplier = new CompilerSupplier(options);
+           
+
+            let allVersions = await compilerSupplier.getVersions(options.versionsUrl)
+            file = compilerSupplier.getVersionUrlSegment("0.4.21", allVersions);
+            let url = options.compilerUrlRoot + file;
+            let code = await request.get(url)
+                
+            await compilerSupplier.addToCache(code, file);
+
+            assert.isTrue(fs.existsSync('./node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js'))
+
+        });
+
+        it('should check if file is cashed', async () => {
+            let result = await compilerSupplier.isCached(file);
+            assert.isTrue(result)
+        })
+
+        it('should normalize version', async () => {
+            let version = "macOS: version 10.13.1 (build: 17B1003)"
+            let result = await compilerSupplier.normalizeVersion(version)
+            assert.include(result, "version 10.13.1")
+        });
+
+        it('should throw if try to build docker with wrong version', async () => {
+            let version = "nightly-alpine-0.5.3-8825533222519c051693d1fb4bcaba6ea0cde2"
+            await assert.throws(() => {
+                compilerSupplier.getBuilt(version)
+            })
+    
+        });
+
+        it('should throw if try to get wrong version by URL', async () => {
+            let version = "0.3"
+            let expectedError = "Could not find compiler"
+            let errMessage;
+            let path = `${process.cwd()}/unexisting`
+            try{
+                await compilerSupplier.getByUrl(version)
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError)
+        })
+
+        it('should get commit form version', async () => {
+            let version = `"path": "soljson-v0.1.1+commit.6ff4cd6.js",
+            "version": "0.1.1",
+            "build": "commit.6ff4cd6",
+            "longVersion": "0.1.1+commit.6ff4cd6",
+            "keccak256": "0xd8b8c64f4e9de41e6604e6ac30274eff5b80f831f8534f0ad85ec0aff466bb25",
+            "urls": [
+              "bzzr://8f3c028825a1b72645f46920b67dca9432a87fc37a8940a2b2ce1dd6ddc2e29b"`
+            let result = await compilerSupplier.getCommitFromVersion(version)
+            assert.include(result, 'commit.6ff4cd6')
+        })
+
+        it('should wrap soljson module', async () => {
+            let result = solcWraper(soljson);
+            assert.isObject(result)
+        })
+
+        it('should wrap dif version of soljson', async () => {
+            let result = solcWraper(soljsonDifVersion)
+            assert.isObject(result)
+        })
+
+    });
+
     after(async function () {
+        compilerSupplier = new CompilerSupplier({
+            version: null,
+            versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
+            compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+            dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
+            cache: false,
+        })
+        fs.removeSync('./node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js')
         fs.removeSync('./contracts')
         fs.removeSync('./build');
     });
