@@ -786,6 +786,21 @@ describe('Compile dependencies', () => {
         it('should check if file is cashed', async () => {
             let result = await compilerSupplier.isCached(file);
             assert.isTrue(result)
+        });
+
+        it('should throw if try to get cache of module from wrong path', async () => {
+            let path = 'unexisting'
+            let expectedError = "Cannot find module"
+            let errMessage;
+            try{
+                await compilerSupplier.getFromCache(path)
+            }catch(e){
+                if(e){
+                    errMessage = e.message
+                }
+            }
+
+            assert.include(errMessage, expectedError)
         })
 
         it('should normalize version', async () => {
