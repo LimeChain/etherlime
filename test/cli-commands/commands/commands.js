@@ -8,7 +8,6 @@ const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache')
 
 const commands = require('../../../cli-commands/commands')
-const history = require('./historyExample.js')
 
 
 describe('root calling cli commands', () => {
