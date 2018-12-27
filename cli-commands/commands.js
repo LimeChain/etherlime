@@ -7,11 +7,30 @@ const test = require('./etherlime-test/test');
 const logger = require('./../logger-service/logger-service').logger;
 const KeenTracking = require('keen-tracking');
 const analyticsKeys = require('./analytics.json');
+const debugTestModule = 'nyc'
+let isProd = false;
+try {
+	require(debugTestModule);
+} catch (e) {
+	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
+		console.log(`Running etherlime in debug mode.`)
+		isProd = true;
+	}
+}
 
 const analyticsClient = new KeenTracking({
 	projectId: analyticsKeys.projectId,
 	writeKey: analyticsKeys.writeKey
 });
+
+const recordEvent = (command, params) => {
+	if (!isProd) {
+		return
+	}
+	analyticsClient.recordEvent(command, {
+		params
+	});
+}
 
 const commands = [
 	{
@@ -36,7 +55,7 @@ const commands = [
 			})
 		},
 		commandProcessor: (argv) => {
-			analyticsClient.recordEvent('etherlime ganache', {
+			recordEvent('etherlime ganache', {
 				argv
 			});
 
@@ -63,7 +82,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime init', {
+			recordEvent('etherlime init', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -128,8 +147,8 @@ const commands = [
 				}
 				delete statistics.argv.secret;
 
-				analyticsClient.recordEvent('etherlime deploy', {
-					argv
+				recordEvent('etherlime deploy', {
+					statistics
 				});
 			}
 		}
@@ -152,7 +171,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime history', {
+			recordEvent('etherlime history', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -217,7 +236,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime compile', {
+			recordEvent('etherlime compile', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -260,7 +279,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime test', {
+			recordEvent('etherlime test', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -295,7 +314,7 @@ const commands = [
 			})
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime coverage', {
+			recordEvent('etherlime coverage', {
 				argv
 			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
