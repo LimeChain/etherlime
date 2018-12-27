@@ -27,6 +27,7 @@
     "ethers": "^4.0.4",
     "find-cache-dir": "2.0.0",
     "find-process": "^1.2.1",
+    "find-up": "^3.0.0",
     "fs-extra": "7.0.1",
     "ganache-cli": "6.1.8",
     "graphlib": "2.1.5",
