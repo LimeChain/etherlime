@@ -27,6 +27,10 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 			this.instancesMap[accWallet.address] = accContract
 		}
 		Object.assign(this, this.contract.functions);
+		this.interface = this.contract.interface
+		this.estimate = this.contract.estimate
+		this.functions = this.contract.functions
+		this.filters = this.contract.filters
 	}
 
 	from(addressOrWalletOrIndex) {
