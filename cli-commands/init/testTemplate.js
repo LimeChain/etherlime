@@ -17,31 +17,29 @@ describe('Example', () => {
         assert.strictEqual(deployer.wallet.privateKey, aliceAccount.secretKey);
     });
 
-    it('should be valid address', async() => {
+    it('should be valid address', async () => {
         assert.isAddress(limeFactoryInstance.contractAddress, "The contract was not deployed");
     })
 
-    it('should create lime', async () =>  {
-        const createTransaction = await limeFactoryInstance.contract.createLime("newLime", 6, 8, 2);
-        let lime = await limeFactoryInstance.contract.limes(0);
+    it('should create lime', async () => {
+        const createTransaction = await limeFactoryInstance.createLime("newLime", 6, 8, 2);
+        let lime = await limeFactoryInstance.limes(0);
         assert.equal(lime.name, 'newLime', '"newLime" was not created');
     });
 
-    it('should revert if try to create lime with 0 carbohydrates', async() => {
+    it('should revert if try to create lime with 0 carbohydrates', async () => {
         let carbohydrates = 0;
-        await assert.revert(limeFactoryInstance.contract.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
+        await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
     });
 
     it('should create lime from another account', async () => {
-        let bobsAccount = accounts[4];
-        let bobsAccountWallet = new ethers.Wallet(bobsAccount.secretKey, deployer.provider);
-        let bobsContractInstance = new ethers.Contract(limeFactoryInstance.contractAddress, LimeFactory.abi, bobsAccountWallet);
-        const transaction = await bobsContractInstance.createLime("newLime3", 6, 8, 2);
+        let bobsWallet = accounts[4].wallet;
+        const transaction = await limeFactoryInstance.from(bobsWallet /* Could be address or just index in accounts like 4 */).createLime("newLime3", 6, 8, 2);
         // check sender
-        assert.equal(transaction.from, bobsAccount.wallet.address, "The account that created lime was not bobsAccount");
+        assert.equal(transaction.from, bobsWallet.address, "The account that created lime was not bobs");
 
         //check created lime
-        let lime = await bobsContractInstance.limes(1);
+        let lime = await limeFactoryInstance.limes(1);
         assert.equal(lime.name, 'newLime3', '"newLime3" was not created');
     })
 
