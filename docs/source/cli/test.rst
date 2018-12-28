@@ -63,6 +63,34 @@ General Example
 	});
 
 
+execute function from another account
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+	
+	const etherlime = require('etherlime');
+	const ethers = require('ethers');
+	const Billboard = require('../build/Billboard.json');
+
+	describe('Example', () => {
+		let aliceAccount = accounts[3];
+		let deployer;
+
+		beforeEach(async () => {
+			deployer = new etherlime.EtherlimeGanacheDeployer(aliceAccount.secretKey);
+			const deployedContractWrapper = await deployer.deploy(Billboard, {});
+		});
+
+		it('should execute function from another account', async () => {
+			let bobsAccount = accounts[4];
+        	let bobsAccountWallet = new ethers.Wallet(bobsAccount.secretKey, deployer.provider);
+        	let bobsContractInstance = new ethers.Contract(deployedContractWrapper.contractAddress, Billboard.abi, bobsAccountWallet);
+        	const transaction = await bobsContractInstance.buy('Billboard slogan', { value: ONE_ETHER });
+        	assert.equal(transaction.from, bobsAccount.wallet.address);
+		});
+	});
+
+
 accounts
 ~~~~~~~~
 
