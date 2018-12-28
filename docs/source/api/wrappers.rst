@@ -39,8 +39,28 @@ If you are working with EtherlimeGanacheDeployer you will have the ``from`` meth
 Working with previously deployed contracts
 ------------------------------------------
 
-Sometimes you want to work with already deployed contract. The deployer
-object allows you to wrap such an deployed contract by it's address and
+Sometimes you want to work with already deployed contract. You can do this two ways:
+
+etherlime.ContractAt
+====================
+``etherlime.ContractAt(contract, contractAddress, [wallet], [providerOrPort])``
+
+Etherlime has a convenience method allowing you to quickly wrap contracts. Passing the contract descriptor
+and the address it is deployed ``ContractAt`` will wire up an instance of the wrapper connected to etherlime ganache on the default port and default account.
+Optionally you can provide an account and port to connect to etherlime ganache.
+Alternativelly if you want to connect to another provider you can pass it as last paremeter, but then you must pass wallet too.
+
+::
+
+    const deployedContract = etherlime.ContractAt(ContractDescriptor, deployedContractAddress);
+
+    const tx = await deployedContract.someMethod(randomParam);
+    const result = await deployedContract.verboseWaitForTransaction(tx);
+
+
+The deployer instance
+===================
+The deployer object allows you to wrap such an deployed contract by it's address and
 continue using the power of the wrapper object. The function you can use
 to achieve this is ``wrapDeployedContract(contract, contractAddress)``.
 
@@ -48,5 +68,5 @@ to achieve this is ``wrapDeployedContract(contract, contractAddress)``.
 
     const deployedContractWrapper = deployer.wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
 
-    const initTransaction = await deployedContractWrapper.contract.init(randomParam, defaultConfigs);
+    const initTransaction = await deployedContractWrapper.init(randomParam, defaultConfigs);
     const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction, 'Init Contract');

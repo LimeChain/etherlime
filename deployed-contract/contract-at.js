@@ -8,16 +8,35 @@ const EtherlimeGanacheWrapper = require('./etherlime-ganache-wrapper');
  * 
  * @param {*} contract 
  * @param {*} contractAddress 
- * @param {*} wallet 
- * @param {*} provider (Optional) - use only when you are not connecting to EtherlimeGanache on the default port
+ * @param {*} wallet The wallet to connect this contract to
+ * @param {*} providerOrPort Either provider to connect a normal Deployed Contract Wrapper or the port that the etherlime ganache is run on. Defaults to 8545
  */
-const contractAt = (contract, contractAddress, wallet, provider) => {
-	if (provider) {
-		return new DeployedContractWrapper(contract, contractAddress, wallet, provider)
+const contractAt = async (contract, contractAddress, wallet, providerOrPort) => {
+
+	if (providerOrPort instanceof ethers.providers.Provider) {
+		if (!wallet || !(wallet instanceof ethers.Wallet)) {
+			throw new Error(`Incorrect wallet supplied - ${JSON.stringify(wallet)}`)
+		}
+		const walletInstance = await wallet.connect(providerOrPort)
+		return new DeployedContractWrapper(contract, contractAddress, walletInstance, providerOrPort)
 	}
 
-	provider = new ethers.providers.JsonRpcProvider(`http://localhost:8545`);
-	return new EtherlimeGanacheWrapper(contract, contractAddress, wallet, provider)
+	if (!providerOrPort) {
+		providerOrPort = 8545
+	}
+
+	if (Number.isInteger(providerOrPort)) {
+		const provider = new ethers.providers.JsonRpcProvider(`http://localhost:${providerOrPort}`)
+		let walletInstance;
+		if (wallet instanceof ethers.Wallet) {
+			walletInstance = await wallet.connect(provider);
+		} else {
+			walletInstance = new ethers.Wallet(ganacheSetupConfig.accounts[0].secretKey, provider);
+		}
+		return new EtherlimeGanacheWrapper(contract, contractAddress, walletInstance, provider)
+	}
+
+	throw new Error('You have supplied invalid value for provider or port argument')
 }
 
 module.exports = contractAt
