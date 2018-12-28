@@ -23,8 +23,18 @@ comes in handy when deployment scripts start to grow.
 ::
 
     const contractWrapper = await deployer.deploy(ICOTokenContract);
-    const transferTransaction = await contractWrapper.contract.transferOwnership(randomAddress);
+    const transferTransaction = await contractWrapper.transferOwnership(randomAddress);
     const result = await contractWrapper.verboseWaitForTransaction(transferTransaction, 'Transfer Ownership');
+
+
+If you are working with EtherlimeGanacheDeployer you will have the ``from`` method at your disposal. It will allow you to call certain methods from other default accounts.
+
+::
+
+    const deployer = new etherlime.EtherlimeGanacheDeployer();
+    const contractWrapper = await deployer.deploy(SomeContract);
+    const tx = await contractWrapper.from(0 /* could be string address or ethers.Wallet instance*/).someFunction(params);
+    const result = await contractWrapper.verboseWaitForTransaction(tx);
 
 Working with previously deployed contracts
 ------------------------------------------
