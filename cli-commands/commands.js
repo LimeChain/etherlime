@@ -5,32 +5,8 @@ const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
 const logger = require('./../logger-service/logger-service').logger;
-const KeenTracking = require('keen-tracking');
-const analyticsKeys = require('./analytics.json');
-const debugTestModule = 'nyc'
-let isProd = false;
-try {
-	require(debugTestModule);
-} catch (e) {
-	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
-		console.log(`Running etherlime in debug mode.`)
-		isProd = true;
-	}
-}
-
-const analyticsClient = new KeenTracking({
-	projectId: analyticsKeys.projectId,
-	writeKey: analyticsKeys.writeKey
-});
-
-const recordEvent = (command, params) => {
-	if (!isProd) {
-		return
-	}
-	analyticsClient.recordEvent(command, {
-		params
-	});
-}
+const eventTracker = require('./event-tracker');
+const recordEvent = eventTracker.recordEvent
 
 const commands = [
 	{
