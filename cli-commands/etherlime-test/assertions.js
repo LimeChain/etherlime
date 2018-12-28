@@ -12,7 +12,7 @@ module.exports = function (chai, utils) {
     return new chai.Assertion(val, msg).to.be.address;
   };
 
-  assert.revert = async promise => {
+  assert.revert = async (promise, msg) => {
     try {
       let result = await promise;
       console.log(result);
@@ -21,9 +21,9 @@ module.exports = function (chai, utils) {
       const invalidOpcode = error.message.search('invalid opcode') >= 0
       const outOfGas = error.message.search('out of gas') >= 0
       const revert = error.message.search('revert') >= 0
-      assert(invalidJump || invalidOpcode || outOfGas || revert, "Expected throw, got '" + error + "' instead")
+      assert(invalidJump || invalidOpcode || outOfGas || revert, msg ? `Expected throw, got ${error.message} instead. ${msg}` : `Expected throw, got ${error.message} instead`)
       return
     }
-    assert.fail('Expected throw not received')
+    assert.fail(msg ? msg : 'Expected throw not received')
   }
 };
