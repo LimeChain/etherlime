@@ -250,9 +250,15 @@ const commands = [
 			yargs.positional('output', {
 				describe: 'Defines the way that the logs are shown',
 				type: 'string',
-				default: 'normal',
+				default: 'none',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('port', {
+				describe: 'The port that the etherlime ganache is running in order to instantiate the test accounts',
+				type: 'number',
+				default: 8545
+			})
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime test', {
@@ -261,7 +267,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion);
+				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
