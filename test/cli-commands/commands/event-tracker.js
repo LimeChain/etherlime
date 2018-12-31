@@ -45,6 +45,16 @@ describe('event tracking', () => {
         recordEventStub.restore();
     })
 
+    it('The etherlime throws if no mode is identified', () => {
+
+        requireStub.withArgs('nyc').throws(new Error('Incorrect Error'));
+        requireStub.callThrough();
+
+        assert.throws(() => { require('../../../cli-commands/event-tracker') }, 'Incorrect Error')
+
+
+    })
+
     afterEach(() => {
         requireStub.restore();
         sinon.reset()
