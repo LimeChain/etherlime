@@ -128,6 +128,36 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			assert.strictEqual(tx.from, newRandomWallet.address, "The address of the tx sender is not the one of newRandomWallet")
 		});
 
+		it('should call contract correctly via object with wallet instance', async () => {
+			const objectWithWallet = {
+				secretKey: ganacheSetupConfig.accounts[5].secretKey,
+        		wallet: notDeployer
+			}
+
+			const tx = await deployedContract.from(objectWithWallet).transfer(config.randomAddress, 500)
+			assert.strictEqual(tx.from, objectWithWallet.wallet.address, "The address of the tx sender is not the one of notDeployer")
+		});
+
+		it('should call contract correctly via object with new wallet instance', async () => {
+			let newRandomWallet = ethers.Wallet.createRandom();
+			newRandomWallet = await newRandomWallet.connect(deployer.provider);
+			
+			const objectWithWallet = {
+				secretKey: newRandomWallet.privateKey,
+        		wallet: newRandomWallet
+			}
+
+			await deployedContract.mint(newRandomWallet.address, 10000);
+
+			await notDeployer.sendTransaction({
+				to: newRandomWallet.address,
+				value: ethers.utils.parseEther('1.0')
+			});
+
+			const tx = await deployedContract.from(objectWithWallet).transfer(config.randomAddress, 500)
+			assert.strictEqual(tx.from, objectWithWallet.wallet.address, "The address of the tx sender is not the one of notDeployer")
+		});
+
 		it('should throw on invalid from', async () => {
 			assert.throws(() => deployedContract.from(14.6), Error, "Unrecognised input parameter. It should be index, address or wallet instance")
 		});
