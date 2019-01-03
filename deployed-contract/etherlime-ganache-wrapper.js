@@ -2,6 +2,7 @@ const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('./../logger-service/logger-service').logger;
 const ganacheSetupConfig = require('./../deployer/setup.json');
+const isWallet = require('./../utils/wallet-utils').isWallet;
 const ethers = require('ethers')
 
 class EtherlimeGanacheWrapper extends DeployedContractWrapper {
@@ -37,12 +38,20 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 			return this.instancesMap[addressOrWalletOrIndex]
 		}
 
-		if (addressOrWalletOrIndex instanceof ethers.Wallet) {
+		if (isWallet(addressOrWalletOrIndex)) {
 			let instance = this.instancesMap[addressOrWalletOrIndex.address];
 			if (!instance) {
 				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex);
 			}
 			return this.instancesMap[addressOrWalletOrIndex.address]
+		}
+
+		if (isWallet(addressOrWalletOrIndex.wallet)) {
+			let instance = this.instancesMap[addressOrWalletOrIndex.wallet.address];
+			if (!instance) {
+				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex.wallet);
+			}
+			return this.instancesMap[addressOrWalletOrIndex.wallet.address]
 		}
 
 		throw new Error('Unrecognised input parameter. It should be index, address or wallet instance')
