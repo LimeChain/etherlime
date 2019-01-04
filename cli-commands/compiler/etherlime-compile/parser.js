@@ -1,4 +1,5 @@
 var CompileError = require("./compile-error");
+var solc = require("solc");
 var fs = require("fs");
 var path = require("path");
 
@@ -7,7 +8,7 @@ var installedContractsDir = "installed_contracts"
 
 module.exports = {
 
-  parseImports: function (body, solc) {
+  parseImports: function (body) {
     var importErrorKey = "ETHERLIME_IMPORT";
     var failingImportFileName = "__Etherlime__NotFound.sol";
 
