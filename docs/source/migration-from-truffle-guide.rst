@@ -94,7 +94,7 @@ Modify tests
 
 ::
     
-    await assert.revert(limeFactory.from(2).createLime('newLime' 8, 10, 12));
+    await assert.revert(limeFactory.from(2).createLime('newLime' 0, 10, 12));
 
 
 As a param you may also use: 
@@ -130,12 +130,12 @@ As a param you may also use:
     
     // parse logs
     let logs = utils.parseLogs(transactionReceipt, LimeFactory, expectedEvent);
-    assert.equal(logs[0].name, 'newLime, "LimeFactory" with name "newLime" was not bought');
+    assert.equal(logs[0].name, 'newLime, "LimeFactory" with name "newLime" was not created');
 
 
 - **timeTravel - replace web3 increaseTime with global options** ``utils.timeTravel(provider, seconds)``
 
-Find more examples for testing `here <https://etherlime.readthedocs.io/en/latest/cli/test.html#>`_.
+Find more test examples `here <https://etherlime.readthedocs.io/en/latest/cli/test.html#>`_.
 
 Final steps:
 ------------
