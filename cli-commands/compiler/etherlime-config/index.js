@@ -1,9 +1,5 @@
 var _ = require("lodash");
 var path = require("path");
-var EtherlimeError = require("./../etherlime-error");
-var Module = require('module');
-var findUp = require("find-up");
-var originalRequire = require("original-require");
 
 function Config(etherlime_directory, working_directory, network) {
   var self = this;
@@ -108,7 +104,7 @@ Config.prototype.merge = function (obj) {
     try {
       self[key] = clone[key];
     } catch (e) {
-      
+
     }
   });
 
