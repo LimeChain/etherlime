@@ -34,6 +34,11 @@ Milestones
 * [Ready] Being able to run unit tests with code coverage <---- **Done**
 * [Not Ready] Being able to debug transactions <---- **Next**
 
+Community
+~~~~~~~~~~~~~~~
+
+`Join our community group <https://t.me/etherlime/>`
+
 .. toctree::
    :maxdepth: 3
    :caption: Developer Documentation
