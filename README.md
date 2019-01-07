@@ -32,7 +32,7 @@ npm i -g etherlime
 
 ## Community
 
-[Join community group](https://t.me/etherlime/)
+[Join our community group](https://t.me/etherlime/)
 
 # License
 Completely MIT Licensed. Including ALL dependencies.
