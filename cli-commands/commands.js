@@ -6,6 +6,7 @@ const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
+const debug = require('./debugger/debugger');
 const recordEvent = eventTracker.recordEvent
 
 const commands = [
@@ -300,6 +301,22 @@ const commands = [
 				argv
 			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+		}
+	},
+	{
+		command: 'debugger [transactionHash]',
+		description: 'Debug transaction hash',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('transactionHash', {
+				describe: 'Specifies the transaction hash',
+				type: 'string'
+			})
+		},
+		commandProcessor: async (argv) => {
+			recordEvent('etherlime debbuger', {
+				argv
+			});
+			await debug.run(argv.transactionHash)
 		}
 	}
 ]
