@@ -23,7 +23,6 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
-
 		})
 
 		it('Should throw on number for nodeUrl', () => {
@@ -32,7 +31,6 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
-
 		})
 
 		it('Provider method toString should return string', () => {
@@ -41,5 +39,37 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
 			assert(returnedString.includes(config.nodeUrl), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
-	})
+	});
+
+	describe('Setters', () => {
+		it('should set nodeUrl', () => {
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+
+			const newNodeUrl = 'http://localhost:9545/';
+			deployer.setNodeUrl(newNodeUrl);
+
+			assert.deepEqual(newNodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+		});
+
+		it('Should throw on empty nodeUrl', () => {
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+
+			const throwingFunction = () => {
+				deployer.setNodeUrl('');
+			}
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
+		});
+
+		it('Should throw on number for nodeUrl', () => {
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+
+			const throwingFunction = () => {
+				deployer.setNodeUrl(69);
+			}
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
+		});
+	});
 });

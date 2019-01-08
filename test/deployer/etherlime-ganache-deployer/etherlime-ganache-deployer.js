@@ -32,13 +32,11 @@ describe('GanacheCli-Deployer tests', () => {
 		it('Should take default value on empty port', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(config.ganacheCliPrivateKey, undefined, defaultConfigs);
 			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
-
 		})
 
 		it('Should take default value on empty privateKey', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, config.ganacheCliPort, defaultConfigs);
 			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
-
 		})
 
 		it('Should take default values on empty privateKey and port', () => {
@@ -48,7 +46,6 @@ describe('GanacheCli-Deployer tests', () => {
 		})
 
 		it('should deploy contract without default configs', async () => {
-
 			deployer = new etherlime.EtherlimeGanacheDeployer();
 			const contractWrapper = await deployer.deploy(Greetings);
 
@@ -61,7 +58,6 @@ describe('GanacheCli-Deployer tests', () => {
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
-
 		})
 
 		it('Provider method toString should return string', () => {
@@ -71,6 +67,29 @@ describe('GanacheCli-Deployer tests', () => {
 			assert(returnedString.includes(config.nodeUrl), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
 	})
+
+	describe('Setters', () => {
+		it('should set port', () => {
+			const port = 9545;
+
+			const deployer = new etherlime.EtherlimeGanacheDeployer();
+			deployer.setPort(port);
+
+			const expectedNodeUrl = `http://localhost:${port}/`;
+			assert.deepEqual(expectedNodeUrl, deployer.provider.connection.url, "The stored provider url does not match the expected one");
+
+			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+		});
+
+		it('Should throw on string for port', () => {
+			const deployer = new etherlime.EtherlimeGanacheDeployer();
+			const throwingFunction = () => {
+				deployer.setPort('69');
+			}
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid port");
+		});
+	});
 
 	describe('Wrapping deployed contract', async () => {
 

@@ -25,5 +25,33 @@ describe('Infura private key tests', () => {
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
 			assert(returnedString.includes('Infura'), `The returned toString method did not contain Infura`)
 		})
-	})
+	});
+
+	describe('Setters', () => {
+		it('Should set network', () => {
+			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
+
+			const newNetwork = 'ropsten';
+			deployer.setNetwork(newNetwork);
+
+			assert.deepEqual(newNetwork, deployer.network, "The stored provider network does not match the new one");
+
+			assert.deepEqual(config.infuraAPIKey, deployer.apiKey, "The stored provider api key does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+		});
+
+		it('Should set api key', () => {
+			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
+
+			const newApiKey = 'Up5uvBHSCSqtOmnlhL05';
+			deployer.setApiKey(newApiKey);
+
+			assert.deepEqual(newApiKey, deployer.apiKey, "The stored provider api key does not match the inputted one");
+
+			assert.deepEqual(config.infuraNetwork, deployer.network, "The stored provider network does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+		});
+	});
 });
