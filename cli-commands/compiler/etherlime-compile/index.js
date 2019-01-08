@@ -21,7 +21,7 @@ var compile = function (sources, options, callback) {
 
 	Object.keys(sources).forEach(function (source) {
 		var replacement = source.replace(/\\/g, "/");
-		
+
 		if (replacement.length >= 2 && replacement[1] == ":") {
 			replacement = "/" + replacement;
 			replacement = replacement.replace(":", "");
@@ -131,8 +131,28 @@ var compile = function (sources, options, callback) {
 						"version": solc.version()
 					}
 				}
-		
+
 				contract_definition.abi = orderABI(contract_definition);
+				Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
+					var fileLinks = contract.evm.bytecode.linkReferences[file_name];
+
+					Object.keys(fileLinks).forEach(function (library_name) {
+						var linkReferences = fileLinks[library_name] || [];
+
+						contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name);
+						contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name);
+					});
+				});
+
+				Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
+					var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
+
+					Object.keys(fileLinks).forEach(function (library_name) {
+						var linkReferences = fileLinks[library_name] || [];
+
+						contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name);
+					});
+				});
 
 				returnVal[contract_name] = contract_definition;
 			});
@@ -141,6 +161,21 @@ var compile = function (sources, options, callback) {
 		callback(null, returnVal, files);
 	})
 		.catch(callback);
+};
+
+function replaceLinkReferences(bytecode, linkReferences, libraryName) {
+	var linkId = "__" + libraryName;
+
+	while (linkId.length < 40) {
+		linkId += "_";
+	}
+
+	linkReferences.forEach((ref) => {
+		var start = (ref.start * 2) + 2;
+		bytecode = bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
+	});
+
+	return bytecode;
 };
 
 
@@ -178,7 +213,7 @@ function orderABI(contract) {
 
 	var functions_to_remove = ordered_function_names.reduce((obj, value, index) => {
 		obj[value] = index;
-		
+
 		return obj;
 	}, {});
 
@@ -243,7 +278,7 @@ compile.with_dependencies = function (options, callback) {
 	]);
 
 	var config = Config.default().merge(options);
-	
+
 	Profiler.required_sources(config.with({
 		paths: options.paths,
 		base_path: options.contracts_directory,
@@ -260,7 +295,7 @@ compile.with_dependencies = function (options, callback) {
 				logger.log(`Compiling ${display_path}...`);
 			});
 		}
-				
+
 		compile(result, options, callback);
 	});
 };
