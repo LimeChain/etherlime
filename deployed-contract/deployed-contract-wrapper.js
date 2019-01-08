@@ -1,5 +1,6 @@
 const ethers = require('ethers');
 const isAddress = require('./../utils/address-utils').isAddress;
+const isWallet = require('./../utils/wallet-utils').isWallet;
 const isValidContract = require('./../utils/contract-utils').isValidContract;
 const colors = require('./../utils/colors');
 const logsStore = require('./../logs-store/logs-store');
@@ -32,7 +33,7 @@ class DeployedContractWrapper {
 	}
 
 	_validateInput(contract, contractAddress, wallet, provider) {
-		if (!(wallet instanceof ethers.Wallet)) {
+		if (!(isWallet(wallet))) {
 			throw new Error('Passed wallet is not instance of ethers Wallet');
 		}
 

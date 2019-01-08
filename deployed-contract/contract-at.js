@@ -1,5 +1,6 @@
 const ethers = require('ethers');
 const ganacheSetupConfig = require('./../deployer/setup.json');
+const isWallet = require('./../utils/wallet-utils').isWallet;
 
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const EtherlimeGanacheWrapper = require('./etherlime-ganache-wrapper');
@@ -14,7 +15,7 @@ const EtherlimeGanacheWrapper = require('./etherlime-ganache-wrapper');
 const contractAt = async (contract, contractAddress, wallet, providerOrPort) => {
 
 	if (providerOrPort instanceof ethers.providers.Provider) {
-		if (!wallet || !(wallet instanceof ethers.Wallet)) {
+		if (!wallet || !(isWallet(wallet))) {
 			throw new Error(`Incorrect wallet supplied - ${JSON.stringify(wallet)}`)
 		}
 		const walletInstance = await wallet.connect(providerOrPort)
