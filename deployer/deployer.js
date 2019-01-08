@@ -1,12 +1,12 @@
 const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
+const isWallet = require('../utils/wallet-utils').isWallet;
 const isValidContract = require('./../utils/contract-utils').isValidContract;
 const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
 const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
 const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
-const Wallet = ethers.Wallet;
 const logger = require('./../logger-service/logger-service').logger;
 
 class Deployer {
@@ -30,7 +30,7 @@ class Deployer {
 	}
 
 	_validateInput(wallet, provider, defaultOverrides) {
-		if (!(wallet instanceof Wallet)) {
+		if (!(isWallet(wallet))) {
 			throw new Error('Passed wallet is not instance of ethers Wallet');
 		}
 	}

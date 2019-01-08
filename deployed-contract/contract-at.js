@@ -29,7 +29,7 @@ const contractAt = async (contract, contractAddress, wallet, providerOrPort) => 
 	if (Number.isInteger(providerOrPort)) {
 		const provider = new ethers.providers.JsonRpcProvider(`http://localhost:${providerOrPort}`)
 		let walletInstance;
-		if (wallet instanceof ethers.Wallet) {
+		if (isWallet(wallet)) {
 			walletInstance = await wallet.connect(provider);
 		} else {
 			walletInstance = new ethers.Wallet(ganacheSetupConfig.accounts[0].secretKey, provider);
