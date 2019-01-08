@@ -37,7 +37,7 @@ Milestones
 Community
 ~~~~~~~~~~~~~~~
 
-`Join our community group <https://t.me/etherlime/>`
+`Join our community group <https://t.me/etherlime/>`__
 
 .. toctree::
    :maxdepth: 3
