@@ -99,7 +99,7 @@ describe('Deployer tests', () => {
 			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
 			const deployer = new etherlime.Deployer(wallet, initialProvider, defaultConfigs);
 
-			const newProvider = new ethers.providers.JsonRpcProvider('http://localhost:9545/');
+			const newProvider = new ethers.providers.JsonRpcProvider(config.alternativeNodeUrl);
 			deployer.setProvider(newProvider);
 
 			assert.deepEqual(newProvider, deployer.provider, "The stored provider does not match the new one");

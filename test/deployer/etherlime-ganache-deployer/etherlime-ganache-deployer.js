@@ -70,7 +70,7 @@ describe('GanacheCli-Deployer tests', () => {
 
 	describe('Setters', () => {
 		it('should set port', () => {
-			const port = 9545;
+			const port = config.alternativePort;
 
 			const deployer = new etherlime.EtherlimeGanacheDeployer();
 			deployer.setPort(port);

@@ -44,7 +44,7 @@ describe('Infura private key tests', () => {
 		it('Should set api key', () => {
 			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
 
-			const newApiKey = 'Up5uvBHSCSqtOmnlhL05';
+			const newApiKey = config.alternativeApiKey;
 			deployer.setApiKey(newApiKey);
 
 			assert.deepEqual(newApiKey, deployer.apiKey, "The stored provider api key does not match the inputted one");

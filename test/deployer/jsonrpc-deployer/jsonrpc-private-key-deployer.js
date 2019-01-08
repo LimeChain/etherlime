@@ -45,7 +45,7 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 		it('should set nodeUrl', () => {
 			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
 
-			const newNodeUrl = 'http://localhost:9545/';
+			const newNodeUrl = config.alternativeNodeUrl;
 			deployer.setNodeUrl(newNodeUrl);
 
 			assert.deepEqual(newNodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
