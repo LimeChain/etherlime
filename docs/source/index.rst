@@ -41,6 +41,7 @@ Milestones
    getting-started
    etherlime-api
    etherlime-cli
+   migration-from-truffle-guide
 
 -----
 
