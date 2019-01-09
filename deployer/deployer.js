@@ -29,6 +29,21 @@ class Deployer {
 		logsStore.initHistoryRecord();
 	}
 
+	setWallet(wallet) {
+		this._validateInput(wallet);
+		this.wallet = wallet;
+		this.wallet = this.wallet.connect(this.provider);
+	}
+
+	setProvider(provider) {
+		this.provider = provider;
+		this.wallet = this.wallet.connect(this.provider);
+	}
+
+	setDefaultOverrides(defaultOverrides) {
+		this.defaultOverrides = defaultOverrides;
+	}
+
 	_validateInput(wallet, provider, defaultOverrides) {
 		if (!(isWallet(wallet))) {
 			throw new Error('Passed wallet is not instance of ethers Wallet');
