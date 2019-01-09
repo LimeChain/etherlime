@@ -55,6 +55,72 @@ describe('Deployer tests', () => {
 		})
 	});
 
+	describe('Setters', () => {
+		it('should set wallet', () => {
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const initialWallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const deployer = new etherlime.Deployer(initialWallet, provider, defaultConfigs);
+
+			const newWallet = new ethers.Wallet('0x' + config.ganacheCliPrivateKey);
+			deployer.setWallet(newWallet);
+
+			assert.deepEqual(newWallet.signingKey, deployer.wallet.signingKey, "The stored wallet does not match the new one");
+
+			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+		});
+
+		it('should throw on incorrect wallet string', () => {
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const initialWallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const deployer = new etherlime.Deployer(initialWallet, provider, defaultConfigs);
+
+			const throwingFunction = () => {
+				deployer.setWallet('Random Things Here');
+			};
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
+		});
+
+		it('should throw on incorrect wallet input type', () => {
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const initialWallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const deployer = new etherlime.Deployer(initialWallet, provider, defaultConfigs);
+
+			const throwingFunction = () => {
+				deployer.setWallet(69);
+			};
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
+		})
+
+		it('should set provider', () => {
+			const initialProvider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const deployer = new etherlime.Deployer(wallet, initialProvider, defaultConfigs);
+
+			const newProvider = new ethers.providers.JsonRpcProvider(config.alternativeNodeUrl);
+			deployer.setProvider(newProvider);
+
+			assert.deepEqual(newProvider, deployer.provider, "The stored provider does not match the new one");
+			assert.deepEqual(newProvider, deployer.wallet.provider, "The provider of the wallet does not match the new provider");
+
+			assert.deepEqual(wallet.signingKey, deployer.wallet.signingKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+		});
+
+		it('should set defaultOverrides', () => {
+			const provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+			const wallet = new ethers.Wallet('0x' + config.randomPrivateKey);
+			const deployer = new etherlime.Deployer(wallet, provider);
+
+			deployer.setDefaultOverrides(defaultConfigs);
+
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+		});
+	});
+
 	describe('Deploying contract', async () => {
 
 		let wallet;
