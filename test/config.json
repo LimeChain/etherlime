@@ -8,6 +8,7 @@
   "randomTxHash": "0xbbba1af7de2eaf6835432d3119616201005d603ce49ab52655b3bf51ae9c31d8",
   "defaultGasPrice": 50000000000,
   "defaultGasLimit": 4700000,
+  "defaultChainId": 0,
   "nodeUrl": "http://localhost:8545/",
   "ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
   "ganacheCliPort": 8545,

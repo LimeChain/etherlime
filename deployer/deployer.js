@@ -57,7 +57,7 @@ class Deployer {
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-
+		
 		const transactionReceipt = await this._waitForDeployTransaction(transaction);
 
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
@@ -121,7 +121,9 @@ class Deployer {
 		if (this.defaultOverrides.gasLimit > 0) {
 			deployTransaction.gasLimit = this.defaultOverrides.gasLimit;
 		}
-
+		if (this.defaultOverrides.chainId !== undefined) {
+			deployTransaction.chainId = this.defaultOverrides.chainId;
+		}
 		return deployTransaction;
 
 	}
