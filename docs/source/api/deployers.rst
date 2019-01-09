@@ -103,7 +103,7 @@ Parameters:
 * ``privateKey`` - The private key to the deployment wallet
 * ``network`` - network as found in ``ethers.providers.networks``
 * ``apiKey`` - your Infura API key
-* ``defaultOverrides`` - [Optional] object overiding the deployment settings for ``gasPrice`` and ``gasLimit``.
+* ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
 ::
 
@@ -113,7 +113,8 @@ Parameters:
 
     const defaultConfigs = {
         gasPrice: 20000000000,
-        gasLimit: 4700000
+        gasLimit: 4700000,
+        chainId: 0 // Suitable for deploying on private networks like Quorum
     }
 
     const deploy = async (network, secret) => {
@@ -135,7 +136,7 @@ Parameters:
 
 * ``privateKey`` - The private key to the deployment wallet
 * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
-* ``defaultOverrides`` - [Optional] object overiding the deployment settings for ``gasPrice`` and ``gasLimit``.
+* ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
 ::
 
@@ -145,7 +146,8 @@ Parameters:
 
     const defaultConfigs = {
         gasPrice: 20000000000,
-        gasLimit: 4700000
+        gasLimit: 4700000,
+        chainId: 0 // Suitable for deploying on private networks like Quorum
     }
 
     const deploy = async (network, secret) => {
@@ -167,7 +169,7 @@ Parameters:
 
 * ``privateKey`` - [Optional] The private key to the deployment wallet. Defauts to the first one in the `etherlime ganache`
 * ``port`` - [Optional] the port you've ran the etherlime ganache on. Defaults to 8545.
-* ``defaultOverrides`` - [Optional] object overiding the deployment settings for ``gasPrice`` and ``gasLimit``.
+* ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
 **This deployer only works with etherlime ganache**
 
@@ -179,7 +181,8 @@ Parameters:
 
     const defaultConfigs = {
         gasPrice: 20000000000,
-        gasLimit: 4700000
+        gasLimit: 4700000,
+        chainId: 0 // Suitable for deploying on private networks like Quorum
     }
 
     const deploy = async (network, secret) => {

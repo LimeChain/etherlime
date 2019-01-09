@@ -13,7 +13,8 @@ const Greetings = require('./../testContracts/Greetings.json');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
-	gasLimit: config.defaultGasLimit
+	gasLimit: config.defaultGasLimit,
+	chainId: config.defaultChainId
 };
 
 let sandbox = sinon.createSandbox();
@@ -174,6 +175,18 @@ describe('Deployer tests', () => {
 			it('should deploy contract without gasLimit correctly', async () => {
 				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
 				delete defaultConfigsCopy.gasLimit;
+				deployer.defaultOverrides = defaultConfigsCopy;
+				const contractWrapper = await deployer.deploy(Greetings);
+
+				assert.ok(isAddress(contractWrapper.contractAddress), 'The deployed address is incorrect');
+				assert.deepEqual(wallet.signingKey, contractWrapper.wallet.signingKey, "The stored wallet does not match the inputted one");
+				assert.deepEqual(provider, contractWrapper.provider, "The stored provider does not match the inputted one");
+				assert.strictEqual(contractWrapper.contractAddress, contractWrapper.contract.address, "The returned address does not match the address in the instantiated ethers contract");
+			});
+
+			it('should deploy contract without chainId correctly', async () => {
+				const defaultConfigsCopy = JSON.parse(JSON.stringify(defaultConfigs));
+				delete defaultConfigsCopy.chainId;
 				deployer.defaultOverrides = defaultConfigsCopy;
 				const contractWrapper = await deployer.deploy(Greetings);
 
