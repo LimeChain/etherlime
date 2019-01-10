@@ -140,10 +140,10 @@ Setters
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
     `provider` . setWallet (wallet)
-        * ``wallet`` - wallet instance
+        * ``wallet`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
-        * ``provider`` - provider instance
+        * ``provider`` - ethers.provider instance
 
 Example
 ::
@@ -197,10 +197,10 @@ Setters
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
     `provider` . setWallet (wallet)
-        * ``wallet`` - wallet instance
+        * ``wallet`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
-        * ``provider`` - provider instance
+        * ``provider`` - ethers.provider instance
 
 Example
 ::
@@ -259,10 +259,10 @@ Setters
         * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
     `provider` . setWallet (wallet)
-        * ``wallet`` - wallet instance
+        * ``wallet`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
-        * ``provider`` - provider instance
+        * ``provider`` - ethers.provider instance
 
 Example
 ::
