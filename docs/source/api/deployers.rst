@@ -128,22 +128,22 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-    * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet
 
     `provider` . setNetwork (network)
-    * ``network`` - network as found in ``ethers.providers.networks``
+        * ``network`` - network as found in ``ethers.providers.networks``
 
     `provider` . setApiKey (apiKey)
-    * ``apiKey`` - your Infura API key
+        * ``apiKey`` - your Infura API key
 
     `provider` . setDefaultOverrides (defaultOverrides)
-    * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
     `provider` . setWallet (wallet)
-    * ``wallet`` - wallet instance
+        * ``wallet`` - wallet instance
 
     `provider` . setProvider (provider)
-    * ``provider`` - provider instance
+        * ``provider`` - provider instance
 
 Example
 ::
@@ -188,19 +188,19 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-    * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet
 
     `provider` . setNodeUrl (nodeUrl)
-    * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+        * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
     `provider` . setDefaultOverrides (defaultOverrides)
-    * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
     `provider` . setWallet (wallet)
-    * ``wallet`` - wallet instance
+        * ``wallet`` - wallet instance
 
     `provider` . setProvider (provider)
-    * ``provider`` - provider instance
+        * ``provider`` - provider instance
 
 Example
 ::
@@ -247,22 +247,22 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-    * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet
 
     `provider` . setPort (port)
-    * ``port`` - the port you've ran the etherlime ganache on.
+        * ``port`` - the port you've ran the etherlime ganache on.
 
     `provider` . setDefaultOverrides (defaultOverrides)
-    * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
     `provider` . setNodeUrl (nodeUrl)
-    * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+        * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
     `provider` . setWallet (wallet)
-    * ``wallet`` - wallet instance
+        * ``wallet`` - wallet instance
 
     `provider` . setProvider (provider)
-    * ``provider`` - provider instance
+        * ``provider`` - provider instance
 
 Example
 ::
