@@ -310,18 +310,27 @@ const commands = [
 			yargs.positional('name', {
 				describe: 'Specifies the name of the framework or library that the project will be build up.',
 				type: 'string'
-			});
+			})
 
 			yargs.positional('url', {
 				describe: 'url to a repository with ready to use dApp that will be integrated with etherlime',
 				type: 'string'
-			});
+			})
 		},
-		commandProcessor: async (argv) => {
+		commandProcessor: (argv) => {
 			recordEvent('etherlime shape', {
 				argv
 			});
-			await shape.run(argv.name, argv.url);
+
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				shape.run(argv.name, argv.url);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	}
 ]
