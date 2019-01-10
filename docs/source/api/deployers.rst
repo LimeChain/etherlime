@@ -124,6 +124,33 @@ Parameters:
         const result = await deployer.deploy(TestContract, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
     }
 
+Setters
+^^^^^^^
+
+    `provider` . setPrivateKey (privateKey)
+        * ``privateKey`` - The private key to the deployment wallet
+
+    `provider` . setNetwork (network)
+        * ``network`` - network as found in ``ethers.providers.networks``
+
+    `provider` . setApiKey (apiKey)
+        * ``apiKey`` - your Infura API key
+
+    `provider` . setDefaultOverrides (defaultOverrides)
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+
+    `provider` . setWallet (wallet)
+        * ``wallet`` - ethers.Wallet instance
+
+    `provider` . setProvider (provider)
+        * ``provider`` - ethers.provider instance
+
+Example
+::
+
+    const deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, network, apiKey, defaultConfigs);
+    const newNetwork = 'ropsten';
+	deployer.setNetwork(newNetwork);
 
 JSONRPCPrivateKeyDeployer
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,6 +184,30 @@ Parameters:
         const result = await deployer.deploy(TestContract);
     }
 
+Setters
+^^^^^^^
+
+    `provider` . setPrivateKey (privateKey)
+        * ``privateKey`` - The private key to the deployment wallet
+
+    `provider` . setNodeUrl (nodeUrl)
+        * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+
+    `provider` . setDefaultOverrides (defaultOverrides)
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+
+    `provider` . setWallet (wallet)
+        * ``wallet`` - ethers.Wallet instance
+
+    `provider` . setProvider (provider)
+        * ``provider`` - ethers.provider instance
+
+Example
+::
+
+    const deployer = new etherlime.JSONRPCPrivateKeyDeployer(privateKey, nodeUrl, defaultOverrides);
+ 	const newNodeUrl = http://localhost:9545;
+	deployer.setNodeUrl(newNodeUrl);
 
 EtherlimeGanacheDeployer
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -192,4 +243,30 @@ Parameters:
         const result = await deployer.deploy(TestContract);
     }
 
+Setters
+^^^^^^^
 
+    `provider` . setPrivateKey (privateKey)
+        * ``privateKey`` - The private key to the deployment wallet
+
+    `provider` . setPort (port)
+        * ``port`` - the port you've ran the etherlime ganache on.
+
+    `provider` . setDefaultOverrides (defaultOverrides)
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+
+    `provider` . setNodeUrl (nodeUrl)
+        * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+
+    `provider` . setWallet (wallet)
+        * ``wallet`` - ethers.Wallet instance
+
+    `provider` . setProvider (provider)
+        * ``provider`` - ethers.provider instance
+
+Example
+::
+
+    const deployer = new etherlime.EtherlimeGanacheDeployer();
+    const port = 9545;
+	deployer.setPort(port);
