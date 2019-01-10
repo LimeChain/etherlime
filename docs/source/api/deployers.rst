@@ -127,22 +127,22 @@ Parameters:
 Setters
 ^^^^^^^
 
-:sup:`provider` . setPrivateKey (privateKey)
+    `provider` . setPrivateKey (privateKey)
     * ``privateKey`` - The private key to the deployment wallet
 
-:sup:`provider` . setNetwork (network)
+    `provider` . setNetwork (network)
     * ``network`` - network as found in ``ethers.providers.networks``
 
-:sup:`provider` . setApiKey (apiKey)
+    `provider` . setApiKey (apiKey)
     * ``apiKey`` - your Infura API key
 
-:sup:`provider` . setDefaultOverrides (defaultOverrides)
+    `provider` . setDefaultOverrides (defaultOverrides)
     * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-:sup:`provider` . setWallet (wallet)
+    `provider` . setWallet (wallet)
     * ``wallet`` - wallet instance
 
-:sup:`provider` . setProvider (provider)
+    `provider` . setProvider (provider)
     * ``provider`` - provider instance
 
 Example
@@ -187,19 +187,19 @@ Parameters:
 Setters
 ^^^^^^^
 
-:sup:`provider` . setPrivateKey (privateKey)
+    `provider` . setPrivateKey (privateKey)
     * ``privateKey`` - The private key to the deployment wallet
 
-:sup:`provider` . setNodeUrl (nodeUrl)
+    `provider` . setNodeUrl (nodeUrl)
     * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
-:sup:`provider` . setDefaultOverrides (defaultOverrides)
+    `provider` . setDefaultOverrides (defaultOverrides)
     * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-:sup:`provider` . setWallet (wallet)
+    `provider` . setWallet (wallet)
     * ``wallet`` - wallet instance
 
-:sup:`provider` . setProvider (provider)
+    `provider` . setProvider (provider)
     * ``provider`` - provider instance
 
 Example
@@ -246,22 +246,22 @@ Parameters:
 Setters
 ^^^^^^^
 
-:sup:`provider` . setPrivateKey (privateKey)
+    `provider` . setPrivateKey (privateKey)
     * ``privateKey`` - The private key to the deployment wallet
 
-:sup:`provider` . setPort (port)
+    `provider` . setPort (port)
     * ``port`` - the port you've ran the etherlime ganache on.
 
-:sup:`provider` . setDefaultOverrides (defaultOverrides)
+    `provider` . setDefaultOverrides (defaultOverrides)
     * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-:sup:`provider` . setNodeUrl (nodeUrl)
+    `provider` . setNodeUrl (nodeUrl)
     * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
-:sup:`provider` . setWallet (wallet)
+    `provider` . setWallet (wallet)
     * ``wallet`` - wallet instance
 
-:sup:`provider` . setProvider (provider)
+    `provider` . setProvider (provider)
     * ``provider`` - provider instance
 
 Example
