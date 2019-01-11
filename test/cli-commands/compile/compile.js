@@ -1,4 +1,4 @@
-const compiler = require('../../../cli-commands/compiler/compiler')
+const compiler = require('../../../cli-commands/compiler/compiler');
 const assert = require('chai').assert;
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
@@ -15,6 +15,8 @@ describe('Compile cli command', () => {
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
+        fs.copyFileSync('./test/cli-commands/compile/examples/MerkleLime.sol', './contracts/MerkleLime.sol');
+        fs.copyFileSync('./test/cli-commands/compile/examples/MerkleUtils.sol', './contracts/MerkleUtils.sol');
     });
 
     it('should run compile without parameters', async function() {
@@ -65,7 +67,7 @@ describe('Compile cli command', () => {
     });
 
     after( async function() {
-        fs.removeSync('./contracts')
+        fs.removeSync('./contracts');
         fs.removeSync('./specific');
         fs.removeSync('./build');
     });

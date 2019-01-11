@@ -1,6 +1,6 @@
 const colors = require('./../../utils/colors');
 const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const ganacheSetupConfig = require('./setup.json');
+const ganacheSetupConfig = require('./../setup.json');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 const logger = require('./../../logger-service/logger-service').logger;
@@ -15,20 +15,29 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
-		if (!(isNumber(port))) {
-			throw new Error(`Passed port (${port}) is not valid port`);
-		}
+		EtherlimeGanacheDeployer._validatePortInput(port);
 		const nodeUrl = `http://localhost:${port}/`;
 
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 	}
 
+	setPort(port) {
+		EtherlimeGanacheDeployer._validatePortInput(port);
+		const nodeUrl = `http://localhost:${port}/`;
+		this.setNodeUrl(nodeUrl);
+	}
+
+	static _validatePortInput(port) {
+		if (!isNumber(port)) {
+			throw new Error(`Passed port (${port}) is not valid port`);
+		}
+	}
+
 	toString() {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
 	}
-
 
 	async _waitForDeployTransaction(transaction) {
 		await this.provider.send('evm_mine');

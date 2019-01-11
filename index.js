@@ -6,6 +6,7 @@ const EtherlimeGanacheDeployer = require('./deployer/etherlime-ganache-deployer/
 
 const DeployedContractWrapper = require('./deployed-contract/deployed-contract-wrapper');
 const EtherlimeGanacheWrapper = require('./deployed-contract/etherlime-ganache-wrapper');
+const ContractAt = require('./deployed-contract/contract-at');
 
 module.exports = {
 	Deployer,
@@ -14,5 +15,6 @@ module.exports = {
 	JSONRPCPrivateKeyDeployer,
 	DeployedContractWrapper,
 	EtherlimeGanacheDeployer,
-	EtherlimeGanacheWrapper
+	EtherlimeGanacheWrapper,
+	ContractAt
 }

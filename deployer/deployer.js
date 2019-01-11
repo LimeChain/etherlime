@@ -1,12 +1,12 @@
 const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
+const isWallet = require('../utils/wallet-utils').isWallet;
 const isValidContract = require('./../utils/contract-utils').isValidContract;
 const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
 const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
 const linkLibrary = require('./../utils/linking-utils.js').linkLibrary;
 const logsStore = require('./../logs-store/logs-store');
-const Wallet = ethers.Wallet;
 const logger = require('./../logger-service/logger-service').logger;
 
 class Deployer {
@@ -29,8 +29,23 @@ class Deployer {
 		logsStore.initHistoryRecord();
 	}
 
+	setWallet(wallet) {
+		this._validateInput(wallet);
+		this.wallet = wallet;
+		this.wallet = this.wallet.connect(this.provider);
+	}
+
+	setProvider(provider) {
+		this.provider = provider;
+		this.wallet = this.wallet.connect(this.provider);
+	}
+
+	setDefaultOverrides(defaultOverrides) {
+		this.defaultOverrides = defaultOverrides;
+	}
+
 	_validateInput(wallet, provider, defaultOverrides) {
-		if (!(wallet instanceof Wallet)) {
+		if (!(isWallet(wallet))) {
 			throw new Error('Passed wallet is not instance of ethers Wallet');
 		}
 	}
@@ -57,7 +72,7 @@ class Deployer {
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-
+		
 		const transactionReceipt = await this._waitForDeployTransaction(transaction);
 
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
@@ -121,7 +136,9 @@ class Deployer {
 		if (this.defaultOverrides.gasLimit > 0) {
 			deployTransaction.gasLimit = this.defaultOverrides.gasLimit;
 		}
-
+		if (this.defaultOverrides.chainId !== undefined) {
+			deployTransaction.chainId = this.defaultOverrides.chainId;
+		}
 		return deployTransaction;
 
 	}

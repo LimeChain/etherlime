@@ -103,7 +103,7 @@ describe('Compile dependencies', () => {
 
     describe('Artifactor tests', () => {
 
-        afterEach(async function() {
+        afterEach(async function () {
             fs.removeSync('./build/BillboardService.json')
         })
 
@@ -227,7 +227,7 @@ describe('Compile dependencies', () => {
             assert.equal(expectedName, receivedName)
         });
 
-        after(async function() {
+        after(async function () {
             fs.removeSync('./installed_contracts')
         })
 
@@ -267,11 +267,11 @@ describe('Compile dependencies', () => {
             assert.typeOf(normalizedResult.abi, 'undefined')
         });
 
-        it('should normalize property starting with "x-"', function() {
+        it('should normalize property starting with "x-"', function () {
             compiledContract["x-NewProperty"] = "someValue"
             let normalizedResult = schema.normalize(compiledContract)
             let propertyValue = normalizedResult["x-NewProperty"]
-            assert.equal(propertyValue, "someValue")    
+            assert.equal(propertyValue, "someValue")
         });
 
     })
@@ -299,20 +299,20 @@ describe('Compile dependencies', () => {
         let errorMessage = `Can not compile contracts.
         Please, check your code`;
         let extendableError = new error(errorMessage);
-        
-        
-        it('should create new extendable error', function() {
+
+
+        it('should create new extendable error', function () {
             assert.include(JSON.stringify(extendableError), "Can not compile contracts.")
         });
 
-        it('should add tab if error message has a new line', function() {
+        it('should add tab if error message has a new line', function () {
             let errorLengthBeforeFormat = extendableError.message.length;
             extendableError.formatForMocha()
             let errorLengthAfterFormat = extendableError.message.length;
             assert.equal(errorLengthBeforeFormat, errorLengthAfterFormat - 5)
         });
 
-        it('should create new compile error', function() {
+        it('should create new compile error', function () {
             let errorMessage = "Can not compile contracts";
             let compilerError = new compileError(errorMessage);
             assert.include(JSON.stringify(compilerError), errorMessage);
@@ -321,24 +321,26 @@ describe('Compile dependencies', () => {
 
     describe("Etherlime compiler tests", () => {
 
-        before(async function() {
+        before(async function () {
             compileOptions.working_directory = `${process.cwd()}`;
             compileOptions.resolver = new Resolver(compileOptions);
-            compileOptions.paths = [ `${process.cwd()}/contracts/BillboardService.sol`,
+            compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`];
-            compileOptions.solc = { optimizer: { enabled: false, runs: 200 },
-            evmVersion: 'byzantium' };
+            compileOptions.solc = {
+                optimizer: { enabled: false, runs: 200 },
+                evmVersion: 'byzantium'
+            };
         });
 
 
-        it('should compile if contracts_directory is not specified in the options', async function() {
+        it('should compile if contracts_directory is not specified in the options', async function () {
             compileOptions.contracts_directory = null;
             let currentDir = process.cwd();
             process.chdir('./contracts')
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile.with_dependencies(compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile.with_dependencies(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -350,11 +352,11 @@ describe('Compile dependencies', () => {
             process.chdir(currentDir)
         });
 
-        it('should compile if contract has functions with same names', async function() {
+        it('should compile if contract has functions with same names', async function () {
             fs.copyFileSync('./test/cli-commands/compile/examples/contractWithSameNameFn.sol', './contracts/contractWithSameNameFn.sol');
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile.with_dependencies(compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile.with_dependencies(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -364,13 +366,13 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution, "A contract containing functions with same names should not throw error");
         });
 
-        it('should throw error if contracts_directory is unexistingFolder', async function() {
+        it('should throw error if contracts_directory is unexistingFolder', async function () {
             compileOptions.contracts_directory = `${process.cwd()}/unexistingFolder`
             compileOptions.paths = [];
             let expectedError = "ENOENT: no such file or directory";
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile.with_dependencies(compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile.with_dependencies(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -382,12 +384,12 @@ describe('Compile dependencies', () => {
             compileOptions.contracts_directory = `${process.cwd()}/contracts`;
         });
 
-        it('should compile with warnings on contract', async function() {
+        it('should compile with warnings on contract', async function () {
             compileOptions.quiet = false;
             fs.copyFileSync('./test/cli-commands/compile/examples/ContractWithWarning.sol', './contracts/ContractWithWarning.sol');
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile.all(compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile.all(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -397,15 +399,15 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution, "Warnings on contract should not throw error")
         });
 
-        it('should throw error if compilation fail', async function() {
-            compileOptions.paths = [ `${process.cwd()}/contracts/BillboardService.sol`,
+        it('should throw error if compilation fail', async function () {
+            compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`];
             fs.writeFileSync('./contracts/ContractForFailCompilation.sol', contractForFailCompilation);
             let expectedError = "SyntaxError: Source file requires different compiler version";
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile.with_dependencies(compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile.with_dependencies(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -416,15 +418,15 @@ describe('Compile dependencies', () => {
             await assert.isRejected(fnExecution, expectedError)
         });
 
-        it('should replace \\ with /', async function() {
+        it('should replace \\ with /', async function () {
             compileOptions.strict = true;
             const sourceObject = {
                 "::contracts\\Empty.sol": 'pragma solidity ^0.5.0;\n\ncontract Empty {\n\n}'
             }
 
             let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile(sourceObject, compileOptions, function(err) {
-                    if(!err){
+                etherlimeCompile(sourceObject, compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -435,38 +437,38 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution, "Characters \\ should not throw err");
         });
 
-        after(async function() {
+        after(async function () {
             fs.removeSync('./contracts/contractWithSameNameFn.sol');
             fs.removeSync('./contracts/AbsolutelyEmpty.sol');
         })
-        
+
     });
 
     describe('Profiler tests', () => {
 
-        before(async function() {
-            compileOptions.paths = [ `${process.cwd()}/contracts/BillboardService.sol`,
+        before(async function () {
+            compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/Empty.sol`];
             compileOptions.base_path = `${process.cwd()}/contracts`;
             compileOptions.resolver = new Resolver(compileOptions);
         });
 
-        it('should convert to absolute path', function() {
+        it('should convert to absolute path', function () {
             let base = `${process.cwd()}/contracts/`;
             let path = [".BillboardService.sol"];
             let resultPath = profiler.convert_to_absolute_paths(path, base);
             assert.equal(resultPath[0], [base + path[0]][0]);
         })
 
-        it('should return pure path if it is not related with "." to the base path', async function() {
+        it('should return pure path if it is not related with "." to the base path', async function () {
             let base = `${process.cwd()}/contracts/`
             let path = ["BillboardService.sol"];
             let resultPath = profiler.convert_to_absolute_paths(path, base);
             assert.equal(resultPath[0], path[0]);
         });
 
-        it('should return pure path if import path does not starts with .', async function() {
+        it('should return pure path if import path does not starts with .', async function () {
             let file = `${process.cwd()}/contracts/SafeMath.sol`
             let resolved = { file: `${process.cwd()}/contracts/SafeMath.sol` }
 
@@ -478,7 +480,7 @@ describe('Compile dependencies', () => {
             stub.restore()
         })
 
-        it('should throw error if getImports function throws error', async function() {
+        it('should throw error if getImports function throws error', async function () {
             let stub = sinon.stub(profiler, "getImports");
             stub.onCall(0).returns([])
             stub.onCall(1).returns([])
@@ -489,8 +491,8 @@ describe('Compile dependencies', () => {
             stub.onCall(6).throws()
 
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function(err) {
-                    if(!err){
+                profiler.required_sources(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -502,12 +504,12 @@ describe('Compile dependencies', () => {
             stub.restore();
         });
 
-        it('should compile with max safe integer if updatedAt is bigger', async function() {
+        it('should compile with max safe integer if updatedAt is bigger', async function () {
             compiledContract.updatedAt = Number.MAX_SAFE_INTEGER + 1;
             fs.writeFileSync('./build/compiledContract.json', JSON.stringify(compiledContract));
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, function(err) {
-                    if(!err){
+                profiler.updated(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -515,20 +517,20 @@ describe('Compile dependencies', () => {
                 });
             });
 
-           await assert.isFulfilled(fnExecution);
+            await assert.isFulfilled(fnExecution);
 
         });
 
-        it('should reject if error occurs', async function() {
+        it('should reject if error occurs', async function () {
             let resolver = new FSSource(undefined, undefined);
-            let initial_paths = [ `${process.cwd()}/contracts/BillboardService.sol`];
-            let solc = { "version": "[Function]"}
+            let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
+            let solc = { "version": "[Function]" }
 
-            let expectedError = "Error parsing undefined: Cannot read property 'resolve_dependency_path' of undefined"
+            let expectedError = "solc.compileStandard is not a function"
 
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.resolveAllSources(resolver, initial_paths, solc, function(err) {
-                    if(!err){
+                profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -536,20 +538,20 @@ describe('Compile dependencies', () => {
                 });
             });
 
-           await assert.isRejected(fnExecution, expectedError);
+            await assert.isRejected(fnExecution, expectedError);
         });
 
-        it('should throw if resolver throws', async function(){
-            let initial_paths = [ `${process.cwd()}/contracts/BillboardService.sol`];
-            let solc = { "version": "[Function]"}
+        it('should throw if resolver throws', async function () {
+            let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
+            let solc = { "version": "[Function]" }
             let resolver = new Resolver(compileOptions);
 
             let stub = sinon.stub(resolver, "resolve");
             stub.throws()
 
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.resolveAllSources(resolver, initial_paths, solc, function(err) {
-                    if(!err){
+                profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -557,15 +559,15 @@ describe('Compile dependencies', () => {
                 });
             });
 
-           await assert.isRejected(fnExecution);
-           stub.restore();
+            await assert.isRejected(fnExecution);
+            stub.restore();
         })
 
-        it('should compile with external imports', async function() {
+        it('should compile with external imports', async function () {
             fs.writeFileSync('./contracts/contractWithExternalImports.sol', contractWithExternalImports);
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function(err) {
-                    if(!err){
+                profiler.required_sources(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -576,11 +578,11 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution);
         });
 
-        it('should compile if paths includes external imported contract', async function() {
+        it('should compile if paths includes external imported contract', async function () {
             compileOptions.paths.push(`${process.cwd()}/node_modules/zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function(err) {
-                    if(!err){
+                profiler.required_sources(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -591,12 +593,12 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution);
         });
 
-        it('should throw if there is syntax error when importing contract', async function() {
+        it('should throw if there is syntax error when importing contract', async function () {
             fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);
             let expectedError = "ParserError: Expected ';' but got 'contract'";
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function(err) {
-                    if(!err){
+                profiler.required_sources(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -608,15 +610,15 @@ describe('Compile dependencies', () => {
             fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')
         })
 
-        
-        it('should compile if files are provided as an option', async function() {
-            compileOptions.files = [ `${process.cwd()}/contracts/BillboardService.sol`,
+
+        it('should compile if files are provided as an option', async function () {
+            compileOptions.files = [`${process.cwd()}/contracts/BillboardService.sol`,
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`]
 
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.updated(compileOptions, (err) => {
-                    if(!err){
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -628,13 +630,13 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(fnExecution, "Paths in options must be right")
         });
 
-        it('should reject if parser fail', async function() {
+        it('should reject if parser fail', async function () {
             let stub = sinon.stub(JSON, "parse")
             stub.throws();
 
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.updated(compileOptions, (err) => {
-                    if(!err){
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -646,11 +648,11 @@ describe('Compile dependencies', () => {
             stub.restore()
         });
 
-        it('should not throw when reading stats of unexisting file', async function() {
-            compileOptions.files =  [`${process.cwd()}/contracts/Unexisting.sol`]
+        it('should not throw when reading stats of unexisting file', async function () {
+            compileOptions.files = [`${process.cwd()}/contracts/Unexisting.sol`]
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.updated(compileOptions, (err) => {
-                    if(!err){
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -662,12 +664,12 @@ describe('Compile dependencies', () => {
         });
 
 
-        it('should throw if file can not be read', async function() {
+        it('should throw if file can not be read', async function () {
             fs.chmodSync('./build/SafeMath.json', 763)
             let expectedError = "EACCES: permission denied"
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.updated(compileOptions, (err) => {
-                    if(!err){
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -680,12 +682,12 @@ describe('Compile dependencies', () => {
         });
 
 
-        it('should throw err if build directory can not be read', async function() {
+        it('should throw err if build directory can not be read', async function () {
             fs.chmodSync('./build', 763)
             let expectedError = "EACCES: permission denied"
             let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, function(err) {
-                    if(!err){
+                profiler.updated(compileOptions, function (err) {
+                    if (!err) {
                         resolve()
                         return
                     }
@@ -702,11 +704,11 @@ describe('Compile dependencies', () => {
 
     describe('Config tests', () => {
         let config;
-        before(function() {
+        before(function () {
             config = Config.default();
         });
 
-        it('should set contracts directory if it is not defined in options', function(){
+        it('should set contracts directory if it is not defined in options', function () {
             compileOptions.contracts_directory = undefined;
             config.merge(compileOptions)
             assert.equal(config.contracts_directory, `${process.cwd()}/contracts`);
@@ -716,44 +718,47 @@ describe('Compile dependencies', () => {
 
     describe('CompilerSupplier tests', () => {
 
-        it('should throw err if versions url is wrong', async function() {
-            let options = { version: undefined,
+        it('should throw err if versions url is wrong', async function () {
+            let options = {
+                version: undefined,
                 versionsUrl: 'https://solc-bin.ethereum.org/bin/list',
                 compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
                 dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
                 cache: false,
-                docker: undefined }
-            
+                docker: undefined
+            }
+
             compilerSupplier = new CompilerSupplier(options);
             let expectedError = "Failed to complete request";
             let errMessage;
-            try{
+            try {
                 await compilerSupplier.getVersions()
-            }catch(e){
-                if(e){
+            } catch (e) {
+                if (e) {
                     errMessage = e.message
                 }
             }
 
             assert.include(errMessage, expectedError);
-            
+
         });
 
-        it('should throw err if con not find local path', async function() {
+        it('should throw err if con not find local path', async function () {
             let options = {
                 versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
                 compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
                 dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
                 cache: true,
-                docker: undefined }
+                docker: undefined
+            }
             compilerSupplier = new CompilerSupplier(options);
             let expectedError = "Could not find compiler"
             let errMessage;
             let path = `${process.cwd()}/unexisting`
-            try{
+            try {
                 await compilerSupplier.getLocal(path)
-            }catch(e){
-                if(e){
+            } catch (e) {
+                if (e) {
                     errMessage = e.message
                 }
             }
@@ -761,22 +766,22 @@ describe('Compile dependencies', () => {
             assert.include(errMessage, expectedError)
         });
 
-        it('should save cache of specific version', async function() {
+        it('should save cache of specific version', async function () {
             let options = {
                 versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
                 compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
                 dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
                 cache: true,
-                docker: undefined }
+                docker: undefined
+            }
 
             compilerSupplier = new CompilerSupplier(options);
-           
+
 
             let allVersions = await compilerSupplier.getVersions(options.versionsUrl)
             file = compilerSupplier.getVersionUrlSegment("0.4.21", allVersions);
             let url = options.compilerUrlRoot + file;
             let code = await request.get(url)
-                
             await compilerSupplier.addToCache(code, file);
 
             assert.isTrue(fs.existsSync('./node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js'))
@@ -792,10 +797,10 @@ describe('Compile dependencies', () => {
             let path = 'unexisting'
             let expectedError = "Cannot find module"
             let errMessage;
-            try{
+            try {
                 await compilerSupplier.getFromCache(path)
-            }catch(e){
-                if(e){
+            } catch (e) {
+                if (e) {
                     errMessage = e.message
                 }
             }
@@ -814,7 +819,6 @@ describe('Compile dependencies', () => {
             await assert.throws(() => {
                 compilerSupplier.getBuilt(version)
             })
-    
         });
 
         it('should throw if try to get wrong version by URL', async () => {
@@ -822,10 +826,10 @@ describe('Compile dependencies', () => {
             let expectedError = "Could not find compiler"
             let errMessage;
             let path = `${process.cwd()}/unexisting`
-            try{
+            try {
                 await compilerSupplier.getByUrl(version)
-            }catch(e){
-                if(e){
+            } catch (e) {
+                if (e) {
                     errMessage = e.message
                 }
             }

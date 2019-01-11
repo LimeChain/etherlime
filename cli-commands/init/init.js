@@ -13,6 +13,8 @@ const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
 
 const packageJsonDestination = './package.json';
 
+const gitIgnoreFileDestination = './.gitignore';
+
 const logger = require('./../../logger-service/logger-service').logger;
 
 const createDeploymentDir = () => {
@@ -77,6 +79,16 @@ const copyPackageJsonFile = (libraryDirectory) => {
 	fs.copyFileSync(packageJsonFileSource, packageJsonDestination);
 };
 
+const createGitIgnoreFile = (libraryDirectory) => {
+	if (!fs.existsSync(gitIgnoreFileDestination)) {
+		logger.log('===== Creating .gitignore file =====');
+
+		const gitIgnoreSource = `${libraryDirectory}/gitIgnoreSource.js`;
+		
+		fs.copyFileSync(gitIgnoreSource, gitIgnoreFileDestination)
+	}
+}
+
 const run = async () => {
 	const libraryDirectory = __dirname;
 
@@ -91,6 +103,7 @@ const run = async () => {
 		createDeploymentDir();
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
+		createGitIgnoreFile(libraryDirectory)
 		logger.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
 		throw new Error(e.message);

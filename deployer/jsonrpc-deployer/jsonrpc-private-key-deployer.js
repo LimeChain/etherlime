@@ -16,14 +16,27 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, nodeUrl, defaultOverrides) {
-		if (!(isUrl(nodeUrl))) {
-			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
-		}
+		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
+
 		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 
 		logger.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`);
+	}
+
+	setNodeUrl(nodeUrl) {
+		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
+
+		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+		this.setProvider(localNodeProvider);
+		this.nodeUrl = nodeUrl;
+	}
+
+	static _validateUrlInput(nodeUrl) {
+		if (!(isUrl(nodeUrl))) {
+			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
+		}
 	}
 
 	toString() {
