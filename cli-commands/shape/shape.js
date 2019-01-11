@@ -5,6 +5,33 @@ const exec = util.promisify(require('child_process').exec);
 const angularUrl = require('./urlConfig').angularUrl;
 
 
+const cloneRepo = async (url) => {
+    console.log('====== Cloning repository =====')
+    await exec('git init')
+    await exec(`git remote add origin ${url}`)
+    await exec('git pull origin master')
+}
+
+const installAngularModules = async () => {
+    console.log('====== Installing Angular modules =====')
+    let currentWorkingDir = process.cwd()
+    process.chdir('./my-app')
+    await exec ('npm install')
+    process.chdir(currentWorkingDir)
+}
+
+const initEtherlime = async () => {
+    const {stdout, stderr} = await exec('etherlime init')
+    console.log(stdout)
+}
+
+const instalProjectsModules = async () => {
+    console.log('====== Installing projects modules =====')
+    await exec('npm install')
+}
+
+
+
 const run = async (name, url) => {
 
     if (name && name === 'angular') {
@@ -12,11 +39,12 @@ const run = async (name, url) => {
         await utils.verifyUrl(angularUrl)
 
         try {
-            console.log('====== Shaping dApp with predefined Anglular front-end framework =====');
-            await exec('git init')
-            await exec(`git remote add origin ${angularUrl}`)
-            await exec('git pull origin master')
-            console.log('====== Shaping finished successful! =====');
+            console.log('====== Shaping dApp with predefined Anglular front-end framework =====')
+            await cloneRepo(angularUrl)
+            await installAngularModules()
+            await initEtherlime()
+            await instalProjectsModules()
+            console.log('====== Shaping finished successful! =====')
             return
         } catch (e) {
             throw new Error(e.message);
@@ -29,14 +57,9 @@ const run = async (name, url) => {
 
         try {
             console.log('====== Shaping your dApp integration with etherlime project =====');
-            
-            await exec('git init')
-            await exec(`git remote add origin ${url}`)
-            await exec('git pull origin master')
-
-            const {stdout, stderr} = await exec('etherlime init')
-            console.log(stdout)
-
+            await cloneRepo(url)
+            await initEtherlime()
+            console.log('====== Shaping finished successful! =====');
             return
         } catch (err) {
             throw new Error(err.message);
