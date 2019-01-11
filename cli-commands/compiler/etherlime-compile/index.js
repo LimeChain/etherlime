@@ -163,7 +163,20 @@ var compile = function (sources, options, callback) {
 		.catch(callback);
 };
 
+function replaceLinkReferences(bytecode, linkReferences, libraryName) {
+	var linkId = "__" + libraryName;
 
+	while (linkId.length < 40) {
+		linkId += "_";
+	}
+
+	linkReferences.forEach((ref) => {
+		var start = (ref.start * 2) + 2;
+		bytecode = bytecode.substring(0, start) + linkId + bytecode.substring(start + 40);
+	});
+
+	return bytecode;
+};
 
 function orderABI(contract) {
 	var contract_definition;
