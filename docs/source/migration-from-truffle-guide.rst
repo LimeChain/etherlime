@@ -14,14 +14,20 @@ Install the global etherlime to allow you to run ``etherlime`` commands.
 
     etherlime init
 
-It won’t override your project’s structure. It will only add a ``./deployment`` folder and some example templates. You can find them in => ``./contracts/LimeFactory.sol`` ; ``./deployment/deploy.js``; ``./test/exampleTest.js;``
+The command will add to your project structure the following parts:
+
+    - ./contracts/LimeFactory.sol
+    - ./deployment/deploy.js
+    - ./test/exampleTest.js
+
+Note! There are added just to give you an example. You can remove them.
 
 
 
 Write new scripts for deployment using the template provided
 ------------------------------------------------------------
 
-- **require etherlime module** ``const etherlime = require('etherlime')``
+- **require etherlime module**
     
 - **require the compiled contract** from ./build folder not the contract itself
 
@@ -31,20 +37,23 @@ Write new scripts for deployment using the template provided
 
 *with Etherlime*
 ::
+    const etherlime = require('etherlime')
     const LimeFactory = require('../build/LimeFactory.json');
 
 - **set the deployer and then deploy the contract**
 
-*Deployment with Etherlime*
+*Local deployment with Etherlime*
 ::
+    const etherlime = require('etherlime')
+    const LimeFactory = require('../build/LimeFactory.json');
+    const InterfaceFactory = require('../build/InterfaceFactory.json')
+
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const limeFactory = await deployer.deploy(LimeFactory);
 
+    //example how to wrap deployed contract and to pass its address
+    const contractInstance = await etherlime.ContractAt(InterfaceFactory, limeFactory.contractAddress)
 
-
-- **when you need to pass the address of the deployed contract use the property** ``limeFactory.contractAddress``
-
-- **when you need to wrap deployed contract use** ``etherlime.ContractAt()`` and pass as param compiled json object of the contract
 
 Find more examples for deployment `here <https://etherlime.readthedocs.io/en/latest/api/deployers.html>`_.
 
@@ -52,18 +61,17 @@ Find more examples for deployment `here <https://etherlime.readthedocs.io/en/lat
 
 Modify tests
 ------------
-- **require('etherlime')**
-- **require compiled contract from ./build not the .sol file (as in deployment scripts)**
-- **replace** ``contract`` descriptor with ``describe``
-- **remove (accounts) param**
-- **initialize accounts** ``let owner = accounts[0]``
-    Etherlime provides global accounts object, containing secretKey(privateKey) and wallet instance of ethers.Wallet of the account.
-- **set the deployer in beforeEach and fix the deployment scripts in it as we did it before**
 
+In order to modify the tests from Truffle to Etherlime, slight changes are needed to be done:
 
 *with Truffle*
 ::
+    const LimeFactory = artifacts.require("./LimeFactory.sol");
+
     contract('LimeFactory tests', async (accounts) => {
+
+        let owner = accounts[0];
+
         beforeEach(async function() {
             limeFactory = await LimeFactory.new();
         });
@@ -75,10 +83,25 @@ Modify tests
 
 *with Etherlime*
 ::
+    // step1: require Etherlime module
+    const etherlime = require('etherlime')
+
+    // step2: require compiled contract from ./build not the .sol file (as in deployment scripts)
+    const LimeFactory = require('../build/LimeFactory.json')
+
+
+    // step4: replace 'contract' descriptor to 'describe' then remove (accounts) param in async function 
     describe('LimeFactory tests', async () => {
+
+        // step5: initialize account
+        let owner = accounts[0];
+
+        // step6: set the deployer in before/beforeEach and fix the deployment scripts as we did before
         beforeEach(async function() {
-            deployer = new etherlime.EtherlimeGanacheDeployer(accounts[0].secretKey);
+
+            deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
             limeFactory = await deployer.deploy(LimeFactory);
+
         });
 
         it('should do something', () => {
@@ -86,27 +109,52 @@ Modify tests
         })
     })
 
+Flexibility
+~~~~~~~~~~~
+
 - **in case you want to use an address of an account, you must extend it to** ``let owner = accounts[0].wallet.address``
-- **remove “.call” when calling view functions.** You may try to replace all at once with “.call(“  => “(“. Be careful!
-- **if you need to assert the result is an address, you may use** ``assert.isAddress(result)``
-- **when you expect a function to revert, instead of “try-catch”, use** ``assert.revert()``
-- **when a contract’s method is called, the default sender is set to accounts[0]. If you want to execute it from another account, replace** ``{from: owner}`` object with ``.from(anotherAccount)``. 
+- **when a contract’s method is called, the default sender is set to accounts[0]. If you want to execute it from another account, replace** ``{from: anotherAccount}`` object with ``.from(anotherAccount)``. 
 
+*with Truffle*
 ::
-    
-    await assert.revert(limeFactory.from(2).createLime('newLime' 0, 10, 12));
+    await limeFactory.createLime(newLime' 0, 10, 12, {from: accounts[1]})
 
 
-As a param you may also use: 
-    - .from(2)
-    - .from(accounts[2])
-    - .from(accounts[2].wallet)
-    - .from(accounts[2].wallet.address)
-    - .from(customAddress)
-    - .from(customWallet)
+*with Etherlime*
+::
+    await limeFactory.from(2).createLime('newLime' 0, 10, 12);
+
+    // as a param you may also use:
+    await limeFactory.from(accounts[1]).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(accounts[1].wallet).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(accounts[1].wallet.address).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(customAddress).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(customWallet).createLime('newLime' 0, 10, 12);
 
 - **when you need to execute payable function, pass the value as an object** ``contract.somePayableFunction(arg1, arg2, {value: 100})``
-- **to test an event, first you need to get “transactionReceipt”** and then you can use global util helper to assert that transaction has such an event. Also you can parse the event and read it.
+- **don't use “.call” when calling view functions.**
+- **to timeTravel - replace web3 increaseTime with global options** ``utils.timeTravel(provider, seconds)``
+
+Assertions and available utils
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For more convenience Etherlime provides some additional assertions and global utils object:
+
+**assert it is an address**
+::
+    it('should be valid address', async () => {
+        assert.isAddress(limeFactory.contractAddress, "The contract was not deployed");
+    })
+
+
+
+**assert a function revert**
+::
+    it('should revert if try to create lime with 0 carbohydrates', async () => {
+        let carbohydrates = 0;
+        await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
+    });
+
+**test an event**
 
 *with Truffle:*
 
@@ -125,6 +173,7 @@ As a param you may also use:
     let transaction = await limeFactory.createLime('newLime' 8, 10, 12);
     const transactionReceipt = await limeFactory.verboseWaitForTransaction(transaction)
 
+    // check the transaction has such an event
     let isEmitted = utils.hasEvent(transactionReceipt, LimeFactory, expectedEvent);
     assert(isEmitted, 'Event FreshLime was not emitted');
     
@@ -133,7 +182,7 @@ As a param you may also use:
     assert.equal(logs[0].name, 'newLime, "LimeFactory" with name "newLime" was not created');
 
 
-- **timeTravel - replace web3 increaseTime with global options** ``utils.timeTravel(provider, seconds)``
+
 
 Find more test examples `here <https://etherlime.readthedocs.io/en/latest/cli/test.html#>`_.
 
@@ -144,7 +193,7 @@ Final steps:
 - **delete** ``truffle`` from ``package.json``
 - **delete** ``node_modules``
 - **run** ``npm install``
-- **in a new tab run** ``etherlime ganache``
+- **open a fresh terminal tab and ether** ``etherlime ganache``
 - **run** ``etherlime test``
 
 
