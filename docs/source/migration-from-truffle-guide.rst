@@ -183,8 +183,9 @@ For more convenience Etherlime provides some additional assertions and global ut
 
 
 
-
 Find more test examples `here <https://etherlime.readthedocs.io/en/latest/cli/test.html#>`_.
+
+----
 
 Final steps:
 ------------
@@ -195,15 +196,3 @@ Final steps:
 - **run** ``npm install``
 - **open a fresh terminal tab and ether** ``etherlime ganache``
 - **run** ``etherlime test``
-
-
-
-
-
-
-
-    
-
-
-
-
