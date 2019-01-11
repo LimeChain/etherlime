@@ -20,7 +20,7 @@ The command will add to your project structure the following parts:
     - ./deployment/deploy.js
     - ./test/exampleTest.js
 
-Note! There are added just to give you an example. You can remove them.
+Note! These are added just to give you an example. You can remove them.
 
 
 
@@ -128,7 +128,6 @@ Flexibility
     await limeFactory.from(accounts[1]).createLime('newLime' 0, 10, 12);
     await limeFactory.from(accounts[1].wallet).createLime('newLime' 0, 10, 12);
     await limeFactory.from(accounts[1].wallet.address).createLime('newLime' 0, 10, 12);
-    await limeFactory.from(customAddress).createLime('newLime' 0, 10, 12);
     await limeFactory.from(customWallet).createLime('newLime' 0, 10, 12);
 
 - **when you need to execute payable function, pass the value as an object** ``contract.somePayableFunction(arg1, arg2, {value: 100})``
