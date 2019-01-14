@@ -5,10 +5,8 @@ const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
-// const debug = require('./debugger/debugger');
 const recordEvent = eventTracker.recordEvent
-const test = require('./debugger/test.js');
-// const truffle = require('./debugger/test-truffle-implementation');
+const debug = require('./debugger/index');
 
 const commands = [
 	{
@@ -317,7 +315,7 @@ const commands = [
 			recordEvent('etherlime debbuger', {
 				argv
 			});
-			await test.run(argv.transactionHash)
+			await debug.run(argv.transactionHash)
 		}
 	},
 	// {

@@ -2,10 +2,12 @@
 const run = function (options, done) {
 	var OS = require("os");
 	var path = require("path");
+	var util = require("util");
+
+
 	var debugModule = require("debug");
 	var debug = debugModule("lib:commands:debug");
 	var safeEval = require("safe-eval");
-	var util = require("util");
 	const BN = require("bn.js");
 
 	// add custom inspect options for BNs
@@ -15,15 +17,14 @@ const run = function (options, done) {
 	const Web3 = require('web3');
 	let provider = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-	// var compile = require("truffle-compile");
-	// var Config = require("truffle-config");
+
 	var Config = require('../compiler/etherlime-config/index')
 	var Debugger = require("truffle-debugger");
 	var DebugUtils = require("truffle-debug-utils");
-	// var Environment = require("../environment");
+
 	var ReplManager = require("./repl");
 	var selectors = require("truffle-debugger").selectors;
-	// const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
+
 	const Artifactor = require('../compiler/etherlime-artifactor');
 	const logger = require('../../logger-service/logger-service').logger;
 	// const compile = require('../compiler/etherlime-compile');
@@ -37,6 +38,7 @@ const run = function (options, done) {
 	const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
 	let contracts2 = [LimeFactory];
 	let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
+
 	// Debugger Session properties
 	var trace = selectors.trace;
 	var solidity = selectors.solidity;
