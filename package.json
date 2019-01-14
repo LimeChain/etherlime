@@ -47,12 +47,8 @@
     "solc": "^0.5.1",
     "solidity-coverage": "LimeChain/solidity-coverage#master",
     "tcp-port-used": "^1.0.1",
-    "truffle-artifactor": "^4.0.1",
-    "truffle-compile": "^4.0.1",
-    "truffle-config": "^1.1.1",
     "truffle-debug-utils": "^1.0.8",
     "truffle-debugger": "^4.1.1",
-    "truffle-resolver": "^5.0.1",
     "web3": "^1.0.0-beta.37",
     "yargs": "11.0.0"
   },
