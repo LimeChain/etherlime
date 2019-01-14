@@ -8,7 +8,6 @@ inherits(ReplManager, EventEmitter);
 
 function ReplManager(options) {
 	EventEmitter.call(this);
-	// console.log('OPTIONS', options)
 	expect.options(options, [
 		"working_directory",
 		"contracts_directory",
@@ -29,7 +28,6 @@ function ReplManager(options) {
 
 ReplManager.prototype.start = function (options) {
 	var self = this;
-	console.log('OPTIONS', options)
 	this.contexts.push({
 		prompt: options.prompt,
 		interpreter: options.interpreter,

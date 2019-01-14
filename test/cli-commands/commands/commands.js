@@ -24,7 +24,7 @@ describe('root calling cli commands', () => {
         assert.include(childProcess.output, expectedOutput)
     });
 
-    it.only('should throw err if test cli command failed', async function () {
+    it('should throw err if test cli command failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
         console.log(childProcess)

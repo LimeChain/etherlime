@@ -1,13 +1,12 @@
 
-const run = function (options, done) {
-	var OS = require("os");
-	var path = require("path");
-	var util = require("util");
+const run = async function (options, done) {
+	const OS = require("os");
+	const path = require("path");
+	const util = require("util");
 
-
-	var debugModule = require("debug");
-	var debug = debugModule("lib:commands:debug");
-	var safeEval = require("safe-eval");
+	const debugModule = require("debug");
+	const debug = debugModule("lib:commands:debug");
+	const safeEval = require("safe-eval");
 	const BN = require("bn.js");
 
 	// add custom inspect options for BNs
@@ -15,29 +14,22 @@ const run = function (options, done) {
 		return options.stylize(this.toString(), "number");
 	};
 	const Web3 = require('web3');
-	let provider = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	const provider = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 
-	var Config = require('../compiler/etherlime-config/index')
-	var Debugger = require("truffle-debugger");
-	var DebugUtils = require("truffle-debug-utils");
 
-	var ReplManager = require("./repl");
-	var selectors = require("truffle-debugger").selectors;
+	const Debugger = require("truffle-debugger");
+	const DebugUtils = require("truffle-debug-utils");
+
+	const ReplManager = require("./repl");
+	const selectors = require("truffle-debugger").selectors;
 
 	const Artifactor = require('../compiler/etherlime-artifactor');
-	const logger = require('../../logger-service/logger-service').logger;
-	// const compile = require('../compiler/etherlime-compile');
+	const compile = require('../compiler/etherlime-compile');
 	const Resolver = require('../compiler/etherlime-resolver');
-	let compiler = require('../compiler/compiler');
+	const compiler = require('../compiler/compiler');
 
-	// let contracts = [LimeFactory];
-	// let files = [];
-	// files[0] = `/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol`;
 
-	const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
-	let contracts2 = [LimeFactory];
-	let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
 
 	// Debugger Session properties
 	var trace = selectors.trace;
@@ -70,46 +62,36 @@ const run = function (options, done) {
 		evmVersion: 'byzantium'
 	};
 
-	// var txHash = config._[0];
-
 	var lastCommand = "n";
 	var enabledExpressions = new Set();
 
 	let txHash = options;
-
+	await compiler.run('.');
 	console.log(txHash)
 	let compilePromise = new Promise(function (accept, reject) {
-		// compiler.run('.', function (err, contracts, files) {
-		// 	if (err) {
-		// 		return reject(err);
-		// 	}
+		compile.all(config, function (err, contracts, files) {
+			if (err) {
+				return reject(err);
+			}
 
-		// 	return accept({
-		// 		contracts: contracts,
-		// 		files: files
-		// 	});
-		// });
-		return accept({
-			contracts: contracts2,
-			files: files2
+			return accept({
+				contracts: contracts,
+				files: files
+			});
 		});
 	});
 
 	var sessionPromise = compilePromise
 		.then(function (result) {
 			console.log(DebugUtils.formatStartMessage());
-			// config.console.log(DebugUtils.formatStartMessage());
-			// console.log('RESULT', result)
-			// var pathToModule = require.resolve('truffle-debugger');
 
 			return Debugger.forTx(txHash, {
 				provider: provider,
 				files: result.files,
 				contracts: Object.keys(result.contracts).map(function (name) {
-					// console.log(result.contracts);
+
 					var contract = result.contracts[name];
-					// console.log("Binary", contract.bytecode)
-					// console.log('HERE', result.contracts)
+
 					return {
 						contractName: contract.contractName || contract.contract_name,
 						source: contract.source,
