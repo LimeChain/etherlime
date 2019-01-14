@@ -43,7 +43,7 @@ describe('Shape cli command', () => {
         await assert.isRejected(shape.run('angular'), expectedOutput)
     })
 
-    it.only('should shape dApp from url and integrate it with etherlime', async () => {
+    it('should shape dApp from url and integrate it with etherlime', async () => {
         let expectedOutput = 'Etherlime was successfully initialized!'
         let childProcess = await runCmdHandler(`etherlime shape --url ${remoteRepo}`, expectedOutput)
         assert.include(childProcess.output, expectedOutput);
@@ -51,11 +51,11 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./deployment'))
     })
 
-    // it('should throw err on wrong url', async () => {
-    //     let expectedError = 'Project to be shaped does not exist';
-    //     let childProcess = await runCmdHandler(`etherlime shape --url ${wrongUrl}`);
-    //     assert.include(childProcess, expectedError)
-    // })
+    it('should throw err on wrong url', async () => {
+        let expectedError = 'There is a problem fetching repository';
+        let childProcess = await runCmdHandler(`etherlime shape --url ${wrongUrl}`);
+        assert.include(childProcess, expectedError)
+    })
 
     it('should throw err if can not verify url', async () => {
         let expectedError = 'Failed to make request to undefined'

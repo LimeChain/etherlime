@@ -37,7 +37,7 @@ const run = async (name, url) => {
     if (name && name === 'angular') {
 
         await utils.verifyUrl(angularUrl)
-
+        
         try {
             console.log('====== Shaping dApp with predefined Anglular front-end framework =====')
             await cloneRepo(angularUrl)
@@ -58,6 +58,7 @@ const run = async (name, url) => {
         try {
             console.log('====== Shaping your dApp integration with etherlime project =====');
             await cloneRepo(url)
+            await instalProjectsModules()
             await initEtherlime()
             console.log('====== Shaping finished successful! =====');
             return
