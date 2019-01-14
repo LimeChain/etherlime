@@ -15,13 +15,13 @@ const defaultConfigs = {
 
 describe('Private key deployer tests', () => {
 
+	let provider;
+
+	beforeEach(() => {
+		provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
+	})
+
 	describe('Initialization', async () => {
-
-		let provider;
-
-		beforeEach(() => {
-			provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
-		})
 
 		it('should initialize the wallet with correct private key without 0x', () => {
 
@@ -58,5 +58,31 @@ describe('Private key deployer tests', () => {
 		})
 	})
 
+	describe('Setters', () => {
+		it('should set private key without 0x', () => {
+			const privateKey = config.ganacheCliPrivateKey;
 
+			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
+			deployer.setPrivateKey(privateKey);
+
+			assert.deepEqual('0x' + privateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+
+			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+		});
+
+		it('should set private key with 0x', () => {
+			const privateKey = '0x' + config.ganacheCliPrivateKey;
+
+			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
+			deployer.setPrivateKey(privateKey);
+
+			assert.deepEqual(privateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+
+			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+		});
+	});
 });

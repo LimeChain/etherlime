@@ -17,8 +17,14 @@ class PrivateKeyDeployer extends Deployer {
 		const wallet = new ethers.Wallet(sanitizedPrivateKey, provider);
 
 		super(wallet, provider, defaultOverrides);
-		
+
 		logger.log(`Deployer set to deploy from address: ${colors.colorAddress(this.wallet.address)}\n`);
+	}
+
+	setPrivateKey(privateKey) {
+		const sanitizedPrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
+		const wallet = new ethers.Wallet(sanitizedPrivateKey, this.provider);
+		this.setWallet(wallet);
 	}
 
 	toString() {
