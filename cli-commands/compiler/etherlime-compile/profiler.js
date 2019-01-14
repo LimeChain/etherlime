@@ -197,7 +197,7 @@ module.exports = {
           } else if (!options.paths.length) {
             return callback(null, {}, {});
           }
-          
+
           // Seed compilationTargets with known updates
           updates.forEach(update => compilationTargets.push(update));
 
@@ -213,7 +213,7 @@ module.exports = {
             async.whilst(() => files.length > 0, fileFinished => {
 
               var currentFile = files.shift();
-            
+
               // Ignore targets already selected.
               if (compilationTargets.includes(currentFile)) {
                 return fileFinished();
@@ -245,17 +245,17 @@ module.exports = {
     // = = = = = = = = = = = = = = = = = = = = = = = = = =
   },
 
-  resolveAllSources: function(resolver, initialPaths, solc, callback){
+  resolveAllSources: function (resolver, initialPaths, solc, callback) {
     var self = this;
     var mapping = {};
     var allPaths = initialPaths.slice();
 
-   function generateMapping(finished){
+    function generateMapping(finished) {
       var promises = [];
 
       // Dequeue all the known paths, generating resolver promises,
       // We'll add paths if we discover external package imports.
-      while(allPaths.length){
+      while (allPaths.length) {
         var file;
         var parent = null;
 
@@ -263,13 +263,13 @@ module.exports = {
 
         // Some paths will have been extracted as imports from a file
         // and have information about their parent location we need to track.
-        if (typeof candidate === 'object'){
+        if (typeof candidate === 'object') {
           file = candidate.file;
           parent = candidate.parent;
         } else {
           file = candidate;
         }
-        var promise = new Promise((accept, reject)=> {
+        var promise = new Promise((accept, reject) => {
           resolver.resolve(file, parent, (err, body, absolutePath, source) => {
             (err)
               ? reject(err)
@@ -287,7 +287,7 @@ module.exports = {
         results.forEach(item => mapping[item.file] = Object.assign({}, item));
 
         // Queue unknown imports for the next resolver cycle
-        while(results.length){
+        while (results.length) {
           var result = results.shift();
 
           // Inspect the imports
@@ -303,7 +303,7 @@ module.exports = {
           // Keep track of location of this import because we need to report that.
           imports.forEach(item => {
             if (!mapping[item])
-              allPaths.push({file: item, parent: result.file});
+              allPaths.push({ file: item, parent: result.file });
           });
         };
         finished()
@@ -317,20 +317,20 @@ module.exports = {
     );
   },
 
-  getImports: function(file, resolved, solc){
+  getImports: function (file, resolved, solc) {
     var self = this;
 
     var imports = Parser.parseImports(resolved.body, solc);
 
     // Convert explicitly relative dependencies of modules back into module paths.
     return imports.map(dependencyPath => {
-        return (self.isExplicitlyRelative(dependencyPath))
-          ? resolved.source.resolve_dependency_path(file, dependencyPath)
-          : dependencyPath;
+      return (self.isExplicitlyRelative(dependencyPath))
+        ? resolved.source.resolve_dependency_path(file, dependencyPath)
+        : dependencyPath;
     });
   },
 
-  listsEqual: function(listA, listB){
+  listsEqual: function (listA, listB) {
     var a = listA.sort();
     var b = listB.sort();
 
@@ -344,7 +344,7 @@ module.exports = {
       if (path.isAbsolute(p)) {
         return p;
       }
-      
+
       if (!self.isExplicitlyRelative(p)) {
         return p;
       }

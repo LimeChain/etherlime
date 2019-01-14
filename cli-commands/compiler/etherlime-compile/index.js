@@ -160,7 +160,7 @@ var compile = function (sources, options, callback) {
 
 		callback(null, returnVal, files);
 	})
-		.catch(callback);
+	.catch(callback);
 };
 
 function replaceLinkReferences(bytecode, linkReferences, libraryName) {

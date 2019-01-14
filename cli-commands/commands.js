@@ -3,11 +3,12 @@ const init = require('./init/init');
 const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
-const test = require('./etherlime-test/test');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
-const debug = require('./debugger/debugger');
+// const debug = require('./debugger/debugger');
 const recordEvent = eventTracker.recordEvent
+const test = require('./debugger/test.js');
+// const truffle = require('./debugger/test-truffle-implementation');
 
 const commands = [
 	{
@@ -316,9 +317,26 @@ const commands = [
 			recordEvent('etherlime debbuger', {
 				argv
 			});
-			await debug.run(argv.transactionHash)
+			await test.run(argv.transactionHash)
 		}
-	}
+	},
+	// {
+	// 	command: 'truffle [transactionHash]',
+	// 	description: 'Debug transaction hash',
+	// 	argumentsProcessor: (yargs) => {
+	// 		yargs.positional('transactionHash', {
+	// 			describe: 'Specifies the transaction hash',
+	// 			type: 'string'
+	// 		})
+	// 	},
+	// 	commandProcessor: async (argv) => {
+	// 		recordEvent('etherlime truffle', {
+	// 			argv
+	// 		});
+	// 		await truffle.run(argv.transactionHash)
+	// 	}
+	// },
+
 ]
 
 module.exports = commands;
