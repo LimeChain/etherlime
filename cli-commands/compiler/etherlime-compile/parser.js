@@ -29,7 +29,7 @@ module.exports = {
       }
     };
 
-    var output = solc.compileStandard(JSON.stringify(solcStandardInput), function () {
+    var output = solc.compile(JSON.stringify(solcStandardInput), function () {
       return { error: importErrorKey };
     });
 
