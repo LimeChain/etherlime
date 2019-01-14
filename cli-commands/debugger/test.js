@@ -26,16 +26,17 @@ const run = function (options, done) {
 	// const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
 	const Artifactor = require('../compiler/etherlime-artifactor');
 	const logger = require('../../logger-service/logger-service').logger;
-
-
+	// const compile = require('../compiler/etherlime-compile');
+	const Resolver = require('../compiler/etherlime-resolver');
+	let compiler = require('../compiler/compiler');
 
 	// let contracts = [LimeFactory];
 	// let files = [];
 	// files[0] = `/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol`;
 
-	const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
-	let contracts2 = [LimeFactory];
-	let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
+	// const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
+	// let contracts2 = [LimeFactory];
+	// let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
 	// Debugger Session properties
 	var trace = selectors.trace;
 	var solidity = selectors.solidity;
@@ -61,28 +62,35 @@ const run = function (options, done) {
 			}
 		}
 	};
+	config.resolver = new Resolver(config)
+	config.solc = {
+		optimizer: { enabled: false, runs: 200 },
+		evmVersion: 'byzantium'
+	};
 
 	// var txHash = config._[0];
 
 	var lastCommand = "n";
 	var enabledExpressions = new Set();
+
 	let txHash = options;
+
 	console.log(txHash)
 	let compilePromise = new Promise(function (accept, reject) {
-		// compile.all(config, function (err, contracts, files) {
-		// 	if (err) {
-		// 		return reject(err);
-		// 	}
+		compiler.run('.', function (err, contracts, files) {
+			if (err) {
+				return reject(err);
+			}
 
-		// 	return accept({
-		// 		contracts: contracts,
-		// 		files: files
-		// 	});
-		// });
-		return accept({
-			contracts: contracts2,
-			files: files2
+			return accept({
+				contracts: contracts,
+				files: files
+			});
 		});
+		// return accept({
+		// 	contracts: contracts2,
+		// 	files: files2
+		// });
 	});
 
 	var sessionPromise = compilePromise
