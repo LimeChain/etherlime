@@ -34,9 +34,9 @@ const run = function (options, done) {
 	// let files = [];
 	// files[0] = `/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol`;
 
-	// const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
-	// let contracts2 = [LimeFactory];
-	// let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
+	const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
+	let contracts2 = [LimeFactory];
+	let files2 = ['/Users/ognyanchikov/new-etherlime-project/contracts/LimeFactory.sol'];
 	// Debugger Session properties
 	var trace = selectors.trace;
 	var solidity = selectors.solidity;
@@ -77,20 +77,20 @@ const run = function (options, done) {
 
 	console.log(txHash)
 	let compilePromise = new Promise(function (accept, reject) {
-		compiler.run('.', function (err, contracts, files) {
-			if (err) {
-				return reject(err);
-			}
+		// compiler.run('.', function (err, contracts, files) {
+		// 	if (err) {
+		// 		return reject(err);
+		// 	}
 
-			return accept({
-				contracts: contracts,
-				files: files
-			});
-		});
-		// return accept({
-		// 	contracts: contracts2,
-		// 	files: files2
+		// 	return accept({
+		// 		contracts: contracts,
+		// 		files: files
+		// 	});
 		// });
+		return accept({
+			contracts: contracts2,
+			files: files2
+		});
 	});
 
 	var sessionPromise = compilePromise
