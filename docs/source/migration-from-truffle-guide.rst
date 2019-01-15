@@ -193,5 +193,5 @@ Final steps:
 - **delete** ``truffle`` from ``package.json``
 - **delete** ``node_modules``
 - **run** ``npm install``
-- **open a fresh terminal tab and ether** ``etherlime ganache``
+- **open a fresh terminal tab and enter** ``etherlime ganache``
 - **run** ``etherlime test``
