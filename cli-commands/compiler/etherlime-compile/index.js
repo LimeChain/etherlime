@@ -68,7 +68,7 @@ var compile = function (sources, options, callback) {
 	var supplier = new CompilerSupplier(options.compilers.solc);
 
 	supplier.load().then(solc => {
-		var result = solc.compileStandard(JSON.stringify(solcStandardInput));
+		var result = solc.compile(JSON.stringify(solcStandardInput));
 
 		var standardOutput = JSON.parse(result);
 
