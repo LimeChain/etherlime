@@ -45,7 +45,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 	const records = logsStore.getHistory();
 
 	if (initialRecords && initialRecords.length > 0) {
-		if (records[records.length - 1]['actions'].length === initialRecords[initialRecords.length - 1]['actions'].length) {
+		if ((records.length == initialRecords.length) && records[records.length - 1]['actions'].length === initialRecords[initialRecords.length - 1]['actions'].length) {
 			return
 		}
 	}
