@@ -23,7 +23,7 @@ const profiler = require('../../../cli-commands/compiler/etherlime-compile/profi
 const parser = require('../../../cli-commands/compiler/etherlime-compile/parser');
 const Config = require('../../../cli-commands/compiler/etherlime-config');
 const CompilerSupplier = require('../../../cli-commands/compiler/etherlime-compile/compilerSupplier');
-const solcWraper = require('../../../cli-commands/compiler/etherlime-compile/solcWrap')
+const solcWraper = require('solc/wrapper');
 let compilerSupplier;
 let soljson = require('./examples/soljson');
 let soljsonDifVersion = require('./examples/soljsonDifVersion');
@@ -526,7 +526,7 @@ describe('Compile dependencies', () => {
             let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
             let solc = { "version": "[Function]" }
 
-            let expectedError = "solc.compileStandard is not a function"
+            let expectedError = "solc.compile is not a function"
 
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
