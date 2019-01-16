@@ -1,3 +1,5 @@
-module.exports = {
-    angularUrl: 'https://github.com/LimeChain/etherlime-shape-angular.git'
-}
+let reposUrls = new Map();
+
+reposUrls.set('angular', 'LimeChain/etherlime-shape-angular.git');
+
+module.exports = {reposUrls}

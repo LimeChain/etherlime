@@ -304,16 +304,11 @@ const commands = [
 		}
 	},
 	{
-		command: 'shape [name] [url]',
-		description: 'Shapes returning ready to use dApp containing all files and settings.',
+		command: 'shape [name]',
+		description: 'Shapes ready to use dApp containing all files and settings.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('name', {
 				describe: 'Specifies the name of the framework or library that the project will be build up.',
-				type: 'string'
-			})
-
-			yargs.positional('url', {
-				describe: 'url to a repository with ready to use dApp that will be integrated with etherlime',
 				type: 'string'
 			})
 		},
@@ -325,7 +320,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				shape.run(argv.name, argv.url);
+				shape.run(argv.name);
 			} catch (err) {
 				console.error(err);
 			} finally {
