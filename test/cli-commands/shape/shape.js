@@ -3,7 +3,7 @@ let chai = require("chai");
 const fs = require("fs-extra")
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 
-let wrongUrl = 'https://github.com/LimeChain/etherlime-shape-angular.gi';
+let unexistingShape = 'sthUnexisting'
 let remoteRepo = 'https://github.com/desimira/burgers.git';
 
 describe('Shape cli command', () => {
@@ -11,13 +11,12 @@ describe('Shape cli command', () => {
 
     beforeEach( async function() {
         currentDir = process.cwd();
-        fs.mkdirSync('../test')
-        process.chdir('../test');
+        process.chdir('/tmp');
     });
 
-    it('should throw err if can not clone the repo', async () => {
-       let expectedOutput = 'Repository not found.'
-       let childProcess = await runCmdHandler(`etherlime shape ${wrongUrl}`, expectedOutput)
+    it('should throw err if can not find a proper shape', async () => {
+       let expectedOutput = 'Invalid shape'
+       let childProcess = await runCmdHandler(`etherlime shape ${unexistingShape}`, expectedOutput)
        assert.include(childProcess, expectedOutput)
     })
 
@@ -25,7 +24,7 @@ describe('Shape cli command', () => {
         let expectedOutput = 'Shaping finished successful';
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess.output, expectedOutput)
-        assert(fs.existsSync('../test/my-app'))
+        assert(fs.existsSync('./my-app'))
     });
 
     it('should throw err if try to shape angular twice', async () => {
@@ -35,16 +34,11 @@ describe('Shape cli command', () => {
         assert.include(childProcess, expectedOutput)
     })
 
-    it('should shape dApp from url and integrate it with etherlime', async () => {
-        let expectedOutput = 'Etherlime was successfully initialized!'
-        let childProcess = await runCmdHandler(`etherlime shape ${remoteRepo}`, expectedOutput)
-        assert.include(childProcess.output, expectedOutput);
-        assert(fs.existsSync('./contracts'))
-        assert(fs.existsSync('./deployment'))
-    })
-
     afterEach(async function() {
-        fs.removeSync('../test');
+        fs.removeSync('./my-app');
+        fs.removeSync('./package-lock.json');
+        fs.removeSync('./README.md');
+        fs.removeSync('./.git');
         process.chdir(currentDir);
     });
 

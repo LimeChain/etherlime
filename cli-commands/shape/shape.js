@@ -12,11 +12,6 @@ const cloneRepo = async (url) => {
     await git.pull('origin', 'master')
 }
 
-const initEtherlime = async () => {
-    const {stdout, stderr} = await exec('etherlime init')
-    console.log(stdout)
-}
-
 const installProjectsModules = async () => {
     console.log('====== Installing projects modules =====')
     await exec('npm install')
@@ -30,32 +25,15 @@ const run = async (name) => {
         
     let repo = getRepo(name)
 
-    //if a user pass his own repo to be integrated with etherlime
     if(repo.includes(undefined)) {
-        try {
-            console.log('====== Shaping your dApp integration with etherlime project =====');
-            await cloneRepo(name)
-            await installProjectsModules()
-            await initEtherlime()
-            console.log('====== Shaping finished successful! =====')
-            return
-        } catch (e) {
-            throw new Error(e.message);
-        }
-        
+        throw new Error(`Invalid shape ${name}`)
     }
 
-    try {
-        console.log('====== Shaping dApp with predefined Anglular front-end framework =====')
-        await cloneRepo(repo)
-        await installProjectsModules()
-        console.log('====== Shaping finished successful! =====')
-        return
-    } catch (e) {
-        throw new Error(e.message);
-    }
-
-
+    console.log(`====== Shaping ${name} dApp =====`)
+    await cloneRepo(repo)
+    await installProjectsModules()
+    console.log('====== Shaping finished successful! =====')
+    return
 }
 
 module.exports = {
