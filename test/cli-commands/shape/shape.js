@@ -4,7 +4,6 @@ const fs = require("fs-extra")
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 
 let unexistingShape = 'sthUnexisting'
-let remoteRepo = 'https://github.com/desimira/burgers.git';
 
 describe('Shape cli command', () => {
     let currentDir;

@@ -18,17 +18,16 @@ const installProjectsModules = async () => {
 }
 
 const getRepo = (framework) => {
+    
+    if(!reposUrl.get(framework)){
+        throw new Error(`Invalid shape ${framework}`)
+    }
     return `https://github.com/${reposUrl.get(framework)}`
 }
 
 const run = async (name) => {
         
     let repo = getRepo(name)
-
-    if(repo.includes(undefined)) {
-        throw new Error(`Invalid shape ${name}`)
-    }
-
     console.log(`====== Shaping ${name} dApp =====`)
     await cloneRepo(repo)
     await installProjectsModules()
