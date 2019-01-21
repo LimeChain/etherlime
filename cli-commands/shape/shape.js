@@ -2,7 +2,7 @@ const logger = require('../../logger-service/logger-service').logger;
 const git = require('simple-git/promise')()
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const reposUrl = require('./urlConfig').reposUrls;
+const repoToUrlMap = require('./urlConfig').repoToUrlMap;
 
 
 const cloneRepo = async (url) => {
@@ -18,7 +18,7 @@ const installProjectsModules = async () => {
 }
 
 const getRepo = (framework) => {
-    let url = reposUrl.get(framework)
+    let url = repoToUrlMap.get(framework)
 
     if(!url){
         throw new Error(`Invalid shape ${framework}`)
