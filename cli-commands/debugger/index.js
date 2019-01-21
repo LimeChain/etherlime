@@ -8,33 +8,33 @@ const run = async function (options, done) {
 	const debug = debugModule("lib:commands:debug");
 	const safeEval = require("safe-eval");
 	const BN = require("bn.js");
+	const ethers = require('ethers');
+	require = require("esm")(module/*, options*/)
 
 	// add custom inspect options for BNs
 	BN.prototype[util.inspect.custom] = function (depth, options) {
 		return options.stylize(this.toString(), "number");
 	};
-	const Web3 = require('web3');
-	const provider = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
 
+	const Debugger = require("./etherlime-debugger/debugger").default;
+	const selectors = Debugger.selectors;
 
-	const Debugger = require("truffle-debugger");
 	const DebugUtils = require("truffle-debug-utils");
 
 	const ReplManager = require("./repl");
-	const selectors = require("truffle-debugger").selectors;
 
 	const Artifactor = require('../compiler/etherlime-artifactor');
 	const compile = require('../compiler/etherlime-compile');
 	const Resolver = require('../compiler/etherlime-resolver');
 	const compiler = require('../compiler/compiler');
 
-
-
 	// Debugger Session properties
-	var trace = selectors.trace;
-	var solidity = selectors.solidity;
-	var controller = selectors.controller;
+	let trace = selectors.trace;
+	let solidity = selectors.solidity;
+	let controller = selectors.controller;
+	let evm = selectors.evm;
 
 	let config = {
 		"contracts_directory": `${process.cwd()}/contracts`,
@@ -54,7 +54,8 @@ const run = async function (options, done) {
 				port: 8545,            // Standard Ethereum port (default: none)
 				network_id: "*",       // Any network (default: none)
 			}
-		}
+		},
+		network: "etherlime ganache"
 	};
 	config.resolver = new Resolver(config)
 	config.solc = {
@@ -67,7 +68,7 @@ const run = async function (options, done) {
 
 	let txHash = options;
 	await compiler.run('.');
-	console.log(txHash)
+
 	let compilePromise = new Promise(function (accept, reject) {
 		compile.all(config, function (err, contracts, files) {
 			if (err) {
@@ -89,9 +90,7 @@ const run = async function (options, done) {
 				provider: provider,
 				files: result.files,
 				contracts: Object.keys(result.contracts).map(function (name) {
-
 					var contract = result.contracts[name];
-
 					return {
 						contractName: contract.contractName || contract.contract_name,
 						source: contract.source,
@@ -99,8 +98,7 @@ const run = async function (options, done) {
 						ast: contract.ast,
 						binary: contract.binary || contract.bytecode,
 						sourceMap: contract.sourceMap,
-						deployedBinary:
-							contract.deployedBinary || contract.deployedBytecode,
+						deployedBinary: contract.deployedBinary || contract.deployedBytecode,
 						deployedSourceMap: contract.deployedSourceMap,
 						compiler: contract.compiler
 					};
@@ -114,9 +112,6 @@ const run = async function (options, done) {
 
 	sessionPromise
 		.then(async function (session) {
-			// const test = session.view(solidity.current);
-			// console.log(test);
-			// if (err) return done(err);
 
 			function splitLines(str) {
 				// We were splitting on OS.EOL, but it turns out on Windows,
@@ -159,6 +154,7 @@ const run = async function (options, done) {
 			function printState() {
 				var source = session.view(solidity.current.source).source;
 				var range = session.view(solidity.current.sourceRange);
+
 				debug("source: %o", source);
 				debug("range: %o", range);
 
