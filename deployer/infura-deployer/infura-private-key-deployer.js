@@ -26,6 +26,19 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 		this.apiKey = apiKey;
 	}
 
+	setNetwork(network) {
+		const infuraNetwork = ethers.utils.getNetwork(network);
+		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, this.apiKey);
+		this.setProvider(infuraProvider);
+		this.network = network;
+	}
+
+	setApiKey(apiKey) {
+		const infuraProvider = new ethers.providers.InfuraProvider(this.infuraNetwork, apiKey);
+		this.setProvider(infuraProvider);
+		this.apiKey = apiKey;
+	}
+
 	toString() {
 		const superString = super.toString();
 		return `Deployer set to Infura. Network: ${colors.colorNetwork(this.network)} with API Key: ${colors.colorAPIKey(this.apiKey)}\n${superString}`;
