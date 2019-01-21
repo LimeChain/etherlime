@@ -18,11 +18,12 @@ const installProjectsModules = async () => {
 }
 
 const getRepo = (framework) => {
-    
-    if(!reposUrl.get(framework)){
+    let url = reposUrl.get(framework)
+
+    if(!url){
         throw new Error(`Invalid shape ${framework}`)
     }
-    return `https://github.com/${reposUrl.get(framework)}`
+    return `https://github.com/${url}`
 }
 
 const run = async (name) => {
