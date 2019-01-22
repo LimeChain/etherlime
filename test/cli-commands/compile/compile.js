@@ -15,8 +15,6 @@ describe.only('Compile cli command', () => {
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
-        fs.copyFileSync('./test/cli-commands/compile/examples/MerkleLime.sol', './contracts/MerkleLime.sol');
-        fs.copyFileSync('./test/cli-commands/compile/examples/MerkleUtils.sol', './contracts/MerkleUtils.sol');
     });
 
     it('should run compile without parameters', async function () {
