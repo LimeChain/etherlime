@@ -404,7 +404,7 @@ describe('Compile dependencies', () => {
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`];
             fs.writeFileSync('./contracts/ContractForFailCompilation.sol', contractForFailCompilation);
-            let expectedError = "SyntaxError: Source file requires different compiler version";
+            let expectedError = "Source file requires different compiler version";
             let fnExecution = new Promise((resolve, reject) => {
                 etherlimeCompile.with_dependencies(compileOptions, function (err) {
                     if (!err) {
@@ -440,6 +440,7 @@ describe('Compile dependencies', () => {
         after(async function () {
             fs.removeSync('./contracts/contractWithSameNameFn.sol');
             fs.removeSync('./contracts/AbsolutelyEmpty.sol');
+            fs.removeSync('./contracts/ContractForFailCompilation.sol');
         })
 
     });
@@ -571,6 +572,7 @@ describe('Compile dependencies', () => {
                         resolve()
                         return
                     }
+                    console.log('hERE',err)
                     reject(err)
                 });
             });
@@ -579,13 +581,14 @@ describe('Compile dependencies', () => {
         });
 
         it('should compile if paths includes external imported contract', async function () {
-            compileOptions.paths.push(`${process.cwd()}/node_modules/zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
+            compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.required_sources(compileOptions, function (err) {
                     if (!err) {
                         resolve()
                         return
                     }
+                    console.log('HERE2', err);
                     reject(err)
                 });
             });
