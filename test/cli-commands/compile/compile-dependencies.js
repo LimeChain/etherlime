@@ -404,7 +404,7 @@ describe('Compile dependencies', () => {
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`];
             fs.writeFileSync('./contracts/ContractForFailCompilation.sol', contractForFailCompilation);
-            let expectedError = "Source file requires different compiler version";
+            let expectedError = "SyntaxError: Source file requires different compiler version";
             let fnExecution = new Promise((resolve, reject) => {
                 etherlimeCompile.with_dependencies(compileOptions, function (err) {
                     if (!err) {
@@ -417,26 +417,6 @@ describe('Compile dependencies', () => {
             });
             await assert.isRejected(fnExecution, expectedError)
         });
-
-        it('should throw err if there is syntax err', async function() {
-            let expectedError = "Expected ';' but got end of source"
-            const sourceObject = {
-                "::contracts\\Empty.sol": 'pragma solidity ^0.5.0 contract Empty {\n\n}'
-            }
-
-            let fnExecution = new Promise((resolve, reject) => {
-                etherlimeCompile(sourceObject, compileOptions, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
-
-            await assert.isRejected(fnExecution, expectedError)
-
-        })
 
         it('should replace \\ with /', async function () {
             compileOptions.strict = true;
@@ -460,7 +440,6 @@ describe('Compile dependencies', () => {
         after(async function () {
             fs.removeSync('./contracts/contractWithSameNameFn.sol');
             fs.removeSync('./contracts/AbsolutelyEmpty.sol');
-            fs.removeSync('./contracts/ContractForFailCompilation.sol');
         })
 
     });
@@ -600,7 +579,7 @@ describe('Compile dependencies', () => {
         });
 
         it('should compile if paths includes external imported contract', async function () {
-            compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
+            compileOptions.paths.push(`${process.cwd()}/node_modules/zeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
             let fnExecution = new Promise((resolve, reject) => {
                 profiler.required_sources(compileOptions, function (err) {
                     if (!err) {
