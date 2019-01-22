@@ -7,13 +7,13 @@ let App = require('solidity-coverage/lib/app');
 let defaultCoverageConfig = require('./coverage-config.json');
 let accounts = require('./../ganache/setup.json').accounts;
 
-const run = async (path, skipCompilation, solcVersion, port) => {
+const run = async (path, timeout, skipCompilation, solcVersion, port) => {
 
 	var config = Config.default();
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		await etherlimeTest.run([path], skipCompilation, solcVersion, port);
+		await etherlimeTest.run([path], timeout, skipCompilation, solcVersion, port);
 
 		return;
 	}
@@ -26,7 +26,7 @@ const run = async (path, skipCompilation, solcVersion, port) => {
 
 	const files = await getFiles(testDirectory, config);
 
-	await etherlimeTest.run(files, skipCompilation, solcVersion, port);
+	await etherlimeTest.run(files, timeout, skipCompilation, solcVersion, port);
 }
 
 const getFiles = async function (testDirectory, config) {

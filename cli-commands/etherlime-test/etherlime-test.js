@@ -10,8 +10,8 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation, solcVersion, port) => {
-	var mochaConfig = { 'useColors': true };
+const run = async (files, timeout, skipCompilation, solcVersion, port) => {
+	var mochaConfig = { 'useColors': true, 'timeout': timeout };
 	let mocha = createMocha(mochaConfig, files);
 
 	files.forEach(function (file) {

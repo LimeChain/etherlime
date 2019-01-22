@@ -258,6 +258,12 @@ const commands = [
 				describe: 'The port that the etherlime ganache is running in order to instantiate the test accounts',
 				type: 'number',
 				default: 8545
+			});
+
+			yargs.positional('timeout', {
+				describe: 'Set test timeout in milliseconds',
+				type: 'number',
+				default: 10000
 			})
 		},
 		commandProcessor: async (argv) => {
@@ -267,7 +273,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.port);
+				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.solcVersion, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
