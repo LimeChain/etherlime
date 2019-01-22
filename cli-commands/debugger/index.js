@@ -10,6 +10,7 @@ const run = async function (options, done) {
 	const BN = require("bn.js");
 	const ethers = require('ethers');
 	require = require("esm")(module/*, options*/)
+	const colors = require('../../utils/colors');
 
 	// add custom inspect options for BNs
 	BN.prototype[util.inspect.custom] = function (depth, options) {
@@ -21,7 +22,7 @@ const run = async function (options, done) {
 	const Debugger = require("./etherlime-debugger/debugger").default;
 	const selectors = Debugger.selectors;
 
-	const DebugUtils = require("truffle-debug-utils");
+	const DebugUtils = require("./etherlime-debug-utils");
 
 	const ReplManager = require("./repl");
 
@@ -31,12 +32,11 @@ const run = async function (options, done) {
 	const compiler = require('../compiler/compiler');
 
 	// Debugger Session properties
-	let trace = selectors.trace;
-	let solidity = selectors.solidity;
-	let controller = selectors.controller;
-	let evm = selectors.evm;
+	const trace = selectors.trace;
+	const solidity = selectors.solidity;
+	const controller = selectors.controller;
 
-	let config = {
+	const config = {
 		"contracts_directory": `${process.cwd()}/contracts`,
 		"working_directory": `${process.cwd()}`,
 		"contracts_build_directory": `${process.cwd()}/build`,
@@ -63,8 +63,8 @@ const run = async function (options, done) {
 		evmVersion: 'byzantium'
 	};
 
-	var lastCommand = "n";
-	var enabledExpressions = new Set();
+	let lastCommand = "n";
+	let enabledExpressions = new Set();
 
 	let txHash = options;
 	await compiler.run('.');
@@ -82,7 +82,7 @@ const run = async function (options, done) {
 		});
 	});
 
-	var sessionPromise = compilePromise
+	const sessionPromise = compilePromise
 		.then(function (result) {
 			console.log(DebugUtils.formatStartMessage());
 
@@ -90,7 +90,7 @@ const run = async function (options, done) {
 				provider: provider,
 				files: result.files,
 				contracts: Object.keys(result.contracts).map(function (name) {
-					var contract = result.contracts[name];
+					const contract = result.contracts[name];
 					return {
 						contractName: contract.contractName || contract.contract_name,
 						source: contract.source,
@@ -120,11 +120,11 @@ const run = async function (options, done) {
 			}
 
 			function printAddressesAffected() {
-				var affectedInstances = session.view(
+				const affectedInstances = session.view(
 					selectors.session.info.affectedInstances
 				);
 
-				console.log("Addresses affected:");
+				console.log("Contracts and addresses affected:");
 				console.log(
 					DebugUtils.formatAffectedInstances(affectedInstances)
 				);
@@ -136,10 +136,10 @@ const run = async function (options, done) {
 			}
 
 			function printFile() {
-				var message = "";
+				let message = "";
 
 				debug("about to determine sourcePath");
-				var sourcePath = session.view(solidity.current.source).sourcePath;
+				const sourcePath = session.view(solidity.current.source).sourcePath;
 
 				if (sourcePath) {
 					message += path.basename(sourcePath);
@@ -152,8 +152,8 @@ const run = async function (options, done) {
 			}
 
 			function printState() {
-				var source = session.view(solidity.current.source).source;
-				var range = session.view(solidity.current.sourceRange);
+				const source = session.view(solidity.current.source).source;
+				const range = session.view(solidity.current.sourceRange);
 
 				debug("source: %o", source);
 				debug("range: %o", range);
@@ -165,7 +165,7 @@ const run = async function (options, done) {
 					return;
 				}
 
-				var lines = splitLines(source);
+				let lines = splitLines(source);
 
 				console.log("");
 
@@ -175,9 +175,9 @@ const run = async function (options, done) {
 			}
 
 			function printInstruction() {
-				var instruction = session.view(solidity.current.instruction);
-				var step = session.view(trace.step);
-				var traceIndex = session.view(trace.index);
+				const instruction = session.view(solidity.current.instruction);
+				const step = session.view(trace.step);
+				const traceIndex = session.view(trace.index);
 
 				console.log("");
 				console.log(
@@ -212,8 +212,8 @@ const run = async function (options, done) {
 			 * @param {string} selector
 			 */
 			function printSelector(selector) {
-				var result = select(selector);
-				var debugSelector = debugModule(selector);
+				const result = select(selector);
+				const debugSelector = debugModule(selector);
 				debugSelector.enabled = true;
 				debugSelector("%O", result);
 			}
@@ -248,8 +248,8 @@ const run = async function (options, done) {
 			}
 
 			async function printWatchExpressionResult(expression) {
-				var type = expression[0];
-				var exprArgs = expression.substring(1);
+				const type = expression[0];
+				const exprArgs = expression.substring(1);
 
 				if (type === "!") {
 					printSelector(exprArgs);
@@ -274,18 +274,18 @@ const run = async function (options, done) {
 					.split(/\r?\n/g)
 					.map(function (line, i) {
 						// don't indent first line
-						var padding = i > 0 ? Array(indent).join(" ") : "";
+						let padding = i > 0 ? Array(indent).join(" ") : "";
 						return padding + line;
 					})
 					.join(OS.EOL);
 			}
 
 			async function printVariables() {
-				var variables = await session.variables();
+				const variables = await session.variables();
 				debug("variables %o", variables);
 
 				// Get the length of the longest name.
-				var longestNameLength = Math.max.apply(
+				const longestNameLength = Math.max.apply(
 					null,
 					Object.keys(variables).map(function (name) {
 						return name.length;
@@ -295,14 +295,14 @@ const run = async function (options, done) {
 				console.log();
 
 				Object.keys(variables).forEach(function (name) {
-					var paddedName = name + ":";
+					let paddedName = name + ":";
 
 					while (paddedName.length <= longestNameLength) {
 						paddedName = " " + paddedName;
 					}
 
-					var value = variables[name];
-					var formatted = formatValue(value, longestNameLength + 5);
+					let value = variables[name];
+					let formatted = formatValue(value, longestNameLength + 5);
 
 					console.log("  " + paddedName, formatted);
 				});
@@ -334,7 +334,7 @@ const run = async function (options, done) {
 			 *        :!<trace.step.stack>[1]
 			 */
 			async function evalAndPrintExpression(raw, indent, suppress) {
-				var context = Object.assign(
+				let context = Object.assign(
 					{ $: select },
 
 					await session.variables()
@@ -343,8 +343,8 @@ const run = async function (options, done) {
 				const expr = preprocessSelectors(raw);
 
 				try {
-					var result = safeEval(expr, context);
-					var formatted = formatValue(result, indent);
+					let result = safeEval(expr, context);
+					let formatted = formatValue(result, indent);
 					console.log(formatted);
 					console.log();
 				} catch (e) {
@@ -371,16 +371,16 @@ const run = async function (options, done) {
 
 			function setOrClearBreakpoint(args, setOrClear) {
 				//setOrClear: true for set, false for clear
-				var currentLocation = session.view(controller.current.location);
-				var breakpoints = session.view(controller.breakpoints);
+				let currentLocation = session.view(controller.current.location);
+				let breakpoints = session.view(controller.breakpoints);
 
-				var currentNode = currentLocation.node.id;
-				var currentLine = currentLocation.sourceRange.lines.start.line;
-				var currentSourceId = currentLocation.source.id;
+				let currentNode = currentLocation.node.id;
+				let currentLine = currentLocation.sourceRange.lines.start.line;
+				let currentSourceId = currentLocation.source.id;
 
-				var sourceName; //to be used if a source is entered
+				let sourceName; //to be used if a source is entered
 
-				var breakpoint = {};
+				let breakpoint = {};
 
 				debug("args %O", args);
 
@@ -541,7 +541,7 @@ const run = async function (options, done) {
 
 			async function interpreter(cmd) {
 				cmd = cmd.trim();
-				var cmdArgs, splitArgs;
+				let cmdArgs, splitArgs;
 				debug("cmd %s", cmd);
 
 				if (cmd === ".exit") {
@@ -604,7 +604,7 @@ const run = async function (options, done) {
 						case "n":
 						case ";":
 						case "c":
-							console.log("Transaction has halted; cannot advance.");
+							console.log(`${colors.colorFailure('Transaction has halted; cannot advance.')}`);
 							console.log("");
 					}
 				}
@@ -618,14 +618,14 @@ const run = async function (options, done) {
 					console.log("");
 					//check if transaction failed
 					if (!session.view(selectors.session.transaction.receipt).status) {
-						console.log("Transaction halted with a RUNTIME ERROR.");
+						console.log(`${colors.colorFailure('Transaction halted with a RUNTIME ERROR.')}`);
 						console.log("");
 						console.log(
 							"This is likely due to an intentional halting expression, like assert(), require() or revert(). It can also be due to out-of-gas exceptions. Please inspect your transaction parameters and contract code to determine the meaning of this error."
 						);
 					} else {
 						//case if transaction succeeded
-						console.log("Transaction completed successfully.");
+						console.log(`${colors.colorSuccess('Transaction completed successfully.')}`);
 					}
 				}
 
@@ -715,15 +715,15 @@ const run = async function (options, done) {
 			printState();
 			debug("State printed");
 
-			var repl = options.repl || new ReplManager(config);
+			let repl = options.repl || new ReplManager(config);
 
 			repl.start({
 				prompt:
-					"debug(" +
-					config.network +
+					"debugging(" +
+					`${colors.colorNetwork(config.network)}` +
 					":" +
-					txHash.substring(0, 10) +
-					"...)> ",
+					`${colors.colorTransactionHash(txHash)}` +
+					")> ",
 				interpreter: util.callbackify(interpreter),
 				ignoreUndefined: true,
 				done: done
