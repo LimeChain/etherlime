@@ -18,5 +18,7 @@ module.exports = {
 	DeployedContractWrapper,
 	EtherlimeGanacheDeployer,
 	EtherlimeGanacheWrapper,
+	EtherlimeDevnetDeployer,
+	EtherlimeDevnetWrapper
 	ContractAt
 }
