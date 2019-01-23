@@ -5,6 +5,7 @@ let timeTravel = require('./time-travel');
 let events = require('./events');
 
 let accounts = require('./../ganache/setup.json').accounts;
+let devnetAccounts = require('../ganache/devnet-setup.json');
 let compiler = require('./../compiler/compiler');
 let ethers = require('ethers');
 
@@ -20,7 +21,7 @@ const run = async (files, skipCompilation, solcVersion, port) => {
 		mocha.addFile(file);
 	});
 
-	setJSTestGlobals(port);
+	await setJSTestGlobals(port);
 
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
@@ -64,8 +65,8 @@ const setJSTestGlobals = async (port) => {
 		hasEvent: events.hasEvent
 	}
 	const localNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
-	global.ganacheProvider = localNodeProvider
-	const importedAccounts = new Array();
+	global.ganacheProvider = localNodeProvider;
+	const importedAccounts = [];
 	for (const acc of accounts) {
 		importedAccounts.push({
 			secretKey: acc.secretKey,
@@ -73,6 +74,21 @@ const setJSTestGlobals = async (port) => {
 		})
 	}
 	global.accounts = importedAccounts;
+
+	const localDevnetNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${devnetAccounts.defaultPort}`);
+	global.devnetProvider = localDevnetNodeProvider;
+	const importedDevnetAccounts = [];
+	for (const acc of devnetAccounts.accounts) {
+		let accJSONString = JSON.stringify(acc);
+		let wallet = await new ethers.Wallet
+			.fromEncryptedJson(accJSONString, devnetAccounts.defaultPassword);
+		wallet = await wallet.connect(localDevnetNodeProvider);
+		importedDevnetAccounts.push({
+			secretKey: wallet.privateKey,
+			wallet: wallet
+		})
+	}
+	global.devnetAccounts = importedDevnetAccounts;
 }
 
 module.exports = {
