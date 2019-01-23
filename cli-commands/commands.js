@@ -8,7 +8,7 @@ const shape = require('./shape/shape');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
-const debug = require('./debugger/index');
+const debug = require('./debugger/indexV2');
 
 const commands = [
 	{
@@ -305,7 +305,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'debugger [transactionHash]',
+		command: 'debug [transactionHash]',
 		description: 'Debug transaction hash',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('transactionHash', {
@@ -320,22 +320,6 @@ const commands = [
 			await debug.run(argv.transactionHash)
 		}
 	},
-	// {
-	// 	command: 'truffle [transactionHash]',
-	// 	description: 'Debug transaction hash',
-	// 	argumentsProcessor: (yargs) => {
-	// 		yargs.positional('transactionHash', {
-	// 			describe: 'Specifies the transaction hash',
-	// 			type: 'string'
-	// 		})
-	// 	},
-	// 	commandProcessor: async (argv) => {
-	// 		recordEvent('etherlime truffle', {
-	// 			argv
-	// 		});
-	// 		await truffle.run(argv.transactionHash)
-	// 	}
-	// },
 	{
 		command: 'shape [name]',
 		description: 'Shapes ready to use dApp containing all files and settings.',

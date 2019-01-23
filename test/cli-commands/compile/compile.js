@@ -8,7 +8,7 @@ const sinon = require('sinon');
 
 let error = "In order to use the docker, please set an image name: --solcVersion=<image-name>"
 
-describe.only('Compile cli command', () => {
+describe('Compile cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./contracts')

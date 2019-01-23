@@ -14,9 +14,9 @@ const commandReference = {
   "p": "print instruction",
   "h": "print this help",
   "v": "print variables and values",
-  ":": "evaluate expression - see `v`",
-  "+": "add watch expression (`+:<expr>`)",
-  "-": "remove watch expression (-:<expr>)",
+  ":": `evaluate expression - see ${colors.colorCommand('`v`')}`,
+  "+": `add watch expression (${colors.colorCommand('`+:<expr>`')})`,
+  "-": `remove watch expression (${colors.colorCommand('`-:<expr>`')})`,
   "?": "list existing watch expressions",
   "b": "add breakpoint",
   "B": "remove breakpoint",
@@ -121,8 +121,8 @@ const DebugUtils = {
     }
 
     let prefix = [
-      "Commands:",
-      "(enter) last command entered (" + commandReference[lastCommand] + ")"
+      `${colors.colorName("Commands:")}`,
+      `(${colors.colorCommand('enter')}) last command entered (${colors.colorCommand(commandReference[lastCommand])})`
     ];
 
     let commandSections = [
@@ -181,7 +181,7 @@ const DebugUtils = {
       }
 
       if (pointedAt) {
-        additional = additional.replace(/./g, "^");
+        additional = additional.replace(/./g, `${colors.colorName('^')}`);
       }
 
       output += additional;
