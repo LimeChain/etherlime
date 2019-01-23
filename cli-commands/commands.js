@@ -8,7 +8,7 @@ const shape = require('./shape/shape');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
-const debug = require('./debugger/indexV2');
+const debug = require('./debugger/index');
 
 const commands = [
 	{

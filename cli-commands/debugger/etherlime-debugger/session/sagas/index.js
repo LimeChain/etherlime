@@ -11,7 +11,7 @@ import * as solidity from "../../solidity/sagas";
 import * as evm from "../../evm/sagas";
 import * as trace from "../../trace/sagas";
 import * as data from "../../data/sagas";
-import * as web3 from "../../web3/sagas";
+import * as ethers from "../../ethers/sagas";
 
 import * as actions from "../actions";
 
@@ -55,14 +55,14 @@ export default prefixName("session", saga);
 
 function* forkListeners() {
   return yield all(
-    [ast, controller, data, evm, solidity, trace, web3].map(app =>
+    [ast, controller, data, evm, solidity, trace, ethers].map(app =>
       fork(app.saga)
     )
   );
 }
 
 function* fetchTx(txHash, provider) {
-  let result = yield* web3.inspectTransaction(txHash, provider);
+  let result = yield* ethers.inspectTransaction(txHash, provider);
 
   if (result.error) {
     return result.error;
@@ -75,7 +75,7 @@ function* fetchTx(txHash, provider) {
     addresses.push(result.address);
   }
 
-  let binaries = yield* web3.obtainBinaries(addresses);
+  let binaries = yield* ethers.obtainBinaries(addresses);
   yield all(
     addresses.map((address, i) => call(recordInstance, address, binaries[i]))
   );

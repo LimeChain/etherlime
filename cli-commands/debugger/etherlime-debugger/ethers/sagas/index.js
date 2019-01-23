@@ -7,7 +7,6 @@ import { prefixName } from "../../helpers";
 import * as actions from "../actions";
 import * as session from "../../session/actions";
 
-import Web3Adapter from "../adapter";
 import EthersJSAdapter from "../adapter";
 
 function* fetchTransactionInfo(adapter, { txHash }) {

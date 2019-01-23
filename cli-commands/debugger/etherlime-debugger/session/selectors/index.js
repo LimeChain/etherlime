@@ -52,13 +52,13 @@ const session = createSelectorTree({
 
     /**
      * session.transaction (selector)
-     * contains the web3 transaction object
+     * contains the ethers transaction object
      */
     _: (state) => state.session.transaction,
 
     /**
      * session.transaction.receipt
-     * contains the web3 receipt object
+     * contains the ethers receipt object
      */
     receipt: (state) => state.session.receipt,
 
