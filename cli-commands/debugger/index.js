@@ -14,7 +14,7 @@ const colors = require('../../utils/colors');
 const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
 
-const Debugger = require("./etherlime-debugger/debugger").default;
+const Debugger = require("etherlime-external-debugger").default;
 const selectors = Debugger.selectors;
 
 const DebugUtils = require("./etherlime-debug-utils");
