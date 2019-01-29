@@ -1,5 +1,6 @@
+let isAddress = require('./address-utils').isAddress;
 const isWallet = function (wallet) {
-    if (typeof wallet === 'object' &&  (typeof wallet.signMessage == 'function') && (typeof wallet.getAddress === 'function')) {
+    if (typeof wallet === 'object' && wallet.signingKey && isAddress(wallet.address)) {
         return true
     }
     
