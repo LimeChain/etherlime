@@ -28,7 +28,7 @@ describe('Shape cli command', () => {
 
     it.only('should throw err if try to shape angular twice', async () => {
         let expectedOutput = "remote origin already exists."
-        // await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
+        await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
         console.log("dir", process.cwd())
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess, expectedOutput)
