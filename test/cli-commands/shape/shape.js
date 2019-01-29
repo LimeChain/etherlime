@@ -23,23 +23,28 @@ describe('Shape cli command', () => {
         let expectedOutput = 'Shaping finished successful';
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess.output, expectedOutput)
-        assert(fs.existsSync('./my-app'))
+        assert(fs.existsSync('./web'))
     });
 
     it('should throw err if try to shape angular twice', async () => {
         let expectedOutput = "remote origin already exists."
-        await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess, expectedOutput)
     })
 
-    afterEach(async function() {
-        fs.removeSync('./my-app');
+    after(async function() {
+        fs.removeSync('./contracts')
+        fs.removeSync('./deployment')
+        fs.removeSync('./test')
+        fs.removeSync('./web')
+        fs.removeSync('./node_modules')
+        fs.removeSync('./package.json')
         fs.removeSync('./package-lock.json');
         fs.removeSync('./README.md');
         fs.removeSync('./.git');
+        fs.removeSync('./.etherlime-store')
+        fs.removeSync('./.gitignore')
         process.chdir(currentDir);
     });
 
 });
-
