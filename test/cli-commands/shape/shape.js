@@ -2,6 +2,7 @@ const assert = require('chai').assert;
 let chai = require("chai");
 const fs = require("fs-extra")
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
+const shape = require('../../../cli-commands/shape/shape');
 
 let unexistingShape = 'sthUnexisting'
 
@@ -28,11 +29,11 @@ describe('Shape cli command', () => {
 
     it.only('should throw err if try to shape angular twice', async () => {
         let expectedOutput = "remote origin already exists."
-        await runCmdHandler('etherlime --version', "0.10.7")
         await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
-        await runCmdHandler('etherlime --version', "0.10.7")
+        await runCmdHandler('npm link etherlime")
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess, expectedOutput)
+        
     })
 
     after(async function() {
