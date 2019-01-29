@@ -34,6 +34,11 @@ Milestones
 * [Ready] Being able to run unit tests with code coverage <---- **Done**
 * [Not Ready] Being able to debug transactions <---- **Next**
 
+Community
+~~~~~~~~~~~~~~~
+
+`Join our community group <https://t.me/etherlime/>`__
+
 .. toctree::
    :maxdepth: 3
    :caption: Developer Documentation
@@ -41,6 +46,7 @@ Milestones
    getting-started
    etherlime-api
    etherlime-cli
+   migration-from-truffle-guide
 
 -----
 

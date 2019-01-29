@@ -224,23 +224,28 @@ describe('Ganache fork command', () => {
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
 
-// 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
-// 			assert.equal(forkedNetwork, NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
+			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
+			assert.equal(forkedNetwork, LOCAL_NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
 
-// 		});
+		});
+	});
 
+	describe('Ganache server forking reverse test', async () => {
+		it('should start normal ganache server when empty parameter for forking is specified', async () => {
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork`, expectedOutput);
+			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
-// 		it('should start ganache server forking from specific block number', async () => {
-// 			await timeout(START_SERVER_TIMEOUT);
+			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
+			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
-// 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork https://${config.infuraNetwork}.infura.io/v3/${config.infuraForkAPIKey}@${config.specificblockNumber}`, forkingExpectedOutput);
+		});
 
-// 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
+		it('should start normal ganache server when no parameter for forking is specified', async () => {
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT}`, expectedOutput);
+			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
 
-// 			const forkedBlockNumber = rawOutputNetworkData[1].split(/:(.+)/)[1].trim();
-// 			assert.equal(forkedBlockNumber, config.specificblockNumber, 'The block number that the network is forked from, does not match');
-// 		});
-// 	});
+			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
+			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
 		});
 	});

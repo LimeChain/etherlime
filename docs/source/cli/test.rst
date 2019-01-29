@@ -6,7 +6,7 @@ Syntax
 
 ::
 
-    etherlime test [path] [skip-compilation] [solc-version] [output]
+    etherlime test [path] [skip-compilation] [solc-version] [output] [port]
 
 Parameters:
 
@@ -14,6 +14,7 @@ Parameters:
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
 * ``solc-version`` - [Optional] By specifying ``solc-version`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
+* ``port`` - [Optional] The port that the etherlime ganache is runing. Used for wiring up the default accounts correctly. Defaults to 8545
 
 Global Objects
 --------------
@@ -46,19 +47,46 @@ General Example
 	const Billboard = require('../build/Billboard.json');
 
 	describe('Example', () => {
-		let accountFour = accounts[3];
+		let owner = accounts[3];
 		let deployer;
 
 		beforeEach(async () => {
-			deployer = new etherlime.EtherlimeGanacheDeployer(accountFour.secretKey);
+			deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
 		});
 
 		it('should set correct owner', async () => {
-			const deployedContractWrapper = await deployer.deploy(Billboard, {});
-			const contract = deployedContractWrapper.contract;
-			let _owner = await contract.owner();
+			const BillboardContract = await deployer.deploy(Billboard, {});
+			let _owner = await BillboardContract.owner();
 
 			assert.strictEqual(_owner, owner.wallet.address, 'Initial contract owner does not match');
+		});
+	});
+
+
+execute function from another account
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+	
+	const etherlime = require('etherlime');
+	const ethers = require('ethers');
+	const Billboard = require('../build/Billboard.json');
+
+	describe('Example', () => {
+		let aliceAccount = accounts[3];
+		let deployer;
+
+		beforeEach(async () => {
+			deployer = new etherlime.EtherlimeGanacheDeployer(aliceAccount.secretKey);
+			const BillboardContract = await deployer.deploy(Billboard, {});
+		});
+
+		it('should execute function from another account', async () => {
+			let bobsWallet = accounts[4].wallet;
+			const transaction = await BillboardContract
+				.from(bobsWallet /* Could be address or just index in accounts like 3 */)
+				.buy('Billboard slogan', { value: ONE_ETHER });
+			assert.equal(transaction.from, bobsWallet.address);
 		});
 	});
 
@@ -76,7 +104,7 @@ accounts
 
 		it('should initialize contract with correct values', async () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
-			const deployedContractWrapper = await deployer.deploy(Billboard, {});
+			const BillboardContract = await deployer.deploy(Billboard, {});
 
 			// Do something with the contract
 		});
@@ -92,7 +120,7 @@ assert.revert
 	});
 
 Check if the desired event was broadcasted in the transaction receipt
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
@@ -105,9 +133,9 @@ Check if the desired event was broadcasted in the transaction receipt
 
         it('should emit event', async () => {
             const deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
-            const deployedContractWrapper = await deployer.deploy(Billboard, {});
+            const BillboardContract = await deployer.deploy(Billboard, {});
 
-            const buyTransaction = await deployedContractWrapper.contract.buy('Billboard slogan', { value: ONE_ETHER });
+            const buyTransaction = await BillboardContract.buy('Billboard slogan', { value: 10000 });
 
             const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
 

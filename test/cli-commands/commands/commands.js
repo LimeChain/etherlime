@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache')
+const shape = require('../../../cli-commands/shape/shape');
 
 const commands = require('../../../cli-commands/commands')
 
@@ -27,12 +28,12 @@ describe('root calling cli commands', () => {
     it('should throw err if test cli command failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
-        assert.include(childProcess.output, expectedOutput)
+        assert.include(childProcess, expectedOutput)
     });
 
     it('should throw err if history failed', async function () {
-        let expectedError = " Cannot read property 'actions' of undefined"
-        let childProcess = await runCmdHandler(`etherlime history --limit=0.2`, expectedError);
+        let expectedError = "Cannot read property"
+        let childProcess = await runCmdHandler(`etherlime history --limit=0.4`, expectedError);
         assert.include(JSON.stringify(childProcess), expectedError)
     });
 
@@ -52,6 +53,23 @@ describe('root calling cli commands', () => {
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
         commands[0].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
+    });
+
+    it('should throw err if shape failed', async function() {
+        let stub = sinon.stub(shape, "run")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[7].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);

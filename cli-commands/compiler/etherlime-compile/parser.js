@@ -1,5 +1,4 @@
 var CompileError = require("./compile-error");
-var solc = require("solc");
 var fs = require("fs");
 var path = require("path");
 
@@ -8,7 +7,7 @@ var installedContractsDir = "installed_contracts"
 
 module.exports = {
 
-  parseImports: function (body) {
+  parseImports: function (body, solc) {
     var importErrorKey = "ETHERLIME_IMPORT";
     var failingImportFileName = "__Etherlime__NotFound.sol";
 
@@ -30,7 +29,7 @@ module.exports = {
       }
     };
 
-    var output = solc.compileStandard(JSON.stringify(solcStandardInput), function () {
+    var output = solc.compile(JSON.stringify(solcStandardInput), function () {
       return { error: importErrorKey };
     });
 

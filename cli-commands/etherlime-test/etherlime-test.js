@@ -10,7 +10,7 @@ let ethers = require('ethers');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation, solcVersion) => {
+const run = async (files, skipCompilation, solcVersion, port) => {
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 
@@ -20,7 +20,7 @@ const run = async (files, skipCompilation, solcVersion) => {
 		mocha.addFile(file);
 	});
 
-	setJSTestGlobals();
+	setJSTestGlobals(port);
 
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
@@ -43,7 +43,7 @@ const runMocha = async (mocha) => {
 	return new Promise((resolve, reject) => {
 		mocha.run(failures => {
 			process.exitCode = failures ? -1 : 0;
-			if(failures){
+			if (failures) {
 				reject()
 			} else {
 				resolve()
@@ -52,7 +52,7 @@ const runMocha = async (mocha) => {
 	})
 }
 
-const setJSTestGlobals = async () => {
+const setJSTestGlobals = async (port) => {
 	global.ethers = ethers;
 	global.assert = chai.assert;
 	global.expect = chai.expect;
@@ -63,11 +63,13 @@ const setJSTestGlobals = async () => {
 		parseLogs: events.parseLogs,
 		hasEvent: events.hasEvent
 	}
+	const localNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
+	global.ganacheProvider = localNodeProvider
 	const importedAccounts = new Array();
 	for (const acc of accounts) {
 		importedAccounts.push({
 			secretKey: acc.secretKey,
-			wallet: new ethers.Wallet(acc.secretKey)
+			wallet: new ethers.Wallet(acc.secretKey, localNodeProvider)
 		})
 	}
 	global.accounts = importedAccounts;

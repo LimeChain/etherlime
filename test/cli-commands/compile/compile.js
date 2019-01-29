@@ -1,4 +1,4 @@
-const compiler = require('../../../cli-commands/compiler/compiler')
+const compiler = require('../../../cli-commands/compiler/compiler');
 const assert = require('chai').assert;
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
@@ -65,7 +65,7 @@ describe('Compile cli command', () => {
     });
 
     after( async function() {
-        fs.removeSync('./contracts')
+        fs.removeSync('./contracts');
         fs.removeSync('./specific');
         fs.removeSync('./build');
     });

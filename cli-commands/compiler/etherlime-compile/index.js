@@ -68,7 +68,7 @@ var compile = function (sources, options, callback) {
 	var supplier = new CompilerSupplier(options.compilers.solc);
 
 	supplier.load().then(solc => {
-		var result = solc.compileStandard(JSON.stringify(solcStandardInput));
+		var result = solc.compile(JSON.stringify(solcStandardInput));
 
 		var standardOutput = JSON.parse(result);
 
@@ -133,6 +133,26 @@ var compile = function (sources, options, callback) {
 				}
 		
 				contract_definition.abi = orderABI(contract_definition);
+				Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
+					var fileLinks = contract.evm.bytecode.linkReferences[file_name];
+
+					Object.keys(fileLinks).forEach(function (library_name) {
+						var linkReferences = fileLinks[library_name] || [];
+
+						contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name);
+						contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name);
+					});
+				});
+
+				Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
+					var fileLinks = contract.evm.deployedBytecode.linkReferences[file_name];
+
+					Object.keys(fileLinks).forEach(function (library_name) {
+						var linkReferences = fileLinks[library_name] || [];
+
+						contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name);
+					});
+				});
 
 				returnVal[contract_name] = contract_definition;
 			});
@@ -142,6 +162,7 @@ var compile = function (sources, options, callback) {
 	})
 		.catch(callback);
 };
+
 
 
 function orderABI(contract) {

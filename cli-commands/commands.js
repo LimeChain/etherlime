@@ -4,14 +4,10 @@ const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
+const shape = require('./shape/shape');
 const logger = require('./../logger-service/logger-service').logger;
-const KeenTracking = require('keen-tracking');
-const analyticsKeys = require('./analytics.json');
-
-const analyticsClient = new KeenTracking({
-	projectId: analyticsKeys.projectId,
-	writeKey: analyticsKeys.writeKey
-});
+const eventTracker = require('./event-tracker');
+const recordEvent = eventTracker.recordEvent
 
 const commands = [
 	{
@@ -36,7 +32,7 @@ const commands = [
 			})
 		},
 		commandProcessor: (argv) => {
-			analyticsClient.recordEvent('etherlime ganache', {
+			recordEvent('etherlime ganache', {
 				argv
 			});
 
@@ -63,7 +59,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime init', {
+			recordEvent('etherlime init', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -128,8 +124,8 @@ const commands = [
 				}
 				delete statistics.argv.secret;
 
-				analyticsClient.recordEvent('etherlime deploy', {
-					argv
+				recordEvent('etherlime deploy', {
+					statistics
 				});
 			}
 		}
@@ -152,7 +148,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime history', {
+			recordEvent('etherlime history', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -217,7 +213,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime compile', {
+			recordEvent('etherlime compile', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
@@ -255,18 +251,24 @@ const commands = [
 			yargs.positional('output', {
 				describe: 'Defines the way that the logs are shown',
 				type: 'string',
-				default: 'normal',
+				default: 'none',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('port', {
+				describe: 'The port that the etherlime ganache is running in order to instantiate the test accounts',
+				type: 'number',
+				default: 8545
+			})
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime test', {
+			recordEvent('etherlime test', {
 				argv
 			});
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion);
+				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -295,10 +297,35 @@ const commands = [
 			})
 		},
 		commandProcessor: async (argv) => {
-			analyticsClient.recordEvent('etherlime coverage', {
+			recordEvent('etherlime coverage', {
 				argv
 			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+		}
+	},
+	{
+		command: 'shape [name]',
+		description: 'Shapes ready to use dApp containing all files and settings.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('name', {
+				describe: 'Specifies the name of the framework or library that the project will be build up.',
+				type: 'string'
+			})
+		},
+		commandProcessor: (argv) => {
+			recordEvent('etherlime shape', {
+				argv
+			});
+
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				shape.run(argv.name);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	}
 ]

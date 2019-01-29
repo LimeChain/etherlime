@@ -5,7 +5,7 @@ const request = require('request-promise');
 const requireFromString = require('require-from-string');
 const findCacheDir = require('find-cache-dir');
 const originalRequire = require('original-require');
-const solcWrap = require('./solcWrap.js');
+const solcWrap = require('solc/wrapper');
 
 function CompilerSupplier(_config) {
     _config = _config || {};
@@ -44,7 +44,7 @@ CompilerSupplier.prototype.cachePath = findCacheDir({
  * - local node_modules            (config.version = <undefined>)
  * - absolute path to a local solc (config.version = <path>)
  *
- * OR specify that solc.compileStandard should wrap:
+ * OR specify that solc.compile should wrap:
  * - dockerized solc               (config.version = "<image-name>" && config.docker: true)
  */
 CompilerSupplier.prototype.load = function () {
@@ -194,7 +194,7 @@ CompilerSupplier.prototype.getBuilt = function (buildType) {
         .getByUrl(commit)
         .then(solcjs => {
             return {
-                compileStandard: (options) => String(child.execSync(command, { input: options })),
+                compile: (options) => String(child.execSync(command, { input: options })),
                 version: () => versionString,
                 importsParser: solcjs,
             }

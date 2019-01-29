@@ -9,6 +9,10 @@ const deployer = require('../../../cli-commands/deployer/deployer');
 const compiler = require('../../../cli-commands/compiler/compiler');
 const logger = require('../../../logger-service/logger-service').logger;
 const file = require('./deploymentScriptsFile').file;
+<<<<<<< HEAD
+=======
+const deploymentWithLib = require('./deploymentWithLib').deploymentWithLib;
+>>>>>>> etherlime-shape
 let compileSpy = sinon.spy(compiler, "run");
 let loggerSpy = sinon.spy(logger, "log");
 
@@ -30,7 +34,11 @@ describe('Deploy cli command', () => {
         fs.writeFileSync(`${deployFolder}/deploy.js`, file);
         await assert.isFulfilled(deployer.run(), 'It was not successfully executed');
         sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+<<<<<<< HEAD
         await fs.removeSync(deployFolder)
+=======
+        await fs.removeSync('./deployment/deploy.js')
+>>>>>>> etherlime-shape
     });
 
     it('should throw error if "./deploy.js" file does not exist', async function () {
@@ -72,9 +80,13 @@ describe('Deploy cli command', () => {
 
     it('should deploy with compile parameter', async function () {
         fs.mkdirSync(contractFolder)
-        await deployer.run(specificFile, undefined, undefined, undefined, true);
+        fs.copyFileSync('./test/cli-commands/deploy/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+        fs.copyFileSync('./test/cli-commands/deploy/examples/LimeFactoryLib.sol', './contracts/LimeFactoryLib.sol');
+        fs.writeFileSync(`${deployFolder}/deploy.js`, deploymentWithLib);
+        await deployer.run('./deployment/deploy.js', undefined, undefined, undefined, true);
         sinon.assert.calledWith(compileSpy, '.');
-        sinon.assert.calledWithExactly(loggerSpy, successfulMessage)
+        sinon.assert.calledWithExactly(loggerSpy, successfulMessage);
+        fs.removeSync(deployFolder)
     });
 
     it('should deploy with compile and run parameters', async function () {
@@ -93,6 +105,7 @@ describe('Deploy cli command', () => {
 
     afterEach(async function () {
         loggerSpy.restore();
+        fs.removeSync('./build')
         await fs.removeSync('./.etherlime-store')
     })
 })

@@ -36,12 +36,17 @@ let currentDir;
             await assert.isRejected(test.run('wrongTestDirectory'));  
         });
     
-        it('should execute test cli command when path does not inclues specific .js file', async function() {
+        it('should execute test cli command when path does not includes specific .js file', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
             await assert.isFulfilled(test.run('./exampleToRun'))
             sinon.assert.calledWith(etherlimeTestSpy, calledArgs)
             etherlimeTestSpy.restore();
         });
+
+        it('should execute test cli command if path includes ./test folder', async function(){
+            fs.mkdirSync('./test');
+            await assert.isFulfilled(test.run(`${process.cwd()}/test`))
+        })
     
         after(async function () {
             process.chdir(currentDir);

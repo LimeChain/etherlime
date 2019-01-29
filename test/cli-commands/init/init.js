@@ -18,6 +18,7 @@ const testFileDestination = `${testDir}/exampleTest.js`;
 const testError = "example.js already exists in ./test directory. You've probably already initialized etherlime for this project."
 
 const packageJsonDestination = './package.json';
+const gitignoreFileDestination = './.gitignore';
 
 
 describe('Init cli command', () => {
@@ -71,6 +72,21 @@ describe('Init cli command', () => {
         await assert.isRejected(init.run(), testError, "Expected throw not received");
     });
     
+    it('should have .gitignore file', async () => {
+        let gitignoreFile = fs.existsSync(gitignoreFileDestination);
+        assert.isTrue(gitignoreFile, "The 'gitignoreFile' file should exist.");
+    });
+
+    it('should not override .gitignore file if it was already created', async () => {
+        fs.removeSync(deploymentDir);
+        fs.removeSync(testDir);
+        fs.removeSync(contractsDir);
+        fs.removeSync('./.gitignore');
+        fs.writeFileSync('.gitignore', "myCustomFile");
+        await init.run();
+        let file = fs.readFileSync('.gitignore', "utf8");
+        assert.notInclude('build')
+    });
 
     after(async function() {
         fs.removeSync(deploymentDir);
@@ -79,6 +95,7 @@ describe('Init cli command', () => {
         fs.removeSync(packageJsonDestination);
         fs.removeSync('./package-lock.json');
         fs.removeSync('./node_modules');
+        fs.removeSync('./.gitignore');
         process.chdir(currentDir);
     });
 
