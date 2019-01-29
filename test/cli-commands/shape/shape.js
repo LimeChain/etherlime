@@ -26,7 +26,7 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./web'))
     });
 
-    it('should throw err if try to shape angular twice', async () => {
+    it.only('should throw err if try to shape angular twice', async () => {
         let expectedOutput = "remote origin already exists."
         await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
