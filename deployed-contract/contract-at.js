@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const ganacheSetupConfig = require('./../deployer/setup.json');
 const isWallet = require('./../utils/wallet-utils').isWallet;
+const isProvider = require('./../utils/provider-utils').isProvider;
 
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const EtherlimeGanacheWrapper = require('./etherlime-ganache-wrapper');
@@ -14,18 +15,17 @@ const EtherlimeGanacheWrapper = require('./etherlime-ganache-wrapper');
  */
 const contractAt = async (contract, contractAddress, wallet, providerOrPort) => {
 
-	if (providerOrPort instanceof ethers.providers.Provider) {
+	if (isProvider(providerOrPort)) {
 		if (!wallet || !(isWallet(wallet))) {
 			throw new Error(`Incorrect wallet supplied - ${JSON.stringify(wallet)}`)
 		}
-		const walletInstance = await wallet.connect(providerOrPort)
-		return new DeployedContractWrapper(contract, contractAddress, walletInstance, providerOrPort)
+		return new DeployedContractWrapper(contract, contractAddress, wallet, providerOrPort)
 	}
 
 	if (!providerOrPort) {
 		providerOrPort = 8545
 	}
-
+	
 	if (Number.isInteger(providerOrPort)) {
 		const provider = new ethers.providers.JsonRpcProvider(`http://localhost:${providerOrPort}`)
 		let walletInstance;
