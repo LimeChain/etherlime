@@ -8,7 +8,7 @@ let unexistingShape = 'sthUnexisting'
 describe('Shape cli command', () => {
     let currentDir;
 
-    beforeEach( async function() {
+    before( async function() {
         currentDir = process.cwd();
         process.chdir('/tmp');
     });
@@ -26,14 +26,7 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./web'))
     });
 
-    it.only('should throw err if try to shape angular twice', async () => {
-        let expectedOutput = "remote origin already exists."
-        await runCmdHandler('etherlime shape angular', "Shaping finished successful!")
-        let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
-        assert.include(childProcess, expectedOutput)
-    })
-
-    afterEach(async function() {
+    after(async function() {
         fs.removeSync('./contracts')
         fs.removeSync('./deployment')
         fs.removeSync('./test')
