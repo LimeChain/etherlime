@@ -29,7 +29,7 @@ function runCmdHandler(cmd, outputCondition) {
 			let outputLoaded;
 
 			commandOutput += data.toString('utf-8');
-
+			
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
 
 			if (outputLoaded) {
