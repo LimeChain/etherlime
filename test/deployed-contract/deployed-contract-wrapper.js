@@ -43,7 +43,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 				new etherlime.DeployedContractWrapper(Greetings, config.randomAddress, invalidSigner, deployer.provider);
 				assert.fail('Creating wrapper with invalid signer did not throw');
 			} catch (e) {
-				assert.strictEqual(e.message, 'Passed signer is not a valid instance of ethers Signer');
+				assert.strictEqual(e.message, 'Passed signer is not a valid signer instance of ethers Wallet');
 			}
 		});
 

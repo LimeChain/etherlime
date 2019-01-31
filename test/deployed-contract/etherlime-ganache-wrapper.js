@@ -159,7 +159,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		});
 
 		it('should throw on invalid from', async () => {
-			assert.throws(() => deployedContract.from(14.6), Error, "Unrecognised input parameter. It should be index, address or signer instance")
+			assert.throws(() => deployedContract.from(14.6), Error, "Unrecognized input parameter. It should be index, address or signer instance")
 		});
 
 	})
