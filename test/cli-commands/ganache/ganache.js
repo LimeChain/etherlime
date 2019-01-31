@@ -5,7 +5,7 @@ const killProcessByPID = require('../utils/spawn-child-process').killProcessByPI
 const timeout = require('../../utils/timeout').timeout;
 const hookStream = require('../../utils/hookup-standard-output').hookStream;
 const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
-const walletUtil = require('./../utils/wallet');
+const signerUtil = require('./../utils/signer');
 const find = require('find-process');
 
 const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
@@ -34,13 +34,13 @@ const PRIVATE_KEY_START_INDEX = 69;
 const PRIVATE_KEY_LENGTH = 66;
 
 const FIRST_PRIVATE_KEY = ganacheSetupFile.accounts[0].secretKey;
-const FIRST_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[0].secretKey);
+const FIRST_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[0].secretKey);
 
 const THIRD_PRIVATE_KEY = ganacheSetupFile.accounts[2].secretKey;
-const THIRD_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[2].secretKey);
+const THIRD_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[2].secretKey);
 
 const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
-const TENTH_ACCOUNT_ADDRESS = walletUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
+const TENTH_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
 const LOCAL_NETWORK_FORK_ADDRESS = "http://localhost:8545";
 const LOCAL_NETWORK_URL = "http://localhost";
 
@@ -250,42 +250,42 @@ describe('Ganache fork command', () => {
 		});
 	});
 
-	describe('Ganache server forking initializing wallet test', async () => {
+	describe('Ganache server forking initializing signer test', async () => {
 
 		let jsonRpcProvider;
-		let localInitializedWallet;
+		let localInitializedSigner;
 		let balance;
 		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
 
-		let randomWallet;
-		let balanceRandomWallet
+		let randomWSigner;
+		let balanceRandomSigner
 
 		before(async () => {
 			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+			localInitializedSigner = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
 
-			randomWallet = ethers.Wallet.createRandom();
-			const transaction = await localInitializedWallet.sendTransaction({
-				to: randomWallet.address,
+			randomSigner = ethers.Wallet.createRandom();
+			const transaction = await localInitializedSigner.sendTransaction({
+				to: randomSigner.address,
 				value: ethers.utils.parseEther("1.0")
 			});
 			await transaction.wait();
-			newRandomWallet = randomWallet.connect(jsonRpcProvider);
-			balanceRandomWallet = await newRandomWallet.getBalance();
+			newRandomSigner = randomSigner.connect(jsonRpcProvider);
+			balanceRandomSigner = await newRandomSigner.getBalance();
 
 		});
 
-		it('should start ganache server forking from specific network and initialize wallet that exists already in the forked network with the same balance', async () => {
+		it('should start ganache server forking from specific network and initialize signer that exists already in the forked network with the same balance', async () => {
 
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
 			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
 			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(`${LOCAL_NETWORK_URL}:8125`);
-			const forkedWallet = new ethers.Wallet(randomWallet.privateKey, forkedJsonRpcProvider);
-			const balanceInForkedWallet = await forkedWallet.getBalance();
+			const forkedSigner = new ethers.Wallet(randomSigner.privateKey, forkedJsonRpcProvider);
+			const balanceInForkedSigner = await forkedSigner.getBalance();
 
-			assert.notDeepEqual(randomWallet.provider, forkedWallet.provider, 'The wallet provider from the forked network is deep equal with wallet provider from the network, that the fork is made from');
-			assert.deepEqual(randomWallet.address, forkedWallet.address, 'The stored walled address from the forked network is not the stored wallet address from the network, that the fork is made from');
-			assert.deepEqual(balanceRandomWallet, balanceInForkedWallet, 'The balance in the two wallets is not equal');
+			assert.notDeepEqual(randomSigner.provider, forkedSigner.provider, 'The signer provider from the forked network is deep equal with signer provider from the network, that the fork is made from');
+			assert.deepEqual(randomSigner.address, forkedSigner.address, 'The stored walled address from the forked network is not the stored signer address from the network, that the fork is made from');
+			assert.deepEqual(balanceRandomSigner, balanceInForkedSigner, 'The balance in the two signers is not equal');
 
 		});
 	});
@@ -300,7 +300,7 @@ describe('Ganace fork existing contract tests', async () => {
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {
 
 		let jsonRpcProvider;
-		let localInitializedWallet;
+		let localInitializedSigner;
 		let localNetworkToListen = `${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`;
 		let localDeployedContract;
 		let localDeployedContractResult;
@@ -312,19 +312,19 @@ describe('Ganace fork existing contract tests', async () => {
 		let forkedDeployedContract;
 		let forkedDeployedContractAddress;
 		let forkedDeployedContractSlogan;
-		let forkedWallet;
+		let forkedSigner;
 		let forkedConnectedContract;
 
 		before(async () => {
 			//Deploy contract on locally started etherlime ganache
 			jsonRpcProvider = new ethers.providers.JsonRpcProvider(localNetworkToListen);
-			localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
-			let factory = new ethers.ContractFactory(Billboard.abi, Billboard.bytecode, localInitializedWallet);
+			localInitializedSigner = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+			let factory = new ethers.ContractFactory(Billboard.abi, Billboard.bytecode, localInitializedSigner);
 			let contract = await factory.deploy();
 			localDeployedContractResult = await contract.deployed();
 			localDeployedContractAddress = localDeployedContractResult.address;
 			localDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, jsonRpcProvider);
-			localConnectedContract = localDeployedContract.connect(localInitializedWallet);
+			localConnectedContract = localDeployedContract.connect(localInitializedSigner);
 			await localConnectedContract.setPrice(50);
 			const sentTransaction = await localConnectedContract.buy('I love Sisi', { value: 51 });
 			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
@@ -337,8 +337,8 @@ describe('Ganace fork existing contract tests', async () => {
 			forkedDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, forkedJsonRpcProvider);
 			forkedDeployedContractAddress = forkedDeployedContract.address;
 			forkedDeployedContractSlogan = await forkedDeployedContract.slogan();
-			forkedWallet = new ethers.Wallet(config.localPrivateKey, forkedJsonRpcProvider);
-			forkedConnectedContract = forkedDeployedContract.connect(forkedWallet);
+			forkedSigner = new ethers.Wallet(config.localPrivateKey, forkedJsonRpcProvider);
+			forkedConnectedContract = forkedDeployedContract.connect(forkedSigner);
 
 
 		});
