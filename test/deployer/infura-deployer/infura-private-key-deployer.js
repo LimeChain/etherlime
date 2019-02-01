@@ -11,12 +11,12 @@ const defaultConfigs = {
 describe('Infura private key tests', () => {
 
 	describe('Initialization', async () => {
-		it('Should initialize the wallet with correct values', () => {
+		it('Should initialize the signer with correct values', () => {
 			const deployer = new etherlime.InfuraPrivateKeyDeployer(config.infuraPrivateKey, config.infuraNetwork, config.infuraAPIKey, defaultConfigs);
 			assert.deepEqual(config.infuraNetwork, deployer.network, "The stored provider network does not match the inputted one");
 			assert.deepEqual(config.infuraAPIKey, deployer.apiKey, "The stored provider api key does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 		})
 
 		it('Provider method toString should return string', () => {
@@ -38,7 +38,7 @@ describe('Infura private key tests', () => {
 
 			assert.deepEqual(config.infuraAPIKey, deployer.apiKey, "The stored provider api key does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 		});
 
 		it('Should set api key', () => {
@@ -51,7 +51,7 @@ describe('Infura private key tests', () => {
 
 			assert.deepEqual(config.infuraNetwork, deployer.network, "The stored provider network does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + config.infuraPrivateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 		});
 	});
 });

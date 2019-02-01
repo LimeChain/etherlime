@@ -42,4 +42,3 @@ describe('Shape cli command', () => {
     });
 
 });
-
