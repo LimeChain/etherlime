@@ -5,9 +5,10 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
-const ganache = require('../../../cli-commands/ganache/ganache')
+const ganache = require('../../../cli-commands/ganache/ganache');
+const myDebugger = require('../../../cli-commands/debugger/index');
 
-const commands = require('../../../cli-commands/commands')
+const commands = require('../../../cli-commands/commands');
 
 
 describe('root calling cli commands', () => {
@@ -60,6 +61,32 @@ describe('root calling cli commands', () => {
         stub.restore();
         consoleSpy.restore();
     })
+    describe('root calling etherlime debug', async () => {
+        // let childProcess;
+        // before(async function () {
+        //     fs.mkdirSync('./contracts')
+        //     fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
+        // });
 
+        it('should throw err if starting of debugger failed', async function () {
+            let stub = sinon.stub(myDebugger, "run")
+            stub.throws()
+            let argv = {
+                output: "some message"
+            }
+            let errorMessage = "Error"
+            let consoleSpy = sinon.spy(console, "error");
+            commands[7].commandProcessor(argv)
+            let logs = consoleSpy.getCall(0);
+            let error = String(logs.args[0])
+            let errorLogged = error.includes(errorMessage);
+            assert.isTrue(errorLogged, errorMessage);
+            stub.restore();
+            consoleSpy.restore();
+        });
 
+        // after(async function () {
+        //     fs.removeSync('./contracts');
+        // });
+    });
 })

@@ -10,7 +10,7 @@ function spawnLinuxProcess(cmd) {
 	return spawn(cmdParts[0], cmdParts.slice(1));
 }
 
-function runCmdHandler(cmd, outputCondition) {
+function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditionalCommand, thirdAdditionalCommand) {
 	return new Promise((resolve, reject) => {
 		let process = null;
 		let commandOutput = '';
@@ -29,10 +29,13 @@ function runCmdHandler(cmd, outputCondition) {
 			let outputLoaded;
 
 			commandOutput += data.toString('utf-8');
+			// console.log('OGI Output:', commandOutput)
 
+			// console.log('OUTPUT CONDITION', outputCondition)
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
-
+			// console.log('outputLoaded:', outputLoaded)
 			if (outputLoaded) {
+				// console.log('RESOLVE')
 				const processRespond = {
 					process: process,
 					output: commandOutput,
@@ -45,8 +48,9 @@ function runCmdHandler(cmd, outputCondition) {
 
 		process.stderr.on('data', function (data) {
 			const err = data.toString('utf-8');
-			
+			// console.log('HERE3', err);
 			if (!err.includes('EADDRINUSE')) {
+				// console.log('OGI HERE')
 				return resolve(err);
 			}
 
@@ -56,6 +60,27 @@ function runCmdHandler(cmd, outputCondition) {
 
 			resolve(errResponse);
 		});
+
+		if (additionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(additionalCommand);
+			}, 3000);
+		}
+
+		if (secondAdditionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(secondAdditionalCommand);
+			}, 4000);
+		}
+
+		if (thirdAdditionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(thirdAdditionalCommand);
+			}, 5000);
+		}
 	});
 }
 

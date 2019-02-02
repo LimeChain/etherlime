@@ -58,7 +58,6 @@ const DebugUtils = {
             accept(
               contracts.map(contract => {
                 debug("contract.sourcePath: %o", contract.sourcePath);
-
                 return {
                   contractName: contract.contractName,
                   source: contract.source,

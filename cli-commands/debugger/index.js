@@ -55,7 +55,6 @@ const config = {
 config.resolver = new Resolver(config)
 config.solc = {
 	optimizer: { enabled: false, runs: 200 },
-	evmVersion: 'byzantium'
 };
 
 let lastCommand = "n";
@@ -69,10 +68,6 @@ function sessionInterpreter(session, repl) {
 		cmd = cmd.trim();
 		let cmdArgs, splitArgs;
 		debug("cmd %s", cmd);
-
-		if (cmd === ".exit") {
-			cmd = "q";
-		}
 
 		//split arguments for commands that want that; split on runs of spaces
 		splitArgs = cmd
@@ -93,6 +88,7 @@ function sessionInterpreter(session, repl) {
 
 		//quit if that's what we were given
 		if (cmd === "q") {
+			console.log('Exiting debugger...')
 			return await util.promisify(repl.stop.bind(repl))();
 		}
 
@@ -164,6 +160,7 @@ function sessionInterpreter(session, repl) {
 				break;
 			case "-":
 				enabledExpressions.delete(cmdArgs);
+				console.log('Expression removed!')
 				break;
 			case "!":
 				printSelector(cmdArgs, session);
@@ -275,12 +272,10 @@ function setOrClearBreakpoint(args, setOrClear, session) {
 		debug("relative case");
 		let delta = parseInt(args[0], 10); //want an integer
 		debug("delta %d", delta);
-
 		if (isNaN(delta)) {
 			console.log("Offset must be an integer.\n");
 			return;
 		}
-
 		breakpoint.sourceId = currentSourceId;
 		breakpoint.line = currentLine + delta;
 	}
@@ -459,7 +454,6 @@ function printState(session) {
 	let lines = splitLines(source);
 
 	console.log("");
-
 	console.log(DebugUtils.formatRangeLines(lines, range.lines));
 
 	console.log("");
@@ -515,7 +509,7 @@ function printWatchExpressions() {
 		return;
 	}
 
-	config.console.log("");
+	console.log("");
 	enabledExpressions.forEach(function (expression) {
 		console.log("  " + expression);
 	});
@@ -677,7 +671,6 @@ async function compileAllContracts(config) {
 }
 
 const run = async function (inputParams) {
-
 	//add custom inspect options for BNs
 	BN.prototype[util.inspect.custom] = function (depth, inputParams) {
 		return inputParams.stylize(this.toString(), "number");
@@ -735,8 +728,8 @@ const run = async function (inputParams) {
 				done: resolve
 			});
 		} catch (err) {
-			console.log(err)
-			reject(err)
+			console.log(err);
+			reject(err);
 		}
 	})
 

@@ -317,7 +317,12 @@ const commands = [
 			recordEvent('etherlime debbuger', {
 				argv
 			});
-			await debug.run(argv.transactionHash)
+			try {
+				await debug.run(argv.transactionHash)
+			} catch (err) {
+				console.error(err);
+			}
+
 		}
 	},
 	{
