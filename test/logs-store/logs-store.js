@@ -10,7 +10,6 @@ describe('Logs store tests', () => {
 	const label = 'Label Name';
 	const transactionHash = '0x00'
 	const status = 1;
-	const networkID = 3;
 	const result = 'Result of the transaction'
 
 	let history;
@@ -31,7 +30,7 @@ describe('Logs store tests', () => {
 	});
 
 	it('should log actions correctly', () => {
-		store.logAction(deployerType, label, transactionHash, status, networkID, result);
+		store.logAction(deployerType, label, transactionHash, status, result);
 
 		const lastRecord = store.getLastWorkingRecord();
 		const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
@@ -41,7 +40,6 @@ describe('Logs store tests', () => {
 		assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
 		assert(lastAction.status == status, 'status not set correctly');
 		assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
-		assert(lastAction.networkID == networkID, 'networkID not set correctly');
 
 		const currentRecord = store.getLastWorkingRecord();
 		const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
@@ -51,7 +49,6 @@ describe('Logs store tests', () => {
 		assert(currentAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
 		assert(currentAction.status == status, 'status not set correctly');
 		assert(currentAction.eventTimestamp >= now, 'timestamp set was not correct');
-		assert(currentAction.networkID == networkID, 'networkID not set correctly');
 	});
 
 	it('should not log if logs not inited', () => {
@@ -59,7 +56,7 @@ describe('Logs store tests', () => {
 		const actionsBefore = lastRecord.actions.length;
 		store.isInitied = false;
 
-		store.logAction(deployerType, label, transactionHash, status, networkID, result);
+		store.logAction(deployerType, label, transactionHash, status, result);
 
 		lastRecord = store.getCurrentWorkingRecord();
 		const actionsAfter = lastRecord.actions.length;
