@@ -10,6 +10,7 @@ describe('Logs store tests', () => {
 	const label = 'Label Name';
 	const transactionHash = '0x00'
 	const status = 1;
+	const networkID = 3;
 	const result = 'Result of the transaction'
 
 	let history;
@@ -20,7 +21,7 @@ describe('Logs store tests', () => {
 
 	it('should initialize the store', () => {
 		store.initHistoryRecord();
-		assert(store._historyStore.path.endsWith('.etherlime-store/.history.json'), 'Icorrect path');
+		assert(store._historyStore.path.endsWith('.etherlime-store/.history.json'), 'Incorrect path');
 		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
 	})
 
@@ -30,7 +31,7 @@ describe('Logs store tests', () => {
 	});
 
 	it('should log actions correctly', () => {
-		store.logAction(deployerType, label, transactionHash, status, result);
+		store.logAction(deployerType, label, transactionHash, status, networkID, result);
 
 		const lastRecord = store.getLastWorkingRecord();
 		const lastAction = lastRecord.actions[lastRecord.actions.length - 1];
@@ -40,6 +41,7 @@ describe('Logs store tests', () => {
 		assert(lastAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
 		assert(lastAction.status == status, 'status not set correctly');
 		assert(lastAction.eventTimestamp >= now, 'timestamp set was not correct');
+		assert(lastAction.networkID == networkID, 'networkID not set correctly');
 
 		const currentRecord = store.getLastWorkingRecord();
 		const currentAction = currentRecord.actions[currentRecord.actions.length - 1];
@@ -49,6 +51,7 @@ describe('Logs store tests', () => {
 		assert(currentAction.transactionHash == transactionHash, 'Transaction hash not set correctly');
 		assert(currentAction.status == status, 'status not set correctly');
 		assert(currentAction.eventTimestamp >= now, 'timestamp set was not correct');
+		assert(currentAction.networkID == networkID, 'networkID not set correctly');
 	});
 
 	it('should not log if logs not inited', () => {
@@ -56,7 +59,7 @@ describe('Logs store tests', () => {
 		const actionsBefore = lastRecord.actions.length;
 		store.isInitied = false;
 
-		store.logAction(deployerType, label, transactionHash, status, result);
+		store.logAction(deployerType, label, transactionHash, status, networkID, result);
 
 		lastRecord = store.getCurrentWorkingRecord();
 		const actionsAfter = lastRecord.actions.length;

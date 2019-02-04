@@ -202,8 +202,9 @@ class Deployer {
 	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
-	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result);
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result) {
+		const network = await this.provider.getNetwork();
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result);
 	}
 
 	/**
