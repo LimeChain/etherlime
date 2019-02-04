@@ -43,12 +43,12 @@ Sometimes you want to work with already deployed contract. You can do this two w
 
 etherlime.ContractAt
 ====================
-``etherlime.ContractAt(contract, contractAddress, [wallet], [providerOrPort])``
+``etherlime.ContractAt(contract, contractAddress, [signer], [providerOrPort])``
 
 Etherlime has a convenience method allowing you to quickly wrap contracts. Passing the contract descriptor
 and the address it is deployed ``ContractAt`` will wire up an instance of the wrapper connected to etherlime ganache on the default port and default account.
 Optionally you can provide an account and port to connect to etherlime ganache.
-Alternativelly if you want to connect to another provider you can pass it as last paremeter, but then you must pass wallet too.
+Alternatively if you want to connect to another provider you can pass it as last parameter, but then you must pass a signer too which is already connected to the same provider.
 
 ::
 

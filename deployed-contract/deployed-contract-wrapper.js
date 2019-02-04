@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const isAddress = require('./../utils/address-utils').isAddress;
-const isWallet = require('./../utils/wallet-utils').isWallet;
+const isSigner = require('./../utils/signer-utils').isSigner;
 const isValidContract = require('./../utils/contract-utils').isValidContract;
 const colors = require('./../utils/colors');
 const logsStore = require('./../logs-store/logs-store');
@@ -15,16 +15,16 @@ class DeployedContractWrapper {
 	 *
 	 * @param {*} contract The deployed contract descriptor
 	 * @param {*} contractAddress The address of the deployed contract
-	 * @param {*} wallet The wallet that has deployed this contract
+	 * @param {*} signer The signer that has deployed this contract
 	 * @param {*} provider ethers provider
 	 */
-	constructor(contract, contractAddress, wallet, provider) {
-		this._validateInput(contract, contractAddress, wallet, provider);
+	constructor(contract, contractAddress, signer, provider) {
+		this._validateInput(contract, contractAddress, signer, provider);
 		this.contractAddress = contractAddress;
-		this.wallet = wallet;
+		this.signer = signer;
 		this.provider = provider;
 		this._contract = contract;
-		this.contract = new ethers.Contract(contractAddress, contract.abi, wallet);
+		this.contract = new ethers.Contract(contractAddress, contract.abi, signer);
 		Object.assign(this, this.contract.functions);
 		this.interface = this.contract.interface
 		this.estimate = this.contract.estimate
@@ -32,9 +32,9 @@ class DeployedContractWrapper {
 		this.filters = this.contract.filters
 	}
 
-	_validateInput(contract, contractAddress, wallet, provider) {
-		if (!(isWallet(wallet))) {
-			throw new Error('Passed wallet is not instance of ethers Wallet');
+	_validateInput(contract, contractAddress, signer, provider) {
+		if (!(isSigner(signer))) {
+			throw new Error('Passed signer is not a valid signer instance of ethers Wallet');
 		}
 
 		if (!(isAddress(contractAddress))) {

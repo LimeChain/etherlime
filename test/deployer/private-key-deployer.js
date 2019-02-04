@@ -23,23 +23,23 @@ describe('Private key deployer tests', () => {
 
 	describe('Initialization', async () => {
 
-		it('should initialize the wallet with correct private key without 0x', () => {
+		it('should initialize the signer with correct private key without 0x', () => {
 
 			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
 
-			assert.deepEqual('0x' + config.randomPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + config.randomPrivateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+			assert.deepEqual(provider, deployer.signer.provider, "The provider of the signer does not match the inputted provider");
 		})
 
-		it('should initialize the wallet with correct private key with 0x', () => {
+		it('should initialize the signer with correct private key with 0x', () => {
 			const deployer = new etherlime.PrivateKeyDeployer('0x' + config.randomPrivateKey, provider, defaultConfigs);
 
-			assert.deepEqual('0x' + config.randomPrivateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + config.randomPrivateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+			assert.deepEqual(provider, deployer.signer.provider, "The provider of the signer does not match the inputted provider");
 		})
 
 		it('should throw on incorrect private key', () => {
@@ -47,14 +47,14 @@ describe('Private key deployer tests', () => {
 				new etherlime.PrivateKeyDeployer('Random Things Here', provider, defaultConfigs)
 			}
 
-			assert.throws(throwingFunction, "The deployer did not throw with invalid wallet");
+			assert.throws(throwingFunction, "The deployer did not throw with invalid signer");
 		})
 
 		it('Provider method toString should return string', () => {
 			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
 			const returnedString = deployer.toString();
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
-			assert(returnedString.includes(deployer.wallet.address), `The returned toString method did not contain ${config.nodeUrl}`)
+			assert(returnedString.includes(deployer.signer.address), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
 	})
 
@@ -65,11 +65,11 @@ describe('Private key deployer tests', () => {
 			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
 			deployer.setPrivateKey(privateKey);
 
-			assert.deepEqual('0x' + privateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual('0x' + privateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 
 			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+			assert.deepEqual(provider, deployer.signer.provider, "The provider of the signer does not match the inputted provider");
 		});
 
 		it('should set private key with 0x', () => {
@@ -78,11 +78,11 @@ describe('Private key deployer tests', () => {
 			const deployer = new etherlime.PrivateKeyDeployer(config.randomPrivateKey, provider, defaultConfigs);
 			deployer.setPrivateKey(privateKey);
 
-			assert.deepEqual(privateKey, deployer.wallet.privateKey, "The stored wallet does not match the inputted one");
+			assert.deepEqual(privateKey, deployer.signer.privateKey, "The stored signer does not match the inputted one");
 
 			assert.deepEqual(provider, deployer.provider, "The stored provider does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
-			assert.deepEqual(provider, deployer.wallet.provider, "The provider of the wallet does not match the inputted provider");
+			assert.deepEqual(provider, deployer.signer.provider, "The provider of the signer does not match the inputted provider");
 		});
 	});
 });

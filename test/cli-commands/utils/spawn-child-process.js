@@ -29,9 +29,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 			let outputLoaded;
 
 			commandOutput += data.toString('utf-8');
-			// console.log('OGI Output:', commandOutput)
 
-			// console.log('OUTPUT CONDITION', outputCondition)
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
 			// console.log('outputLoaded:', outputLoaded)
 			if (outputLoaded) {
