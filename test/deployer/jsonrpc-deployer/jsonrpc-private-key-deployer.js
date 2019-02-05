@@ -11,7 +11,7 @@ const defaultConfigs = {
 describe('JSONRPC-Private-Key-Deployer tests', () => {
 
 	describe('Initialization', async () => {
-		it('Should initialize the wallet with correct values', () => {
+		it('Should initialize the signer with correct values', () => {
 			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
 			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");

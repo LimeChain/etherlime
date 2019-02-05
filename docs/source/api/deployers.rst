@@ -100,7 +100,7 @@ InfuraPrivateKeyDeployer
 
 Parameters:
 
-* ``privateKey`` - The private key to the deployment wallet
+* ``privateKey`` - The private key to the deployment wallet/signer instance
 * ``network`` - network as found in ``ethers.providers.networks``
 * ``apiKey`` - your Infura API key
 * ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
@@ -128,7 +128,7 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-        * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet/signer instance
 
     `provider` . setNetwork (network)
         * ``network`` - network as found in ``ethers.providers.networks``
@@ -139,8 +139,8 @@ Setters
     `provider` . setDefaultOverrides (defaultOverrides)
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-    `provider` . setWallet (wallet)
-        * ``wallet`` - ethers.Wallet instance
+    `provider` . setSigner (signer)
+        * ``signer`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
         * ``provider`` - ethers.provider instance
@@ -161,7 +161,7 @@ JSONRPCPrivateKeyDeployer
 
 Parameters:
 
-* ``privateKey`` - The private key to the deployment wallet
+* ``privateKey`` - The private key to the deployment wallet/signer instance
 * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 * ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
@@ -188,7 +188,7 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-        * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet/signer instance
 
     `provider` . setNodeUrl (nodeUrl)
         * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
@@ -196,8 +196,8 @@ Setters
     `provider` . setDefaultOverrides (defaultOverrides)
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-    `provider` . setWallet (wallet)
-        * ``wallet`` - ethers.Wallet instance
+    `provider` . setSigner (signer)
+        * ``signer`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
         * ``provider`` - ethers.provider instance
@@ -218,7 +218,7 @@ EtherlimeGanacheDeployer
 
 Parameters:
 
-* ``privateKey`` - [Optional] The private key to the deployment wallet. Defauts to the first one in the `etherlime ganache`
+* ``privateKey`` - [Optional] The private key to the deployment wallet/signer instance. Defauts to the first one in the `etherlime ganache`
 * ``port`` - [Optional] the port you've ran the etherlime ganache on. Defaults to 8545.
 * ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
@@ -247,7 +247,7 @@ Setters
 ^^^^^^^
 
     `provider` . setPrivateKey (privateKey)
-        * ``privateKey`` - The private key to the deployment wallet
+        * ``privateKey`` - The private key to the deployment wallet/signer instance
 
     `provider` . setPort (port)
         * ``port`` - the port you've ran the etherlime ganache on.
@@ -258,8 +258,8 @@ Setters
     `provider` . setNodeUrl (nodeUrl)
         * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
-    `provider` . setWallet (wallet)
-        * ``wallet`` - ethers.Wallet instance
+    `provider` . setSigner (signer)
+        * ``signer`` - ethers.Wallet instance
 
     `provider` . setProvider (provider)
         * ``provider`` - ethers.provider instance

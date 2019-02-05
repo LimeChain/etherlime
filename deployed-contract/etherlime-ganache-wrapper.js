@@ -2,7 +2,7 @@ const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('./../logger-service/logger-service').logger;
 const ganacheSetupConfig = require('./../deployer/setup.json');
-const isWallet = require('./../utils/wallet-utils').isWallet;
+const isSigner = require('./../utils/signer-utils').isSigner;
 const ethers = require('ethers')
 
 class EtherlimeGanacheWrapper extends DeployedContractWrapper {
@@ -13,48 +13,48 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 	 *
 	 * @param {*} contract The deployed contract descriptor
 	 * @param {*} contractAddress The address of the deployed contract
-	 * @param {*} wallet The wallet that has deployed this contract
+	 * @param {*} signer The signer that has deployed this contract
 	 * @param {*} provider ethers provider
 	 */
-	constructor(contract, contractAddress, wallet, provider) {
-		super(contract, contractAddress, wallet, provider)
+	constructor(contract, contractAddress, signer, provider) {
+		super(contract, contractAddress, signer, provider)
 
 		this.instances = new Array();
 		this.instancesMap = {}
 		for (const acc of ganacheSetupConfig.accounts) {
-			const accWallet = new ethers.Wallet(acc.secretKey, provider);
-			const accContract = new ethers.Contract(contractAddress, contract.abi, accWallet);
+			const accSigner = new ethers.Wallet(acc.secretKey, provider);
+			const accContract = new ethers.Contract(contractAddress, contract.abi, accSigner);
 			this.instances.push(accContract)
-			this.instancesMap[accWallet.address] = accContract
+			this.instancesMap[accSigner.address] = accContract
 		}
 	}
 
-	from(addressOrWalletOrIndex) {
-		if (Number.isInteger(addressOrWalletOrIndex)) {
-			return this.instances[addressOrWalletOrIndex];
+	from(addressOrSignerOrIndex) {
+		if (Number.isInteger(addressOrSignerOrIndex)) {
+			return this.instances[addressOrSignerOrIndex];
 		}
 
-		if (typeof addressOrWalletOrIndex === 'string' || addressOrWalletOrIndex instanceof String) {
-			return this.instancesMap[addressOrWalletOrIndex]
+		if (typeof addressOrSignerOrIndex === 'string' || addressOrSignerOrIndex instanceof String) {
+			return this.instancesMap[addressOrSignerOrIndex]
 		}
 
-		if (isWallet(addressOrWalletOrIndex)) {
-			let instance = this.instancesMap[addressOrWalletOrIndex.address];
+		if (isSigner(addressOrSignerOrIndex)) {
+			let instance = this.instancesMap[addressOrSignerOrIndex.address];
 			if (!instance) {
-				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex);
+				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex);
 			}
-			return this.instancesMap[addressOrWalletOrIndex.address]
+			return this.instancesMap[addressOrSignerOrIndex.address]
 		}
 
-		if (isWallet(addressOrWalletOrIndex.wallet)) {
-			let instance = this.instancesMap[addressOrWalletOrIndex.wallet.address];
+		if (isSigner(addressOrSignerOrIndex.signer)) {
+			let instance = this.instancesMap[addressOrSignerOrIndex.signer.address];
 			if (!instance) {
-				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex.wallet);
+				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex.signer);
 			}
-			return this.instancesMap[addressOrWalletOrIndex.wallet.address]
+			return this.instancesMap[addressOrSignerOrIndex.signer.address]
 		}
 
-		throw new Error('Unrecognised input parameter. It should be index, address or wallet instance')
+		throw new Error('Unrecognized input parameter. It should be index, address or signer instance')
 	}
 
 	async verboseWaitForTransaction(transaction, transactionLabel) {

@@ -112,7 +112,7 @@ In order to modify the tests from Truffle to Etherlime, slight changes are neede
 Flexibility
 ~~~~~~~~~~~
 
-- **in case you want to use an address of an account, you must extend it to** ``let owner = accounts[0].wallet.address``
+- **in case you want to use an address of an account, you must extend it to** ``let owner = accounts[0].signer.address``
 - **when a contract’s method is called, the default sender is set to accounts[0]. If you want to execute it from another account, replace** ``{from: anotherAccount}`` object with ``.from(anotherAccount)``. 
 
 *with Truffle*
@@ -126,9 +126,9 @@ Flexibility
 
     // as a param you may also use:
     await limeFactory.from(accounts[1]).createLime('newLime' 0, 10, 12);
-    await limeFactory.from(accounts[1].wallet).createLime('newLime' 0, 10, 12);
-    await limeFactory.from(accounts[1].wallet.address).createLime('newLime' 0, 10, 12);
-    await limeFactory.from(customWallet).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(accounts[1].signer).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(accounts[1].signer.address).createLime('newLime' 0, 10, 12);
+    await limeFactory.from(customSigner).createLime('newLime' 0, 10, 12);
 
 - **when you need to execute payable function, pass the value as an object** ``contract.somePayableFunction(arg1, arg2, {value: 100})``
 - **don't use “.call” when calling view functions.**

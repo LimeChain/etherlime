@@ -20,10 +20,10 @@ describe('GanacheCli-Deployer tests', () => {
 		it('Should take default values on empty privateKey, port and defaultConfigs', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer();
 			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
-			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+			assert.deepEqual(defaultPrivateKey, deployer.signer.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 
-		it('Should initialize the wallet with correct values', () => {
+		it('Should initialize the signer with correct values', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(config.ganacheCliPrivateKey, config.ganacheCliPort, defaultConfigs);
 			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
@@ -36,13 +36,13 @@ describe('GanacheCli-Deployer tests', () => {
 
 		it('Should take default value on empty privateKey', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, config.ganacheCliPort, defaultConfigs);
-			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+			assert.deepEqual(defaultPrivateKey, deployer.signer.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 
 		it('Should take default values on empty privateKey and port', () => {
 			const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
 			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
-			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+			assert.deepEqual(defaultPrivateKey, deployer.signer.privateKey, "The stored provider privateKey does not match the inputted one");
 		})
 
 		it('should deploy contract without default configs', async () => {
@@ -78,7 +78,7 @@ describe('GanacheCli-Deployer tests', () => {
 			const expectedNodeUrl = `http://localhost:${port}/`;
 			assert.deepEqual(expectedNodeUrl, deployer.provider.connection.url, "The stored provider url does not match the expected one");
 
-			assert.deepEqual(defaultPrivateKey, deployer.wallet.privateKey, "The stored provider privateKey does not match the inputted one");
+			assert.deepEqual(defaultPrivateKey, deployer.signer.privateKey, "The stored provider privateKey does not match the inputted one");
 		});
 
 		it('Should throw on string for port', () => {

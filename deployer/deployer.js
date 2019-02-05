@@ -1,7 +1,7 @@
 const ethers = require('ethers');
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
-const isWallet = require('../utils/wallet-utils').isWallet;
+const isSigner = require('../utils/signer-utils').isSigner;
 const isValidContract = require('./../utils/contract-utils').isValidContract;
 const isValidLibrary = require('./../utils/linking-utils').isValidLibrary;
 const isValidBytecode = require('./../utils/contract-utils').isValidBytecode;
@@ -15,38 +15,38 @@ class Deployer {
 	 *
 	 * Instantiates new deployer. You probably should not use this class directly but use something inheriting this
 	 *
-	 * @param {*} wallet ethers.Wallet instance
+	 * @param {*} signer ethers.Wallet instance
 	 * @param {*} provider ethers.provider instance
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(wallet, provider, defaultOverrides) {
-		this._validateInput(wallet, defaultOverrides);
+	constructor(signer, provider, defaultOverrides) {
+		this._validateInput(signer, defaultOverrides);
 
-		this.wallet = wallet;
+		this.signer = signer;
 		this.provider = provider;
-		this.wallet = this.wallet.connect(this.provider);
+		this.signer = this.signer.connect(this.provider);
 		this.defaultOverrides = defaultOverrides;
 		logsStore.initHistoryRecord();
 	}
 
-	setWallet(wallet) {
-		this._validateInput(wallet);
-		this.wallet = wallet;
-		this.wallet = this.wallet.connect(this.provider);
+	setSigner(signer) {
+		this._validateInput(signer);
+		this.signer = signer;
+		this.signer = this.signer.connect(this.provider);
 	}
 
 	setProvider(provider) {
 		this.provider = provider;
-		this.wallet = this.wallet.connect(this.provider);
+		this.signer = this.signer.connect(this.provider);
 	}
 
 	setDefaultOverrides(defaultOverrides) {
 		this.defaultOverrides = defaultOverrides;
 	}
 
-	_validateInput(wallet, provider, defaultOverrides) {
-		if (!(isWallet(wallet))) {
-			throw new Error('Passed wallet is not instance of ethers Wallet');
+	_validateInput(signer, provider, defaultOverrides) {
+		if (!(isSigner(signer))) {
+			throw new Error('Passed signer is not valid signer instance of ethers Wallet');
 		}
 	}
 
@@ -72,7 +72,7 @@ class Deployer {
 		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
 
 		const transaction = await this._sendDeployTransaction(deployTransaction);
-		
+
 		const transactionReceipt = await this._waitForDeployTransaction(transaction);
 
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
@@ -150,7 +150,7 @@ class Deployer {
 	 * @param {*} deployTransaction the transaction that is to be sent
 	 */
 	async _sendDeployTransaction(deployTransaction) {
-		return this.wallet.sendTransaction(deployTransaction);
+		return this.signer.sendTransaction(deployTransaction);
 	}
 
 	/**
@@ -187,7 +187,7 @@ class Deployer {
 	 */
 	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
-		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.wallet, this.provider);
+		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
 
 	/**
@@ -203,7 +203,8 @@ class Deployer {
 	 * @param {*} result arbitrary result text
 	 */
 	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result);
+		const network = await this.provider.getNetwork();
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result);
 	}
 
 	/**
@@ -219,7 +220,7 @@ class Deployer {
 	 */
 	wrapDeployedContract(contract, contractAddress) {
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
-		return new DeployedContractWrapper(contract, contractAddress, this.wallet, this.provider);
+		return new DeployedContractWrapper(contract, contractAddress, this.signer, this.provider);
 	}
 
 	/**
