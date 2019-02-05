@@ -9,6 +9,7 @@ const DeployedContractWrapper = require('./deployed-contract/deployed-contract-w
 const EtherlimeGanacheWrapper = require('./deployed-contract/etherlime-ganache-wrapper');
 const EtherlimeDevnetWrapper = require('./deployed-contract/etherlime-devnet-wrapper');
 const ContractAt = require('./deployed-contract/contract-at');
+const ContractAtDevnet = require('./deployed-contract/contract-at-devnet');
 
 module.exports = {
 	Deployer,
@@ -21,4 +22,9 @@ module.exports = {
 	EtherlimeDevnetDeployer,
 	EtherlimeDevnetWrapper,
 	ContractAt
+=======
+	EtherlimeDevnetWrapper,
+	ContractAt,
+	ContractAtDevnet
+>>>>>>> Stashed changes
 }

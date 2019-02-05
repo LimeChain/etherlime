@@ -88,6 +88,7 @@ const setJSTestGlobals = async (port) => {
 			wallet: wallet
 		})
 	}
+
 	global.devnetAccounts = importedDevnetAccounts;
 }
 

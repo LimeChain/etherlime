@@ -1,7 +1,7 @@
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('./../logger-service/logger-service').logger;
-const devnetSetupConfig = require('./../deployer/devnet-setup.json');
+const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup.json');
 const isWallet = require('./../utils/wallet-utils').isWallet;
 const ethers = require('ethers')
 

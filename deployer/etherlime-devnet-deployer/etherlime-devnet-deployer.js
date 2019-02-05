@@ -1,6 +1,6 @@
 const colors = require('./../../utils/colors');
 const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const devnetSetupConfig = require('./../devnet-setup');
+const devnetSetupConfig = require('../../cli-commands/ganache/devnet-setup.json');
 const isNumber = require('./../../utils/number-utils').isNumber;
 const EtherlimeDevnetWrapper = require('./../../deployed-contract/etherlime-devnet-wrapper');
 const logger = require('./../../logger-service/logger-service').logger;
