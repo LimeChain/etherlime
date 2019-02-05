@@ -20,7 +20,7 @@ describe('Logs store tests', () => {
 
 	it('should initialize the store', () => {
 		store.initHistoryRecord();
-		assert(store._historyStore.path.endsWith('.etherlime-store/.history.json'), 'Icorrect path');
+		assert(store._historyStore.path.endsWith('.etherlime-store/.history.json'), 'Incorrect path');
 		assert(store._HISTORY_ID == ('' + (history.length - 1)), "Incorrect Id");
 	})
 

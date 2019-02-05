@@ -19,6 +19,7 @@ const printReportTable = (recordActions) => {
 			{ 'Status': `${getReadableStatus(action.status)}` },
 			{ 'Gas Price': `${ethersUtils.formatUnits(action.gasPrice, 'gwei')} Gwei` },
 			{ 'Gas Used': `${action.gasUsed}` },
+			{ 'NetworkID': action.networkID ? `${action.networkID}` : `Not recorded.`},
 			{ 'Result': `${action.result}` }
 		);
 

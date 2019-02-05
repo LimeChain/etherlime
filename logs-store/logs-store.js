@@ -61,12 +61,14 @@ class LogsStore {
 	 * @param {*} nameOrLabel name of the contract or label of the transaction
 	 * @param {*} transactionHash transaction hash if available
 	 * @param {*} status 0 - success, 1 - failure
+	 * @param {*} networkID id of the network
 	 * @param {*} result arbitrary result text
 	 */
-	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result) {
 		if (!this.isInitied) {
 			return;
 		}
+
 		const now = Date.now();
 		const record = {
 			eventTimestamp: now,
@@ -76,6 +78,7 @@ class LogsStore {
 			status,
 			gasPrice,
 			gasUsed,
+			networkID,
 			result
 		}
 
@@ -106,7 +109,7 @@ class WindowCompatibleLogsStore {
 		return;
 	}
 
-	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result) {
 		return;
 
 	}
