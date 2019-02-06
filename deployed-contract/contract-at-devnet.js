@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup.json');
+const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup-privatekeys.json');
 const isWallet = require('./../utils/wallet-utils').isWallet;
 
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
@@ -27,14 +27,12 @@ const contractAtDevnet = async (contract, contractAddress, wallet, providerOrPor
     }
 
     if (Number.isInteger(providerOrPort)) {
-        const provider = new ethers.providers.JsonRpcProvider(`${devnetSetupConfig.defaultHost}:${providerOrPort}`)
+        const provider = new ethers.providers.JsonRpcProvider(`${devnetSetupConfig.defaultHost}:${providerOrPort}`);
         let walletInstance;
         if (isWallet(wallet)) {
             walletInstance = await wallet.connect(provider);
         } else {
-            let accJSONString = JSON.stringify(devnetSetupConfig.accounts[0]);
-            walletInstance = await new ethers.Wallet.fromEncryptedJson(accJSONString, devnetSetupConfig.defaultPassword);
-            walletInstance = await walletInstance.connect(provider);
+            walletInstance = new ethers.Wallet(devnetSetupConfig.accounts[0].secretKey, provider);
         }
         return new EtherlimeDevnetWrapper(contract, contractAddress, walletInstance, provider)
     }

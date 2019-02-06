@@ -1,7 +1,7 @@
 const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('./../logger-service/logger-service').logger;
-const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup.json');
+const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup-privatekeys.json');
 const isWallet = require('./../utils/wallet-utils').isWallet;
 const ethers = require('ethers')
 
@@ -17,17 +17,15 @@ class EtherlimeDevnetWrapper extends DeployedContractWrapper {
 	 * @param {*} provider ethers provider
 	 */
 	constructor(contract, contractAddress, wallet, provider) {
-		super(contract, contractAddress, wallet, provider)
+		super(contract, contractAddress, wallet, provider);
 
 		this.instances = new Array();
-		this.instancesMap = {}
+		this.instancesMap = {};
 		for (const acc of devnetSetupConfig.accounts) {
-			let accJSONString = JSON.stringify(acc);
-			let accWallet = new ethers.Wallet.fromEncryptedJson(accJSONString, devnetSetupConfig.defaultPassword);
-			accWallet = wallet.connect(provider);
+			const accWallet = new ethers.Wallet(acc.secretKey, provider);
 			const accContract = new ethers.Contract(contractAddress, contract.abi, accWallet);
-			this.instances.push(accContract)
-			this.instancesMap[accWallet.address] = accContract
+			this.instances.push(accContract);
+			this.instancesMap[accWallet.address] = accContract;
 		}
 	}
 

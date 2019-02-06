@@ -5,7 +5,7 @@ let timeTravel = require('./time-travel');
 let events = require('./events');
 
 let accounts = require('./../ganache/setup.json').accounts;
-let devnetAccounts = require('../ganache/devnet-setup.json');
+let devnetAccounts = require('../ganache/devnet-setup-privatekeys.json');
 let compiler = require('./../compiler/compiler');
 let ethers = require('ethers');
 
@@ -79,13 +79,9 @@ const setJSTestGlobals = async (port) => {
 	global.devnetProvider = localDevnetNodeProvider;
 	const importedDevnetAccounts = [];
 	for (const acc of devnetAccounts.accounts) {
-		let accJSONString = JSON.stringify(acc);
-		let wallet = await new ethers.Wallet
-			.fromEncryptedJson(accJSONString, devnetAccounts.defaultPassword);
-		wallet = await wallet.connect(localDevnetNodeProvider);
 		importedDevnetAccounts.push({
-			secretKey: wallet.privateKey,
-			wallet: wallet
+			secretKey: acc.secretKey,
+			wallet: new ethers.Wallet(acc.secretKey, localDevnetNodeProvider)
 		})
 	}
 	global.devnetAccounts = importedDevnetAccounts;
