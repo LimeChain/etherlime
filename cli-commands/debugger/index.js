@@ -10,9 +10,8 @@ const BN = require("bn.js");
 const ethers = require('ethers');
 require = require("esm")(module/*, options*/)
 const colors = require('../../utils/colors');
-
-const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
-
+let port;
+let provider;
 
 const Debugger = require("ethereum-transaction-debugger").default;
 const selectors = Debugger.selectors;
@@ -670,7 +669,11 @@ async function compileAllContracts(config) {
 	});
 }
 
-const run = async function (inputParams) {
+const run = async function (inputParams, inputPort) {
+	// set the port for running the provider of the debugger
+	port = inputPort;
+	provider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
+
 	//add custom inspect options for BNs
 	BN.prototype[util.inspect.custom] = function (depth, inputParams) {
 		return inputParams.stylize(this.toString(), "number");

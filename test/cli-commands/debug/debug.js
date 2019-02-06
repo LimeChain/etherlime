@@ -13,7 +13,10 @@ const ethers = require('ethers');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 let contractForFailCompilation = require('../compile/examples/ContractForFailCompilation').contractForFailCompilation;
 const DebugUtils = require('../../../cli-commands/debugger/etherlime-debug-utils');
-
+const ReplManager = require("../../../cli-commands/debugger/repl");
+const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
+const util = require("util");
+const sinon = require('sinon');
 
 let currentDir;
 
@@ -102,6 +105,13 @@ describe('Debug cli command', () => {
 
 	});
 
+	it('should start debug transaction and proceed when "n" is send, then another "n" is send and then print VM instruction when ";" is send', async function () {
+		let expectedOutput = 'require(_carbohydrates != 0);';
+		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'n\n', 'n\n', ';\n');
+		assert.include(childProcess.output, expectedOutput);
+
+	});
+
 	it('should start debug transaction and proceed when "n" is send, then restart when "r" is send', async function () {
 		let expectedOutput = 'pragma solidity ^0.5.0;';
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'n\n', 'r\n');
@@ -181,6 +191,13 @@ describe('Debug cli command', () => {
 	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
 		let expectedOutput = "require(_carbohydrates != 0);";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+:createLime\n', 'n\n', 'n\n');
+		assert.include(childProcess.output, expectedOutput);
+
+	});
+
+	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
+		let expectedOutput = "foodItems[skuCount] = FoodItem({name: _name,";
+		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, '+:foodItems\n', 'n\n', 'n\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
@@ -353,11 +370,10 @@ describe('Debug cli command', () => {
 
 	});
 
-	it('should start debug transaction and when ".exit" is send should terminate the debugger', async function () {
+	it('should start debug transaction and when "q" is send should terminate the debugger', async function () {
 		let expectedOutput = "Exiting debugger...";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'q\n');
 		assert.include(childProcess.output, expectedOutput);
-
 
 	});
 
@@ -366,8 +382,191 @@ describe('Debug cli command', () => {
 		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, 'n\n');
 		assert.include(childProcess.output, expectedOutput);
 
+	});
+
+	it('should start debug transaction and when ".exit" is send, it should exit the debugger', async function () {
+		let expectedOutput = "Exiting...";
+		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, 'n\n', '.exit\n');
+		assert.include(childProcess.output, expectedOutput);
 
 	});
+
+	describe('Debug utils', async () => {
+		let source = ['pragma solidity ^0.5.0;',
+			'',
+			'contract FoodCart{',
+			'\t/* set owner of contract */',
+			'\taddress owner;',
+			'',
+			'\t/* a variable to track the most recent sku of a food item */',
+			'\tuint8 skuCount; ',
+			'',
+			'\t/* an enum to store food item state */',
+			'\tenum State {ForSale, Sold}',
+			'',
+			'\t/* add event to emit when a new food item is added to cart */',
+			'\tevent ForSale(string name, uint8 sku, uint16 price, uint8 state, bool foodItemExist);',
+			'',
+			'\t/* add event to emit when a new food item is sold */',
+			'\tevent Sold(string name, uint8 sku, uint16 price, uint8 state, bool foodItemExist);',
+			'',
+			'\t/* a struct to store details of a food item */',
+			'\tstruct FoodItem {',
+			'\t\tstring name;',
+			'\t\tuint8 sku;',
+			'\t\tuint16 price;',
+			'\t\tState state;',
+			'\t\tbool foodItemExist;',
+			'\t}',
+			'',
+			'\t/* a map that maps sku to food item */',
+			'\tmapping (uint8 => FoodItem) public foodItems;',
+			'\t',
+			'\t/* a modifier to check that food item exist */',
+			'\tmodifier doesFoodItemExist(uint8 _sku){',
+			'\t\trequire(foodItems[_sku].foodItemExist);',
+			'\t\t_;',
+			'\t}',
+			'\t',
+			'\t/* a modifier to check that an item is forsale */',
+			'\tmodifier isFoodItemForSale(uint8 _sku){',
+			'\t\trequire(foodItems[_sku].state == State.ForSale);',
+			'\t\t_;',
+			'\t}',
+			'',
+			'\t/* a modifier to check that the right price is paid for the food item */',
+			'\tmodifier hasBuyerPaidEnough(uint16 _price){',
+			'\t\trequire(msg.value >= _price);',
+			'\t\t_;',
+			'\t}',
+			'',
+			'\tconstructor() public {',
+			'\t\towner = msg.sender;',
+			'\t\tskuCount = 0;',
+			'\t}',
+			'',
+			'\t',
+			'\tfunction addFoodItem (string memory _name, uint16 _price) public {',
+			'\t\tfoodItems[skuCount] = FoodItem({name: _name, ',
+			'\t\t\t\t\t\tsku: skuCount, ',
+			'\t\t\t\t\t\tprice: _price, ',
+			'\t\t\t\t\t\tstate: State.ForSale, ',
+			'\t\t\t\t\t\tfoodItemExist: true});',
+			'\t\temit ForSale(_name, skuCount , _price, uint8(State.ForSale), true);',
+			'\t\tskuCount = skuCount + 1;',
+			'\t}  ',
+			'',
+			'\tfunction buyFoodItem (uint8 _sku)',
+			'\tpayable',
+			'\tpublic',
+			'\tdoesFoodItemExist(_sku)',
+			'\tisFoodItemForSale(_sku)',
+			'\thasBuyerPaidEnough(foodItems[_sku].price)',
+			'\t{',
+			'\t\tfoodItems[_sku].state = State.Sold;',
+			'\t\tfoodItems[_sku].foodItemExist = false;',
+			'\t\temit Sold(foodItems[_sku].name, ',
+			'\t\t\t  foodItems[_sku].sku, ',
+			'\t\t\t  foodItems[_sku].price, ',
+			'\t\t\t  uint8(foodItems[_sku].state), ',
+			'\t\t\t  foodItems[_sku].foodItemExist);',
+			'\t}',
+			'',
+			'\tfunction fetchFoodItem(uint8 _sku) ',
+			'\tdoesFoodItemExist(_sku)',
+			'\tpublic ',
+			'\tview ',
+			'\treturns (string memory name, uint8 sku, uint16 price, uint8 state, bool foodItemExist){',
+			'\t\tname = foodItems[_sku].name;',
+			'\t\tsku = foodItems[_sku].sku;',
+			'\t\tprice = foodItems[_sku].price;',
+			'\t\tstate = uint8(foodItems[_sku].state);',
+			'\t\tfoodItemExist = foodItems[_sku].foodItemExist;',
+			'',
+			'\t\treturn (name, sku, price, state, foodItemExist);',
+			'\t}',
+			'',
+			'\tfunction () external payable {',
+			'',
+			'\t}',
+			'}']
+
+		const expectedValue = `1: pragma solidity ^0.5.0;\n2: \n3: contract FoodCart{\n   \u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m`
+		it('should return the line prefix with correct number of spaces or tabs', async function () {
+			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
+			const result = await DebugUtils.formatLineNumberPrefix(line, 53, 4);
+			assert.deepStrictEqual(result, '  53: function addFoodItem (string memory _name, uint16 _price) public {');
+
+		});
+
+		it('should correct format range lines', async function () {
+			const result = await DebugUtils.formatRangeLines(source, {
+				start: { line: 2, column: 0 },
+				end: { line: null, column: null }
+			}, 4);
+			assert.deepStrictEqual(result, expectedValue);
+
+		});
+
+		it('should return correct format range lines', async function () {
+			const line = 'contract FoodCart{';
+			const startCol = 0;
+			const endCol = 18;
+			const padding = 1;
+			const tab = undefined;
+			const result = await DebugUtils.formatLinePointer(line, startCol, endCol, padding, tab);
+			assert.deepStrictEqual(result.length, 363);
+		});
+
+		it('should return correct format range lines with tabs specified', async function () {
+			const line = 'function createLime(string memory _name, uint8 _carbohydrates, uint8 _fat, uint8 _protein) public {';
+			const startCol = 0;
+			const endCol = 18;
+			const padding = 1;
+			const tab = 4;
+			const result = await DebugUtils.formatLinePointer(line, startCol, endCol, padding, tab);
+			assert.deepStrictEqual(result.length, 444);
+		});
+
+		// it.only('should exit from the process if there is no current context', async function () {
+		// 	const config = {
+		// 		"contracts_directory": `${process.cwd()}/contracts`,
+		// 		"working_directory": `${process.cwd()}`,
+		// 		"contracts_build_directory": `${process.cwd()}/build`,
+		// 		"artifactor": new Artifactor(`${process.cwd()}/build`),
+		// 		"compilers": {
+		// 			"solc": {
+		// 				"version": undefined,
+		// 				"docker": undefined
+		// 			}
+		// 		},
+		// 		"build_directory": `${process.cwd()}/build`,
+		// 		networks: {
+		// 			development: {
+		// 				host: "127.0.0.1",     // Localhost (default: none)
+		// 				port: 8545,            // Standard Ethereum port (default: none)
+		// 				network_id: "*",       // Any network (default: none)
+		// 			}
+		// 		},
+		// 		network: "etherlime ganache"
+		// 	};
+		// 	let repl = new ReplManager(config);
+		// 	await repl.start({
+		// 		prompt:
+		// 			"debugging(" +
+		// 			`${config.network}` +
+		// 			":" +
+		// 			`0x32b38bc35f30b6f6e9a9464d7add604f811660e72e8fe90d634dc2ca717f02f0` +
+		// 			")> ",
+		// 		interpreter: 'test',
+		// 		ignoreUndefined: true,
+		// 	});
+		// 	sinon.stub(process, 'exit');
+		// 	repl.stop();
+		// 	assert(process.exit.isSinonProxy);
+		// });
+	});
+
 
 	describe('Fail transaction', async () => {
 		let failedTransactionHash;
@@ -425,13 +624,12 @@ describe('Debug cli command', () => {
 			assert.include(childProcess.output, expectedOutput);
 		});
 
-		// it.only('should print the help if we do not have current session enabled and trace is finished', async function () {
-		// 	let expectedOutput = "(0) PUSH1 0x80";
-		// 	childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'c\n', 'c\n');
-		// 	console.log(childProcess.output)
-		// 	// assert.include(childProcess, expectedOutput);
+		it('should print the help if we do not have current session enabled and trace is finished', async function () {
+			let expectedOutput = "(0) PUSH1 0x80";
+			childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'c\n');
+			assert.include(childProcess.output, expectedOutput);
 
-		// });
+		});
 
 		it('should return warning message when try to go to the next line and then reset the process', async function () {
 			let expectedOutput = 'Warning: The source code for one or more contracts could not be found.';
@@ -459,14 +657,4 @@ describe('Debug cli command', () => {
 		fs.removeSync('./emptyContract');
 	});
 
-});
-
-describe('Debug utils', () => {
-
-	it('should return the line prefix with correct number of spaces or tabs', async function () {
-		const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
-		const result = await DebugUtils.formatLineNumberPrefix(line, 53, 4);
-		assert.deepStrictEqual(result, '  53: function addFoodItem (string memory _name, uint16 _price) public {');
-
-	});
 });

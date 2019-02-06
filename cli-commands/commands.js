@@ -305,12 +305,18 @@ const commands = [
 		}
 	},
 	{
-		command: 'debug [transactionHash]',
+		command: 'debug [transactionHash] [port]',
 		description: 'Debug transaction hash',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('transactionHash', {
 				describe: 'Specifies the transaction hash',
 				type: 'string'
+			})
+
+			yargs.positional('port', {
+				describe: 'The port to run the debugger for listening for local ganache',
+				type: 'number',
+				default: 8545
 			})
 		},
 		commandProcessor: async (argv) => {
@@ -318,7 +324,7 @@ const commands = [
 				argv
 			});
 			try {
-				await debug.run(argv.transactionHash)
+				await debug.run(argv.transactionHash, argv.port)
 			} catch (err) {
 				console.error(err);
 			}
