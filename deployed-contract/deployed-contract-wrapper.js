@@ -86,7 +86,8 @@ class DeployedContractWrapper {
 	 * @param {*} result arbitrary result text
 	 */
 	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result);
+		const network = await this.provider.getNetwork();
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result);
 	}
 }
 
