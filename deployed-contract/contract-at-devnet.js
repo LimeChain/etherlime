@@ -27,7 +27,7 @@ const contractAtDevnet = async (contract, contractAddress, wallet, providerOrPor
     }
 
     if (Number.isInteger(providerOrPort)) {
-        const provider = new ethers.providers.JsonRpcProvider(`http://localhost:${providerOrPort}`)
+        const provider = new ethers.providers.JsonRpcProvider(`${devnetSetupConfig.defaultHost}:${providerOrPort}`)
         let walletInstance;
         if (isWallet(wallet)) {
             walletInstance = await wallet.connect(provider);

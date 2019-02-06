@@ -1,29 +1,71 @@
 {
   "accounts": [
     {
-      "id": "68d37b7d-8538-0767-1cff-3565abf2950d",
-      "version": 3,
+      "address": "e8816898d851d5b61b7f950627d04d794c07ca37",
       "crypto": {
         "cipher": "aes-128-ctr",
+        "ciphertext": "1ff4add6955cba7ddaf29f66d7d21c5e1d714ef6191fbc651ae60f2ea3c95e8f",
         "cipherparams": {
-          "iv": "692a613c713934fb87634138c24f1b8c"
+          "iv": "3ff869fbdbe1a523cdb327780365976e"
         },
-        "ciphertext": "6904fa6d56b8301f2f42da2af8b1c9d07256ab8d1b8aff5164071ca9aa183b6c",
-        "kdf": "pbkdf2",
+        "kdf": "scrypt",
         "kdfparams": {
-          "c": 10240,
           "dklen": 32,
-          "prf": "hmac-sha256",
-          "salt": "9db2a63ed7a95036e72f248ee3f0e681a6b6d51d47527abfca40e50a964b60da"
+          "n": 262144,
+          "p": 1,
+          "r": 8,
+          "salt": "7372dbae5fb318f8684902e099c311d4188721d677974d729711762c7ef6030c"
         },
-        "mac": "92d0b43a5f0ecf784d492c099ad63a1750b5aad885eb859f940d7b86e638658c"
+        "mac": "485fa5dc701067782baa1589716a53110c7f917eb259e35ebca7265bbb7150b1"
       },
-      "address": "00a329c0648769a73afac7f9381e08fb43dbea72",
-      "name": "Development Account",
-      "meta": "{\"description\":\"Never use this account outside of development chain!\",\"passwordHint\":\"Password is empty string\"}"
+      "id": "89edb004-5b00-4607-a3af-a0d9ab9b1c34",
+      "version": 3
+    },
+    {
+      "address": "91c987bf62d25945db517bdaa840a6c661374402",
+      "crypto": {
+        "cipher": "aes-128-ctr",
+        "ciphertext": "8f461f3c74643f382f7fc1f71719d5a89ed8cf75854d8a1b53e133997b53a386",
+        "cipherparams": {
+          "iv": "cf595fb7680d36b4f5a01599ee54d2d1"
+        },
+        "kdf": "scrypt",
+        "kdfparams": {
+          "dklen": 32,
+          "n": 262144,
+          "p": 1,
+          "r": 8,
+          "salt": "73a9e599369d2bfaedd044559415147240c3517f6cd1dec8f77a98993d1ceaf8"
+        },
+        "mac": "c8be4dc59ad28d40f7b549a6b72834d149c84d67dc35e687676bbee0e07be395"
+      },
+      "id": "21cca6fb-7876-4e39-a986-a0a37f90da6d",
+      "version": 3
+    },
+    {
+      "address": "7457d5e02197480db681d3fdf256c7aca21bdc12",
+      "crypto": {
+        "cipher": "aes-128-ctr",
+        "ciphertext": "720dcc2889c7b3636f9f659650181b0d46d82420460e23454277273f528baaee",
+        "cipherparams": {
+          "iv": "1510028e2b9988d1a73b71cbb692d085"
+        },
+        "kdf": "scrypt",
+        "kdfparams": {
+          "dklen": 32,
+          "n": 262144,
+          "p": 1,
+          "r": 8,
+          "salt": "5db2b62f4d1f55a3f24c014c4f23f3ec9a2992dca6c2a89c24a566f99a079396"
+        },
+        "mac": "22c6fb134fd0a748195ea83e9ccb490ab2c9a3e8761f9d74ea6d02abbdeb8a43"
+      },
+      "id": "704c31f8-8ca2-4b49-9fdc-5923f5712dad",
+      "version": 3
     }
   ],
-  "defaultPassword": "",
+  "defaultPassword": "password",
+  "defaultHost": "http://localhost",
   "defaultPort": 8545,
   "forkParams": null
 }

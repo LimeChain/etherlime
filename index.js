@@ -21,10 +21,6 @@ module.exports = {
 	EtherlimeGanacheWrapper,
 	EtherlimeDevnetDeployer,
 	EtherlimeDevnetWrapper,
-	ContractAt
-=======
-	EtherlimeDevnetWrapper,
 	ContractAt,
 	ContractAtDevnet
->>>>>>> Stashed changes
 }

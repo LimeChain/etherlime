@@ -75,7 +75,7 @@ const setJSTestGlobals = async (port) => {
 	}
 	global.accounts = importedAccounts;
 
-	const localDevnetNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${devnetAccounts.defaultPort}`);
+	const localDevnetNodeProvider = new ethers.providers.JsonRpcProvider(`${devnetAccounts.defaultHost}:${devnetAccounts.defaultPort}`);
 	global.devnetProvider = localDevnetNodeProvider;
 	const importedDevnetAccounts = [];
 	for (const acc of devnetAccounts.accounts) {
@@ -88,7 +88,6 @@ const setJSTestGlobals = async (port) => {
 			wallet: wallet
 		})
 	}
-
 	global.devnetAccounts = importedDevnetAccounts;
 }
 

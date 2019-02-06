@@ -17,7 +17,7 @@ class EtherlimeDevnetDeployer extends JSONRPCDeployer {
 	// = ganacheSetupConfig.accounts[0].secretKey
 	constructor(privateKey, port = devnetSetupConfig.defaultPort, defaultOverrides) {
 		EtherlimeDevnetDeployer._validatePortInput(port);
-		const nodeUrl = `http://localhost:${port}/`;
+		const nodeUrl = `${devnetSetupConfig.defaultHost}:${port}/`;
 
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
@@ -25,7 +25,7 @@ class EtherlimeDevnetDeployer extends JSONRPCDeployer {
 
 	setPort(port) {
 		EtherlimeDevnetDeployer._validatePortInput(port);
-		const nodeUrl = `http://localhost:${port}/`;
+		const nodeUrl = `${devnetSetupConfig.defaultHost}:${port}/`;
 		this.setNodeUrl(nodeUrl);
 	}
 
