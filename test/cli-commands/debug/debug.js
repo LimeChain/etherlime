@@ -391,6 +391,13 @@ describe('Debug cli command', () => {
 
 	});
 
+	it('should start debug transaction and when ".exit" is send, it should exit the debugger', async function () {
+		let expectedOutput = "Exiting...";
+		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, '.exit\n');
+		assert.include(childProcess.output, expectedOutput);
+
+	});
+
 	describe('Debug utils', async () => {
 		let source = ['pragma solidity ^0.5.0;',
 			'',
@@ -499,6 +506,20 @@ describe('Debug cli command', () => {
 
 		});
 
+		it('should return the line prefix with correct number of spaces or tabs', async function () {
+			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
+			const result = await DebugUtils.formatLineNumberPrefix(line, 53, 6);
+			assert.deepStrictEqual(result, '    53: function addFoodItem (string memory _name, uint16 _price) public {');
+
+		});
+
+		it('should return the line prefix with correct number of spaces or tabs', async function () {
+			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
+			const result = await DebugUtils.formatLineNumberPrefix(line, 53, undefined);
+			assert.deepStrictEqual(result, '53: function addFoodItem (string memory _name, uint16 _price) public {');
+
+		});
+
 		it('should correct format range lines', async function () {
 			const result = await DebugUtils.formatRangeLines(source, {
 				start: { line: 2, column: 0 },
@@ -527,44 +548,6 @@ describe('Debug cli command', () => {
 			const result = await DebugUtils.formatLinePointer(line, startCol, endCol, padding, tab);
 			assert.deepStrictEqual(result.length, 444);
 		});
-
-		// it.only('should exit from the process if there is no current context', async function () {
-		// 	const config = {
-		// 		"contracts_directory": `${process.cwd()}/contracts`,
-		// 		"working_directory": `${process.cwd()}`,
-		// 		"contracts_build_directory": `${process.cwd()}/build`,
-		// 		"artifactor": new Artifactor(`${process.cwd()}/build`),
-		// 		"compilers": {
-		// 			"solc": {
-		// 				"version": undefined,
-		// 				"docker": undefined
-		// 			}
-		// 		},
-		// 		"build_directory": `${process.cwd()}/build`,
-		// 		networks: {
-		// 			development: {
-		// 				host: "127.0.0.1",     // Localhost (default: none)
-		// 				port: 8545,            // Standard Ethereum port (default: none)
-		// 				network_id: "*",       // Any network (default: none)
-		// 			}
-		// 		},
-		// 		network: "etherlime ganache"
-		// 	};
-		// 	let repl = new ReplManager(config);
-		// 	await repl.start({
-		// 		prompt:
-		// 			"debugging(" +
-		// 			`${config.network}` +
-		// 			":" +
-		// 			`0x32b38bc35f30b6f6e9a9464d7add604f811660e72e8fe90d634dc2ca717f02f0` +
-		// 			")> ",
-		// 		interpreter: 'test',
-		// 		ignoreUndefined: true,
-		// 	});
-		// 	sinon.stub(process, 'exit');
-		// 	repl.stop();
-		// 	assert(process.exit.isSinonProxy);
-		// });
 	});
 
 

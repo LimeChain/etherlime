@@ -26,57 +26,6 @@ const commandReference = {
 };
 
 const DebugUtils = {
-  // gatherArtifacts: function (config) {
-  //   return new Promise((accept, reject) => {
-  //     // Gather all available contract artifacts
-  //     dir.files(config.contracts_build_directory, (err, files) => {
-  //       if (err) return reject(err);
-
-  //       let contracts = files
-  //         .filter(file_path => {
-  //           return path.extname(file_path) === ".json";
-  //         })
-  //         .map(file_path => {
-  //           return path.basename(file_path, ".json");
-  //         })
-  //         .map(contract_name => {
-  //           return config.resolver.require(contract_name);
-  //         });
-
-  //       async.each(
-  //         contracts,
-  //         (abstraction, finished) => {
-  //           abstraction
-  //             .detectNetwork()
-  //             .then(() => {
-  //               finished();
-  //             })
-  //             .catch(finished);
-  //         },
-  //         err => {
-  //           console.log('here')
-  //           if (err) return reject(err);
-  //           accept(
-  //             contracts.map(contract => {
-  //               debug("contract.sourcePath: %o", contract.sourcePath);
-  //               return {
-  //                 contractName: contract.contractName,
-  //                 source: contract.source,
-  //                 sourceMap: contract.sourceMap,
-  //                 sourcePath: contract.sourcePath,
-  //                 binary: contract.binary,
-  //                 ast: contract.ast,
-  //                 deployedBinary: contract.deployedBinary,
-  //                 deployedSourceMap: contract.deployedSourceMap,
-  //                 compiler: contract.compiler
-  //               };
-  //             })
-  //           );
-  //         }
-  //       );
-  //     });
-  //   });
-  // },
 
   formatStartMessage: function () {
     const lines = ["", "Loading transaction data...", ""];
@@ -238,14 +187,7 @@ const DebugUtils = {
   },
 
   formatInstruction: function (traceIndex, instruction) {
-    return (
-      "(" +
-      traceIndex +
-      ") " +
-      instruction.name +
-      " " +
-      (instruction.pushData || "")
-    );
+    return (`(${traceIndex}) ${instruction.name} ${instruction.pushData || ''}`);
   },
 
   formatStack: function (stack) {

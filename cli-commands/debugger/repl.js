@@ -42,47 +42,21 @@ ReplManager.prototype.start = function (options) {
 			prompt: currentContext.prompt,
 			eval: this.interpret.bind(this)
 		});
-
-		// this.repl.on("exit", function () {
-		// 	// If we exit for some reason, call done functions for good measure
-		// 	// then ensure the process is completely killed. Once the repl exits,
-		// 	// the process is in a bad state and can't be recovered (e.g., stdin is closed).
-		// 	var doneFunctions = self.contexts.map(function (context) {
-		// 		return context.done
-		// 			? function () {
-		// 				// context.done();
-		// 			}
-		// 			: function () { };
-		// 	});
-		// 	async.series(doneFunctions, function () {
-		// 		process.exit();
-		// 	});
-		// });
 	}
 
 	// Bubble the internal repl's exit event
 	this.repl.on("exit", function () {
-		console.log('Exiting...')
 		self.emit("exit");
+		console.log('Exiting...')
 	});
 
 	this.activate(options);
 };
 
-// ReplManager.prototype.setContextVars = function (obj) {
-// 	var self = this;
-// 	if (this.repl) {
-// 		Object.keys(obj || {}).forEach(function (key) {
-// 			self.repl.context[key] = obj[key];
-// 		});
-// 	}
-// };
-
 ReplManager.prototype.activate = function (session) {
 	const { prompt, context, ignoreUndefined } = session;
 	this.repl.setPrompt(prompt);
 	this.repl.ignoreUndefined = ignoreUndefined;
-	// this.setContextVars(context);
 };
 
 ReplManager.prototype.stop = function (callback) {

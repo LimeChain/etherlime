@@ -672,6 +672,8 @@ async function compileAllContracts(config) {
 const run = async function (inputParams, inputPort) {
 	// set the port for running the provider of the debugger
 	port = inputPort;
+
+	// set the provider with the desired port
 	provider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
 
 	//add custom inspect options for BNs
