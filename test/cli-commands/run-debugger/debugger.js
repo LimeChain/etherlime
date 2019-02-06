@@ -18,7 +18,7 @@ const DebugUtils = require('../../../cli-commands/debugger/etherlime-debug-utils
 // const ReplManager = require("../../../cli-commands/debugger/repl");
 // const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
 // const util = require("util");
-const sinon = require('sinon');
+// const sinon = require('sinon');
 
 let currentDir;
 
@@ -183,28 +183,28 @@ describe('Debug cli command', () => {
 
 	});
 
-	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
+	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed - 1', async function () {
 		let expectedOutput = "[ constructor:";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+:limes\n', 'n\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
 
-	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
+	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed - 2', async function () {
 		let expectedOutput = "require(_carbohydrates != 0);";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+:createLime\n', 'n\n', 'n\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
 
-	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
+	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed - 3', async function () {
 		let expectedOutput = "foodItems[skuCount] = FoodItem({name: _name,";
 		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, '+:foodItems\n', 'n\n', 'n\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
 
-	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed', async function () {
+	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed - 4', async function () {
 		let expectedOutput = "evm.current.call";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+!evm.current.call\n', 'q\n');
 		assert.include(childProcess, expectedOutput);
@@ -386,7 +386,7 @@ describe('Debug cli command', () => {
 
 	});
 
-	it('should start debug transaction and when ".exit" is send, it should exit the debugger', async function () {
+	it('should start debug transaction and when "n" is send and then ".exit", it should exit the debugger', async function () {
 		let expectedOutput = "Exiting...";
 		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, 'n\n', '.exit\n');
 		assert.include(childProcess.output, expectedOutput);
@@ -501,21 +501,21 @@ describe('Debug cli command', () => {
 			'}']
 
 		const expectedValue = `1: pragma solidity ^0.5.0;\n2: \n3: contract FoodCart{\n   \u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m`
-		it('should return the line prefix with correct number of spaces or tabs', async function () {
+		it('should return the line prefix with correct number of spaces or tabs(4)', async function () {
 			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
 			const result = await DebugUtils.formatLineNumberPrefix(line, 53, 4);
 			assert.deepStrictEqual(result, '  53: function addFoodItem (string memory _name, uint16 _price) public {');
 
 		});
 
-		it('should return the line prefix with correct number of spaces or tabs', async function () {
+		it('should return the line prefix with correct number of spaces or tabs(6)', async function () {
 			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
 			const result = await DebugUtils.formatLineNumberPrefix(line, 53, 6);
 			assert.deepStrictEqual(result, '    53: function addFoodItem (string memory _name, uint16 _price) public {');
 
 		});
 
-		it('should return the line prefix with correct number of spaces or tabs', async function () {
+		it('should return the line prefix with correct number of spaces or tabs(undefined)', async function () {
 			const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
 			const result = await DebugUtils.formatLineNumberPrefix(line, 53, undefined);
 			assert.deepStrictEqual(result, '53: function addFoodItem (string memory _name, uint16 _price) public {');
@@ -648,14 +648,12 @@ describe('Debug cli command', () => {
 	afterEach(async function () {
 		if (childProcess && childProcess.process) {
 			killProcessByPID(childProcess.process.pid)
-			childResponse = '';
 		}
 	});
 
 	after(async function () {
 		if (childProcess && childProcess.process) {
 			killProcessByPID(childProcess.process.pid)
-			childResponse = '';
 		}
 		process.chdir(currentDir);
 		fs.removeSync('./debuggerContracts');

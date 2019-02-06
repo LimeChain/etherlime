@@ -58,21 +58,21 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 			setTimeout(() => {
 				commandOutput = '';
 				process.stdin.write(additionalCommand);
-			}, 3000);
+			}, 100);
 		}
 
 		if (secondAdditionalCommand) {
 			setTimeout(() => {
 				commandOutput = '';
 				process.stdin.write(secondAdditionalCommand);
-			}, 4000);
+			}, 200);
 		}
 
 		if (thirdAdditionalCommand) {
 			setTimeout(() => {
 				commandOutput = '';
 				process.stdin.write(thirdAdditionalCommand);
-			}, 5000);
+			}, 300);
 		}
 	});
 }
