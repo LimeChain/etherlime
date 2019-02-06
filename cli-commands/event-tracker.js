@@ -1,6 +1,8 @@
 const KeenTracking = require('keen-tracking');
 const analyticsKeys = require('./analytics.json');
 const debugTestModule = 'nyc';
+const config = require('../.config')
+console.log(config.optOut)
 
 let isProd = false;
 try {
@@ -19,7 +21,7 @@ const analyticsClient = new KeenTracking({
 });
 
 const recordEvent = (command, params) => {
-	if (!isProd) {
+	if (!isProd || config.optOut) {
 		return false
 	}
 	analyticsClient.recordEvent(command, {
