@@ -13,9 +13,11 @@ const ethers = require('ethers');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 let contractForFailCompilation = require('../compile/examples/ContractForFailCompilation').contractForFailCompilation;
 const DebugUtils = require('../../../cli-commands/debugger/etherlime-debug-utils');
-const ReplManager = require("../../../cli-commands/debugger/repl");
-const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
-const util = require("util");
+// const myDebugger = require('../../../cli-commands/debugger/index');
+// const commands = require('../../../cli-commands/commands');
+// const ReplManager = require("../../../cli-commands/debugger/repl");
+// const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
+// const util = require("util");
 const sinon = require('sinon');
 
 let currentDir;
@@ -621,6 +623,26 @@ describe('Debug cli command', () => {
 		});
 
 	});
+
+	// describe('root calling etherlime debug', async () => {
+	// 	it.only('should throw err if starting of debugger failed', async function () {
+	// 		let stub = sinon.stub(myDebugger, "run")
+	// 		stub.throws()
+	// 		let argv = {
+	// 			output: "some message"
+	// 		}
+	// 		let errorMessage = "Error"
+	// 		let consoleSpy = sinon.spy(console, "error");
+	// 		console.log('HERE', consoleSpy);
+	// 		commands[7].commandProcessor(argv)
+	// 		let logs = consoleSpy.getCall(0);
+	// 		let error = String(logs.args[0])
+	// 		let errorLogged = error.includes(errorMessage);
+	// 		assert.isTrue(errorLogged, errorMessage);
+	// 		stub.restore();
+	// 		consoleSpy.restore();
+	// 	});
+	// });
 
 
 	afterEach(async function () {
