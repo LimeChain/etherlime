@@ -71,7 +71,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[7].commandProcessor(argv)
+        commands[8].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
@@ -80,12 +80,6 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
     describe('root calling etherlime debug', async () => {
-        // let childProcess;
-        // before(async function () {
-        //     fs.mkdirSync('./contracts')
-        //     fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
-        // });
-
         it('should throw err if starting of debugger failed', async function () {
             let stub = sinon.stub(myDebugger, "run")
             stub.throws()
@@ -102,9 +96,5 @@ describe('root calling cli commands', () => {
             stub.restore();
             consoleSpy.restore();
         });
-
-        // after(async function () {
-        //     fs.removeSync('./contracts');
-        // });
     });
 })
