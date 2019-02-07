@@ -330,15 +330,13 @@ const commands = [
 	},
 	{
 		command: 'opt-out',
-		description: 'Disables analytics',
+		description: 'Disables user tracking analytics.',
 		argumentsProcessor: (yargs) => {
 		},
 		commandProcessor: (argv) => {
 			recordEvent('etherlime opt-out', {
 				argv
 			});
-
-			logger.storeOutputParameter(argv.output);
 
 			try {
 				eventTracker.optOutUser();

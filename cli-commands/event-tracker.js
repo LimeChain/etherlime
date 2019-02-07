@@ -31,7 +31,8 @@ const recordEvent = (command, params) => {
 
 const optOutUser = () => {
 	analytics.optOut = true;
-	fs.writeFileSync(`${__dirname}/analytics.json`, JSON.stringify(analytics, null, 2))
+	const spaces = 4; // number of space characters to be inserted for readability purposes
+	fs.writeFileSync(`${__dirname}/analytics.json`, JSON.stringify(analytics, null, spaces)) //second param is a string replacer if needed
 }
 
 module.exports = {
