@@ -21,10 +21,8 @@ const compile = require('../compiler/etherlime-compile');
 const Resolver = require('../compiler/etherlime-resolver');
 const compiler = require('../compiler/compiler');
 
-require = require("esm")(module/*, options*/)
-module.exports = require("ethereum-transaction-debugger");
-const Debugger = require("ethereum-transaction-debugger").default;
-const selectors = Debugger.selectors;
+const Debugger = require("ethereum-transaction-debugger");
+const selectors = require("ethereum-transaction-debugger").selectors;
 
 const DebugUtils = require("./etherlime-debug-utils");
 
