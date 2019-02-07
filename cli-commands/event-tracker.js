@@ -1,8 +1,7 @@
 const KeenTracking = require('keen-tracking');
-const analyticsKeys = require('./analytics.json');
+const analytics = require('./analytics.json');
 const debugTestModule = 'nyc';
-const config = require('../.config')
-console.log(config.optOut)
+const fs = require('fs-extra');
 
 let isProd = false;
 try {
@@ -16,12 +15,12 @@ try {
 }
 
 const analyticsClient = new KeenTracking({
-	projectId: analyticsKeys.projectId,
-	writeKey: analyticsKeys.writeKey
+	projectId: analytics.projectId,
+	writeKey: analytics.writeKey
 });
 
 const recordEvent = (command, params) => {
-	if (!isProd || config.optOut) {
+	if (!isProd || analytics.optOut) {
 		return false
 	}
 	analyticsClient.recordEvent(command, {
@@ -30,9 +29,13 @@ const recordEvent = (command, params) => {
 	return true
 }
 
-
+const optOutUser = () => {
+	analytics.optOut = true;
+	fs.writeFileSync(`${__dirname}/analytics.json`, JSON.stringify(analytics, null, 2))
+}
 
 module.exports = {
 	analyticsClient,
-	recordEvent
+	recordEvent,
+	optOutUser
 };

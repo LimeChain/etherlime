@@ -327,6 +327,27 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
+	},
+	{
+		command: 'opt-out',
+		description: 'Disables analytics',
+		argumentsProcessor: (yargs) => {
+		},
+		commandProcessor: (argv) => {
+			recordEvent('etherlime opt-out', {
+				argv
+			});
+
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				eventTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
 	}
 ]
 
