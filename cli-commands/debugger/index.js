@@ -8,15 +8,11 @@ const debug = debugModule("lib:commands:debug");
 const safeEval = require("safe-eval");
 const BN = require("bn.js");
 const ethers = require('ethers');
-require = require("esm")(module/*, options*/)
 const colors = require('../../utils/colors');
 let port;
 let provider;
 
-const Debugger = require("ethereum-transaction-debugger").default;
-const selectors = Debugger.selectors;
 
-const DebugUtils = require("./etherlime-debug-utils");
 
 const ReplManager = require("./repl");
 
@@ -24,6 +20,13 @@ const Artifactor = require('../compiler/etherlime-artifactor');
 const compile = require('../compiler/etherlime-compile');
 const Resolver = require('../compiler/etherlime-resolver');
 const compiler = require('../compiler/compiler');
+
+require = require("esm")(module/*, options*/)
+const Debugger = require("ethereum-transaction-debugger").default;
+const selectors = Debugger.selectors;
+
+const DebugUtils = require("./etherlime-debug-utils");
+
 
 // Debugger Session properties
 const trace = selectors.trace;

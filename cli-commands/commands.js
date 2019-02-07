@@ -327,6 +327,8 @@ const commands = [
 				await debug.run(argv.transactionHash, argv.port)
 			} catch (err) {
 				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
 			}
 
 		}
