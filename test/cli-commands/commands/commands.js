@@ -5,11 +5,11 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
-const ganache = require('../../../cli-commands/ganache/ganache')
+const ganache = require('../../../cli-commands/ganache/ganache');
 const shape = require('../../../cli-commands/shape/shape');
 const eventTracker = require('../../../cli-commands/event-tracker');
 
-const commands = require('../../../cli-commands/commands')
+const commands = require('../../../cli-commands/commands');
 
 
 describe('root calling cli commands', () => {
@@ -62,25 +62,8 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     });
 
-    it('should throw err if shape failed', async function() {
+    it('should throw err if shape failed', async function () {
         let stub = sinon.stub(shape, "run")
-        stub.throws()
-        let argv = {
-            output: "some message"
-        }
-        let errorMessage = "Error"
-        let consoleSpy = sinon.spy(console, "error");
-        commands[7].commandProcessor(argv)
-        let logs = consoleSpy.getCall(0);
-        let error = String(logs.args[0])
-        let errorLogged = error.includes(errorMessage);
-        assert.isTrue(errorLogged, errorMessage);
-        stub.restore();
-        consoleSpy.restore();
-    });
-
-    it('should throw if opt-out failed', async function() {
-        let stub = sinon.stub(eventTracker, "optOutUser")
         stub.throws()
         let argv = {
             output: "some message"
@@ -94,7 +77,22 @@ describe('root calling cli commands', () => {
         assert.isTrue(errorLogged, errorMessage);
         stub.restore();
         consoleSpy.restore();
+    });
+
+    it('should throw if opt-out failed', async function () {
+        let stub = sinon.stub(eventTracker, "optOutUser")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[9].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
     })
-
-
 })

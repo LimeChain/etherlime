@@ -8,6 +8,7 @@ const shape = require('./shape/shape');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
+const debug = require('./debugger/index');
 
 const commands = [
 	{
@@ -301,6 +302,35 @@ const commands = [
 				argv
 			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+		}
+	},
+	{
+		command: 'debug [transactionHash] [port]',
+		description: 'Debug transaction hash',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('transactionHash', {
+				describe: 'Specifies the transaction hash',
+				type: 'string'
+			})
+
+			yargs.positional('port', {
+				describe: 'The port to run the debugger for listening for local ganache',
+				type: 'number',
+				default: 8545
+			})
+		},
+		commandProcessor: async (argv) => {
+			recordEvent('etherlime debbuger', {
+				argv
+			});
+			try {
+				await debug.run(argv.transactionHash, argv.port)
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+
 		}
 	},
 	{

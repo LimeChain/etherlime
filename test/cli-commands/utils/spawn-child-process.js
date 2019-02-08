@@ -10,7 +10,7 @@ function spawnLinuxProcess(cmd) {
 	return spawn(cmdParts[0], cmdParts.slice(1));
 }
 
-function runCmdHandler(cmd, outputCondition) {
+function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditionalCommand, thirdAdditionalCommand) {
 	return new Promise((resolve, reject) => {
 		let process = null;
 		let commandOutput = '';
@@ -29,9 +29,7 @@ function runCmdHandler(cmd, outputCondition) {
 			let outputLoaded;
 
 			commandOutput += data.toString('utf-8');
-			
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
-
 			if (outputLoaded) {
 				const processRespond = {
 					process: process,
@@ -45,7 +43,6 @@ function runCmdHandler(cmd, outputCondition) {
 
 		process.stderr.on('data', function (data) {
 			const err = data.toString('utf-8');
-			
 			if (!err.includes('EADDRINUSE')) {
 				return resolve(err);
 			}
@@ -56,6 +53,27 @@ function runCmdHandler(cmd, outputCondition) {
 
 			resolve(errResponse);
 		});
+
+		if (additionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(additionalCommand);
+			}, 100);
+		}
+
+		if (secondAdditionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(secondAdditionalCommand);
+			}, 200);
+		}
+
+		if (thirdAdditionalCommand) {
+			setTimeout(() => {
+				commandOutput = '';
+				process.stdin.write(thirdAdditionalCommand);
+			}, 300);
+		}
 	});
 }
 
