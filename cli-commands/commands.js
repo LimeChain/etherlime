@@ -357,6 +357,25 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
+	},
+	{
+		command: 'opt-out',
+		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
+		argumentsProcessor: (yargs) => {
+		},
+		commandProcessor: (argv) => {
+			recordEvent('etherlime opt-out', {
+				argv
+			});
+
+			try {
+				eventTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
 	}
 ]
 

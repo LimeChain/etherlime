@@ -1,6 +1,7 @@
 const assert = require('chai').assert;
 const sinon = require('sinon');
 const _module = require('module');
+const fs = require('fs-extra');
 
 describe('event tracking', () => {
 
@@ -53,6 +54,23 @@ describe('event tracking', () => {
         assert.throws(() => { require('../../../cli-commands/event-tracker') }, 'Incorrect Error')
 
 
+    })
+
+    it('The etherlime does not sends events if user opt-out', async () => {
+        const analyticsBefore = fs.readFileSync(`${process.cwd()}/cli-commands/analytics.json`, 'utf8')
+        const parsedAnalytics = JSON.parse(analyticsBefore)
+
+        requireStub.withArgs('nyc').throws(new Error(`Cannot find module 'nyc'`));
+        requireStub.callThrough();
+
+        const { analyticsClient, recordEvent, optOutUser } = require('../../../cli-commands/event-tracker')
+
+        optOutUser()
+
+        const recordEventStub = sinon.stub(analyticsClient, 'recordEvent')
+        assert(recordEventStub.notCalled, 'recordEvent should not be called if user opt-out')
+        
+        fs.writeFileSync(`${process.cwd()}/cli-commands/analytics.json`, JSON.stringify(parsedAnalytics, null, 2))
     })
 
     afterEach(() => {
