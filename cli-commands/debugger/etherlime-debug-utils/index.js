@@ -187,14 +187,7 @@ const DebugUtils = {
   },
 
   formatInstruction: function (traceIndex, instruction) {
-    return (
-      "(" +
-      traceIndex +
-      ") " +
-      instruction.name +
-      " " +
-      (instruction.pushData || "")
-    );
+    return (`(${traceIndex}) ${instruction.name} ${instruction.pushData ? instruction.pushData : ''}`);
   },
 
   formatStack: function (stack) {
