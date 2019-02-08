@@ -330,7 +330,7 @@ const commands = [
 	},
 	{
 		command: 'opt-out',
-		description: 'Disables user tracking analytics.',
+		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
 		argumentsProcessor: (yargs) => {
 		},
 		commandProcessor: (argv) => {
