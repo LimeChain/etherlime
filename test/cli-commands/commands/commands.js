@@ -79,7 +79,7 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     });
 
-    it('should throw if opt-out failed', async function() {
+    it('should throw if opt-out failed', async function () {
         let stub = sinon.stub(eventTracker, "optOutUser")
         stub.throws()
         let argv = {
@@ -87,7 +87,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[8].commandProcessor(argv)
+        commands[9].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
