@@ -12,3 +12,4 @@ Etherlime CLI
    cli/history
    cli/test
    cli/coverage
+   cli/debug
