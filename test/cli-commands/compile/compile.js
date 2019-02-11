@@ -64,9 +64,14 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true), "It is not successfully executed!")
     });
 
+    it('should run compile with custom build folder parameter', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './customBuild/build'), "It is not successfully executed!")
+    });
+
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
         fs.removeSync('./build');
+        fs.removeSync('./customBuild/build');
     });
 })
