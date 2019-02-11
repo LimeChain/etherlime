@@ -164,7 +164,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -212,6 +212,11 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('buildDirectory', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime compile', {
@@ -220,7 +225,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory);
 			} catch (err) {
 				console.error(err);
 			} finally {
