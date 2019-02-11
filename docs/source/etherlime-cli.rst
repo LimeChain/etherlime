@@ -13,3 +13,4 @@ Etherlime CLI
    cli/test
    cli/coverage
    cli/debug
+   cli/shape

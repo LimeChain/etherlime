@@ -32,7 +32,8 @@ Milestones
 * [Ready] Being able to compile contracts to the desired formats for deployment <---- **Done**
 * [Ready] Being able to run unit tests on the compiled contracts <---- **Done**
 * [Ready] Being able to run unit tests with code coverage <---- **Done**
-* [Not Ready] Being able to debug transactions <---- **Next**
+* [Ready] Being able to debug transactions <---- **Done**
+* [Not Ready] Being able to verify contracts <---- **Next**
 
 Community
 ~~~~~~~~~~~~~~~
