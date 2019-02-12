@@ -9,6 +9,7 @@ const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
+const flatten = require('./compiler/flatten');
 
 const commands = [
 	{
@@ -375,6 +376,27 @@ const commands = [
 
 			try {
 				eventTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'flatten [file]',
+		description: '',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('file', {
+				describe: 'Specifies the root dir to read the contracts and place the build folder',
+				type: 'string'
+			});
+
+
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await flatten.run(argv.file);
 			} catch (err) {
 				console.error(err);
 			} finally {
