@@ -1,11 +1,13 @@
 
+const fs = require('fs-extra');
+const path = require('path')
 let Resolver = require("./etherlime-resolver/index");
 var Profiler = require("./etherlime-compile/profiler");
 var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 
-const run = async (file) => {
+let sources = new Array();
 
-
+const getSources = async (file) => {
 	let resolverOptions = {
 		"working_directory": `${process.cwd()}`,
 		"contracts_build_directory": `${process.cwd()}/build`,
@@ -33,12 +35,42 @@ const run = async (file) => {
 		})
 	}))
 
-	let sources = new Array();
 	let resolvedPaths = Object.keys(resolvedFiles);
 	for (let p in resolvedPaths) {
 		sources.push(resolvedFiles[resolvedPaths[p]].body)
 	}
-	console.log(sources)
+	
+}
+
+const createFolderAndFile = async (file) => {
+	let baseName = path.basename(file, '.sol');
+	if(!fs.existsSync('.contracts/flat')){
+		fs.mkdirSync('./contracts/flat')
+	}
+
+	if(!fs.existsSync(`./contracts/flat/${baseName}_flattened.sol`)){
+		fs.writeFileSync(`./contracts/flat/${baseName}_flattened.sol`)
+	}
+}
+
+const clearContent = async () => {
+	
+}
+
+const recordFiles = async (file) => {
+	await createFolderAndFile(file)
+	let baseName = path.basename(file, '.sol');
+	sources.forEach(s => {
+		fs.appendFileSync(`./contracts/flat/${baseName}_flattened.sol`, s)
+	})
+
+}
+
+
+
+const run = async (file) => {
+	await getSources(file)
+	await recordFiles(file)
 
 };
 
