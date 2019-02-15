@@ -5,7 +5,7 @@ var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 var supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory) => {
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -14,10 +14,10 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite) 
 
 	defaultPath = `${process.cwd()}/${defaultPath}`;
 
-	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite);
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -31,20 +31,20 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 
 	let resolverOptions = {
 		"working_directory": `${defaultPath}/contracts`,
-		"contracts_build_directory": `${defaultPath}/build`,
+		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
 	};
 
 	Resolver(resolverOptions);
-	
+
 	let compileOptions = {
 		"contracts_directory": `${defaultPath}/contracts`,
-		"contracts_build_directory": `${defaultPath}/build`,
+		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
 	};
-	
+
 	if (runs) {
 		compileOptions.solc = {
 			optimizer: {
@@ -53,12 +53,12 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 			}
 		}
 	}
-	
+
 	return compilePromise(compileOptions, quiet);
 };
 
 const compilePromise = async (compileOptions, quiet) => {
-	
+
 	return new Promise((resolve, reject) => {
 		compiler.compile(compileOptions, (error, artifacts, paths) => {
 			if (error) {
@@ -72,7 +72,7 @@ const compilePromise = async (compileOptions, quiet) => {
 
 				return;
 			}
-			
+
 			if (!quiet) {
 				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}

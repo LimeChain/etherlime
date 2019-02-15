@@ -8,6 +8,7 @@ const colorAddress = chalk.bold.green;
 const colorFailure = chalk.bold.red;
 const colorNetwork = chalk.bold.rgb(165, 42, 42);
 const colorAPIKey = chalk.bold.rgb(165, 42, 42);
+const colorCommand = chalk.bold.yellow;
 
 module.exports = {
 	colorTransactionHash,
@@ -17,5 +18,6 @@ module.exports = {
 	colorNetwork,
 	colorAPIKey,
 	colorFailure,
-	colorSuccess
+	colorSuccess,
+	colorCommand
 }

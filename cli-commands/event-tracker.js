@@ -1,6 +1,7 @@
 const KeenTracking = require('keen-tracking');
-const analyticsKeys = require('./analytics.json');
+const analytics = require('./analytics.json');
 const debugTestModule = 'nyc';
+const fs = require('fs-extra');
 
 let isProd = false;
 try {
@@ -14,12 +15,12 @@ try {
 }
 
 const analyticsClient = new KeenTracking({
-	projectId: analyticsKeys.projectId,
-	writeKey: analyticsKeys.writeKey
+	projectId: analytics.projectId,
+	writeKey: analytics.writeKey
 });
 
 const recordEvent = (command, params) => {
-	if (!isProd) {
+	if (!isProd || analytics.optOut) {
 		return false
 	}
 	analyticsClient.recordEvent(command, {
@@ -28,9 +29,14 @@ const recordEvent = (command, params) => {
 	return true
 }
 
-
+const optOutUser = () => {
+	analytics.optOut = true;
+	const spaces = 4; // number of space characters to be inserted for readability purposes
+	fs.writeFileSync(`${__dirname}/analytics.json`, JSON.stringify(analytics, null, spaces)) //second param is a string replacer if needed
+}
 
 module.exports = {
 	analyticsClient,
-	recordEvent
+	recordEvent,
+	optOutUser
 };

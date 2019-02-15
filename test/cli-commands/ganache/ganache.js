@@ -109,9 +109,7 @@ describe('Ganache cli command', () => {
 
 	describe('Run ganache server on already used port e.g. the default port', async () => {
 		it('should throw if we are trying to start ganache server on used port', async () => {
-
 			const childResponse = await runCmdHandler(`etherlime ganache --port ${DEFAULT_PORT}`, expectedOutput);
-
 			assert.isTrue(childResponse.portInUse, 'The ganache server is running on used port');
 		});
 	});
