@@ -42,7 +42,6 @@ describe('root calling cli commands', () => {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime deploy`, expectedOutput);
         assert.include(childProcess.output, expectedOutput)
-
     });
 
     it('should throw err if ganache failed', async function () {
@@ -94,5 +93,11 @@ describe('root calling cli commands', () => {
         assert.isTrue(errorLogged, errorMessage);
         stub.restore();
         consoleSpy.restore();
+    })
+
+    it('should throw if flatten failed', async function() {
+        let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
+        let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
     })
 })

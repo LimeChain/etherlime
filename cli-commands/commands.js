@@ -9,7 +9,7 @@ const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
-const flatten = require('./compiler/flatten');
+const flatten = require('./flattener/flatten');
 
 const commands = [
 	{
@@ -384,19 +384,22 @@ const commands = [
 		}
 	},
 	{
-		command: 'flatten [file]',
-		description: '',
+		command: 'flatten [file] [solcVersion]',
+		description: 'Flattens a smart contract combining all Solidity code in one file along with imported sources.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
-				describe: 'Specifies the root dir to read the contracts and place the build folder',
+				describe: 'Specifies the file to be flattened',
 				type: 'string'
 			});
 
-
+			yargs.positional('solcVersion', {
+				describe: 'Specifies the version of the solidity compiler',
+				type: 'string'
+			});
 		},
 		commandProcessor: async (argv) => {
 			try {
-				await flatten.run(argv.file);
+				await flatten.run(argv.file, argv.solcVersion);
 			} catch (err) {
 				console.error(err);
 			} finally {

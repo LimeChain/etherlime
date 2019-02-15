@@ -14,3 +14,4 @@ Etherlime CLI
    cli/coverage
    cli/debug
    cli/shape
+   cli/flattener
