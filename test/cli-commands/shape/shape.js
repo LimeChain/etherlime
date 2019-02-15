@@ -8,15 +8,15 @@ let unexistingShape = 'sthUnexisting'
 describe('Shape cli command', () => {
     let currentDir;
 
-    before( async function() {
+    beforeEach(async function () {
         currentDir = process.cwd();
         process.chdir('/tmp');
     });
 
     it('should throw err if can not find a proper shape', async () => {
-       let expectedOutput = 'Invalid shape'
-       let childProcess = await runCmdHandler(`etherlime shape ${unexistingShape}`, expectedOutput)
-       assert.include(childProcess, expectedOutput)
+        let expectedOutput = 'Invalid shape'
+        let childProcess = await runCmdHandler(`etherlime shape ${unexistingShape}`, expectedOutput)
+        assert.include(childProcess, expectedOutput)
     })
 
     it('should shape new dApp with Angular front-end', async () => {
@@ -26,7 +26,15 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./web'))
     });
 
-    after(async function() {
+    it('should shape new dApp with React front-end', async () => {
+        let expectedOutput = 'Shaping finished successful';
+        let childProcess = await runCmdHandler('etherlime shape react', expectedOutput)
+        assert.include(childProcess.output, expectedOutput)
+        assert(fs.existsSync('./web'))
+    });
+
+
+    afterEach(async function () {
         fs.removeSync('./contracts')
         fs.removeSync('./deployment')
         fs.removeSync('./test')
