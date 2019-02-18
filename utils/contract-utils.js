@@ -1,4 +1,7 @@
 const isValidContract = function (contract) {
+	if (!contract) {
+		return false;
+	}
 	if (!contract.bytecode) {
 		return false;
 	}
