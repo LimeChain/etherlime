@@ -6,9 +6,6 @@ let {resolver, supplier} = require('./config.js')
 
 const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files
-let resolvedPaths = new Array();
-let resolvedFiles = new Array();
-let orderedPaths = new Array();
 
 const run = async (file, solcVersion) => {
 	if(solcVersion) {
@@ -16,9 +13,10 @@ const run = async (file, solcVersion) => {
 	}
 
 	try {
-		await resolveSources(`./contracts/${file}`)
-		orderPaths()
-		recordFiles(file)
+		let resolvedFiles = await resolveSources(`./contracts/${file}`)
+		let resolvedPaths = resolvePaths(resolvedFiles)
+		let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+		recordFiles(file, resolvedFiles, orderedPaths)
 		console.log('Contract was flattened successfully. Check your "./flat" folder')
 	} catch (e) {
 		throw new Error(e.message);
@@ -30,7 +28,7 @@ const run = async (file, solcVersion) => {
 
 const resolveSources = async (file) => {
 	let solc = await supplier.load()
-	resolvedFiles = await (new Promise((resolve, reject) => {
+	let resolvedFiles = await (new Promise((resolve, reject) => {
 		Profiler.resolveAllSources(resolver, [file], solc, (err, resolved) => {
 
 			if (err) {
@@ -42,11 +40,16 @@ const resolveSources = async (file) => {
 		})
 	}))
 
-	resolvedPaths = Object.keys(resolvedFiles);
+	return resolvedFiles;
+}
+
+const resolvePaths = (files) => {
+	return Object.keys(files)
 }
 
 //sort files according imported dependencies; contracts with no imports are added first
-const orderPaths = () => {
+const orderPaths = (resolvedFiles, resolvedPaths) => {
+	let orderedPaths = new Array();
 	while(resolvedPaths.length > orderedPaths.length){
 		
 		for(let i = 0; i < resolvedPaths.length; i++) {
@@ -54,25 +57,27 @@ const orderPaths = () => {
 			let imports = resolvedFiles[currentPath].body.match(importRegex)
 			
 			if(!imports) {
-				pushPath(currentPath)
+				pushPath(orderedPaths, currentPath)
 				continue
 			}
 
-			let importsCount = countOrderedImports(imports)
+			let importsCount = countOrderedImports(imports, resolvedPaths, orderedPaths)
 			if(importsCount === imports.length) {
-				pushPath(currentPath)	
+				pushPath(orderedPaths, currentPath)	
 			}
 		}	
 	}
+
+	return orderedPaths
 }
 
 //counts if all imported sources in current file has already been ordered
-const countOrderedImports = (imports) => {
+const countOrderedImports = (imports, resolvedPaths, orderedPaths) => {
 	let counter = 0;
 		for(let i = 0; i < imports.length; i++) {
 			let currentImport = imports[i].replace(/[\n\'\"\;]/g, '') //removes quotes and semicolon
 			currentImport = path.basename(currentImport, '.sol') //extract the base name of file
-			let fullPath = findFullPath(currentImport) //find full path
+			let fullPath = findFullPath(resolvedPaths, currentImport) //find full path
 			if(orderedPaths.includes(fullPath)){
 				counter++
 			}
@@ -80,21 +85,21 @@ const countOrderedImports = (imports) => {
 	return counter
 }
 
-const pushPath = (currentPath) => {
+const pushPath = (orderedPaths, currentPath) => {
 	if(!orderedPaths.includes(currentPath)){
 		orderedPaths.push(currentPath)
 	}
 }
 
-const recordFiles = (file) => {
-	let baseName = path.basename(file, '.sol')
+const recordFiles = (fileName, resolvedFiles, orderedPaths) => {
+	let baseName = path.basename(fileName, '.sol')
 	let flatFileName = `./flat/${baseName}_flat.sol`;
 
-	createFolderAndFile(flatFileName)
+	createFolderAndFile(resolvedFiles, fileName, flatFileName)
 
 	orderedPaths.forEach(dependencyPath => {
 		let content = resolvedFiles[dependencyPath].body
-		content = clearContent(content)
+		content = removeVersionAndImports(content)
 
 		fs.appendFileSync(flatFileName, content)
 	})
@@ -102,21 +107,21 @@ const recordFiles = (file) => {
 	orderedPaths = []
 }
 
-const createFolderAndFile = (fileName) => {
-	let solidityVersion = resolvedFiles[resolvedPaths[0]].body.match(versionRegex) //takes pragma solidity version
+const createFolderAndFile = (resolvedFiles, fileName, flatFileName) => {
+	let solidityVersion = resolvedFiles[`./contracts/${fileName}`].body.match(versionRegex) //takes pragma solidity version
 	
 	if(!fs.existsSync('./flat')){
 		fs.mkdirSync('./flat')
 	}
 
-	fs.writeFileSync(fileName, solidityVersion[0])
+	fs.writeFileSync(flatFileName, solidityVersion[0])
 }
 
-const clearContent = (fileContent) => {
+const removeVersionAndImports = (fileContent) => {
     return fileContent.replace(versionRegex, '').replace(importRegex, '') //removes pragma solidity version and imported files
 }
 
-const findFullPath = (importPath) => {
+const findFullPath = (resolvedPaths, importPath) => {
 	for(let i = 0; i < resolvedPaths.length; i++) {
 		let basePath = path.basename(resolvedPaths[i], '.sol')
 		if(basePath === importPath){
