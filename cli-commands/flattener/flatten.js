@@ -8,7 +8,7 @@ const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma soli
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files
 let resolvedPaths = new Array();
 let resolvedFiles = new Array();
-let orderedDependencies = new Array();
+let orderedPaths = new Array();
 
 const run = async (file, solcVersion) => {
 	if(solcVersion) {
@@ -17,7 +17,7 @@ const run = async (file, solcVersion) => {
 
 	try {
 		await resolveSources(`./contracts/${file}`)
-		sortFiles()
+		orderPaths()
 		recordFiles(file)
 		console.log('Contract was flattened successfully. Check your "./flat" folder')
 	} catch (e) {
@@ -46,43 +46,43 @@ const resolveSources = async (file) => {
 }
 
 //sort files according imported dependencies; contracts with no imports are added first
-const sortFiles = () => {
-	while(resolvedPaths.length > orderedDependencies.length){
+const orderPaths = () => {
+	while(resolvedPaths.length > orderedPaths.length){
 		
 		for(let i = 0; i < resolvedPaths.length; i++) {
-			let currentDependency = resolvedPaths[i]
-			let imports = resolvedFiles[currentDependency].body.match(importRegex)
+			let currentPath = resolvedPaths[i]
+			let imports = resolvedFiles[currentPath].body.match(importRegex)
 			
 			if(!imports) {
-				pushDependency(currentDependency)
+				pushPath(currentPath)
 				continue
 			}
 
-			let dependenciesCount = countOrderedDependencies(imports)
-			if(dependenciesCount === imports.length) {
-				pushDependency(currentDependency)	
+			let importsCount = countOrderedImports(imports)
+			if(importsCount === imports.length) {
+				pushPath(currentPath)	
 			}
 		}	
 	}
 }
 
 //counts if all imported sources in current file has already been ordered
-const countOrderedDependencies = (imports) => {
+const countOrderedImports = (imports) => {
 	let counter = 0;
 		for(let i = 0; i < imports.length; i++) {
 			let currentImport = imports[i].replace(/[\n\'\"\;]/g, '') //removes quotes and semicolon
 			currentImport = path.basename(currentImport, '.sol') //extract the base name of file
 			let fullPath = findFullPath(currentImport) //find full path
-			if(orderedDependencies.includes(fullPath)){
+			if(orderedPaths.includes(fullPath)){
 				counter++
 			}
 		}
 	return counter
 }
 
-const pushDependency = (dependency) => {
-	if(!orderedDependencies.includes(dependency)){
-		orderedDependencies.push(dependency)
+const pushPath = (currentPath) => {
+	if(!orderedPaths.includes(currentPath)){
+		orderedPaths.push(currentPath)
 	}
 }
 
@@ -92,14 +92,14 @@ const recordFiles = (file) => {
 
 	createFolderAndFile(flatFileName)
 
-	orderedDependencies.forEach(dependency => {
-		let content = resolvedFiles[dependency].body
+	orderedPaths.forEach(dependencyPath => {
+		let content = resolvedFiles[dependencyPath].body
 		content = clearContent(content)
 
 		fs.appendFileSync(flatFileName, content)
 	})
 
-	orderedDependencies = []
+	orderedPaths = []
 }
 
 const createFolderAndFile = (fileName) => {
