@@ -92,7 +92,7 @@ class Deployer {
 	 */
 	async _preValidateArguments(contract, deploymentArguments) {
 		if (!(isValidContract(contract))) {
-			await this._logAction(this.constructor.name, contract.contractName, '', 1, '-', '-', 'Invalid contract object');
+			await this._logAction(this.constructor.name, contract ? contract.name : 'No contract name', '', 1, '-', '-', 'Invalid contract object');
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
