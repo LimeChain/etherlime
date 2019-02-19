@@ -54,7 +54,8 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return compilePromise(compileOptions, quiet);
+	return await compiler.compile(compileOptions)
+	// return compilePromise(compileOptions, quiet);
 };
 
 const compilePromise = async (compileOptions, quiet) => {
