@@ -18,7 +18,8 @@ This framework was born out of necessity, hardships and trouble in the developme
 2. [Ready] Being able to compile contracts to the desired formats for deployment <---- Done
 3. [Ready] Being able to run unit tests on the compiled contracts <---- Done
 4. [Ready] Being able to run unit tests with code coverage <---- Done
-5. [Not Ready] Being able to debug transactions <---- Next
+5. [Ready] Being able to debug transactions <---- Done
+6. [Not Ready] Being able to verify contracts <---- Next
 
 ## Installing
 

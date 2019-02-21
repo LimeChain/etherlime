@@ -1,10 +1,11 @@
-Shapes
-******
+etherlime shape
+***************
 
 Syntax
 ------
 
 ::
+
     etherlime shape [name]
 
 
