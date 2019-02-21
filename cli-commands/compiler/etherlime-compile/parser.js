@@ -1,16 +1,13 @@
 const CompileError = require("./compile-error");
-
 const preReleaseCompilerWarning = "This is a pre-release compiler version, please do not use it in production.";
 
-
-
-let parseImports = (body, solc) => {
+const parseImports = (body, solc) => {
   const importErrorKey = "ETHERLIME_IMPORT";
   const failingImportFileName = "__Etherlime__NotFound.sol";
 
   body = body + "\n\nimport '" + failingImportFileName + "';\n";
 
-  let solcStandardInput = {
+  const solcStandardInput = {
     language: "Solidity",
     sources: {
       "ParsedContract.sol": {
@@ -26,17 +23,17 @@ let parseImports = (body, solc) => {
     }
   };
 
-  let output = solc.compile(JSON.stringify(solcStandardInput), function () {
+  let output = solc.compile(JSON.stringify(solcStandardInput), () => {
     return { error: importErrorKey };
   });
 
   output = JSON.parse(output);
 
-  let errors = output.errors.filter(function (solidity_error) {
+  const errors = output.errors.filter((solidity_error) => {
     return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
   });
 
-  let nonImportErrors = errors.filter(function (solidity_error) {
+  const nonImportErrors = errors.filter((solidity_error) => {
     return solidity_error.formattedMessage.indexOf(importErrorKey) < 0;
   });
 
@@ -44,9 +41,9 @@ let parseImports = (body, solc) => {
     throw new CompileError(nonImportErrors[0].formattedMessage);
   }
 
-  let imports = errors.filter(function (solidity_error) {
+  const imports = errors.filter((solidity_error) => {
     return solidity_error.message.indexOf(failingImportFileName) < 0;
-  }).map(function (solidity_error) {
+  }).map((solidity_error) => {
     let matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/);
 
     return matches[2];
@@ -54,6 +51,4 @@ let parseImports = (body, solc) => {
 
   return imports;
 }
-module.exports = {
-  parseImports
-}
+module.exports = { parseImports }

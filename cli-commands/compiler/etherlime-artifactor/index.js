@@ -1,79 +1,90 @@
-var Schema = require("./../etherlime-contract-schema");
-var fs = require("fs-extra");
-var path = require("path");
-var _ = require("lodash");
+const Schema = require("./../etherlime-contract-schema");
+const fs = require("fs-extra");
+const path = require("path");
+const _ = require("lodash");
 
-function Artifactor(destination) {
-  this.destination = destination;
-};
+class Artifactor {
 
-Artifactor.prototype.save = async function (object) {
-  var self = this;
+  /**
+	 * @param {*} destination destination of the contracts build directory 
+	 */
 
-  object = Schema.normalize(object);
-
-  if (object.contractName == null) {
-    throw new Error('You must specify a contract name.');
+  constructor (destination) {
+    this.destination = destination
   }
 
-  var output_path = object.contractName;
 
-  output_path = path.join(self.destination, output_path);
-  output_path = path.resolve(output_path);
-  output_path = `${output_path}.json`;
+  async save (object) {
+    const self = this;
 
-  var finalObject = object;
-  
-  try {
-    let json = await fs.readFile(output_path, { encoding: "utf8" });
+    object = Schema.normalize(object);
 
-    var existingObjDirty = JSON.parse(json);
+    if (object.contractName == null) {
+      throw new Error('You must specify a contract name.');
+    }
 
-    finalObject = Schema.normalize(existingObjDirty);
-    var finalNetworks = {};
+    let output_path = object.contractName;
 
-    _.merge(finalNetworks, finalObject.networks, object.networks);
-    _.assign(finalObject, object);
+    output_path = path.join(self.destination, output_path);
+    output_path = path.resolve(output_path);
+    output_path = `${output_path}.json`;
 
-    finalObject.networks = finalNetworks;
-  
-  } catch (error) {
-
-  }
-
-  finalObject.updatedAt = new Date().toISOString();
-  await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
-};
-
-Artifactor.prototype.saveAll = async function (objects) {
-  var self = this;
-
-  if (Array.isArray(objects)) {
-    var array = objects;
-    objects = {};   
-
-    array.forEach(function (item) {
-      objects[item.contract_name] = item;
-    })
-  }
-  
-  try {
-    await fs.stat(self.destination);
-
-    var promises = [];
-
-    Object.keys(objects).forEach(function (contractName) {
-      var object = objects[contractName];
-
-      object.contractName = contractName;
-      promises.push(self.save(object));
-    });
+    let finalObject = object;
     
-    return Promise.all(promises);
+    try {
+      let json = await fs.readFile(output_path, { encoding: "utf8" });
 
-  } catch (error) {
-    throw new Error(`Destination ${self.destination} `);
+      let existingObjDirty = JSON.parse(json);
+
+      finalObject = Schema.normalize(existingObjDirty);
+      let finalNetworks = {};
+
+      _.merge(finalNetworks, finalObject.networks, object.networks);
+      _.assign(finalObject, object);
+
+      finalObject.networks = finalNetworks;
+    
+    } catch (error) {
+       
+    }
+
+    finalObject.updatedAt = new Date().toISOString();
+    await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
+
   }
-};
+
+
+  async saveAll (objects) {
+    const self = this;
+
+    if (Array.isArray(objects)) {
+      let array = objects;
+      objects = {};   
+
+      array.forEach((item) => {
+        objects[item.contract_name] = item;
+      })
+    }
+    
+    try {
+      await fs.stat(self.destination);
+
+      let promises = [];
+
+      Object.keys(objects).forEach((contractName) => {
+        let object = objects[contractName];
+
+        object.contractName = contractName;
+        promises.push(self.save(object));
+      });
+      
+      return Promise.all(promises);
+
+    } catch (error) {
+      throw new Error(`Destination ${self.destination}`);
+    }
+  }
+
+}
 
 module.exports = Artifactor;
