@@ -166,7 +166,6 @@ let updated = async (options) => {
 
 let required_sources = async function (options) {
   return new Promise(async (accept, reject) => {
-    var self = this;
 
     expect.options(options, [
       "paths",
@@ -179,6 +178,7 @@ let required_sources = async function (options) {
     // Fetch the whole contract set
 
     let allPathsInitial = await find_contracts(options.contracts_directory);
+    console.log("allPathsInital", allPathsInitial)
 
     options.paths.forEach(_path => {
       if (!allPathsInitial.includes(_path)) {
@@ -186,8 +186,8 @@ let required_sources = async function (options) {
       }
     });
 
-    var updates = self.convert_to_absolute_paths(options.paths, options.base_path).sort();
-    var allPaths = self.convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
+    var updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
+    var allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
 
     var allSources = {};
     var compilationTargets = [];
@@ -198,6 +198,7 @@ let required_sources = async function (options) {
       // Get all the source code
       try {
         let resolved = await resolveAllSources(resolver, allPaths, solc);
+        console.log("resolved", resolved)
         // Generate hash of all sources including external packages - passed to solc inputs.
         var resolvedPaths = Object.keys(resolved);
         resolvedPaths.forEach(file => allSources[file] = resolved[file].body)
@@ -255,7 +256,6 @@ let required_sources = async function (options) {
 }
 
 let resolveAllSources = async function (resolver, initialPaths, solc) {
-  var self = this;
   var mapping = {};
   let resolvedResources = {};
   var allPaths = initialPaths.slice();
@@ -330,13 +330,12 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
 }
 
 let getImports = function (file, resolved, solc) {
-  var self = this;
 
   var imports = Parser.parseImports(resolved.body, solc);
 
   // Convert explicitly relative dependencies of modules back into module paths.
   return imports.map(dependencyPath => {
-    return (self.isExplicitlyRelative(dependencyPath))
+    return (isExplicitlyRelative(dependencyPath))
       ? resolved.source.resolve_dependency_path(file, dependencyPath)
       : dependencyPath;
   });
@@ -350,14 +349,13 @@ let listsEqual = function (listA, listB) {
 }
 
 let convert_to_absolute_paths = function (paths, base) {
-  var self = this;
 
   return paths.map(function (p) {
     if (path.isAbsolute(p)) {
       return p;
     }
 
-    if (!self.isExplicitlyRelative(p)) {
+    if (!isExplicitlyRelative(p)) {
       return p;
     }
 

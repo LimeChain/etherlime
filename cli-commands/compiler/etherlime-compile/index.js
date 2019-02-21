@@ -249,7 +249,9 @@ compile.with_dependencies = async (options) => {
 					logger.log(`Compiling ${display_path}...`);
 				});
 			}
+			console.log("result", result)
 			let object = await compile(result, options);
+			console.log("obj", object)
 			resolve(object);
 		} catch (e) {
 			reject(e);
