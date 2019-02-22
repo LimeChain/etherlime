@@ -137,7 +137,7 @@ Check if the desired event was broadcasted in the transaction receipt
 
             const buyTransaction = await BillboardContract.buy('Billboard slogan', { value: 10000 });
 
-            const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
+            const transactionReceipt = await BillboardContract.verboseWaitForTransaction(buyTransaction);
 
             const expectedEvent = 'LogBillboardBought';
 
