@@ -20,8 +20,12 @@ let updated = async (options) => {
     if (options.files) {
       return (options.files);
     } else {
-      let files = await find_contracts(contracts_directory);
-      return files;
+      try {
+        let files = await find_contracts(contracts_directory);
+        return files;
+      } catch (e) {
+        throw e;
+      }
     }
   }
 
@@ -40,7 +44,7 @@ let updated = async (options) => {
       });
     }
     catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -160,7 +164,7 @@ let updated = async (options) => {
     await updateFiles();
     return updatedFiles;
   } catch (e) {
-
+    throw (e);
   }
 }
 
@@ -176,16 +180,18 @@ let required_sources = async function (options) {
     var resolver = options.resolver;
 
     // Fetch the whole contract set
-
-    let allPathsInitial = await find_contracts(options.contracts_directory);
-    console.log("allPathsInital", allPathsInitial)
+    let allPathsInitial;
+    try {
+      allPathsInitial = await find_contracts(options.contracts_directory);
+    } catch (e) {
+      return reject(e)
+    }
 
     options.paths.forEach(_path => {
       if (!allPathsInitial.includes(_path)) {
         allPathsInitial.push(_path)
       }
     });
-
     var updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
     var allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
 
@@ -198,7 +204,6 @@ let required_sources = async function (options) {
       // Get all the source code
       try {
         let resolved = await resolveAllSources(resolver, allPaths, solc);
-        console.log("resolved", resolved)
         // Generate hash of all sources including external packages - passed to solc inputs.
         var resolvedPaths = Object.keys(resolved);
         resolvedPaths.forEach(file => allSources[file] = resolved[file].body)
@@ -207,6 +212,8 @@ let required_sources = async function (options) {
           accept(allSources, {});
         } else if (!options.paths.length) {
           accept({}, {});
+        } else {
+          accept(allSources, compilationTargets)
         }
 
         // Seed compilationTargets with known updates
@@ -222,17 +229,16 @@ let required_sources = async function (options) {
           var files = allPaths.slice();
           while (files.length > 0) {
             var currentFile = files.shift();
-
             // Ignore targets already selected.
             if (compilationTargets.includes(currentFile)) {
-              accept();
+              return accept();
             }
             var imports;
             try {
               imports = getImports(currentFile, resolved[currentFile], solc);
             } catch (err) {
               err.message = "Error parsing " + currentFile + ": " + err.message;
-              reject(err)
+              return reject(err)
             }
 
             // If file imports a compilation target, add it
@@ -244,7 +250,6 @@ let required_sources = async function (options) {
             accept();
           }
         }
-
       } catch (err) {
         if (err) {
           reject(err);
@@ -306,7 +311,7 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
           imports = getImports(result.file, result, solc);
         } catch (err) {
           err.message = "Error parsing " + result[file] + ": " + err.message;
-          return err;
+          throw err;
         }
 
         // Detect unknown external packages / add them to the list of files to resolve
@@ -318,8 +323,7 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
       };
       return mapping
     }).catch(err => {
-      console.log('here', err)
-      return err;
+      throw err;
     });
   }
 

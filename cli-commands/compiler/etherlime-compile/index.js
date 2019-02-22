@@ -49,7 +49,7 @@ let compile = async (sources, options) => {
 			}
 		};
 		if (Object.keys(sources).length == 0) {
-			resolve(null, [], []);
+			resolve([], []);
 		}
 		Object.keys(operatingSystemIndependentSources).forEach((file_path) => {
 			solcStandardInput.sources[file_path] = {
@@ -208,8 +208,9 @@ compile.all = async (options) => {
 compile.necessary = async (options) => {
 	console.log('NECESSARY')
 	return new Promise(async (resolve, reject) => {
+		let updated = [];
 		try {
-			let updated = await Profiler.updated(options);
+			updated = await Profiler.updated(options);
 			if (updated.length == 0 && options.quiet != true) {
 				return resolve([], {});
 			}
@@ -219,7 +220,6 @@ compile.necessary = async (options) => {
 		}
 		catch (e) {
 			if (e) {
-				console.log('ERROR')
 				return reject(e);
 			}
 		}
@@ -249,9 +249,7 @@ compile.with_dependencies = async (options) => {
 					logger.log(`Compiling ${display_path}...`);
 				});
 			}
-			console.log("result", result)
 			let object = await compile(result, options);
-			console.log("obj", object)
 			resolve(object);
 		} catch (e) {
 			reject(e);
