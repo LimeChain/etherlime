@@ -657,17 +657,17 @@ async function evalAndPrintExpression(raw, indent, suppress, session) {
 
 async function compileAllContracts(config) {
 
-	return new Promise((resolve, reject) => {
-		compile.all(config, function (err, contracts, files) {
-			if (err) {
-				return reject(err);
-			}
-
+	return new Promise(async (resolve, reject) => {
+		let result;
+		try {
+			result = await compile.all(config);
 			return resolve({
-				contracts: contracts,
-				files: files
+				contracts: result.returnVal,
+				files: result.files
 			});
-		});
+		} catch (err) {
+			return reject(err);
+		}
 	});
 }
 
@@ -688,7 +688,7 @@ const run = async function (inputParams, inputPort) {
 	return new Promise(async (resolve, reject) => {
 		txHash = inputParams;
 		try {
-			const compileResult = await compileAllContracts(config)
+			const compileResult = await compileAllContracts(config);
 			const debuggerConfig = {
 				provider: provider,
 				files: compileResult.files,
@@ -735,6 +735,7 @@ const run = async function (inputParams, inputPort) {
 				done: resolve
 			});
 		} catch (err) {
+			console.log('HERE')
 			console.log(err);
 			reject(err);
 		}

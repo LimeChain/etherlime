@@ -466,15 +466,6 @@ describe('Compile dependencies', () => {
         it('should compile with max safe integer if updatedAt is bigger', async function () {
             compiledContract.updatedAt = Number.MAX_SAFE_INTEGER + 1;
             fs.writeFileSync('./build/compiledContract.json', JSON.stringify(compiledContract));
-            // let fnExecution = new Promise((resolve, reject) => {
-            //     profiler.updated(compileOptions, function (err) {
-            //         if (!err) {
-            //             resolve()
-            //             return
-            //         }
-            //         reject(err)
-            //     });
-            // });
 
             await assert.isFulfilled(profiler.updated(compileOptions));
 
@@ -487,85 +478,48 @@ describe('Compile dependencies', () => {
 
             let expectedError = "solc.compile is not a function"
 
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
-
-            await assert.isRejected(fnExecution, expectedError);
+            await assert.isRejected(profiler.resolveAllSources(resolver, initial_paths, solc), expectedError);
         });
 
-        it('should throw if resolver throws', async function () {
-            let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
-            let solc = { "version": "[Function]" }
-            let resolver = new Resolver(compileOptions);
+        // it('should throw if resolver throws', async function () {
+        //     let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
+        //     let solc = { "version": "[Function]" }
+        //     let resolver = new Resolver(compileOptions);
 
-            let stub = sinon.stub(resolver, "resolve");
-            stub.throws()
+        //     let stub = sinon.stub(resolver, "resolve");
+        //     stub.throws()
 
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
+        //     // let fnExecution = new Promise((resolve, reject) => {
+        //     //     profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
+        //     //         if (!err) {
+        //     //             resolve()
+        //     //             return
+        //     //         }
+        //     //         reject(err)
+        //     //     });
+        //     // });
 
-            await assert.isRejected(fnExecution);
-            stub.restore();
-        })
+        //     await assert.isRejected(profiler.resolveAllSources(resolver, initial_paths, solc));
+        //     stub.restore();
+        // })
 
         it('should compile with external imports', async function () {
-            fs.writeFileSync('./contracts/contractWithExternalImports.sol', contractWithExternalImports);
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
 
-            await assert.isFulfilled(fnExecution);
+            fs.writeFileSync('./contracts/contractWithExternalImports.sol', contractWithExternalImports);
+            await assert.isFulfilled(profiler.required_sources(compileOptions));
         });
 
         it('should compile if paths includes external imported contract', async function () {
-            compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
 
-            await assert.isFulfilled(fnExecution);
+            compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
+            await assert.isFulfilled(profiler.required_sources(compileOptions));
         });
 
         it('should throw if there is syntax error when importing contract', async function () {
             fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);
             let expectedError = "ParserError: Expected ';' but got 'contract'";
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.required_sources(compileOptions, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err)
-                });
-            });
 
-            await assert.isRejected(fnExecution, expectedError);
+            await assert.isRejected(profiler.required_sources(compileOptions), expectedError);
             fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')
         })
 
@@ -575,68 +529,29 @@ describe('Compile dependencies', () => {
             `${process.cwd()}/contracts/SafeMath.sol`,
             `${process.cwd()}/contracts/LimeFactory.sol`]
 
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, (err) => {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-
-                    reject(err);
-                });
-            });
-
-            await assert.isFulfilled(fnExecution, "Paths in options must be right")
+            await assert.isFulfilled(profiler.updated(compileOptions), "Paths in options must be right")
         });
 
         it('should reject if parser fail', async function () {
             let stub = sinon.stub(JSON, "parse")
             stub.throws();
 
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, (err) => {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err);
-                });
-            });
-
-            await assert.isRejected(fnExecution)
+            await assert.isRejected(profiler.updated(compileOptions));
             stub.restore()
         });
 
         it('should not throw when reading stats of unexisting file', async function () {
             compileOptions.files = [`${process.cwd()}/contracts/Unexisting.sol`]
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, (err) => {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err);
-                });
-            });
 
-            await assert.isFulfilled(fnExecution, "Stats of Unexisting.sol must be equal to null");
+            await assert.isFulfilled(profiler.updated(compileOptions), "Stats of Unexisting.sol must be equal to null");
         });
 
 
         it('should throw if file can not be read', async function () {
             fs.chmodSync('./build/SafeMath.json', 763)
             let expectedError = "EACCES: permission denied"
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, (err) => {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
-                    reject(err);
-                });
-            });
 
-            await assert.isRejected(fnExecution, expectedError)
+            await assert.isRejected(profiler.updated(compileOptions), expectedError)
             fs.chmodSync('./build/SafeMath.json', 0o777)
         });
 
@@ -644,18 +559,8 @@ describe('Compile dependencies', () => {
         it('should throw err if build directory can not be read', async function () {
             fs.chmodSync('./build', 763)
             let expectedError = "EACCES: permission denied"
-            let fnExecution = new Promise((resolve, reject) => {
-                profiler.updated(compileOptions, function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
 
-                    reject(err)
-                });
-            });
-
-            await assert.isRejected(fnExecution, expectedError)
+            await assert.isRejected(profiler.updated(compileOptions), expectedError)
             fs.chmodSync('./build', 0o777)
         });
 

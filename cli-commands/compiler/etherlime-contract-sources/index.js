@@ -2,7 +2,7 @@ var dir = require("node-dir");
 var path = require("path");
 
 let find_contracts = async (directory) => {
-  return new Promise((accept, reject) => {
+  return new Promise((resolve, reject) => {
     dir.files(directory, function (err, files) {
       if (err) {
         return reject(err);
@@ -10,7 +10,7 @@ let find_contracts = async (directory) => {
       files = files.filter(function (file) {
         return path.extname(file) == ".sol" && path.basename(file)[0] != ".";
       });
-      return accept(files);
+      return resolve(files);
     })
   });
 }

@@ -55,11 +55,13 @@ let updated = async (options) => {
         try {
           build_files = fs.readdirSync(build_directory);
         } catch (error) {
+
           if (error) {
+
             if (error.message.indexOf("ENOENT: no such file or directory") >= 0) {
               build_files = [];
             } else {
-              reject(error);
+              return reject(error);
             }
           }
         }
@@ -79,7 +81,7 @@ let updated = async (options) => {
         accept();
       }
       catch (error) {
-        reject(error)
+        return reject(error)
       }
     });
   }
@@ -91,7 +93,7 @@ let updated = async (options) => {
         body.push(fs.readFileSync(path.join(build_directory, buildFile)));
       } catch (e) {
         if (e) {
-          return e
+          throw e
         };
       }
     });
@@ -127,7 +129,7 @@ let updated = async (options) => {
         var sourceFileStat = sourceFileStats[index];
 
         if (sourceFileStat == null) {
-          reject();
+          return;
         }
 
         var artifactsUpdatedTime = sourceFilesArtifactsUpdatedTimes[sourceFile] || 0;
@@ -145,15 +147,15 @@ let updated = async (options) => {
     return new Promise(async (accept, reject) => {
       let stats = [];
       (sourceFiles).forEach(sourceFile => {
+        let stat;
         try {
-          let stat = fs.statSync(sourceFile);
-          stats.push(stat);
+          stat = fs.statSync(sourceFile);
         } catch (e) {
           stat = null;
         }
+        stats.push(stat);
       });
       accept(stats);
-
     });
   }
 
@@ -252,7 +254,7 @@ let required_sources = async function (options) {
         }
       } catch (err) {
         if (err) {
-          reject(err);
+          return reject(err);
         }
       }
 
@@ -328,9 +330,14 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
   }
 
   while (allPaths.length) {
-    resolvedResources = await generateMapping();
+    try {
+      resolvedResources = await generateMapping();
+      return resolvedResources;
+    } catch (e) {
+      throw e;
+    }
   }
-  return resolvedResources;
+  // return resolvedResources;
 }
 
 let getImports = function (file, resolved, solc) {

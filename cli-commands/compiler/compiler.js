@@ -54,14 +54,21 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return await compiler.compile(compileOptions)
-	// return compilePromise(compileOptions, quiet);
+	return await compilePromise(compileOptions, quiet);
 };
 
 const compilePromise = async (compileOptions, quiet) => {
 
-	return new Promise((resolve, reject) => {
-		compiler.compile(compileOptions, (error, artifacts, paths) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			await compiler.compile(compileOptions);
+			if (!quiet) {
+				logger.log(colors.colorSuccess('Compilation finished successfully'));
+			}
+
+			resolve();
+		}
+		catch (error) {
 			if (error) {
 				var stack = error['stack'].split(',/');
 
@@ -69,17 +76,9 @@ const compilePromise = async (compileOptions, quiet) => {
 					logger.log(message);
 				});
 
-				reject(stack);
-
-				return;
+				return reject(stack);
 			}
-
-			if (!quiet) {
-				logger.log(colors.colorSuccess('Compilation finished successfully'));
-			}
-
-			resolve();
-		});
+		}
 	});
 };
 

@@ -49,7 +49,7 @@ let compile = async (sources, options) => {
 			}
 		};
 		if (Object.keys(sources).length == 0) {
-			resolve([], []);
+			return resolve([], []);
 		}
 		Object.keys(operatingSystemIndependentSources).forEach((file_path) => {
 			solcStandardInput.sources[file_path] = {
@@ -195,18 +195,18 @@ orderABI = (contract) => {
 	return newABI;
 }
 compile.all = async (options) => {
-	console.log('ALL')
 	try {
 		let files = await find_contracts(options.contracts_directory);
+
+		// console.log('FILES', files)
 		options.paths = files;
 		let object = await compile.with_dependencies(options);
 		return object;
 	} catch (e) {
-		return e;
+		throw e;
 	}
 }
 compile.necessary = async (options) => {
-	console.log('NECESSARY')
 	return new Promise(async (resolve, reject) => {
 		let updated = [];
 		try {
@@ -227,7 +227,6 @@ compile.necessary = async (options) => {
 	});
 }
 compile.with_dependencies = async (options) => {
-	console.log('Compile with depencencies');
 	return new Promise(async (resolve, reject) => {
 		options.contracts_directory = options.contracts_directory || process.cwd();
 		expect.options(options, [
@@ -252,7 +251,7 @@ compile.with_dependencies = async (options) => {
 			let object = await compile(result, options);
 			resolve(object);
 		} catch (e) {
-			reject(e);
+			return reject(e);
 		}
 	})
 }
