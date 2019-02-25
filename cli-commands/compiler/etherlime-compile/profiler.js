@@ -1,12 +1,11 @@
-var path = require("path");
-var async = require("async");
-var fs = require("fs");
-var Graph = require("graphlib").Graph;
-var Parser = require("./parser");
-var expect = require("./../etherlime-expect");
-var find_contracts = require("./../etherlime-contract-sources");
+const path = require("path");
 
-var CompilerSupplier = require("./compilerSupplier");
+const fs = require("fs");
+const Parser = require("./parser");
+const expect = require("./../etherlime-expect");
+const find_contracts = require("./../etherlime-contract-sources");
+
+const CompilerSupplier = require("./compilerSupplier");
 
 let updated = async (options) => {
   expect.options(options, [
@@ -69,8 +68,8 @@ let updated = async (options) => {
           return path.extname(build_file) == ".json";
         });
         let jsonData = await prepareBuildFiles(build_files, build_directory);
-        for (var i = 0; i < jsonData.length; i++) {
-          var data = JSON.parse(jsonData[i]);
+        for (let i = 0; i < jsonData.length; i++) {
+          let data = JSON.parse(jsonData[i]);
 
           if (sourceFilesArtifacts[data.sourcePath] == null) {
             sourceFilesArtifacts[data.sourcePath] = [];
@@ -102,10 +101,10 @@ let updated = async (options) => {
 
   let prepareArtifacts = async () => {
     Object.keys(sourceFilesArtifacts).forEach(function (sourceFile) {
-      var artifacts = sourceFilesArtifacts[sourceFile];
+      let artifacts = sourceFilesArtifacts[sourceFile];
 
       sourceFilesArtifactsUpdatedTimes[sourceFile] = artifacts.reduce(function (minimum, current) {
-        var updatedAt = new Date(current.updatedAt).getTime();
+        let updatedAt = new Date(current.updatedAt).getTime();
 
         if (updatedAt < minimum) {
           return updatedAt;
@@ -122,18 +121,18 @@ let updated = async (options) => {
 
   let updateFiles = async () => {
     return new Promise(async (accept, reject) => {
-      var sourceFiles = Object.keys(sourceFilesArtifacts);
+      let sourceFiles = Object.keys(sourceFilesArtifacts);
       let sourceFileStats = await prepareUpdateFiles(sourceFiles);
 
       sourceFiles.forEach(function (sourceFile, index) {
-        var sourceFileStat = sourceFileStats[index];
+        let sourceFileStat = sourceFileStats[index];
 
         if (sourceFileStat == null) {
           return;
         }
 
-        var artifactsUpdatedTime = sourceFilesArtifactsUpdatedTimes[sourceFile] || 0;
-        var sourceFileUpdatedTime = (sourceFileStat.mtime || sourceFileStat.ctime).getTime();
+        let artifactsUpdatedTime = sourceFilesArtifactsUpdatedTimes[sourceFile] || 0;
+        let sourceFileUpdatedTime = (sourceFileStat.mtime || sourceFileStat.ctime).getTime();
 
         if (sourceFileUpdatedTime > artifactsUpdatedTime) {
           updatedFiles.push(sourceFile);
@@ -179,7 +178,7 @@ let required_sources = async function (options) {
       "resolver"
     ]);
 
-    var resolver = options.resolver;
+    let resolver = options.resolver;
 
     // Fetch the whole contract set
     let allPathsInitial;
@@ -194,20 +193,20 @@ let required_sources = async function (options) {
         allPathsInitial.push(_path)
       }
     });
-    var updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
-    var allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
+    let updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
+    let allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
 
-    var allSources = {};
-    var compilationTargets = [];
+    let allSources = {};
+    let compilationTargets = [];
 
-    var supplier = new CompilerSupplier(options.compilers.solc)
+    const supplier = new CompilerSupplier(options.compilers.solc)
     supplier.load().then(async solc => {
 
       // Get all the source code
       try {
         let resolved = await resolveAllSources(resolver, allPaths, solc);
         // Generate hash of all sources including external packages - passed to solc inputs.
-        var resolvedPaths = Object.keys(resolved);
+        let resolvedPaths = Object.keys(resolved);
         resolvedPaths.forEach(file => allSources[file] = resolved[file].body)
         // Exit w/out minimizing if we've been asked to compile everything, or nothing.
         if (listsEqual(options.paths, allPaths)) {
@@ -227,15 +226,15 @@ let required_sources = async function (options) {
         // Those sources are added to list of compilation targets as well as
         // the update queue because their own ancestors need to be discovered.
         while (updates.length > 0) {
-          var currentUpdate = updates.shift();
-          var files = allPaths.slice();
+          let currentUpdate = updates.shift();
+          let files = allPaths.slice();
           while (files.length > 0) {
-            var currentFile = files.shift();
+            let currentFile = files.shift();
             // Ignore targets already selected.
             if (compilationTargets.includes(currentFile)) {
               return accept();
             }
-            var imports;
+            let imports;
             try {
               imports = getImports(currentFile, resolved[currentFile], solc);
             } catch (err) {
@@ -342,7 +341,7 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
 
 let getImports = function (file, resolved, solc) {
 
-  var imports = Parser.parseImports(resolved.body, solc);
+  let imports = Parser.parseImports(resolved.body, solc);
 
   // Convert explicitly relative dependencies of modules back into module paths.
   return imports.map(dependencyPath => {
@@ -353,8 +352,8 @@ let getImports = function (file, resolved, solc) {
 }
 
 let listsEqual = function (listA, listB) {
-  var a = listA.sort();
-  var b = listB.sort();
+  let a = listA.sort();
+  let b = listB.sort();
 
   return JSON.stringify(a) === JSON.stringify(b);
 }
