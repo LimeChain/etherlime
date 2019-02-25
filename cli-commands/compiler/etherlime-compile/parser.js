@@ -7,7 +7,7 @@ const parseImports = (body, solc) => {
 
   body = body + "\n\nimport '" + failingImportFileName + "';\n";
 
-  const solcStandardInput = {
+  let solcStandardInput = {
     language: "Solidity",
     sources: {
       "ParsedContract.sol": {
@@ -29,11 +29,12 @@ const parseImports = (body, solc) => {
 
   output = JSON.parse(output);
 
-  const errors = output.errors.filter((solidity_error) => {
+  let errors = output.errors.filter((solidity_error) => {
     return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
   });
 
-  const nonImportErrors = errors.filter((solidity_error) => {
+  let nonImportErrors = errors.filter((solidity_error) => {
+
     return solidity_error.formattedMessage.indexOf(importErrorKey) < 0;
   });
 
@@ -41,7 +42,7 @@ const parseImports = (body, solc) => {
     throw new CompileError(nonImportErrors[0].formattedMessage);
   }
 
-  const imports = errors.filter((solidity_error) => {
+  let imports = errors.filter((solidity_error) => {
     return solidity_error.message.indexOf(failingImportFileName) < 0;
   }).map((solidity_error) => {
     let matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/);

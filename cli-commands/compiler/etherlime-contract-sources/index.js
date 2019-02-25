@@ -1,14 +1,19 @@
 var dir = require("node-dir");
 var path = require("path");
 
-module.exports = function (directory, callback) {
-  dir.files(directory, function (err, files) {
-    if (err) return callback(err);
+let find_contracts = async (directory) => {
+  return new Promise((resolve, reject) => {
+    dir.files(directory, function (err, files) {
+      if (err) {
+        return reject(err);
+      }
+      files = files.filter(function (file) {
+        return path.extname(file) == ".sol" && path.basename(file)[0] != ".";
+      });
+      return resolve(files);
+    })
+  });
+}
 
-    files = files.filter(function (file) {
-      return path.extname(file) == ".sol" && path.basename(file)[0] != ".";
-    });
+module.exports = find_contracts
 
-    callback(null, files);
-  })
-};
