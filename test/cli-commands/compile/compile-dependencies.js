@@ -132,54 +132,54 @@ describe('Compile dependencies', () => {
             fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './installed_contracts/math/contracts/SafeMath.sol');
         });
 
-        it('should resolve files if second parameter is function', async function () {
-            let fnExecution = new Promise((resolve, reject) => {
-                compileOptions.resolver.resolve("SafeMath.sol", function (err) {
-                    if (!err) {
-                        resolve()
-                        return
-                    }
+        // it('should resolve files if second parameter is function', async function () {
+        //     let fnExecution = new Promise((resolve, reject) => {
+        //         compileOptions.resolver.resolve("SafeMath.sol", function (err) {
+        //             if (!err) {
+        //                 resolve()
+        //                 return
+        //             }
 
-                    reject(err)
-                })
-            })
+        //             reject(err)
+        //         })
+        //     })
 
-            await assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
-        });
+        //     await assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
+        // });
 
-        it("should throw error if try to resolve non-existing file", async function () {
-            let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
-            const fnExecution = new Promise((resolve, reject) => {
-                compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts", function (err) {
-                    if (!err) {
-                        resolve();
-                        return;
-                    }
+        // it("should throw error if try to resolve non-existing file", async function () {
+        //     let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
+        //     const fnExecution = new Promise((resolve, reject) => {
+        //         compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts", function (err) {
+        //             if (!err) {
+        //                 resolve();
+        //                 return;
+        //             }
 
-                    reject(err)
-                })
-            });
+        //             reject(err)
+        //         })
+        //     });
 
-            await assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
+        //     await assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
 
-        });
+        // });
 
-        it("should throw error if try to resolve non-existing file without passing 'imported_from' param", async function () {
-            let expectedError = "Could not find Unexisting.sol from any sources";
-            const fnExecution = new Promise((resolve, reject) => {
-                compileOptions.resolver.resolve("Unexisting.sol", function (err) {
-                    if (!err) {
-                        resolve();
-                        return;
-                    }
+        // it("should throw error if try to resolve non-existing file without passing 'imported_from' param", async function () {
+        //     let expectedError = "Could not find Unexisting.sol from any sources";
+        //     const fnExecution = new Promise((resolve, reject) => {
+        //         compileOptions.resolver.resolve("Unexisting.sol", function (err) {
+        //             if (!err) {
+        //                 resolve();
+        //                 return;
+        //             }
 
-                    reject(err)
-                })
-            });
+        //             reject(err)
+        //         })
+        //     });
 
-            await assert.isRejected(fnExecution, expectedError, 'The .sol file must be non-existing and "imported_from" argument should be missing');
+        //     await assert.isRejected(fnExecution, expectedError, 'The .sol file must be non-existing and "imported_from" argument should be missing');
 
-        });
+        // });
 
         //EPM Source
         it('should find resource file in Eth package manager', function () {
