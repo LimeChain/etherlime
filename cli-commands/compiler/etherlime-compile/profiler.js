@@ -286,11 +286,19 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
         file = candidate;
       }
       var promise = new Promise(async (accept, reject) => {
-        resolver.resolve(file, parent, (err, body, absolutePath, source) => {
-          (err)
-            ? reject(err)
-            : accept({ file: absolutePath, body: body, source: source });
-        });
+        // resolver.resolve(file, parent, (err, body, absolutePath, source) => {
+        //   (err)
+        //     ? reject(err)
+        //     : accept({ file: absolutePath, body: body, source: source });
+        // });
+
+        try {
+          let result = await resolver.resolve(file, parent);
+          accept({ file: result.resolved_path, body: result.resolved_body, source: result.current_source });
+        } catch (err) {
+          console.log('here');
+          reject(err)
+        }
       });
       promises.push(promise);
     };
@@ -331,12 +339,12 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
   while (allPaths.length) {
     try {
       resolvedResources = await generateMapping();
-      return resolvedResources;
+      //return resolvedResources;
     } catch (e) {
       throw e;
     }
   }
-  // return resolvedResources;
+  return resolvedResources;
 }
 
 let getImports = function (file, resolved, solc) {

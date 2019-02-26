@@ -90,12 +90,12 @@ function Resolver(options) {
 
 
 Resolver.prototype.resolve = function (import_path, imported_from, callback) {
-  var self = this;
 
-  if (typeof imported_from == "function") {
-    callback = imported_from;
-    imported_from = null;
-  }
+
+  // if (typeof imported_from == "function") {
+  //   callback = imported_from;
+  //   imported_from = null;
+  // }
 
   var resolved_body = null;
   var resolved_path = null;
@@ -103,37 +103,78 @@ Resolver.prototype.resolve = function (import_path, imported_from, callback) {
   var current_source;
 
   // TODO refactor with while
-  whilst(function () {
-    return !resolved_body && current_index < self.sources.length - 1;
-  }, function (next) {
-    current_index += 1;
-    current_source = self.sources[current_index];
+  // whilst(function () {
+  //   return !resolved_body && current_index < self.sources.length - 1;
+  // }, function (next) {
+  //   console.log('here1')
+  //   current_index += 1;
+  //   current_source = self.sources[current_index];
 
-    current_source.resolve(import_path, imported_from, function (error, body, file_path) {
-      if (!error && body) {
-        resolved_body = body;
-        resolved_path = file_path;
+  //   current_source.resolve(import_path, imported_from, function (error, body, file_path) {
+  //     if (!error && body) {
+  //       resolved_body = body;
+  //       resolved_path = file_path;
+  //     }
+  //     next(error);
+  //   });
+  // }, function (error) {
+  //   // if (error) {
+  //   //   return callback(error);
+  //   // }
+  //   console.log('here')
+  //   if (!resolved_body) {
+  //     var message = `Could not find ${import_path} from any sources`;
+
+  //     if (imported_from) {
+  //       message += `; imported from ${imported_from}`;
+  //     }
+
+  //     return callback(new Error(message));
+  //   }
+
+  //   callback(null, resolved_body, resolved_path, current_source);
+  // })
+  return new Promise(async (resolve, reject) => {
+    var self = this;
+    while (!resolved_body && current_index < self.sources.length - 1) {
+      try {
+        current_index += 1;
+        current_source = self.sources[current_index];
+
+
+        let result = await current_source.resolve(import_path, imported_from)
+
+        if (result.body) {
+          resolved_body = result.body;
+          resolved_path = result.import_path;
+          return resolve({ resolved_body, resolved_path, current_source })
+        }
+
+      } catch (error) {
+
+        if (error) {
+          return reject(error);
+        }
       }
-
-      next(error);
-    });
-  }, function (error) {
-    // if (error) {
-    //   return callback(error);
-    // }
-
+    }
     if (!resolved_body) {
+
+
       var message = `Could not find ${import_path} from any sources`;
 
       if (imported_from) {
         message += `; imported from ${imported_from}`;
       }
 
-      return callback(new Error(message));
+      return reject(new Error(message));
     }
 
-    callback(null, resolved_body, resolved_path, current_source);
-  })
+  });
+
+
+  // while(!resolved_body && current_index < self.sources.length - 1) {
+
+  // }
 };
 
 module.exports = Resolver;
