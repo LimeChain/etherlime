@@ -55,14 +55,12 @@ let updated = async (options) => {
           build_files = fs.readdirSync(build_directory);
         } catch (error) {
 
-          if (error) {
-
-            if (error.message.indexOf("ENOENT: no such file or directory") >= 0) {
-              build_files = [];
-            } else {
-              return reject(error);
-            }
+          if (error.message.indexOf("ENOENT: no such file or directory") >= 0) {
+            build_files = [];
+          } else {
+            return reject(error);
           }
+    
         }
         build_files = build_files.filter(function (build_file) {
           return path.extname(build_file) == ".json";
@@ -91,9 +89,7 @@ let updated = async (options) => {
       try {
         body.push(fs.readFileSync(path.join(build_directory, buildFile)));
       } catch (e) {
-        if (e) {
-          throw e
-        };
+        throw e
       }
     });
     return body;
@@ -213,14 +209,12 @@ let required_sources = async function (options) {
           accept(allSources, {});
         } else if (!options.paths.length) {
           accept({}, {});
-        } else {
-          accept(allSources, compilationTargets)
         }
 
         // Seed compilationTargets with known updates
 
         updates.forEach(update => compilationTargets.push(update));
-
+  
         // While there are updated files in the queue, we take each one
         // and search the entire file corpus to find any sources that import it.
         // Those sources are added to list of compilation targets as well as
@@ -229,11 +223,14 @@ let required_sources = async function (options) {
           let currentUpdate = updates.shift();
           let files = allPaths.slice();
           while (files.length > 0) {
+    
             let currentFile = files.shift();
             // Ignore targets already selected.
+
             if (compilationTargets.includes(currentFile)) {
-              return accept();
+              continue
             }
+
             let imports;
             try {
               imports = getImports(currentFile, resolved[currentFile], solc);
@@ -241,20 +238,19 @@ let required_sources = async function (options) {
               err.message = "Error parsing " + currentFile + ": " + err.message;
               return reject(err)
             }
-
+            
             // If file imports a compilation target, add it
             // to list of updates and compilation targets
             if (imports.includes(currentUpdate)) {
               updates.push(currentFile);
               compilationTargets.push(currentFile);
             }
-            accept();
           }
         }
+        accept(allSources, compilationTargets)
+
       } catch (err) {
-        if (err) {
-          return reject(err);
-        }
+        return reject(err);
       }
 
     });
@@ -286,17 +282,10 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
         file = candidate;
       }
       var promise = new Promise(async (accept, reject) => {
-        // resolver.resolve(file, parent, (err, body, absolutePath, source) => {
-        //   (err)
-        //     ? reject(err)
-        //     : accept({ file: absolutePath, body: body, source: source });
-        // });
-
         try {
           let result = await resolver.resolve(file, parent);
           accept({ file: result.resolved_path, body: result.resolved_body, source: result.current_source });
         } catch (err) {
-          console.log('here');
           reject(err)
         }
       });
@@ -348,7 +337,6 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
 }
 
 let getImports = function (file, resolved, solc) {
-
   let imports = Parser.parseImports(resolved.body, solc);
 
   // Convert explicitly relative dependencies of modules back into module paths.
