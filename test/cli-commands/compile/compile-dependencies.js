@@ -122,7 +122,7 @@ describe('Compile dependencies', () => {
         })
     });
 
-    describe('Resolver tests', () => {
+    describe('Resolver tests', async () => {
 
         before(async function () {
             compileOptions.resolver = new Resolver(compileOptions)
@@ -147,22 +147,11 @@ describe('Compile dependencies', () => {
         //     await assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
         // });
 
-        // it("should throw error if try to resolve non-existing file", async function () {
-        //     let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
-        //     const fnExecution = new Promise((resolve, reject) => {
-        //         compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts", function (err) {
-        //             if (!err) {
-        //                 resolve();
-        //                 return;
-        //             }
+        it("should throw error if try to resolve non-existing file", async function () {
+            let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
+            await assert.isRejected(compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts"), expectedError, 'The .sol file mist be non-existing');
 
-        //             reject(err)
-        //         })
-        //     });
-
-        //     await assert.isRejected(fnExecution, expectedError, 'The .sol file mist be non-existing');
-
-        // });
+        });
 
         // it("should throw error if try to resolve non-existing file without passing 'imported_from' param", async function () {
         //     let expectedError = "Could not find Unexisting.sol from any sources";
@@ -182,17 +171,17 @@ describe('Compile dependencies', () => {
         // });
 
         //EPM Source
-        it('should find resource file in Eth package manager', function () {
+        it('should find resource file in Eth package manager', async function () {
             let library = 'library SafeMath'
-            let resource = compileOptions.resolver.sources[0].resolve("SafeMath.sol", "BillboardService.sol", callback);
-            assert.include(resource, library)
+            let resource = await compileOptions.resolver.sources[0].resolve("SafeMath.sol", "BillboardService.sol", callback);
+            assert.include(resource.body, library)
         });
 
-        it('should find resource file from specific package_name', function () {
+        it('should find resource file from specific package_name', async function () {
             let library = 'library SafeMath'
             let package_name = "math"
-            let resource = compileOptions.resolver.sources[0].resolve(`${package_name}/SafeMath.sol`, "BillboardService.sol", callback);
-            assert.include(resource, library)
+            let resource = await compileOptions.resolver.sources[0].resolve(`${package_name}/SafeMath.sol`, "BillboardService.sol", callback);
+            assert.include(resource.body, library)
         });
 
         it('should resolve dependency path', function () {
@@ -202,10 +191,10 @@ describe('Compile dependencies', () => {
         })
 
         //NPM Source
-        it('should find file in node-modules', function () {
+        it('should find file in node-modules', async function () {
             let library = 'exports = module.exports = Yargs'
-            let result = compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "", callback)
-            assert.include(result, library)
+            let result = await compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "", callback)
+            assert.include(result.body, library)
         });
 
         it('should resolve dependency path in contract', function () {

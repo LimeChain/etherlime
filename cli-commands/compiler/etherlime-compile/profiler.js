@@ -339,12 +339,12 @@ let resolveAllSources = async function (resolver, initialPaths, solc) {
   while (allPaths.length) {
     try {
       resolvedResources = await generateMapping();
-      return resolvedResources;
+      //return resolvedResources;
     } catch (e) {
       throw e;
     }
   }
-  // return resolvedResources;
+  return resolvedResources;
 }
 
 let getImports = function (file, resolved, solc) {
