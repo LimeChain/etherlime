@@ -132,43 +132,12 @@ describe('Compile dependencies', () => {
             fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './installed_contracts/math/contracts/SafeMath.sol');
         });
 
-        // it('should resolve files if second parameter is function', async function () {
-        //     let fnExecution = new Promise((resolve, reject) => {
-        //         compileOptions.resolver.resolve("SafeMath.sol", function (err) {
-        //             if (!err) {
-        //                 resolve()
-        //                 return
-        //             }
-
-        //             reject(err)
-        //         })
-        //     })
-
-        //     await assert.isFulfilled(fnExecution, 'It must resolve files if "imported_from" is missing')
-        // });
 
         it("should throw error if try to resolve non-existing file", async function () {
             let expectedError = "Could not find Unexisting.sol from any sources; imported from installed_contracts";
             await assert.isRejected(compileOptions.resolver.resolve("Unexisting.sol", "installed_contracts"), expectedError, 'The .sol file mist be non-existing');
 
         });
-
-        // it("should throw error if try to resolve non-existing file without passing 'imported_from' param", async function () {
-        //     let expectedError = "Could not find Unexisting.sol from any sources";
-        //     const fnExecution = new Promise((resolve, reject) => {
-        //         compileOptions.resolver.resolve("Unexisting.sol", function (err) {
-        //             if (!err) {
-        //                 resolve();
-        //                 return;
-        //             }
-
-        //             reject(err)
-        //         })
-        //     });
-
-        //     await assert.isRejected(fnExecution, expectedError, 'The .sol file must be non-existing and "imported_from" argument should be missing');
-
-        // });
 
         //EPM Source
         it('should find resource file in Eth package manager', async function () {
@@ -428,29 +397,18 @@ describe('Compile dependencies', () => {
             stub.restore()
         })
 
-        // it('should throw error if getImports function throws error', async function () {
-        //     let stub = sinon.stub(profiler, "getImports");
-        //     stub.onCall(0).returns([])
-        //     stub.onCall(1).returns([])
-        //     stub.onCall(2).returns([])
-        //     stub.onCall(3).returns([])
-        //     stub.onCall(4).returns([])
-        //     stub.onCall(5).returns([])
-        //     stub.onCall(6).throws()
 
-        //     // let fnExecution = new Promise((resolve, reject) => {
-        //     //     profiler.required_sources(compileOptions, function (err) {
-        //     //         if (!err) {
-        //     //             resolve()
-        //     //             return
-        //     //         }
-        //     //         reject(err);
-        //     //     });
-        //     // });
-
-        //     await assert.isRejected(profiler.required_sources(compileOptions))
-        //     stub.restore();
-        // });
+        it('should throw error if getImports function throws error', async function () {
+            let stub = sinon.stub(parser, "parseImports")
+            stub.onCall(0).returns([])
+            stub.onCall(1).returns([])
+            stub.onCall(2).returns([])
+            stub.onCall(3).returns([])
+            stub.onCall(4).returns([])
+            stub.onCall(5).returns({})
+            await assert.isRejected(profiler.required_sources(compileOptions))
+            stub.restore()
+        });
 
         it('should compile with max safe integer if updatedAt is bigger', async function () {
             compiledContract.updatedAt = Number.MAX_SAFE_INTEGER + 1;
@@ -470,36 +428,24 @@ describe('Compile dependencies', () => {
             await assert.isRejected(profiler.resolveAllSources(resolver, initial_paths, solc), expectedError);
         });
 
-        // it('should throw if resolver throws', async function () {
-        //     let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
-        //     let solc = { "version": "[Function]" }
-        //     let resolver = new Resolver(compileOptions);
+        it('should throw if resolver throws', async function () {
+            let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
+            let solc = { "version": "[Function]" }
+            let resolver = new Resolver(compileOptions);
 
-        //     let stub = sinon.stub(resolver, "resolve");
-        //     stub.throws()
+            let stub = sinon.stub(resolver, "resolve");
+            stub.throws()
 
-        //     // let fnExecution = new Promise((resolve, reject) => {
-        //     //     profiler.resolveAllSources(resolver, initial_paths, solc, function (err) {
-        //     //         if (!err) {
-        //     //             resolve()
-        //     //             return
-        //     //         }
-        //     //         reject(err)
-        //     //     });
-        //     // });
-
-        //     await assert.isRejected(profiler.resolveAllSources(resolver, initial_paths, solc));
-        //     stub.restore();
-        // })
+            await assert.isRejected(profiler.resolveAllSources(resolver, initial_paths, solc));
+            stub.restore();
+        })
 
         it('should compile with external imports', async function () {
-
             fs.writeFileSync('./contracts/contractWithExternalImports.sol', contractWithExternalImports);
             await assert.isFulfilled(profiler.required_sources(compileOptions));
         });
 
         it('should compile if paths includes external imported contract', async function () {
-
             compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
             await assert.isFulfilled(profiler.required_sources(compileOptions));
         });

@@ -16,7 +16,6 @@ const compile = async (options) => {
       try {
         let result = await etherlimeCompile.all(config)
         let test = await finish(result.returnVal, result.files, config)
-        console.log('test', test)
         resolve()
       } catch (err) {
         reject(err)
@@ -34,6 +33,8 @@ const compile = async (options) => {
   })
 
 }
+
+
 
 const configOptions = (options) => {
   expect.options(options, [
