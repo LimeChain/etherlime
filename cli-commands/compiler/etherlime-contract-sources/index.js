@@ -1,5 +1,5 @@
-var dir = require("node-dir");
-var path = require("path");
+const dir = require("node-dir");
+const path = require("path");
 
 let find_contracts = async (directory) => {
   return new Promise((resolve, reject) => {

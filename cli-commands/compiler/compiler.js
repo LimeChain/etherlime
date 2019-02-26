@@ -1,8 +1,8 @@
-let compiler = require("./etherlime-workflow-compile/index");
-let Resolver = require("./etherlime-resolver/index");
-let colors = require("./../../utils/colors");
-var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
-var supplier = new CompilerSupplier();
+const compiler = require("./etherlime-workflow-compile/index");
+const Resolver = require("./etherlime-resolver/index");
+const colors = require("./../../utils/colors");
+const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
+const supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory) => {
@@ -36,7 +36,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"quiet": quiet
 	};
 
-	Resolver(resolverOptions);
+	new Resolver(resolverOptions);
 
 	let compileOptions = {
 		"contracts_directory": `${defaultPath}/contracts`,
@@ -70,7 +70,7 @@ const compilePromise = async (compileOptions, quiet) => {
 		}
 		catch (error) {
 			if (error) {
-				var stack = error['stack'].split(',/');
+				let stack = error['stack'].split(',/');
 
 				stack.forEach(message => {
 					logger.log(message);

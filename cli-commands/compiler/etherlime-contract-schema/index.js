@@ -1,9 +1,5 @@
-var pkgVersion = require("./../../../package.json").version;
-var Ajv = require("ajv");
+const pkgVersion = require("./../../../package.json").version;
 
-var contractObjectSchema = require("./spec/contract-object.spec.json");
-var networkObjectSchema = require("./spec/network-object.spec.json");
-var abiSchema = require("./spec/abi.spec.json");
 
 /**
  * Property definitions for Contract Objects
@@ -27,13 +23,13 @@ var abiSchema = require("./spec/abi.spec.json");
  * The optional `transform` parameter standardizes value regardless of source,
  * for purposes of ensuring data type and/or string schemas.
  */
-var properties = {
+let properties = {
   "contractName": {
     "sources": ["contractName", "contract_name"]
   },
   "abi": {
     "sources": ["abi", "interface"],
-    "transform": function (value) {
+    "transform": (value) => {
       if (typeof value === "string") {
         try {
           value = JSON.parse(value)
@@ -48,7 +44,7 @@ var properties = {
     "sources": [
       "bytecode", "binary", "unlinked_binary", "evm.bytecode.object"
     ],
-    "transform": function (value) {
+    "transform": (value) => {
       if (value && value.indexOf("0x") != 0) {
         value = "0x" + value;
       }
@@ -59,7 +55,7 @@ var properties = {
     "sources": [
       "deployedBytecode", "runtimeBytecode", "evm.deployedBytecode.object"
     ],
-    "transform": function (value) {
+    "transform": (value) => {
       if (value && value.indexOf("0x") != 0) {
         value = "0x" + value;
       }
@@ -76,9 +72,9 @@ var properties = {
   "sourcePath": {},
   "ast": {},
   "legacyAST": {
-    "transform": function (value, obj) {
-      var schemaVersion = obj.schemaVersion || "0.0.0";
-  
+    "transform": (value, obj) => {
+      let schemaVersion = obj.schemaVersion || "0.0.0";
+
       // legacyAST introduced in v2.0.0
       if (schemaVersion[0] < 2) {
         return obj.ast;
@@ -89,7 +85,7 @@ var properties = {
   },
   "compiler": {},
   "networks": {
-    "transform": function (value) {
+    "transform": (value) => {
       if (value === undefined) {
         value = {}
       }
@@ -101,7 +97,7 @@ var properties = {
   },
   "updatedAt": {
     "sources": ["updatedAt", "updated_at"],
-    "transform": function (value) {
+    "transform": (value) => {
       if (typeof value === "number") {
         value = new Date(value).toISOString();
       }
@@ -116,7 +112,7 @@ var properties = {
  *
  * @return {Function} Accepting dirty object and returning value || undefined
  */
-function getter(key) {
+let getter = (key) => {
 
   const transform = (x) => {
     return x
@@ -137,57 +133,58 @@ function getter(key) {
  * Assumes all intermediary values to be objects, with well-formed sequence
  * of operations.
  */
-function chain() {
-  var getters = Array.prototype.slice.call(arguments);
-  return function (obj) {
-    return getters.reduce(function (cur, get) {
+let chain = function () {
+  let getters = Array.prototype.slice.call(arguments);
+  return (obj) => {
+    return getters.reduce((cur, get) => {
       return get(cur);
     }, obj);
   }
 }
 
-var EtherlimeContractSchema = {
 
-  normalize: function (objDirty, options) {
-    var normalized = {};
 
-    Object.keys(properties).forEach(function (key) {
-      var property = properties[key];
-      var value;
+let normalize = (objDirty, options) => {
+  let normalized = {};
 
-      var sources = property.sources || [key];
+  Object.keys(properties).forEach((key) => {
+    let property = properties[key];
+    let value;
 
-      for (var i = 0; value === undefined && i < sources.length; i++) {
-        var source = sources[i];
-       
-        if (typeof source === "string") {
-          var traversals = source.split(".")
-            .map(function (k) {
-              return getter(k)
-            });
-          source = chain.apply(null, traversals);
-        }
+    let sources = property.sources || [key];
 
-        value = source(objDirty);
+    for (let i = 0; value === undefined && i < sources.length; i++) {
+      let source = sources[i];
+
+      if (typeof source === "string") {
+        let traversals = source.split(".")
+          .map((k) => {
+            return getter(k)
+          });
+        source = chain.apply(null, traversals);
       }
 
-      if (property.transform) {
-        value = property.transform(value, objDirty);
-      }
+      value = source(objDirty);
+    }
 
-      normalized[key] = value;
-    });
+    if (property.transform) {
+      value = property.transform(value, objDirty);
+    }
 
-    Object.keys(objDirty).forEach(function (key) {
-      if (key.indexOf("x-") === 0) {
-        normalized[key] = getter(key)(objDirty);
-      }
-    });
+    normalized[key] = value;
+  });
 
-    normalized.schemaVersion = pkgVersion;
+  Object.keys(objDirty).forEach((key) => {
+    if (key.indexOf("x-") === 0) {
+      normalized[key] = getter(key)(objDirty);
+    }
+  });
 
-    return normalized
-  }
-};
+  normalized.schemaVersion = pkgVersion;
 
-module.exports = EtherlimeContractSchema;
+  return normalized
+}
+
+module.exports = {
+  normalize
+}
