@@ -477,7 +477,6 @@ describe('Compile dependencies', () => {
 
         it('should not throw when reading stats of unexisting file', async function () {
             compileOptions.files = [`${process.cwd()}/contracts/Unexisting.sol`]
-
             await assert.isFulfilled(profiler.updated(compileOptions), "Stats of Unexisting.sol must be equal to null");
         });
 
@@ -607,6 +606,11 @@ describe('Compile dependencies', () => {
 
             assert.include(errMessage, expectedError)
         })
+
+        // it('should get default etherlime version', async () => {
+        //     let solc = compilerSupplier.getDefaultEtherlime()
+        //     assert.isObject(solc)
+        // })
 
         it('should normalize version', async () => {
             let version = "macOS: version 10.13.1 (build: 17B1003)"

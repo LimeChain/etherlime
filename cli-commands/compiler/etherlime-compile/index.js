@@ -198,7 +198,6 @@ compile.all = async (options) => {
 	try {
 		let files = await find_contracts(options.contracts_directory);
 
-		// console.log('FILES', files)
 		options.paths = files;
 		let object = await compile.with_dependencies(options);
 		return object;
