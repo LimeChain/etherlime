@@ -11,11 +11,15 @@ let updated = async (options) => {
     "resolver"
   ]);
 
+  let sourceFilesArtifacts;
+  let sourceFilesArtifactsUpdatedTimes;
+  let updatedFiles;
+
   try {
-    let sourceFilesArtifacts = await prepareFiles(options);
+    sourceFilesArtifacts = await prepareFiles(options);
     sourceFilesArtifacts = await readFiles(options.contracts_build_directory, sourceFilesArtifacts);
-    let sourceFilesArtifactsUpdatedTimes = await prepareArtifacts(sourceFilesArtifacts);
-    let updatedFiles = await updateFiles(sourceFilesArtifacts, sourceFilesArtifactsUpdatedTimes);
+    sourceFilesArtifactsUpdatedTimes = await prepareArtifacts(sourceFilesArtifacts);
+    updatedFiles = await updateFiles(sourceFilesArtifacts, sourceFilesArtifactsUpdatedTimes);
     return updatedFiles;
   } catch (e) {
     throw (e);
@@ -41,8 +45,10 @@ let getFiles = async (options) => {
   if (options.files) {
     return (options.files);
   } else {
+
+    let files;
     try {
-      let files = await find_contracts(options.contracts_directory);
+      files = await find_contracts(options.contracts_directory);
       return files;
     } catch (e) {
       throw e;
@@ -198,11 +204,13 @@ let required_sources = async function (options) {
     const supplier = new CompilerSupplier(options.compilers.solc)
     supplier.load().then(async solc => {
 
+      let resolved;
+      let resolvedPaths;
       // Get all the source code
       try {
-        let resolved = await resolveAllSources(resolver, allPaths, solc);
+        resolved = await resolveAllSources(resolver, allPaths, solc);
         // Generate hash of all sources including external packages - passed to solc inputs.
-        let resolvedPaths = Object.keys(resolved);
+        resolvedPaths = Object.keys(resolved);
         resolvedPaths.forEach(file => allSources[file] = resolved[file].body)
         // Exit w/out minimizing if we've been asked to compile everything, or nothing.
         if (listsEqual(options.paths, allPaths)) {
@@ -293,8 +301,9 @@ let generateMapping = async function (allPaths, resolver, solc, mapping) {
     }
 
     let promise = new Promise(async (accept, reject) => {
+      let result;
       try {
-        let result = await resolver.resolve(file, parent);
+        result = await resolver.resolve(file, parent);
         accept({ file: result.resolved_path, body: result.resolved_body, source: result.current_source });
       } catch (err) {
         reject(err)
