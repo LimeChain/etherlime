@@ -2,7 +2,7 @@ const colors = require('./../utils/colors');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('./../logger-service/logger-service').logger;
 const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup-privatekeys.json');
-const isWallet = require('./../utils/wallet-utils').isWallet;
+const isSigner = require('./../utils/signer-utils').isSigner;
 const ethers = require('ethers')
 
 class EtherlimeDevnetWrapper extends DeployedContractWrapper {
@@ -38,7 +38,7 @@ class EtherlimeDevnetWrapper extends DeployedContractWrapper {
 			return this.instancesMap[addressOrWalletOrIndex]
 		}
 
-		if (isWallet(addressOrWalletOrIndex)) {
+		if (isSigner(addressOrWalletOrIndex)) {
 			let instance = this.instancesMap[addressOrWalletOrIndex.address];
 			if (!instance) {
 				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex);
@@ -46,7 +46,7 @@ class EtherlimeDevnetWrapper extends DeployedContractWrapper {
 			return this.instancesMap[addressOrWalletOrIndex.address]
 		}
 
-		if (isWallet(addressOrWalletOrIndex.wallet)) {
+		if (isSigner(addressOrWalletOrIndex.wallet)) {
 			let instance = this.instancesMap[addressOrWalletOrIndex.wallet.address];
 			if (!instance) {
 				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrWalletOrIndex.wallet);

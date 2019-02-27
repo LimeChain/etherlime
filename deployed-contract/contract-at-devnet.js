@@ -1,6 +1,6 @@
 const ethers = require('ethers');
 const devnetSetupConfig = require('./../cli-commands/ganache/devnet-setup-privatekeys.json');
-const isWallet = require('./../utils/wallet-utils').isWallet;
+const isSigner = require('./../utils/signer-utils').isSigner;
 
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const EtherlimeDevnetWrapper = require('./etherlime-devnet-wrapper');
@@ -15,7 +15,7 @@ const EtherlimeDevnetWrapper = require('./etherlime-devnet-wrapper');
 const contractAtDevnet = async (contract, contractAddress, wallet, providerOrPort) => {
 
     if (providerOrPort instanceof ethers.providers.Provider) {
-        if (!wallet || !(isWallet(wallet))) {
+        if (!wallet || !(isSigner(wallet))) {
             throw new Error(`Incorrect wallet supplied - ${JSON.stringify(wallet)}`)
         }
         const walletInstance = await wallet.connect(providerOrPort)
@@ -29,7 +29,7 @@ const contractAtDevnet = async (contract, contractAddress, wallet, providerOrPor
     if (Number.isInteger(providerOrPort)) {
         const provider = new ethers.providers.JsonRpcProvider(`${devnetSetupConfig.defaultHost}:${providerOrPort}`);
         let walletInstance;
-        if (isWallet(wallet)) {
+        if (isSigner(wallet)) {
             walletInstance = await wallet.connect(provider);
         } else {
             walletInstance = new ethers.Wallet(devnetSetupConfig.accounts[0].secretKey, provider);
