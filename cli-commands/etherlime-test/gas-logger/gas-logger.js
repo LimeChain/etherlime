@@ -21,11 +21,12 @@ module.exports = class Logger {
 		this._addToTotalGas(gasUsed);
 		return gasUsed;
 	}
-	_addToTotalGas(amount) {
-		this._totalGasUsed += amount;
-	}
 
 	getTotalGasUsed() {
 		return this._totalGasUsed;
+	}
+
+	_addToTotalGas(amount) {
+		this._totalGasUsed += amount;
 	}
 };

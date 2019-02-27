@@ -47,7 +47,6 @@ function CustomReporter(runner, options) {
 		let timeSpentString = color(test.speed, '%dms');
 		let consumptionString;
 		let gasUsed = await gasLogger.getGasUsedForCurrentTest();
-
 		if (gasUsed) {
 			gasUsedString = color('checkmark', '%d gas');
 
@@ -79,11 +78,16 @@ function CustomReporter(runner, options) {
 		console.log.apply(null, [fmt, ...fmtArgs])
 	});
 
-	runner.on('fail', test => {
+	runner.on('fail',async test => {
 		failed = true;
+		let consumptionString = "";
+		let gasUsed = await gasLogger.getGasUsedForCurrentTest();
+		if (gasUsed) {
+			consumptionString = ' (' + gasUsed + ' gas)';
+		}
 		let fmt = indent() + color('fail', '  %d) %s');
 		console.log();
-		console.log(fmt, ++n, test.title)
+		console.log(fmt, ++n, test.title + consumptionString)
 	});
 
 	runner.on('end', () => {
