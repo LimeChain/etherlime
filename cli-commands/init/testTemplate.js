@@ -14,7 +14,7 @@ describe('Example', () => {
     });
 
     it('should have valid private key', async () => {
-        assert.strictEqual(deployer.wallet.privateKey, aliceAccount.secretKey);
+        assert.strictEqual(deployer.signer.privateKey, aliceAccount.secretKey);
     });
 
     it('should be valid address', async () => {
@@ -33,10 +33,10 @@ describe('Example', () => {
     });
 
     it('should create lime from another account', async () => {
-        let bobsWallet = accounts[4].wallet;
-        const transaction = await limeFactoryInstance.from(bobsWallet /* Could be address or just index in accounts like 4 */).createLime("newLime3", 6, 8, 2);
+        let bobsAccount = accounts[4].signer;
+        const transaction = await limeFactoryInstance.from(bobsAccount /* Could be address or just index in accounts like 4 */).createLime("newLime3", 6, 8, 2);
         // check sender
-        assert.equal(transaction.from, bobsWallet.address, "The account that created lime was not bobs");
+        assert.equal(transaction.from, bobsAccount.address, "The account that created lime was not bobs");
 
         //check created lime
         let lime = await limeFactoryInstance.limes(1);

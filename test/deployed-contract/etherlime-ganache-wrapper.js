@@ -24,10 +24,10 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		})
 
 		it('should create correct wrapper', () => {
-			const wrapper = new etherlime.EtherlimeGanacheWrapper(Greetings, config.randomAddress, deployer.wallet, deployer.provider);
+			const wrapper = new etherlime.EtherlimeGanacheWrapper(Greetings, config.randomAddress, deployer.signer, deployer.provider);
 
 			assert.isDefined(wrapper.contract, 'The newly created wrapper does not have a contract ethers.Contract');
-			assert.deepEqual(wrapper.wallet, deployer.wallet, "The stored wallet was not the inputted one")
+			assert.deepEqual(wrapper.signer, deployer.signer, "The stored signer was not the inputted one")
 			assert.deepEqual(wrapper.provider, deployer.provider, "The stored provider was not the inputted one")
 			assert.deepEqual(wrapper.contractAddress, config.randomAddress, "The stored contract address was not the inputted one")
 			assert.deepEqual(wrapper.contractAddress, config.randomAddress, "The stored contract address was not the inputted one")
@@ -108,58 +108,58 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			assert.strictEqual(tx.from, notDeployer.address, "The address of the tx sender is not the one of notDeployer")
 		});
 
-		it('should call contract correctly via wallet instance', async () => {
+		it('should call contract correctly via signer instance', async () => {
 			const tx = await deployedContract.from(notDeployer).transfer(config.randomAddress, 500)
 			assert.strictEqual(tx.from, notDeployer.address, "The address of the tx sender is not the one of notDeployer")
 		});
 
-		it('should call contract correctly via new wallet instance', async () => {
-			let newRandomWallet = ethers.Wallet.createRandom();
-			newRandomWallet = await newRandomWallet.connect(deployer.provider);
+		it('should call contract correctly via new signer instance', async () => {
+			let newRandomSigner = ethers.Wallet.createRandom();
+			newRandomSigner = await newRandomSigner.connect(deployer.provider);
 
-			await deployedContract.mint(newRandomWallet.address, 10000);
+			await deployedContract.mint(newRandomSigner.address, 10000);
 
 			await notDeployer.sendTransaction({
-				to: newRandomWallet.address,
+				to: newRandomSigner.address,
 				value: ethers.utils.parseEther('1.0')
 			});
 
-			const tx = await deployedContract.from(newRandomWallet).transfer(config.randomAddress, 500)
-			assert.strictEqual(tx.from, newRandomWallet.address, "The address of the tx sender is not the one of newRandomWallet")
+			const tx = await deployedContract.from(newRandomSigner).transfer(config.randomAddress, 500)
+			assert.strictEqual(tx.from, newRandomSigner.address, "The address of the tx sender is not the one of newRandomWSigner")
 		});
 
-		it('should call contract correctly via object with wallet instance', async () => {
-			const objectWithWallet = {
+		it('should call contract correctly via object with signer instance', async () => {
+			const objectWithSigner = {
 				secretKey: ganacheSetupConfig.accounts[5].secretKey,
-        		wallet: notDeployer
+        		signer: notDeployer
 			}
 
-			const tx = await deployedContract.from(objectWithWallet).transfer(config.randomAddress, 500)
-			assert.strictEqual(tx.from, objectWithWallet.wallet.address, "The address of the tx sender is not the one of notDeployer")
+			const tx = await deployedContract.from(objectWithSigner).transfer(config.randomAddress, 500)
+			assert.strictEqual(tx.from, objectWithSigner.signer.address, "The address of the tx sender is not the one of notDeployer")
 		});
 
-		it('should call contract correctly via object with new wallet instance', async () => {
-			let newRandomWallet = ethers.Wallet.createRandom();
-			newRandomWallet = await newRandomWallet.connect(deployer.provider);
+		it('should call contract correctly via object with new signer instance', async () => {
+			let newRandomSigner = ethers.Wallet.createRandom();
+			newRandomSigner = await newRandomSigner.connect(deployer.provider);
 			
-			const objectWithWallet = {
-				secretKey: newRandomWallet.privateKey,
-        		wallet: newRandomWallet
+			const objectWithSigner = {
+				secretKey: newRandomSigner.privateKey,
+        		signer: newRandomSigner
 			}
 
-			await deployedContract.mint(newRandomWallet.address, 10000);
+			await deployedContract.mint(newRandomSigner.address, 10000);
 
 			await notDeployer.sendTransaction({
-				to: newRandomWallet.address,
+				to: newRandomSigner.address,
 				value: ethers.utils.parseEther('1.0')
 			});
 
-			const tx = await deployedContract.from(objectWithWallet).transfer(config.randomAddress, 500)
-			assert.strictEqual(tx.from, objectWithWallet.wallet.address, "The address of the tx sender is not the one of notDeployer")
+			const tx = await deployedContract.from(objectWithSigner).transfer(config.randomAddress, 500)
+			assert.strictEqual(tx.from, objectWithSigner.signer.address, "The address of the tx sender is not the one of notDeployer")
 		});
 
 		it('should throw on invalid from', async () => {
-			assert.throws(() => deployedContract.from(14.6), Error, "Unrecognised input parameter. It should be index, address or wallet instance")
+			assert.throws(() => deployedContract.from(14.6), Error, "Unrecognized input parameter. It should be index, address or signer instance")
 		});
 
 	})

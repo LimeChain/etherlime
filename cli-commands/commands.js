@@ -4,9 +4,12 @@ const deployer = require('./deployer/deployer');
 const history = require('./history/history');
 const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
+const shape = require('./shape/shape');
 const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
+const debug = require('./debugger/index');
+const flatten = require('./flattener/flatten');
 
 const commands = [
 	{
@@ -162,7 +165,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -210,6 +213,11 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+
+			yargs.positional('buildDirectory', {
+				describe: 'Defines the way that the logs are shown',
+				type: 'string',
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime compile', {
@@ -218,7 +226,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -300,6 +308,103 @@ const commands = [
 				argv
 			});
 			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+		}
+	},
+	{
+		command: 'debug [transactionHash] [port]',
+		description: 'Debug transaction hash',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('transactionHash', {
+				describe: 'Specifies the transaction hash',
+				type: 'string'
+			})
+
+			yargs.positional('port', {
+				describe: 'The port to run the debugger for listening for local ganache',
+				type: 'number',
+				default: 8545
+			})
+		},
+		commandProcessor: async (argv) => {
+			recordEvent('etherlime debbuger', {
+				argv
+			});
+			try {
+				await debug.run(argv.transactionHash, argv.port)
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+
+		}
+	},
+	{
+		command: 'shape [name]',
+		description: 'Shapes ready to use dApp containing all files and settings.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('name', {
+				describe: 'Specifies the name of the framework or library that the project will be build up.',
+				type: 'string'
+			})
+		},
+		commandProcessor: (argv) => {
+			recordEvent('etherlime shape', {
+				argv
+			});
+
+			logger.storeOutputParameter(argv.output);
+
+			try {
+				shape.run(argv.name);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'opt-out',
+		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
+		argumentsProcessor: (yargs) => {
+		},
+		commandProcessor: (argv) => {
+			recordEvent('etherlime opt-out', {
+				argv
+			});
+
+			try {
+				eventTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'flatten [file] [solcVersion]',
+		description: 'Flattens a smart contract combining all Solidity code in one file along with imported sources.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('file', {
+				describe: 'Specifies the file to be flattened',
+				type: 'string'
+			});
+
+			yargs.positional('solcVersion', {
+				describe: 'Specifies the version of the solidity compiler',
+				type: 'string'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await flatten.run(argv.file, argv.solcVersion);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
 		}
 	}
 ]

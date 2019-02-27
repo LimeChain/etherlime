@@ -70,7 +70,7 @@ const setJSTestGlobals = async (port) => {
 	for (const acc of accounts) {
 		importedAccounts.push({
 			secretKey: acc.secretKey,
-			wallet: new ethers.Wallet(acc.secretKey, localNodeProvider)
+			signer: new ethers.Wallet(acc.secretKey, localNodeProvider)
 		})
 	}
 	global.accounts = importedAccounts;

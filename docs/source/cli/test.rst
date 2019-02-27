@@ -58,7 +58,7 @@ General Example
 			const BillboardContract = await deployer.deploy(Billboard, {});
 			let _owner = await BillboardContract.owner();
 
-			assert.strictEqual(_owner, owner.wallet.address, 'Initial contract owner does not match');
+			assert.strictEqual(_owner, owner.signer.address, 'Initial contract owner does not match');
 		});
 	});
 
@@ -82,11 +82,11 @@ execute function from another account
 		});
 
 		it('should execute function from another account', async () => {
-			let bobsWallet = accounts[4].wallet;
+			let bobsAccount = accounts[4].signer;
 			const transaction = await BillboardContract
-				.from(bobsWallet /* Could be address or just index in accounts like 3 */)
+				.from(bobsAccount /* Could be address or just index in accounts like 3 */)
 				.buy('Billboard slogan', { value: ONE_ETHER });
-			assert.equal(transaction.from, bobsWallet.address);
+			assert.equal(transaction.from, bobsAccount.address);
 		});
 	});
 
@@ -137,7 +137,7 @@ Check if the desired event was broadcasted in the transaction receipt
 
             const buyTransaction = await BillboardContract.buy('Billboard slogan', { value: 10000 });
 
-            const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
+            const transactionReceipt = await BillboardContract.verboseWaitForTransaction(buyTransaction);
 
             const expectedEvent = 'LogBillboardBought';
 

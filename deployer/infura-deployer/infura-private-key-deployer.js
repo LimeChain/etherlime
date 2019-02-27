@@ -8,9 +8,9 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	/**
 	 *
-	 * Instantiates new deployer based on the Infura service and private key based deployment wallet
+	 * Instantiates new deployer based on the Infura service and private key based deployment wallet/signer instance
 	 *
-	 * @param {*} privateKey the private key for the deployer wallet
+	 * @param {*} privateKey the private key for the deployer wallet/signer instance
 	 * @param {*} network network to deploy on. Check ethers for all networks. Examples: mainnet, rinkeby, ropsten
 	 * @param {*} apiKey the apiKey given to you by Infura
 	 * @param {*} defaultOverrides [Optional] default deployment overrides

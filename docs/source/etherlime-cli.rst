@@ -12,3 +12,6 @@ Etherlime CLI
    cli/history
    cli/test
    cli/coverage
+   cli/debug
+   cli/shape
+   cli/flattener
