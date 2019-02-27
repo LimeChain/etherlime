@@ -204,6 +204,20 @@ describe('Debug cli command', () => {
 
 	});
 
+	it('should start debug transaction and set watch expression (without semicolon) when it is added, and then print it on the screen the value of expression, when the watch expression is changed - 4', async function () {
+		let expectedOutput = "foodItems[skuCount] = FoodItem({name: _name,";
+		childProcess = await runCmdHandler(`etherlime debug ${foodCartTxHash}`, expectedOutput, '+foodItems\n', 'n\n', 'n\n');
+		assert.include(childProcess.output, expectedOutput);
+
+	});
+
+	it('should start debug transaction and set watch expression (without semicolon) when it is added, and then print it on the screen the value of expression, when the transaction completes - 5', async function () {
+		let expectedOutput = "limes: [ { name:";
+		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+Lime\n', 'c\n', 'v\n');
+		assert.include(childProcess.output, expectedOutput);
+
+	});
+
 	it('should start debug transaction and set watch expression when it is added and then print it on the screen the value of expression, when the watch expression is changed - 4', async function () {
 		let expectedOutput = "evm.current.call";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, '+!evm.current.call\n', 'q\n');

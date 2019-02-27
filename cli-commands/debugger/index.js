@@ -735,7 +735,6 @@ const run = async function (inputParams, inputPort) {
 				done: resolve
 			});
 		} catch (err) {
-			console.log('HERE')
 			console.log(err);
 			reject(err);
 		}
