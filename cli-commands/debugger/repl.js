@@ -25,7 +25,7 @@ class ReplManager extends EventEmitter {
 		this.contexts.push({
 			prompt: options.prompt,
 			interpreter: options.interpreter,
-			ignoreUndefined: options.ignoreUndefined || false,
+			ignoreUndefined: options.ignoreUndefined,
 			done: options.done
 		});
 
