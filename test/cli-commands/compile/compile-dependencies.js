@@ -477,7 +477,6 @@ describe('Compile dependencies', () => {
 
         it('should not throw when reading stats of unexisting file', async function () {
             compileOptions.files = [`${process.cwd()}/contracts/Unexisting.sol`]
-
             await assert.isFulfilled(profiler.updated(compileOptions), "Stats of Unexisting.sol must be equal to null");
         });
 

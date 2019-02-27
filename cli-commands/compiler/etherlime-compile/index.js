@@ -195,12 +195,13 @@ orderABI = (contract) => {
 	return newABI;
 }
 compile.all = async (options) => {
+	let files;
+	let object;
 	try {
-		let files = await find_contracts(options.contracts_directory);
+		files = await find_contracts(options.contracts_directory);
 
-		// console.log('FILES', files)
 		options.paths = files;
-		let object = await compile.with_dependencies(options);
+		object = await compile.with_dependencies(options);
 		return object;
 	} catch (e) {
 		throw e;
@@ -209,13 +210,14 @@ compile.all = async (options) => {
 compile.necessary = async (options) => {
 	return new Promise(async (resolve, reject) => {
 		let updated = [];
+		let object;
 		try {
 			updated = await Profiler.updated(options);
 			if (updated.length == 0 && options.quiet != true) {
 				return resolve([], {});
 			}
 			options.paths = updated;
-			let object = await compile.with_dependencies(options);
+			object = await compile.with_dependencies(options);
 			resolve(object);
 		}
 		catch (e) {
@@ -236,8 +238,9 @@ compile.with_dependencies = async (options) => {
 			"resolver"
 		]);
 		const config = Config.default().merge(options);
+		let result;
 		try {
-			let result = await Profiler.required_sources(config.with({
+				result = await Profiler.required_sources(config.with({
 				paths: options.paths,
 				base_path: options.contracts_directory,
 				resolver: options.resolver
