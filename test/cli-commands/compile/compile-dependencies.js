@@ -607,11 +607,6 @@ describe('Compile dependencies', () => {
             assert.include(errMessage, expectedError)
         })
 
-        // it('should get default etherlime version', async () => {
-        //     let solc = compilerSupplier.getDefaultEtherlime()
-        //     assert.isObject(solc)
-        // })
-
         it('should normalize version', async () => {
             let version = "macOS: version 10.13.1 (build: 17B1003)"
             let result = await compilerSupplier.normalizeVersion(version)
