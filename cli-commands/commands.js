@@ -235,7 +235,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation] [solc-version] [output]',
+		command: 'test [path] [skip-compilation] [gas-report] [solc-version] [output] [port]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -246,6 +246,12 @@ const commands = [
 
 			yargs.positional('skip-compilation', {
 				describe: 'Skips compilation of the contracts before running the tests',
+				type: 'boolean',
+				default: 'false'
+			});
+
+			yargs.positional('gas-report', {
+				describe: 'Enables Gas reporting future that will show Gas Usage after each test.',
 				type: 'boolean',
 				default: 'false'
 			});
@@ -266,7 +272,7 @@ const commands = [
 				describe: 'The port that the etherlime ganache is running in order to instantiate the test accounts',
 				type: 'number',
 				default: 8545
-			})
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime test', {
@@ -275,7 +281,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.port);
+				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {

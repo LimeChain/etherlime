@@ -1,0 +1,104 @@
+const mocha = require('mocha');
+const Base = mocha.reporters.Base;
+const color = Base.color;
+const GasLogger = require('./gas-logger');
+const inherits = require('util').inherits;
+
+function CustomReporter(runner, options) {
+	Base.call(this, runner);
+	const self = this;
+	let port = options.reporterOptions.port;
+	let indents = 0;
+	let n = 0;
+	let failed = false;
+	let gasLogger = new GasLogger(port);
+	const indent = () => Array(indents).join('  ');
+	let suitCounter = 0;
+	// ------------------------------------  Runners -------------------------------------------------
+	runner.on('start', () => {
+
+	});
+
+	runner.on('suite', suite => {
+		++indents;
+		console.log(color('suite', '%s%s'), indent(), suite.title)
+	});
+
+	runner.on('suite end', () => {
+		--indents;
+	});
+
+	runner.on('pending', test => {
+		let fmt = indent() + color('pending', '  - %s');
+		console.log(fmt, test.title)
+	});
+
+	runner.on('test', async () => {
+	});
+
+	runner.on('hook end', async () => {
+		gasLogger.startNewLogForTest();
+	});
+
+	runner.on('pass', async test => {
+		let fmt;
+		let fmtArgs;
+		let gasUsedString;
+		let showTimeSpent = true;
+		let timeSpentString = color(test.speed, '%dms');
+		let consumptionString;
+		let gasUsed = await gasLogger.getGasUsedForCurrentTest();
+
+		if (gasUsed) {
+			gasUsedString = color('checkmark', '%d gas');
+
+			if (showTimeSpent) {
+				consumptionString = ' (' + timeSpentString + ', ' + gasUsedString + ')';
+				fmtArgs = [test.title, test.duration, gasUsed]
+			} else {
+				consumptionString = ' (' + gasUsedString + ')';
+				fmtArgs = [test.title, gasUsed]
+			}
+
+			fmt = indent() +
+				color('checkmark', '  ' + Base.symbols.ok) +
+				color('pass', ' %s') +
+				consumptionString
+		} else {
+			if (showTimeSpent) {
+				consumptionString = ' (' + timeSpentString + ')';
+				fmtArgs = [test.title, test.duration]
+			} else {
+				consumptionString = '';
+				fmtArgs = [test.title]
+			}
+			fmt = indent() +
+				color('checkmark', '  ' + Base.symbols.ok) +
+				color('pass', ' %s') +
+				consumptionString
+		}
+		console.log.apply(null, [fmt, ...fmtArgs])
+	});
+
+	runner.on('fail', test => {
+		failed = true;
+		let fmt = indent() + color('fail', '  %d) %s');
+		console.log();
+		console.log(fmt, ++n, test.title)
+	});
+
+	runner.on('end', () => {
+		//Note(Nikolay): We need this Hack to display properly the last test indents and put in the proper Suite.
+		//              This is cause because we now use Async tests to measure the Gas and the reporter will wait
+		//              on the Transaction completion to calculate the Gas before showing information.
+		indents = 2;
+		// console.log(indents);
+		setTimeout(() => {
+			self.epilogue();
+		}, 1000);
+	});
+}
+
+inherits(CustomReporter, Base);
+
+module.exports = CustomReporter;
