@@ -1,31 +1,33 @@
-var Expect = {
-    options: function (options, expected_keys) {
-        expected_keys.forEach(function (key) {
-            if (options[key] == null) {
-                throw new Error(`Expected parameter "${key}" not passed to function.`);
-            }
-        });
-    },
 
-    one: function (options, expected_keys) {
-        var found = [];
-
-        expected_keys.forEach(function (key) {
-            if (options[key] != null) {
-                found.push(1);
-            } else {
-                found.push(0);
-            }
-        });
-
-        var total = found.reduce(function (t, value) {
-            return t + value;
-        });
-
-        if (total >= 1) return;
-
-        throw new Error(`Expected one of the following parameters, but found none: ${expected_keys.join(", ")}`);
-    }
+let options = (options, expected_keys) => {
+    expected_keys.forEach((key) => {
+        if (options[key] == null) {
+            throw new Error(`Expected parameter "${key}" not passed to function.`);
+        }
+    });
 }
 
-module.exports = Expect;
+let one = (options, expected_keys) => {
+    let found = [];
+
+    expected_keys.forEach((key) => {
+        if (options[key] != null) {
+            found.push(1);
+        } else {
+            found.push(0);
+        }
+    });
+
+    let total = found.reduce((t, value) => {
+        return t + value;
+    });
+
+    if (total >= 1) return;
+
+    throw new Error(`Expected one of the following parameters, but found none: ${expected_keys.join(", ")}`);
+}
+
+module.exports = {
+    options,
+    one
+};

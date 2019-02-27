@@ -64,7 +64,7 @@ let enabledExpressions = new Set();
 let txHash;
 
 
-function sessionInterpreter(session, repl) {
+let sessionInterpreter = (session, repl) => {
 	return async function interpreter(cmd) {
 		cmd = cmd.trim();
 		let cmdArgs, splitArgs;
@@ -232,7 +232,7 @@ function sessionInterpreter(session, repl) {
 	}
 }
 
-function setOrClearBreakpoint(args, setOrClear, session) {
+let setOrClearBreakpoint = (args, setOrClear, session) => {
 	//setOrClear: true for set, false for clear
 	let currentLocation = session.view(controller.current.location);
 	let breakpoints = session.view(controller.breakpoints);
@@ -400,13 +400,13 @@ function setOrClearBreakpoint(args, setOrClear, session) {
 	return;
 }
 
-function splitLines(str) {
+let splitLines = (str) => {
 	// We were splitting on OS.EOL, but it turns out on Windows,
 	// in some environments (perhaps?) line breaks are still denoted by just \n
 	return str.split(/\r?\n/g);
 }
 
-function printAddressesAffected(session) {
+let printAddressesAffected = (session) => {
 	const affectedInstances = session.view(
 		selectors.session.info.affectedInstances
 	);
@@ -417,12 +417,12 @@ function printAddressesAffected(session) {
 	);
 }
 
-function printHelp() {
+let printHelp = () => {
 	console.log("");
 	console.log(DebugUtils.formatHelp());
 }
 
-function printFile(session) {
+let printFile = (session) => {
 	let message = "";
 
 	debug("about to determine sourcePath");
@@ -438,7 +438,7 @@ function printFile(session) {
 	console.log(message + ":");
 }
 
-function printState(session) {
+let printState = (session) => {
 	const source = session.view(solidity.current.source).source;
 	const range = session.view(solidity.current.sourceRange);
 
@@ -460,7 +460,7 @@ function printState(session) {
 	console.log("");
 }
 
-function printInstruction(session) {
+let printInstruction = (session) => {
 	const instruction = session.view(solidity.current.instruction);
 	const step = session.view(trace.step);
 	const traceIndex = session.view(trace.index);
@@ -472,7 +472,7 @@ function printInstruction(session) {
 	console.log(DebugUtils.formatStack(step.stack));
 }
 
-function select(expr, session) {
+let select = (expr, session) => {
 	let selector, result;
 
 	try {
@@ -497,14 +497,14 @@ function select(expr, session) {
 /**
  * @param {string} selector
  */
-function printSelector(selector, session) {
+let printSelector = (selector, session) => {
 	const result = select(selector, session);
 	const debugSelector = debugModule(selector);
 	debugSelector.enabled = true;
 	debugSelector("%O", result);
 }
 
-function printWatchExpressions() {
+let printWatchExpressions = () => {
 	if (enabledExpressions.size === 0) {
 		console.log("No watch expressions added.");
 		return;
@@ -516,7 +516,7 @@ function printWatchExpressions() {
 	});
 }
 
-async function printWatchExpressionsResults(session) {
+let printWatchExpressionsResults = async (session) => {
 	debug("enabledExpressions %o", enabledExpressions);
 	await Promise.all(
 		[...enabledExpressions].map(async expression => {
@@ -533,7 +533,7 @@ async function printWatchExpressionsResults(session) {
 	);
 }
 
-async function printWatchExpressionResult(expression, session) {
+let printWatchExpressionResult = async (expression, session) => {
 	const type = expression[0];
 	const exprArgs = expression.substring(1);
 
@@ -546,7 +546,7 @@ async function printWatchExpressionResult(expression, session) {
 
 // TODO make this more robust for all cases and move to
 // truffle-debug-utils
-function formatValue(value, indent) {
+let formatValue = (value, indent) => {
 	if (!indent) {
 		indent = 0;
 	}
@@ -566,7 +566,7 @@ function formatValue(value, indent) {
 		.join(OS.EOL);
 }
 
-async function printVariables(session) {
+let printVariables = async (session) => {
 	const variables = await session.variables();
 	debug("variables %o", variables);
 
@@ -599,7 +599,7 @@ async function printVariables(session) {
 /**
  * Convert all !<...> expressions to JS-valid selector requests
  */
-function preprocessSelectors(expr) {
+let preprocessSelectors = (expr) => {
 	const regex = /!<([^>]+)>/g;
 	const select = "$"; // expect repl context to have this func
 	const replacer = (_, selector) => `${select}("${selector}")`;
@@ -619,7 +619,7 @@ function preprocessSelectors(expr) {
  *
  *        :!<trace.step.stack>[1]
  */
-async function evalAndPrintExpression(raw, indent, suppress, session) {
+let evalAndPrintExpression = async (raw, indent, suppress, session) => {
 	let context = Object.assign(
 		{ $: select },
 
@@ -655,7 +655,7 @@ async function evalAndPrintExpression(raw, indent, suppress, session) {
 	}
 }
 
-async function compileAllContracts(config) {
+let compileAllContracts = async (config) => {
 
 	return new Promise(async (resolve, reject) => {
 		let result;

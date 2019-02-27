@@ -1,13 +1,12 @@
-var mkdirp = require("mkdirp");
-var path = require("path");
-var OS = require("os");
+const mkdirp = require("mkdirp");
+const path = require("path");
+const OS = require("os");
 
-var Config = require("./../etherlime-config");
-var etherlimeCompile = require("./../etherlime-compile");
-var expect = require("./../etherlime-expect");
-var Resolver = require("./../etherlime-resolver");
-var Artifactor = require("./../etherlime-artifactor");
-
+const Config = require("./../etherlime-config");
+const etherlimeCompile = require("./../etherlime-compile");
+const expect = require("./../etherlime-expect");
+const Resolver = require("./../etherlime-resolver");
+const Artifactor = require("./../etherlime-artifactor");
 
 const compile = async (options) => {
   return new Promise(async (resolve, reject) => {
@@ -74,7 +73,7 @@ const finish = async function (contracts, paths, config) {
 }
 
 const write_contracts = async function (contracts, options) {
-  var logger = options.logger || console;
+  let logger = options.logger || console;
   return new Promise(async (resolve, reject) => {
     try {
       mkdirp.sync(options.contracts_build_directory);
@@ -83,7 +82,7 @@ const write_contracts = async function (contracts, options) {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);
       }
 
-      var extra_opts = {
+      let extra_opts = {
         network_id: options.network_id
       };
 
@@ -93,8 +92,6 @@ const write_contracts = async function (contracts, options) {
       reject(error);
     }
   })
-
 }
-
 
 module.exports = { compile, write_contracts };
