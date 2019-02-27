@@ -18,7 +18,11 @@ module.exports = class Logger {
 			gasUsed += Number(block.gasUsed.toString());
 			this.startingBlockNumber++;
 		}
+		this._addToTotalGas(gasUsed);
 		return gasUsed;
+	}
+	_addToTotalGas(amount) {
+		this._totalGasUsed += amount;
 	}
 
 	getTotalGasUsed() {

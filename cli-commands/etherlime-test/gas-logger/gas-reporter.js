@@ -13,8 +13,7 @@ function CustomReporter(runner, options) {
 	let failed = false;
 	let gasLogger = new GasLogger(port);
 	const indent = () => Array(indents).join('  ');
-	let suitCounter = 0;
-	// ------------------------------------  Runners -------------------------------------------------
+
 	runner.on('start', () => {
 
 	});
@@ -88,12 +87,15 @@ function CustomReporter(runner, options) {
 	});
 
 	runner.on('end', () => {
+		indents = 2;
 		//Note(Nikolay): We need this Hack to display properly the last test indents and put in the proper Suite.
 		//              This is cause because we now use Async tests to measure the Gas and the reporter will wait
 		//              on the Transaction completion to calculate the Gas before showing information.
-		indents = 2;
-		// console.log(indents);
+		// Maybe you can figure a better way to do this ?
 		setTimeout(() => {
+			console.log();
+			console.log(indent() + color('bright yellow', ' %s'), `Total Gas Used: ${gasLogger.getTotalGasUsed()}`);
+			console.log();
 			self.epilogue();
 		}, 1000);
 	});
