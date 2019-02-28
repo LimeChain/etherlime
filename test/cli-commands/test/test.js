@@ -24,6 +24,13 @@ let currentDir;
             fs.writeFileSync('./exampleToRun/exampleTest.js', exampleTest);
             fs.mkdirSync('./build');
         })
+
+        it('should execute test cli command with gas-report flag on', async function() {
+            let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
+            await assert.isFulfilled(test.run(path, false, "0.5.1", false))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], false, "0.5.1", false)
+            etherlimeTestSpy.restore();
+        });
     
         it('should execute test cli command with specific path', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
@@ -47,6 +54,7 @@ let currentDir;
             fs.mkdirSync('./test');
             await assert.isFulfilled(test.run(`${process.cwd()}/test`))
         })
+
     
         after(async function () {
             process.chdir(currentDir);
