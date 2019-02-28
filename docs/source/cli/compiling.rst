@@ -18,6 +18,9 @@ Parameters:
 * ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
 * ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
+* ``buildDirectory`` - [Optional] Defines the directory for placing builded contracts.
+* ``workingDirectory`` - [Optional] Defines the folder to use for reading contracts from, instead of the default one: ``./contracts``.
+
 
 The ``solcVersion`` can accept the following values:
 

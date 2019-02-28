@@ -12,7 +12,9 @@ describe('Compile cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./contracts')
+        fs.mkdirSync('./custom-contracts');
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
+        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './custom-contracts/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
     });
@@ -68,10 +70,15 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './customBuild/build'), "It is not successfully executed!")
     });
 
+    it('should run compile with custom working directory parameter', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './custom-contracts/build', './custom-contracts'), "It is not successfully executed!")
+    });
+
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
         fs.removeSync('./build');
         fs.removeSync('./customBuild/build');
+        fs.removeSync('./custom-contracts');
     });
 })
