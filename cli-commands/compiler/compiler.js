@@ -5,7 +5,7 @@ var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 var supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory) => {
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -14,10 +14,10 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, 
 
 	defaultPath = `${process.cwd()}/${defaultPath}`;
 
-	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory);
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -30,7 +30,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	};
 
 	let resolverOptions = {
-		"working_directory": `${defaultPath}/contracts`,
+		"working_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
@@ -39,7 +39,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	Resolver(resolverOptions);
 
 	let compileOptions = {
-		"contracts_directory": `${defaultPath}/contracts`,
+		"contracts_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet

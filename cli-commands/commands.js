@@ -215,7 +215,12 @@ const commands = [
 			});
 
 			yargs.positional('buildDirectory', {
-				describe: 'Defines the way that the logs are shown',
+				describe: 'Defines where to place builded contracts',
+				type: 'string',
+			});
+
+			yargs.positional('workingDirectory', {
+				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
 				type: 'string',
 			});
 		},
@@ -226,7 +231,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory);
 			} catch (err) {
 				console.error(err);
 			} finally {
