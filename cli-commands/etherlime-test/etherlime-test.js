@@ -44,7 +44,7 @@ const runMocha = async (mocha) => {
 		mocha.run(failures => {
 			process.exitCode = failures ? -1 : 0;
 			if (failures) {
-				reject()
+				reject('Some of the test scenarios failed!')
 			} else {
 				resolve()
 			}
