@@ -69,15 +69,13 @@ const compilePromise = async (compileOptions, quiet) => {
 			resolve();
 		}
 		catch (error) {
-			if (error) {
-				let stack = error['stack'].split(',/');
+			let stack = error['stack'].split(',/');
 
-				stack.forEach(message => {
-					logger.log(message);
-				});
+			stack.forEach(message => {
+				logger.log(message);
+			});
 
-				return reject(stack);
-			}
+			return reject(stack);
 		}
 	});
 };
