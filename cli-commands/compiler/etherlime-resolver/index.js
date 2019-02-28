@@ -19,45 +19,35 @@ class Resolver {
     ];
   }
 
-  resolve(import_path, imported_from, callback) {
-    var resolved_body = null;
-    var resolved_path = null;
-    var current_index = -1;
-    var current_source;
+  resolve(import_path, imported_from) {
+    let resolved_body = null;
+    let resolved_path = null;
+    let current_index = -1;
+    let current_source;
 
     return new Promise(async (resolve, reject) => {
-      var self = this;
+      let self = this;
       while (!resolved_body && current_index < self.sources.length - 1) {
-        try {
-          current_index += 1;
-          current_source = self.sources[current_index];
+        current_index += 1;
+        current_source = self.sources[current_index];
 
 
-          let result = await current_source.resolve(import_path, imported_from)
+        let result = await current_source.resolve(import_path, imported_from)
 
-          if (result.body) {
-            resolved_body = result.body;
-            resolved_path = result.import_path;
-            return resolve({ resolved_body, resolved_path, current_source })
-          }
-
-        } catch (error) {
-
-          if (error) {
-            return reject(error);
-          }
+        if (result.body) {
+          resolved_body = result.body;
+          resolved_path = result.import_path;
+          return resolve({ resolved_body, resolved_path, current_source })
         }
       }
-      if (!resolved_body) {
 
-        var message = `Could not find ${import_path} from any sources`;
+      let message = `Could not find ${import_path} from any sources`;
 
-        if (imported_from) {
-          message += `; imported from ${imported_from}`;
-        }
-
-        return reject(new Error(message));
+      if (imported_from) {
+        message += `; imported from ${imported_from}`;
       }
+
+      return reject(new Error(message));
 
     });
   }
