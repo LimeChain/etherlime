@@ -43,33 +43,24 @@ function CustomReporter(runner, options) {
 		let fmt;
 		let fmtArgs;
 		let gasUsedString;
-		let showTimeSpent = true;
 		let timeSpentString = color(test.speed, '%dms');
 		let consumptionString;
 		let gasUsed = await gasLogger.getGasUsedForCurrentTest();
 		if (gasUsed) {
 			gasUsedString = color('checkmark', '%d gas');
 
-			if (showTimeSpent) {
-				consumptionString = ' (' + timeSpentString + ', ' + gasUsedString + ')';
-				fmtArgs = [test.title, test.duration, gasUsed]
-			} else {
-				consumptionString = ' (' + gasUsedString + ')';
-				fmtArgs = [test.title, gasUsed]
-			}
-
+			consumptionString = ' (' + timeSpentString + ', ' + gasUsedString + ')';
+			fmtArgs = [test.title, test.duration, gasUsed]
+		
 			fmt = indent() +
 				color('checkmark', '  ' + Base.symbols.ok) +
 				color('pass', ' %s') +
 				consumptionString
 		} else {
-			if (showTimeSpent) {
-				consumptionString = ' (' + timeSpentString + ')';
-				fmtArgs = [test.title, test.duration]
-			} else {
-				consumptionString = '';
-				fmtArgs = [test.title]
-			}
+		
+			consumptionString = ' (' + timeSpentString + ')';
+			fmtArgs = [test.title, test.duration]
+			
 			fmt = indent() +
 				color('checkmark', '  ' + Base.symbols.ok) +
 				color('pass', ' %s') +

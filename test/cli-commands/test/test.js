@@ -7,9 +7,11 @@ const test = require('../../../cli-commands/etherlime-test/test');
 const sinon = require('sinon');
 
 let etherlimeTest = require('../../../cli-commands/etherlime-test/etherlime-test');
-let calledArgs = [ `${process.cwd()}/tmpTest/exampleToRun/exampleTest.js` ];
+let calledArgs = [ `${process.cwd()}/tmpTest/exampleToRun/exampleTest.js`];
 let exampleTest = require('../examples/exampleTest').exampleTest;
+let exampleTestWithFailingTest = require('../examples/exampleTEstWithFailingTest').exampleTestWithFailingTest;
 let path = 'exampleToRun/exampleTest.js';
+let pathToTestThatWithFail = 'exampleToRunThatWillFail/exampleTEstWithFailingTest.js';
 let currentDir;
 
     describe('test cli command', () => {
@@ -22,13 +24,22 @@ let currentDir;
             fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
             fs.mkdirSync('./exampleToRun');
             fs.writeFileSync('./exampleToRun/exampleTest.js', exampleTest);
+            fs.mkdirSync('./exampleToRunThatWillFail');
+            fs.writeFileSync('./exampleToRunThatWillFail/exampleTestWithFailingTest.js', exampleTestWithFailingTest);
             fs.mkdirSync('./build');
         })
 
         it('should execute test cli command with gas-report flag on', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isFulfilled(test.run(path, false, "0.5.1", false))
-            sinon.assert.calledWith(etherlimeTestSpy, [path], false, "0.5.1", false)
+            await assert.isFulfilled(test.run(path, false, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], false, false, true, 8545)
+            etherlimeTestSpy.restore();
+        });
+
+        it('should execute test cli command with gas-report flag on and report proerply with failed test', async function() {
+            let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
+            await assert.isRejected(test.run(pathToTestThatWithFail, false, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [pathToTestThatWithFail], false, false, true, 8545)
             etherlimeTestSpy.restore();
         });
     
