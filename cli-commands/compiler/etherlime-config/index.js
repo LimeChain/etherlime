@@ -85,7 +85,7 @@ class Config {
   
   
   normalize (obj) {
-    var clone = {};
+    let clone = {};
   
     Object.keys(obj).forEach(function (key) {
       try {
@@ -100,16 +100,16 @@ class Config {
 
 
   with (obj) {
-    var normalized = this.normalize(obj);
-    var current = this.normalize(this);
+    let normalized = this.normalize(obj);
+    let current = this.normalize(this);
   
     return _.extend({}, current, normalized);
   };
 
 
   merge (obj) {
-    var self = this;
-    var clone = this.normalize(obj);
+    let self = this;
+    let clone = this.normalize(obj);
   
     Object.keys(obj).forEach(function (key) {
       try {

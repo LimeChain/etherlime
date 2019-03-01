@@ -28,19 +28,14 @@ const run = async (file, solcVersion) => {
 
 const resolveSources = async (file) => {
 	let solc = await supplier.load()
-	let resolvedFiles = await (new Promise((resolve, reject) => {
-		Profiler.resolveAllSources(resolver, [file], solc, (err, resolved) => {
+	let resolvedFiles
+	try {
+		resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
+	} catch(e) {
+		throw e
+	}
 
-			if (err) {
-				return reject(err)
-			}
-
-			return resolve(resolved)
-
-		})
-	}))
-
-	return resolvedFiles;
+	return resolvedFiles
 }
 
 const resolvePaths = (files) => {

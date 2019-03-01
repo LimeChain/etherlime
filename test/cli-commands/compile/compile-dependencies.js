@@ -47,13 +47,6 @@ let compileOptions = {
     }
 };
 
-let callback = (er, res) => {
-    if (er) {
-        throw er
-    } else {
-        return res
-    }
-}
 
 describe('Compile dependencies', () => {
 
@@ -71,16 +64,23 @@ describe('Compile dependencies', () => {
             compileOptions.all = true;
             compileOptions.compileAll = true;
             let etherlimeCompileSpy = sinon.spy(etherlimeCompile, "all");
-            await contracts.compile(compileOptions, callback);
+            await contracts.compile(compileOptions);
             sinon.assert.calledOnce(etherlimeCompileSpy);
             etherlimeCompileSpy.restore();
         });
+
+        it('should throw if can not compile all contracts', async () => {
+            let stub = sinon.stub(etherlimeCompile, "all");
+            stub.throws()
+            await assert.isRejected(contracts.compile(compileOptions))
+            stub.restore()
+        })
 
         it('should compile only if necessary', async function () {
             let etherlimeCompileSpy = sinon.spy(etherlimeCompile, "necessary");
             compileOptions.all = false;
             compileOptions.compileAll = false;
-            await contracts.compile(compileOptions, callback);
+            await contracts.compile(compileOptions);
             sinon.assert.calledOnce(etherlimeCompileSpy);
             etherlimeCompileSpy.restore();
         });
@@ -88,7 +88,7 @@ describe('Compile dependencies', () => {
         it('should not create new resolver if it was already created', async function () {
             compileOptions.resolver = new Resolver(compileOptions);
             let resolveSpy = sinon.spy(Resolver)
-            await contracts.compile(compileOptions, callback);
+            await contracts.compile(compileOptions);
             sinon.assert.notCalled(resolveSpy)
         });
 
@@ -97,7 +97,7 @@ describe('Compile dependencies', () => {
             compileOptions.quiet = true
             compileOptions.quietWrite = true;
             let contractArray = null;
-            await assert.isRejected(contracts.write_contracts(contractArray, compileOptions, callback), expectedError)
+            await assert.isRejected(contracts.write_contracts(contractArray, compileOptions), expectedError)
         });
     });
 
@@ -142,27 +142,27 @@ describe('Compile dependencies', () => {
         //EPM Source
         it('should find resource file in Eth package manager', async function () {
             let library = 'library SafeMath'
-            let resource = await compileOptions.resolver.sources[0].resolve("SafeMath.sol", "BillboardService.sol", callback);
+            let resource = await compileOptions.resolver.sources[0].resolve("SafeMath.sol", "BillboardService.sol");
             assert.include(resource.body, library)
         });
 
         it('should find resource file from specific package_name', async function () {
             let library = 'library SafeMath'
             let package_name = "math"
-            let resource = await compileOptions.resolver.sources[0].resolve(`${package_name}/SafeMath.sol`, "BillboardService.sol", callback);
+            let resource = await compileOptions.resolver.sources[0].resolve(`${package_name}/SafeMath.sol`, "BillboardService.sol");
             assert.include(resource.body, library)
         });
 
         it('should resolve dependency path', function () {
             let dependencyPath = 'installed_contracts/math/contracts/SafeMath.sol'
-            let resolvedDependency = compileOptions.resolver.sources[0].resolve_dependency_path(dependencyPath, "SafeMath.sol", callback);
+            let resolvedDependency = compileOptions.resolver.sources[0].resolve_dependency_path(dependencyPath, "SafeMath.sol");
             assert.equal(resolvedDependency, dependencyPath)
         })
 
         //NPM Source
         it('should find file in node-modules', async function () {
             let library = 'exports = module.exports = Yargs'
-            let result = await compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "", callback)
+            let result = await compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "")
             assert.include(result.body, library)
         });
 
@@ -635,6 +635,18 @@ describe('Compile dependencies', () => {
             }
 
             assert.include(errMessage, expectedError)
+        });
+
+        it('should throw if try to validate Docekr', async () => {
+            await assert.throws(() => {
+                compilerSupplier.validateDocker()
+            })
+        })
+
+        it('should throw if try to compile from string', async () => {
+            await assert.throws(() => {
+                compilerSupplier.compilerFromString()
+            })
         })
 
         it('should get commit form version', async () => {
