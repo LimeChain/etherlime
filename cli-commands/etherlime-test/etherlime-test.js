@@ -7,11 +7,12 @@ let events = require('./events');
 let accounts = require('./../ganache/setup.json').accounts;
 let compiler = require('./../compiler/compiler');
 let ethers = require('ethers');
+let CustomReporter = require('./gas-logger/gas-reporter');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation, solcVersion, port) => {
-	var mochaConfig = { 'useColors': true };
+const run = async (files, skipCompilation, solcVersion, enableGasReport, port) => {
+	var mochaConfig = {'useColors': true};
 	let mocha = createMocha(mochaConfig, files);
 
 	files.forEach(function (file) {
@@ -21,7 +22,9 @@ const run = async (files, skipCompilation, solcVersion, port) => {
 	});
 
 	setJSTestGlobals(port);
-
+	if (enableGasReport) {
+		mocha.reporter(CustomReporter, {port});
+	}
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
 	}
@@ -44,7 +47,7 @@ const runMocha = async (mocha) => {
 		mocha.run(failures => {
 			process.exitCode = failures ? -1 : 0;
 			if (failures) {
-				reject()
+				reject('Some of the test scenarios failed!')
 			} else {
 				resolve()
 			}

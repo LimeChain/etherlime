@@ -9,6 +9,7 @@ const logger = require('./../logger-service/logger-service').logger;
 const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
+const flatten = require('./flattener/flatten');
 
 const commands = [
 	{
@@ -214,7 +215,12 @@ const commands = [
 			});
 
 			yargs.positional('buildDirectory', {
-				describe: 'Defines the way that the logs are shown',
+				describe: 'Defines where to place builded contracts',
+				type: 'string',
+			});
+
+			yargs.positional('workingDirectory', {
+				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
 				type: 'string',
 			});
 		},
@@ -225,7 +231,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -234,7 +240,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation] [solc-version] [output]',
+		command: 'test [path] [skip-compilation] [gas-report] [solc-version] [output] [port]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -245,6 +251,12 @@ const commands = [
 
 			yargs.positional('skip-compilation', {
 				describe: 'Skips compilation of the contracts before running the tests',
+				type: 'boolean',
+				default: 'false'
+			});
+
+			yargs.positional('gas-report', {
+				describe: 'Enables Gas reporting future that will show Gas Usage after each test.',
 				type: 'boolean',
 				default: 'false'
 			});
@@ -265,7 +277,7 @@ const commands = [
 				describe: 'The port that the etherlime ganache is running in order to instantiate the test accounts',
 				type: 'number',
 				default: 8545
-			})
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime test', {
@@ -274,7 +286,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.port);
+				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -375,6 +387,30 @@ const commands = [
 
 			try {
 				eventTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'flatten [file] [solcVersion]',
+		description: 'Flattens a smart contract combining all Solidity code in one file along with imported sources.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('file', {
+				describe: 'Specifies the file to be flattened',
+				type: 'string'
+			});
+
+			yargs.positional('solcVersion', {
+				describe: 'Specifies the version of the solidity compiler',
+				type: 'string'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await flatten.run(argv.file, argv.solcVersion);
 			} catch (err) {
 				console.error(err);
 			} finally {

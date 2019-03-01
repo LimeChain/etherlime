@@ -6,12 +6,13 @@ Syntax
 
 ::
 
-    etherlime test [path] [skip-compilation] [solc-version] [output] [port]
+    etherlime test [path] [skip-compilation] [gas-report] [solc-version] [output] [port]
 
 Parameters:
 
 * ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
+* ``gas-report`` - [Optional] Enables Gas reporting future that will show Gas Usage after each test. Default: false.
 * ``solc-version`` - [Optional] By specifying ``solc-version`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 * ``port`` - [Optional] The port that the etherlime ganache is runing. Used for wiring up the default accounts correctly. Defaults to 8545
@@ -137,7 +138,7 @@ Check if the desired event was broadcasted in the transaction receipt
 
             const buyTransaction = await BillboardContract.buy('Billboard slogan', { value: 10000 });
 
-            const transactionReceipt = await deployedContractWrapper.verboseWaitForTransaction(buyTransaction);
+            const transactionReceipt = await BillboardContract.verboseWaitForTransaction(buyTransaction);
 
             const expectedEvent = 'LogBillboardBought';
 
