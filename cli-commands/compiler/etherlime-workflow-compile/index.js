@@ -15,7 +15,7 @@ const compile = async (options) => {
     if (config.all === true || config.compileAll === true) {
       try {
         let result = await etherlimeCompile.all(config)
-        let test = await finish(result.returnVal, result.files, config)
+        await finish(result.returnVal, result.files, config)
         resolve()
       } catch (err) {
         reject(err)
