@@ -19,7 +19,7 @@ Parameters:
 * ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 * ``buildDirectory`` - [Optional] Defines the directory for placing builded contracts.
-* ``workingDirectory`` - [Optional] Defines the folder to use for reading contracts from, instead of the default one: ``./contracts``. Here can be specified also a single file for compiling e.g: ``./contracts/LimeFactory.sol``.
+* ``workingDirectory`` - [Optional] Defines the folder to use for reading contracts from, instead of the default one: ``./contracts``. Here can be specified also a single solidity file for compiling e.g: ``/contracts/LimeFactory.sol``.
 
 
 The ``solcVersion`` can accept the following values:
