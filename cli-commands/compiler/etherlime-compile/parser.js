@@ -1,60 +1,55 @@
-var CompileError = require("./compile-error");
-var fs = require("fs");
-var path = require("path");
+const CompileError = require("./compile-error");
+const preReleaseCompilerWarning = "This is a pre-release compiler version, please do not use it in production.";
 
-var preReleaseCompilerWarning = "This is a pre-release compiler version, please do not use it in production.";
-var installedContractsDir = "installed_contracts"
+const parseImports = (body, solc) => {
+  const importErrorKey = "ETHERLIME_IMPORT";
+  const failingImportFileName = "__Etherlime__NotFound.sol";
 
-module.exports = {
+  body = body + "\n\nimport '" + failingImportFileName + "';\n";
 
-  parseImports: function (body, solc) {
-    var importErrorKey = "ETHERLIME_IMPORT";
-    var failingImportFileName = "__Etherlime__NotFound.sol";
-
-    body = body + "\n\nimport '" + failingImportFileName + "';\n";
-
-    var solcStandardInput = {
-      language: "Solidity",
-      sources: {
+  let solcStandardInput = {
+    language: "Solidity",
+    sources: {
+      "ParsedContract.sol": {
+        content: body
+      }
+    },
+    settings: {
+      outputSelection: {
         "ParsedContract.sol": {
-          content: body
-        }
-      },
-      settings: {
-        outputSelection: {
-          "ParsedContract.sol": {
-            "*": []
-          }
+          "*": []
         }
       }
-    };
-
-    var output = solc.compile(JSON.stringify(solcStandardInput), function () {
-      return { error: importErrorKey };
-    });
-
-    output = JSON.parse(output);
-
-    var errors = output.errors.filter(function (solidity_error) {
-      return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
-    });
-
-    var nonImportErrors = errors.filter(function (solidity_error) {
-      return solidity_error.formattedMessage.indexOf(importErrorKey) < 0;
-    });
-
-    if (nonImportErrors.length > 0) {
-      throw new CompileError(nonImportErrors[0].formattedMessage);
     }
+  };
 
-    var imports = errors.filter(function (solidity_error) {
-      return solidity_error.message.indexOf(failingImportFileName) < 0;
-    }).map(function (solidity_error) {
-      var matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/);
+  let output = solc.compile(JSON.stringify(solcStandardInput), () => {
+    return { error: importErrorKey };
+  });
 
-      return matches[2];
-    });
+  output = JSON.parse(output);
 
-    return imports;
+  let errors = output.errors.filter((solidity_error) => {
+    return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0;
+  });
+
+  let nonImportErrors = errors.filter((solidity_error) => {
+
+    return solidity_error.formattedMessage.indexOf(importErrorKey) < 0;
+  });
+
+  if (nonImportErrors.length > 0) {
+    throw new CompileError(nonImportErrors[0].formattedMessage);
   }
+
+  let imports = errors.filter((solidity_error) => {
+    return solidity_error.message.indexOf(failingImportFileName) < 0;
+  }).map((solidity_error) => {
+    let matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/);
+
+    return matches[2];
+  });
+
+  return imports;
 }
+module.exports = { parseImports }

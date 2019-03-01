@@ -1,70 +1,56 @@
-var EPMSource = require("./epm");
-var NPMSource = require("./npm");
-var FSSource = require("./fs");
-var whilst = require("async.whilst");
-var expect = require("./../etherlime-expect");
+const EPMSource = require("./epm");
+const NPMSource = require("./npm");
+const FSSource = require("./fs");
+const expect = require("./../etherlime-expect");
 
-function Resolver(options) {
-  expect.options(options, [
-    "working_directory",
-    "contracts_build_directory",
-  ]);
+class Resolver {
+  constructor(options) {
+    expect.options(options, [
+      "working_directory",
+      "contracts_build_directory",
+    ]);
 
-  this.options = options;
+    this.options = options;
 
-  this.sources = [
-    new EPMSource(options.working_directory, options.contracts_build_directory),
-    new NPMSource(options.working_directory),
-    new FSSource(options.working_directory, options.contracts_build_directory)
-  ];
-};
-
-
-Resolver.prototype.resolve = function (import_path, imported_from, callback) {
-  var self = this;
-
-  if (typeof imported_from == "function") {
-    callback = imported_from;
-    imported_from = null;
+    this.sources = [
+      new EPMSource(options.working_directory, options.contracts_build_directory),
+      new NPMSource(options.working_directory),
+      new FSSource(options.working_directory, options.contracts_build_directory)
+    ];
   }
 
-  var resolved_body = null;
-  var resolved_path = null;
-  var current_index = -1;
-  var current_source;
+  resolve(import_path, imported_from) {
+    let resolved_body = null;
+    let resolved_path = null;
+    let current_index = -1;
+    let current_source;
 
-  // TODO refactor with while
-  whilst(function () {
-    return !resolved_body && current_index < self.sources.length - 1;
-  }, function (next) {
-      current_index += 1;
-      current_source = self.sources[current_index];
+    return new Promise(async (resolve, reject) => {
+      let self = this;
+      while (!resolved_body && current_index < self.sources.length - 1) {
+        current_index += 1;
+        current_source = self.sources[current_index];
 
-      current_source.resolve(import_path, imported_from, function (error, body, file_path) {
-        if (!error && body) {
-          resolved_body = body;
-          resolved_path = file_path;
+
+        let result = await current_source.resolve(import_path, imported_from)
+
+        if (result.body) {
+          resolved_body = result.body;
+          resolved_path = result.import_path;
+          return resolve({ resolved_body, resolved_path, current_source })
         }
-
-        next(error);
-      });
-    }, function (error) {
-      // if (error) {
-      //   return callback(error);
-      // }
-
-      if (!resolved_body) {
-        var message = `Could not find ${import_path} from any sources`;
-
-        if (imported_from) {
-          message += `; imported from ${imported_from}`;
-        }
-
-        return callback(new Error(message));
       }
-     
-      callback(null, resolved_body, resolved_path, current_source);
-  })
-};
+
+      let message = `Could not find ${import_path} from any sources`;
+
+      if (imported_from) {
+        message += `; imported from ${imported_from}`;
+      }
+
+      return reject(new Error(message));
+
+    });
+  }
+}
 
 module.exports = Resolver;

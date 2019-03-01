@@ -1,8 +1,8 @@
-let compiler = require("./etherlime-workflow-compile/index");
-let Resolver = require("./etherlime-resolver/index");
-let colors = require("./../../utils/colors");
-var CompilerSupplier = require("./etherlime-compile/compilerSupplier");
-var supplier = new CompilerSupplier();
+const compiler = require("./etherlime-workflow-compile/index");
+const Resolver = require("./etherlime-resolver/index");
+const colors = require("./../../utils/colors");
+const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
+const supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory) => {
@@ -36,7 +36,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"quiet": quiet
 	};
 
-	Resolver(resolverOptions);
+	new Resolver(resolverOptions);
 
 	let compileOptions = {
 		"contracts_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
@@ -54,31 +54,29 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return compilePromise(compileOptions, quiet);
+	return await compilePromise(compileOptions, quiet);
 };
 
 const compilePromise = async (compileOptions, quiet) => {
 
-	return new Promise((resolve, reject) => {
-		compiler.compile(compileOptions, (error, artifacts, paths) => {
-			if (error) {
-				var stack = error['stack'].split(',/');
-
-				stack.forEach(message => {
-					logger.log(message);
-				});
-
-				reject(stack);
-
-				return;
-			}
-
+	return new Promise(async (resolve, reject) => {
+		try {
+			await compiler.compile(compileOptions);
 			if (!quiet) {
 				logger.log(colors.colorSuccess('Compilation finished successfully'));
 			}
 
 			resolve();
-		});
+		}
+		catch (error) {
+			let stack = error['stack'].split(',/');
+
+			stack.forEach(message => {
+				logger.log(message);
+			});
+
+			return reject(stack);
+		}
 	});
 };
 

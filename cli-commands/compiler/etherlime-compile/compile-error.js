@@ -1,18 +1,16 @@
-var colors = require("colors");
-var EtherlimeError = require("./../etherlime-error");
-var inherits = require("util").inherits;
+const colors = require("colors");
+const EtherlimeError = require("./../etherlime-error");
 
-inherits(CompileError, EtherlimeError);
+class CompileError extends EtherlimeError {
+  constructor(message) {
+    let trimmedMessage = message.trim();
+    let errorMessage = colors.red("Compilation failed. See above.");
 
-function CompileError(message) {
-  let trimmedMessage = message.trim();
-  let errorMessage = colors.red("Compilation failed. See above.");
-
-  var fancy_message = `${trimmedMessage}\n${errorMessage}`;
-  var normal_message = message.trim();
-
-  CompileError.super_.call(this, normal_message);
-  this.message = fancy_message;
-};
+    let fancy_message = `${trimmedMessage}\n${errorMessage}`;
+    let normal_message = message.trim();
+    super(normal_message);
+    this.message = fancy_message;
+  }
+}
 
 module.exports = CompileError;

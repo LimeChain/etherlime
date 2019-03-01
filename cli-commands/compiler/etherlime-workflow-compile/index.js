@@ -1,60 +1,80 @@
-var mkdirp = require("mkdirp");
-var path = require("path");
-var OS = require("os");
+const mkdirp = require("mkdirp");
+const path = require("path");
+const OS = require("os");
 
-var Config = require("./../etherlime-config");
-var compile = require("./../etherlime-compile");
-var expect = require("./../etherlime-expect");
-var Resolver = require("./../etherlime-resolver");
-var Artifactor = require("./../etherlime-artifactor");
+const Config = require("./../etherlime-config");
+const etherlimeCompile = require("./../etherlime-compile");
+const expect = require("./../etherlime-expect");
+const Resolver = require("./../etherlime-resolver");
+const Artifactor = require("./../etherlime-artifactor");
 
-var Contracts = {
-
-  compile: function (options, callback) {
-    var self = this;
-
-    expect.options(options, [
-      "contracts_build_directory"
-    ]);
-
-    expect.one(options, [
-      "contracts_directory",
-      "files"
-    ]);
-
-    var config = Config.default().merge(options);
-
-    if (!config.resolver) {
-      config.resolver = new Resolver(config);
-    }
-
-    if (!config.artifactor) {
-      config.artifactor = new Artifactor(config.contracts_build_directory);
-    }
-
-    function finished(error, contracts, paths) {
-      
-      if (error) {
-        return callback(error);
-      }
-      
-      if (contracts != null && Object.keys(contracts).length > 0) {
-        self.write_contracts(contracts, config, callback);
-      } else {
-        callback(null, [], paths);
-      }
-    }
+const compile = async (options) => {
+  return new Promise(async (resolve, reject) => {
+    let config = configOptions(options);
 
     if (config.all === true || config.compileAll === true) {
-      compile.all(config, finished);
+      try {
+        let result = await etherlimeCompile.all(config)
+        await finish(result.returnVal, result.files, config)
+        resolve()
+      } catch (err) {
+        reject(err)
+      }
     } else {
-      compile.necessary(config, finished);
+      try {
+        let result = await etherlimeCompile.necessary(config)
+        await finish(result.returnVal, result.files, config)
+
+        resolve()
+      } catch (err) {
+        return reject(err)
+      }
     }
-  },
+  })
 
-  write_contracts: async function (contracts, options, callback) {
-    var logger = options.logger || console;
+}
 
+
+
+const configOptions = (options) => {
+  expect.options(options, [
+    "contracts_build_directory"
+  ]);
+
+  expect.one(options, [
+    "contracts_directory",
+    "files"
+  ]);
+
+  let config = Config.default().merge(options);
+
+  if (!config.resolver) {
+    config.resolver = new Resolver(config);
+  }
+
+  if (!config.artifactor) {
+    config.artifactor = new Artifactor(config.contracts_build_directory);
+  }
+
+  return config
+}
+
+
+const finish = async function (contracts, paths, config) {
+
+  return new Promise(async (resolve, reject) => {
+    if (contracts != null && Object.keys(contracts).length > 0) {
+      await write_contracts(contracts, config);
+      resolve()
+    } else {
+      resolve([], paths)
+    }
+  })
+}
+
+const write_contracts = async function (contracts, options) {
+  let logger = options.logger || console;
+  return new Promise(async (resolve, reject) => {
     try {
       mkdirp.sync(options.contracts_build_directory);
 
@@ -62,16 +82,16 @@ var Contracts = {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);
       }
 
-      var extra_opts = {
+      let extra_opts = {
         network_id: options.network_id
       };
 
       await options.artifactor.saveAll(contracts, extra_opts);
-      callback(null, contracts);
+      resolve(contracts);
     } catch (error) {
-      callback(error);
+      reject(error);
     }
-  }
-};
+  })
+}
 
-module.exports = Contracts;
+module.exports = { compile, write_contracts };
