@@ -7,14 +7,17 @@ const fs = require('fs-extra');
 const sinon = require('sinon');
 
 let error = "In order to use the docker, please set an image name: --solcVersion=<image-name>"
+let singleFileError = "Your file is not solidity file!";
 
 describe('Compile cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./contracts')
         fs.mkdirSync('./custom-contracts');
+        fs.mkdirSync('./single-contract-folder');
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './custom-contracts/LimeFactory.sol');
+        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './single-contract-folder/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
     });
@@ -74,11 +77,26 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './custom-contracts/build', './custom-contracts'), "It is not successfully executed!")
     });
 
+    it('should run compile with custom working directory parameter that is a signle smart contract', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, '/single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
+    });
+
+    it('should run compile with custom working directory parameter that is a single smart contract and place contract in custom build directory', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
+    });
+
+    it('should run compile with custom working directory parameter that is single file with wrong file extension and return error', async function () {
+
+        await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory'));
+    });
+
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
         fs.removeSync('./build');
         fs.removeSync('./customBuild/build');
         fs.removeSync('./custom-contracts');
+        fs.removeSync('./single-contract-build-directory');
+        fs.removeSync('./single-contract-folder');
     });
 })
