@@ -4,8 +4,8 @@ const fs = require("fs");
 
 let find_contracts = async (workingPath) => {
   return new Promise((resolve, reject) => {
-    let isDirExists = fs.existsSync(workingPath) && fs.lstatSync(workingPath).isDirectory();
-    if (isDirExists) {
+    let isFile = workingPath.includes('.sol');
+    if (!isFile) {
       dir.files(workingPath, function (err, files) {
         if (err) {
           return reject(err);
