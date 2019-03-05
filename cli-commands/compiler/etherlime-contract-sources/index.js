@@ -16,10 +16,7 @@ let find_contracts = async (workingPath) => {
         return resolve(files);
       })
     } else {
-      if (path.extname(workingPath) == '.sol') {
-        return resolve([workingPath]);
-      }
-      return reject(new Error('Your file is not solidity file!'));
+      return resolve([workingPath]);
     }
 
   });
