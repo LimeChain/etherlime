@@ -46,7 +46,7 @@
     "simple-git": "^1.107.0",
     "solc": "^0.5.1",
     "solidity-coverage": "LimeChain/solidity-coverage#master",
-    "ethereum-transaction-debugger": "^0.0.1",
+    "ethereum-transaction-debugger": "^0.0.3",
     "tcp-port-used": "^1.0.1",
     "yargs": "11.0.0"
   },
