@@ -54,7 +54,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debugger with right transaction hash', async function () {
-		let expectedOutput = contractAddress.toLowerCase();
+		let expectedOutput = contractAddress;
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'q\n');
 
 		assert.include(childProcess.output, expectedOutput);
@@ -466,7 +466,7 @@ describe('Debug cli command', () => {
 		});
 
 		it('should print the help if we do not have current session enabled and trace is finished', async function () {
-			let expectedOutput = "(0) PUSH1 0x80";
+			let expectedOutput = "1: // No source code found.";
 			childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'c\n');
 			assert.include(childProcess.output, expectedOutput);
 

@@ -100,22 +100,22 @@ let sessionInterpreter = (session, repl) => {
 		if (!alreadyFinished) {
 			switch (cmd) {
 				case "o":
-					session.stepOver();
+					await session.stepOver();
 					break;
 				case "i":
-					session.stepInto();
+					await session.stepInto();
 					break;
 				case "u":
-					session.stepOut();
+					await session.stepOut();
 					break;
 				case "n":
-					session.stepNext();
+					await session.stepNext();
 					break;
 				case ";":
-					session.advance();
+					await session.advance();
 					break;
 				case "c":
-					session.continueUntilBreakpoint();
+					await session.continueUntilBreakpoint();
 					break;
 			}
 		} //otherwise, inform the user we can't do that
@@ -133,7 +133,7 @@ let sessionInterpreter = (session, repl) => {
 		}
 		if (cmd === "r") {
 			//reset if given the reset command
-			session.reset();
+			await session.reset();
 		}
 
 		// Check if execution has (just now) stopped.
@@ -176,10 +176,10 @@ let sessionInterpreter = (session, repl) => {
 				evalAndPrintExpression(cmdArgs, undefined, undefined, session);
 				break;
 			case "b":
-				setOrClearBreakpoint(splitArgs, true, session);
+				await setOrClearBreakpoint(splitArgs, true, session);
 				break;
 			case "B":
-				setOrClearBreakpoint(splitArgs, false, session);
+				await setOrClearBreakpoint(splitArgs, false, session);
 				break;
 			case ";":
 			case "p":
@@ -232,7 +232,7 @@ let sessionInterpreter = (session, repl) => {
 	}
 }
 
-let setOrClearBreakpoint = (args, setOrClear, session) => {
+let setOrClearBreakpoint = async (args, setOrClear, session) => {
 	//setOrClear: true for set, false for clear
 	let currentLocation = session.view(controller.current.location);
 	let breakpoints = session.view(controller.breakpoints);
@@ -262,7 +262,7 @@ let setOrClearBreakpoint = (args, setOrClear, session) => {
 			console.log("Cannot add breakpoint everywhere.\n");
 			return;
 		}
-		session.removeAllBreakpoints();
+		await session.removeAllBreakpoints();
 		console.log("Removed all breakpoints.\n");
 		return;
 	}
@@ -391,10 +391,10 @@ let setOrClearBreakpoint = (args, setOrClear, session) => {
 	//finally, if we've reached this point, do it!
 	//also report back to the user on what happened
 	if (setOrClear) {
-		session.addBreakpoint(breakpoint);
+		await session.addBreakpoint(breakpoint);
 		console.log(`Breakpoint added at ${locationMessage}.\n`);
 	} else {
-		session.removeBreakpoint(breakpoint);
+		await session.removeBreakpoint(breakpoint);
 		console.log(`Breakpoint removed at ${locationMessage}.\n`);
 	}
 	return;
