@@ -81,7 +81,29 @@ const runWithCoverage = async (path, port, runs) => {
 
 }
 
+const coverage2 = async (path, port, runs) => {
+	var config = Config.default();
+	var testDirectory = '';
+
+	// if (path.includes('.js')) {
+	// 	await etherlimeTest.run([path], skipCompilation, solcVersion, enableGasReport, port);
+
+	// 	return;
+	// }
+
+	testDirectory = path;
+
+	if (!path.includes(config.test_directory)) {
+		testDirectory = `${process.cwd()}/${path}`;
+	}
+
+	const files = await getFiles(testDirectory, config);
+
+	await etherlimeTest.run2(files, undefined, undefined, true, port);
+}
+
 module.exports = {
 	run,
-	runWithCoverage
+	runWithCoverage,
+	coverage2
 }

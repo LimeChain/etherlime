@@ -417,7 +417,35 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
-	}
+	},
+	{
+		command: 'coverage2 [path] [port] [runs]',
+		description: 'Run all tests with code coverage.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('path', {
+				describe: 'Specifies the path in which tests should be ran',
+				type: 'string',
+				default: './test'
+			})
+
+			yargs.positional('port', {
+				describe: 'The port to run the solidity coverage testrpc (compatible with etherlime ganache deployer)',
+				type: 'number',
+				default: 8545
+			})
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer on the compiler and specifies the runs',
+				type: 'number'
+			})
+		},
+		commandProcessor: async (argv) => {
+			recordEvent('etherlime coverage', {
+				argv
+			});
+			await test.coverage2(argv.path, argv.port, argv.runs);
+		}
+	},
 ]
 
 module.exports = commands;
