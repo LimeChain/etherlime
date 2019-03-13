@@ -13,7 +13,7 @@ chai.use(require("./assertions"));
 
 const ProviderEngine = require("web3-provider-engine");
 const RpcProvider = require("web3-provider-engine/subproviders/rpc.js");
-const { TruffleArtifactAdapter } = require("@0x/sol-trace");
+const TruffleArtifactAdapter = require("@0x/sol-coverage").TruffleArtifactAdapter;
 const { CoverageSubprovider } = require("@0x/sol-coverage");
 const { RevertTraceSubprovider } = require("@0x/sol-trace");
 const { AbstractArtifactAdapter } = require('@0x/sol-trace');
@@ -23,24 +23,15 @@ const projectRoot = "";
 const solcVersion = "0.5.0";
 const defaultFromAddress = "0xd9995bae12fee327256ffec1e3184d492bd94c31";
 const isVerbose = true;
-const artifacts = `${process.cwd()}/ogiepich`;
-const contracts = `${process.cwd()}/contracts`;
-
-const artifactAdapter = new SolCompilerArtifactAdapter(artifacts, contracts);
-
+const artifacts = `myArtifacts`;
+const contracts = `contracts`;
 
 const provider = new ProviderEngine();
 
-// const Compiler = require('@0x/sol-compiler').Compiler;
+const Compiler = require('@0x/sol-compiler').Compiler;
 
-// const compiler2 = new Compiler({ contractsDir: './contracts', artifactsDir: './ogiepich', contracts: '*' });
+const compiler2 = new Compiler({ contractsDir: './contracts', artifactsDir: './myArtifacts', contracts: '*', solcVersion: solcVersion });
 
-// (async () => {
-// 	await compiler2.compileAsync();
-// })().catch(console.log);
-
-
-// const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
 
 const run = async (files, skipCompilation, solcVersion, enableGasReport, port) => {
 	var mochaConfig = { 'useColors': true };
@@ -102,13 +93,14 @@ const runMocha = async (mocha) => {
 			if (failures) {
 				reject('Some of the test scenarios failed!')
 			} else {
-				resolve()
+				resolve();
 			}
 		});
 	})
 }
 
 const setJSTestGlobals = async (port) => {
+	console.log('PORT', port)
 	global.ethers = ethers;
 	global.assert = chai.assert;
 	global.expect = chai.expect;
@@ -132,7 +124,10 @@ const setJSTestGlobals = async (port) => {
 }
 
 const prepareCoverage = async () => {
+	await compiler2.compileAsync();
+	let artifactAdapter = new SolCompilerArtifactAdapter(artifacts, contracts);
 
+	// let artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
 	global.coverageSubprovider = new CoverageSubprovider(
 		artifactAdapter,
 		defaultFromAddress,
@@ -143,8 +138,24 @@ const prepareCoverage = async () => {
 	provider.addProvider(global.coverageSubprovider);
 	provider.addProvider(new RpcProvider({ rpcUrl: "http://localhost:8545" }));
 
+	provider.on('error', function (err) {
+		// report connectivity errors
+		console.error(err.stack)
+	});
 
-	provider.start();
+
+	provider.on('block', function (block) {
+		console.log('================================')
+		console.log('BLOCK CHANGED:', '#' + block.number.toString('hex'), '0x' + block.hash.toString('hex'))
+		console.log('================================')
+	});
+
+	provider.start(err => {
+		if (err !== undefined) {
+			console.log(err);
+			process.exit(1);
+		}
+	});
 
 	provider.send = provider.sendAsync.bind(provider);
 }
