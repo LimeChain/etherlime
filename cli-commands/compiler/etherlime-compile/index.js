@@ -200,7 +200,7 @@ compile.all = async (options) => {
 	try {
 		files = await find_contracts(options.contracts_directory);
 
-		options.paths = files;
+		options.paths = files.solFiles;
 		object = await compile.with_dependencies(options);
 		return object;
 	} catch (e) {
@@ -221,9 +221,7 @@ compile.necessary = async (options) => {
 			resolve(object);
 		}
 		catch (e) {
-			if (e) {
 				return reject(e);
-			}
 		}
 
 	});

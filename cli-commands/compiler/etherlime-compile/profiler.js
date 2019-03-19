@@ -3,6 +3,7 @@ const fs = require("fs");
 const Parser = require("./parser");
 const expect = require("./../etherlime-expect");
 const find_contracts = require("./../etherlime-contract-sources");
+const vyperCompiler = require('../vyperCompiler/vyperCompiler');
 
 const CompilerSupplier = require("./compilerSupplier");
 
@@ -30,8 +31,15 @@ let prepareFiles = async (options) => {
   let sourceFilesArtifacts = {};
   try {
     let files = await getFiles(options);
-    files.forEach(function (sourceFile) {
-      sourceFilesArtifacts[sourceFile] = [];
+
+    if(files.vyperFiles && files.vyperFiles.length > 0) {
+      await vyperCompiler(files.vyperFiles)
+    }
+
+    let solFiles = files.solFiles || files
+    
+    solFiles.forEach(function (sourceFile) {
+    sourceFilesArtifacts[sourceFile] = [];
     });
 
     return sourceFilesArtifacts
@@ -49,6 +57,7 @@ let getFiles = async (options) => {
     let files;
     try {
       files = await find_contracts(options.contracts_directory);
+
       return files;
     } catch (e) {
       throw e;
@@ -183,20 +192,21 @@ let required_sources = async function (options) {
     let resolver = options.resolver;
 
     // Fetch the whole contract set
-    let allPathsInitial;
+    let allSolPathsInitial;
     try {
-      allPathsInitial = await find_contracts(options.contracts_directory);
+      let allPathsInitial = await find_contracts(options.contracts_directory);
+      allSolPathsInitial = allPathsInitial.solFiles;
     } catch (e) {
       return reject(e)
     }
 
     options.paths.forEach(_path => {
-      if (!allPathsInitial.includes(_path)) {
-        allPathsInitial.push(_path)
+      if (!allSolPathsInitial.includes(_path)) {
+        allSolPathsInitial.push(_path)
       }
     });
     let updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
-    let allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
+    let allPaths = convert_to_absolute_paths(allSolPathsInitial, options.base_path).sort();
 
     let allSources = {};
     let compilationTargets = [];

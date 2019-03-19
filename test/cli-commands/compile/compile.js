@@ -20,6 +20,7 @@ describe('Compile cli command', () => {
         fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './single-contract-folder/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
+        fs.copyFileSync('./test/cli-commands/compile/examples/wallet.vy', './contracts/wallet.vy');
     });
 
     it('should run compile without parameters', async function () {
@@ -77,18 +78,36 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './custom-contracts/build', './custom-contracts'), "It is not successfully executed!")
     });
 
-    it('should run compile with custom working directory parameter that is a signle smart contract', async function () {
-        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, '/single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
+    it('should run compile with custom working directory parameter that is a single smart contract', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
     });
 
     it('should run compile with custom working directory parameter that is a single smart contract and place contract in custom build directory', async function () {
-        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', 'single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
     });
 
     it('should run compile with custom working directory parameter that is single file with wrong file extension and return error', async function () {
-
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory'));
     });
+
+    it('should throw err if try to compile unexisting specific file', async function () {
+        await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
+    })
+
+    it('should compile specific vyper contract', async function() {
+        fs.copyFileSync('./test/cli-commands/compile/examples/crowdfund.vy', './contracts/crowdfund.vy')
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
+    })
+
+    it('should throw if can not compile vyper contract', async function () {
+        await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'unexistingFile.vy'))
+    })
+
+    it('should compile only contract that has been updated', async function () {
+        let newCode = `@public \ndef new(): \n    ind: int128`
+        fs.appendFile('./contracts/crowdfund.vy', newCode)
+        await assert.isFulfilled(compiler.run('.'), "It is not successfully executed!")
+    })
 
     after(async function () {
         fs.removeSync('./contracts');
