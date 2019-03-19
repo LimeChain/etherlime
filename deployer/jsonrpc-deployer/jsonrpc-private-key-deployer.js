@@ -16,9 +16,14 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 	constructor(privateKey, nodeUrl, defaultOverrides) {
+		let localNodeProvider;
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
-	
-		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+		if (global.coverageSubprovider) {
+			global.provider._providers[1].rpcUrl = nodeUrl;
+			localNodeProvider = new ethers.providers.Web3Provider(global.provider);
+		} else {
+			localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+		}
 		super(privateKey, localNodeProvider, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 

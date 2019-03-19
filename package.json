@@ -17,12 +17,12 @@
   "license": "ISC",
   "dependencies": {
     "@0x/sol-coverage": "^3.0.0",
-    "@0x/sol-trace": "^2.0.8",
     "ajv": "^6.5.5",
     "async": "2.6.1",
     "async-each-series": "1.1.0",
     "async.whilst": "0.5.2",
     "axios": "^0.18.0",
+    "babel-plugin-istanbul": "^5.1.1",
     "bn": "^1.0.1",
     "chai": "4.1.2",
     "chalk": "2.4.1",
@@ -50,8 +50,7 @@
     "solc": "^0.5.1",
     "solidity-coverage": "LimeChain/solidity-coverage#master",
     "tcp-port-used": "^1.0.1",
-    "yargs": "11.0.0",
-    "web3-provider-engine": "^14.1.0"
+    "yargs": "11.0.0"
   },
   "bin": {
     "etherlime": "./cli.js"
@@ -59,9 +58,9 @@
   "devDependencies": {
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "nyc": "^12.0.2",
-    "sinon": "^7.1.0",
-    "openzeppelin-solidity": "^2.1.2"
+    "nyc": "^13.3.0",
+    "openzeppelin-solidity": "^2.1.2",
+    "sinon": "^7.1.0"
   },
   "browser": {
     "fs": false,
