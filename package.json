@@ -48,6 +48,7 @@
     "solc": "^0.5.1",
     "solidity-coverage": "LimeChain/solidity-coverage#master",
     "tcp-port-used": "^1.0.1",
+    "virtualenv": "^0.3.1",
     "yargs": "11.0.0"
   },
   "bin": {
