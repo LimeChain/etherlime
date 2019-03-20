@@ -33,7 +33,7 @@ let prepareFiles = async (options) => {
     let files = await getFiles(options);
 
     if(files.vyperFiles && files.vyperFiles.length > 0) {
-      await vyperCompiler(files.vyperFiles)
+      await vyperCompiler(files.vyperFiles, options.contracts_build_directory)
     }
 
     let solFiles = files.solFiles || files
