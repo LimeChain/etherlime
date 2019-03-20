@@ -29,38 +29,8 @@ let find_contracts = async (workingPath) => {
         if (path.extname(file) == ".vy" && path.basename(file)[0] != ".") vyperFiles.push(file)
       })
 
-
-      // if(vyperFiles) vyperCompiler(vyperFiles)
       return resolve({solFiles, vyperFiles});
     })
-
-    // let isFile = workingPath.includes('.sol');
-
-    // if (!isFile) {
-    //   let solFiles = [];
-    //   let vyperFiles = [];
-
-    //   dir.files(workingPath, function (err, files) {
-    //     if (err) {
-    //       return reject(err);
-    //     }
-
-    //     files.forEach(file => {
-    //       if (path.extname(file) == ".sol" && path.basename(file)[0] != ".") solFiles.push(file)
-    //       if (path.extname(file) == ".vy" && path.basename(file)[0] != ".") vyperFiles.push(file)
-    //     })
-
-
-    //     if(vyperFiles) vyperCompiler(vyperFiles)
-
-    //     return resolve(solFiles);
-    //   })
-    // } else {
-    //   if(!fs.existsSync(workingPath)) {
-    //     return reject( new Error(`File "${process.cwd()}/${workingPath}" does not exist!`))
-    //   }
-    //   return resolve([workingPath]);
-    // }
 
   });
 }
