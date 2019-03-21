@@ -16,7 +16,7 @@ const run = async (allFiles, buildDirectory) => {
                 return
             }
 
-
+            await load()
             let {abi, bytecode} = await compile(filePath)
 
             let compiledObject =  {
@@ -66,12 +66,21 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
     return false
 }
 
+const load = async () => {
+    // let phyton = await child_process.execSync('which python3', {
+    //     'encoding': 'utf8'
+    // })
+    // console.log("obj", phyton)
+
+    await child_process.execSync(`virtualenv --python=/usr/local/bin/python3 ~/vyper-venv`)
+}
 
 const compile = async (filePath) => {
-    let abi = await child_process.execSync(`virtualenv --python=/usr/local/bin/python3 ~/vyper-venv && source ~/vyper-env/bin/activate && vyper -f abi ${filePath}`, {
+    
+    let abi = await child_process.execSync(`source ~/vyper-env/bin/activate && vyper -f abi ${filePath}`, {
         'encoding': 'utf8'
     })
-    let bytecode = await child_process.execSync(`virtualenv --python=/usr/local/bin/python3 ~/vyper-venv && source ~/vyper-env/bin/activate && vyper -f bytecode ${filePath}`, {
+    let bytecode = await child_process.execSync(`source ~/vyper-env/bin/activate && vyper -f bytecode ${filePath}`, {
         'encoding': 'utf8'
     })
     
