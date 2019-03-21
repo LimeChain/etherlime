@@ -1,4 +1,4 @@
-language: phyton
+language: python
 node_js:
   - "8.9.4"
 dist: xenial  
