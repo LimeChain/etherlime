@@ -4,6 +4,7 @@ node_js:
 python:
   - "3.6"
 install:
+  - brew install virtualenv -g
   - npm install
   - npm link
 script:

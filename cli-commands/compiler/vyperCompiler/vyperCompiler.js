@@ -5,7 +5,6 @@ const mkdirp = require("mkdirp");
 const find_contracts = require("./../etherlime-contract-sources");
 
 const run = async (allFiles, buildDirectory) => {
-    console.log("obj", buildDirectory)
 
     for (let i = 0; i < allFiles.length; i++) {
         try {
@@ -69,10 +68,10 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
 
 const compile = async (filePath) => {
-    let abi = await child_process.execSync(`source ~/vyper-env/bin/activate && vyper -f abi ${filePath}`, {
+    let abi = await child_process.execSync(`virtualenv -p python3.6 --no-site-packages ~/vyper-venv && source ~/vyper-env/bin/activate && vyper -f abi ${filePath}`, {
         'encoding': 'utf8'
     })
-    let bytecode = await child_process.execSync(`source ~/vyper-env/bin/activate && vyper -f bytecode ${filePath}`, {
+    let bytecode = await child_process.execSync(`virtualenv -p python3.6 --no-site-packages ~/vyper-venv && source ~/vyper-env/bin/activate && vyper -f bytecode ${filePath}`, {
         'encoding': 'utf8'
     })
     
