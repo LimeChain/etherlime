@@ -6,7 +6,7 @@ python:
   - "3.6" 
 install:
   - pip install virtualenv
-  - virtualenv --python=/usr/local/bin/python3 ~/vyper-venv
+  - virtualenv -p python3.6 --no-site-packages ~/vyper-venv
   - npm install
   - npm link
 script:
