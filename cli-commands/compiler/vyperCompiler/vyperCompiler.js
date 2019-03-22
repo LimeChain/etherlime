@@ -72,7 +72,7 @@ const load = async () => {
     // })
     // console.log("obj", phyton)
 
-    await child_process.execSync(`virtualenv -p python3.6 --no-site-packages ~/vyper-venv`)
+    await child_process.execSync(`virtualenv -p python3.6  ~/vyper-venv`)
 }
 
 const compile = async (filePath) => {
