@@ -2,12 +2,14 @@ language: python
 node_js:
   - "8.9.4"
 dist: xenial  
+virtualenv:
+  system_site_packages: true
 python:
   - "3.6" 
 install:
   - sudo apt-get install virtualenv
   - which python3
-  - which sh
+  - virtualenv -p python3  vyper-venv
   - npm install
   - npm link
 script:
