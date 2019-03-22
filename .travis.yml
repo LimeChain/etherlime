@@ -7,7 +7,7 @@ python:
 install:
   - pip install virtualenv
   - which python3
-  - mdfind vyper-venv
+  - which sh
   - npm install
   - npm link
 script:
