@@ -76,13 +76,13 @@ const load = async () => {
 }
 
 const compile = async (filePath) => {
-    ///home/travis/virtualenv/python3.6.7/bin/python3
-    await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate`)
-    
-    let abi = await child_process.execSync(`vyper -f abi ${filePath}`, {
+    //`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate`
+    // await child_process.execSync(`source ~/vyper-venv/bin/activate`)
+
+    let abi = await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && vyper -f abi ${filePath}`, {
         'encoding': 'utf8'
     })
-    let bytecode = await child_process.execSync(`vyper -f bytecode ${filePath}`, {
+    let bytecode = await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && vyper -f bytecode ${filePath}`, {
         'encoding': 'utf8'
     })
     
