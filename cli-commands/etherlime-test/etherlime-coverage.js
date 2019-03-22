@@ -11,6 +11,8 @@ let CustomReporter = require('./gas-logger/gas-reporter');
 
 chai.use(require("./assertions"));
 
+const ganache = require('../ganache/ganache');
+const child_process = require('child_process');
 const ProviderEngine = require("web3-provider-engine");
 const RpcProvider = require("web3-provider-engine/subproviders/rpc.js");
 const { CoverageSubprovider } = require("@0x/sol-coverage");
@@ -18,15 +20,17 @@ const SolCompilerArtifactAdapter = require('@0x/sol-coverage').SolCompilerArtifa
 
 const defaultFromAddress = "0xd9995bae12fee327256ffec1e3184d492bd94c31";
 const isVerbose = true;
-const artifacts = `coverage-artifacts`;
+let artifacts = `./coverage-artifacts`;
 const Compiler = require('@0x/sol-compiler').Compiler;
 const provider = new ProviderEngine();
 const dir = require('node-dir');
 const path = require('path');
 const fs = require('fs')
-const nyc = require('nyc');
+var istanbul = require('istanbul');
+const shell = require('shelljs');
 
 const runCoverage = async (files, solcVersion, enableGasReport, port, runs, buildDirectory, workingDirectory) => {
+	// await runCoverageGanacheEnvironment(port);
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 
@@ -35,7 +39,6 @@ const runCoverage = async (files, solcVersion, enableGasReport, port, runs, buil
 
 		mocha.addFile(file);
 	});
-
 	const coverageProvider = await prepareCoverage(workingDirectory, port)
 	await setJSTestGlobals(port, coverageProvider);
 	if (enableGasReport) {
@@ -46,9 +49,15 @@ const runCoverage = async (files, solcVersion, enableGasReport, port, runs, buil
 
 	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
 	await runMocha(mocha);
-	await showCoverageResults();
+
+	try {
+		await generateCoverageResults();
+	} catch (e) {
+		console.log(e)
+	}
 }
 
+// Compile contracts in desired format in order to pass them to coverage library
 const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs, buildDirectory) => {
 	const compilerOptions = {
 		contractsDir: workingDirectory,
@@ -69,8 +78,13 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	};
 
 	const compiler = new Compiler(compilerOptions);
-	console.log('Preparing coverage environment and building artifacts...')
-	await compiler.compileAsync();
+	console.log('Preparing coverage environment and building artifacts...');
+	try {
+		await compiler.compileAsync();
+	} catch (e) {
+		console.log(e)
+	}
+
 
 	// TO DO - move in another method
 	let buildFilesPaths = await findFiles(buildDirectory);
@@ -78,6 +92,7 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 
 	for (buildFilePath of buildFilesPaths) {
 		for (coverageBuildFilePath of coverageBuildFilesPaths) {
+
 			let buildFile = require(`${process.cwd()}/${buildFilePath}`);
 			let coverageBuildFile = require(`${process.cwd()}/${coverageBuildFilePath}`);
 			if (buildFile.contractName === coverageBuildFile.contractName) {
@@ -91,7 +106,10 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	}
 }
 
+
+// Create mocha
 const createMocha = (config, files) => {
+
 	var mocha = new Mocha(config);
 
 	files.forEach(file => {
@@ -101,22 +119,21 @@ const createMocha = (config, files) => {
 	return mocha;
 }
 
+// Run mocha
 const runMocha = async (mocha) => {
+
 	return new Promise((resolve, reject) => {
 		mocha.run(async failures => {
-			process.exitCode = failures ? -1 : 0;
-			if (failures) {
-				reject('Some of the test scenarios failed!')
-			} else {
-				await writeCoverageFile();
-				resolve();
-
-			}
+			await writeCoverageFile();
+			resolve();
 		});
 	})
 }
 
+
+// Set test globals
 const setJSTestGlobals = async (port, coverageProvider) => {
+
 	global.ethers = ethers;
 	global.assert = chai.assert;
 	global.expect = chai.expect;
@@ -140,9 +157,10 @@ const setJSTestGlobals = async (port, coverageProvider) => {
 	global.accounts = importedAccounts;
 }
 
+
+// Set and run coverage providers
 const prepareCoverage = async (workingDirectory, port) => {
 	let artifactAdapter = new SolCompilerArtifactAdapter(artifacts, workingDirectory);
-
 	global.coverageSubprovider = new CoverageSubprovider(
 		artifactAdapter,
 		defaultFromAddress,
@@ -165,26 +183,77 @@ const prepareCoverage = async (workingDirectory, port) => {
 		}
 	});
 	return provider
-
 }
 
+
+// Run local etherlime ganache for coverage purpose
+// const runCoverageGanacheEnvironment = async (port) => {
+// 	const isPortTaken = await checkPort(port);
+// 	if (isPortTaken) {
+// 		return;
+// 	}
+
+// 	try {
+// 		console.log(`Running etherlime ganache on port: ${port}`);
+// 		ganache.run(port, {});
+// 	} catch (e) {
+// 		console.log(e);
+// 	}
+// }
+
+// Check if port is busy, otherwise run the etherlime ganache
+// const checkPort = async (port) => {
+// 	return new Promise((resolve, reject) => {
+// 		var net = require('net');
+// 		var server = net.createServer();
+// 		server.once('error', function (err) {
+// 			if (err.code === 'EADDRINUSE') {
+// 				resolve(true)
+// 			}
+// 		});
+
+// 		server.once('listening', function () {
+// 			// close the server if listening doesn't fail
+// 			server.close();
+// 			resolve(false)
+// 		});
+// 		server.listen(port);
+// 	})
+// }
+
+// Write coverage.json file
 const writeCoverageFile = async () => {
-	// await global.coverageSubprovider.writeCoverageAsync();
+
+	await global.coverageSubprovider.writeCoverageAsync();
 	provider.stop();
 }
 
-const showCoverageResults = async () => {
-	const tableReport = new nyc({ 'tempDirectory': './coverage', 'reporter': 'text' });
-	const htmlReport = new nyc({ 'tempDirectory': './coverage', 'reporter': 'html' });
+
+// Generate html report and table report 
+const generateCoverageResults = async () => {
+
+	const collector = new istanbul.Collector();
+	const reporter = new istanbul.Reporter();
+	const sync = false;
+	const coverageFile = require(`${process.cwd()}/coverage/coverage.json`);
+	collector.add(coverageFile);
+	reporter.addAll(['text', 'html']);
 	setTimeout(async () => {
-		console.log();
-		tableReport.report();
-		htmlReport.report();
-		console.log();
+		reporter.write(collector, sync, function () {
+			console.log('All reports generated');
+
+			// const url = `${process.cwd()}/coverage/index.html`;
+			// const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
+			// require('child_process').exec(start + ' ' + url);
+			//process.exit();
+		});
 	}, 1000);
 }
 
+
+// Find compiled files from passed directory, e.g ./build
 const findFiles = async (directory) => {
+
 	return new Promise((resolve, reject) => {
 		dir.files(directory, function (err, files) {
 			if (err) {

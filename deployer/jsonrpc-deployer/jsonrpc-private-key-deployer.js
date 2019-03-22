@@ -21,6 +21,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		if (global.coverageSubprovider) {
 			global.provider._providers[1].rpcUrl = nodeUrl;
 			localNodeProvider = new ethers.providers.Web3Provider(global.provider);
+			localNodeProvider.connection.url = nodeUrl;
 		} else {
 			localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
 		}

@@ -295,12 +295,13 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [port] [runs]',
+		command: 'coverage [path] [port] [runs] [skip-compilation] [solcVersion] [buildDirectory] [workingDirectory]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
-				type: 'string'
+				type: 'string',
+				default: './test'
 			})
 
 			yargs.positional('port', {
@@ -313,12 +314,30 @@ const commands = [
 				describe: 'enables the optimizer on the compiler and specifies the runs',
 				type: 'number'
 			})
+
+			yargs.positional('solcVersion', {
+				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
+				type: 'string'
+			});
+
+			yargs.positional('buildDirectory', {
+				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
+				type: 'string',
+				default: './build'
+			})
+
+			yargs.positional('workingDirectory', {
+				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
+				type: 'string',
+				default: './contracts'
+			})
+
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime coverage', {
 				argv
 			});
-			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+			await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
 		}
 	},
 	{
@@ -417,53 +436,7 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
-	},
-	{
-		command: 'coverage2 [path] [port] [runs] [skip-compilation] [solcVersion] [buildDirectory] [workingDirectory]',
-		description: 'Run all tests with code coverage.',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('path', {
-				describe: 'Specifies the path in which tests should be ran',
-				type: 'string',
-				default: './test'
-			})
-
-			yargs.positional('port', {
-				describe: 'The port to run the solidity coverage testrpc (compatible with etherlime ganache deployer)',
-				type: 'number',
-				default: 8545
-			})
-
-			yargs.positional('runs', {
-				describe: 'enables the optimizer on the compiler and specifies the runs',
-				type: 'number'
-			})
-
-			yargs.positional('solcVersion', {
-				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
-				type: 'string'
-			});
-
-			yargs.positional('buildDirectory', {
-				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
-				type: 'string',
-				default: './build'
-			})
-
-			yargs.positional('workingDirectory', {
-				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
-				type: 'string',
-				default: './contracts'
-			})
-
-		},
-		commandProcessor: async (argv) => {
-			recordEvent('etherlime coverage', {
-				argv
-			});
-			await test.coverage2(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
-		}
-	},
+	}
 ]
 
 module.exports = commands;

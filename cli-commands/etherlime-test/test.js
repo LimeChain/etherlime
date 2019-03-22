@@ -48,43 +48,42 @@ const getFiles = async function (testDirectory, config) {
 	});
 }
 
-const runWithCoverage = async (path, port, runs) => {
-	var accountsData = ''
-	accounts.forEach(account => {
-		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
-		accountsData += accountData;
-	});
+// const runWithCoverage = async (path, port, runs) => {
+// 	var accountsData = ''
+// 	accounts.forEach(account => {
+// 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
+// 		accountsData += accountData;
+// 	});
 
-	const config = JSON.parse(JSON.stringify(defaultCoverageConfig));
+// 	const config = JSON.parse(JSON.stringify(defaultCoverageConfig));
 
-	if (path) {
-		config['testCommand'] = `${config['testCommand']} --path ${path}`;
-	}
+// 	if (path) {
+// 		config['testCommand'] = `${config['testCommand']} --path ${path}`;
+// 	}
 
-	if (runs) {
-		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`;
-	}
+// 	if (runs) {
+// 		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`;
+// 	}
 
-	config['port'] = port;
+// 	config['port'] = port;
 
-	config["testrpcOptions"] = `${accountsData}`;
+// 	config["testrpcOptions"] = `${accountsData}`;
 
-	if (port) {
-		config["testrpcOptions"] += `--port ${port}`;
-	}
-	const app = new App(config);
-	app.generateCoverageEnvironment();
-	app.instrumentTarget();
-	await app.launchTestrpc();
-	app.runTestCommand();
-	await app.generateReport();
+// 	if (port) {
+// 		config["testrpcOptions"] += `--port ${port}`;
+// 	}
+// 	const app = new App(config);
+// 	app.generateCoverageEnvironment();
+// 	app.instrumentTarget();
+// 	await app.launchTestrpc();
+// 	app.runTestCommand();
+// 	await app.generateReport();
 
-}
+// }
 
-const coverage2 = async (path, port, runs, solcVersion, buildDirectory, workingDirectory) => {
+const runCoverage = async (path, port, runs, solcVersion, buildDirectory, workingDirectory) => {
 	var config = Config.default();
 	var testDirectory = '';
-
 	if (path.includes('.js')) {
 		await etherlimeCoverage.runCoverage([path], solcVersion, true, port, runs, buildDirectory, workingDirectory);
 
@@ -103,6 +102,5 @@ const coverage2 = async (path, port, runs, solcVersion, buildDirectory, workingD
 
 module.exports = {
 	run,
-	runWithCoverage,
-	coverage2
+	runCoverage
 }

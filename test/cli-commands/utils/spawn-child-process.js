@@ -29,6 +29,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 			let outputLoaded;
 
 			commandOutput += data.toString('utf-8');
+			console.log('OUTPUT', commandOutput)
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
 			if (outputLoaded) {
 				const processRespond = {
@@ -43,6 +44,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 		process.stderr.on('data', function (data) {
 			const err = data.toString('utf-8');
+			console.log('HERE', err)
 			if (!err.includes('EADDRINUSE')) {
 				return resolve(err);
 			}
