@@ -72,16 +72,16 @@ const load = async () => {
     // })
     // console.log("obj", phyton)
 
-    await child_process.execSync(`virtualenv -p python3.6  ~/vyper-venv`)
+    await child_process.execSync(`virtualenv -p python3.6  vyper-venv`)
 }
 
 const compile = async (filePath) => {
     ///home/travis/virtualenv/python3.6.7/bin/python3
 
-    let abi = await child_process.execSync(`source ~/vyper-venv/bin/activate && vyper -f abi ${filePath}`, {
+    let abi = await child_process.execSync(`source vyper-venv/bin/activate && vyper -f abi ${filePath}`, {
         'encoding': 'utf8'
     })
-    let bytecode = await child_process.execSync(`source ~/vyper-venv/bin/activate && vyper -f bytecode ${filePath}`, {
+    let bytecode = await child_process.execSync(`source vyper-venv/bin/activate && vyper -f bytecode ${filePath}`, {
         'encoding': 'utf8'
     })
     
