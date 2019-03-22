@@ -1,7 +1,6 @@
 language: python
 node_js:
   - "8.9.4"
-dist: xenial
 python:
   - "3.6"
 install:
