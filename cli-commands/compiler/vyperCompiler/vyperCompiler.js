@@ -72,7 +72,7 @@ const load = async () => {
     // })
     // console.log("obj", phyton)
 
-    await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && git clone https://github.com/ethereum/vyper.git && cd vyper && make`)
+    await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && pip install vyper`)
 }
 
 const compile = async (filePath) => {

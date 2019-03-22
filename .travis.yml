@@ -8,7 +8,6 @@ install:
   - sudo apt-get install virtualenv
   - which python3
   - virtualenv -p python3 vyper-venv
-  - pip install -r requirements.txt
   - npm install
   - npm link
 script:
