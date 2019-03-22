@@ -5,7 +5,7 @@ dist: xenial
 python:
   - "3.6" 
 install:
-  - sudo apt install virtualenv
+  - sudo apt-get install virtualenv
   - which python3
   - which sh
   - npm install
