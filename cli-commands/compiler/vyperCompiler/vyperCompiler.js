@@ -16,7 +16,6 @@ const run = async (allFiles, buildDirectory) => {
                 return
             }
 
-            // await load()
             let {abi, bytecode} = await compile(filePath)
 
             let compiledObject =  {
@@ -66,23 +65,14 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
     return false
 }
 
-const load = async () => {
-    // let phyton = await child_process.execSync('which python3', {
-    //     'encoding': 'utf8'
-    // })
-    // console.log("obj", phyton)
-
-    await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && pip install vyper`)
-}
-
 const compile = async (filePath) => {
     //`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate`
     // await child_process.execSync(`source ~/vyper-venv/bin/activate`)
 
-    let abi = await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && vyper -f abi ${filePath}`, {
+    let abi = await child_process.execSync(`. vyper-venv/bin/activate && vyper -f abi ${filePath}`, {
         'encoding': 'utf8'
     })
-    let bytecode = await child_process.execSync(`. /home/travis/build/LimeChain/etherlime/vyper-venv/bin/activate && vyper -f bytecode ${filePath}`, {
+    let bytecode = await child_process.execSync(`. vyper-venv/bin/activate && vyper -f bytecode ${filePath}`, {
         'encoding': 'utf8'
     })
     
