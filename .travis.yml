@@ -5,8 +5,8 @@ dist: xenial
 python:
   - "3.6"
 install:
-  - sudo apt-get install virtualenv
-  - virtualenv -p python3 vyper-venv
+  # - sudo apt-get install virtualenv
+  # - virtualenv -p python3 vyper-venv
   - pip install vyper
   - npm install
   - npm link
