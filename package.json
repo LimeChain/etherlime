@@ -32,7 +32,7 @@
     "find-process": "^1.2.1",
     "find-up": "^3.0.0",
     "fs-extra": "7.0.1",
-    "ganache-cli": "^6.1.8",
+    "ganache-cli": "^6.4.1",
     "graphlib": "2.1.5",
     "keen-tracking": "4.0.15",
     "mkdirp": "0.5.1",
