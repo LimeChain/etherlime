@@ -16,7 +16,7 @@ const run = async (allFiles, buildDirectory) => {
                 return
             }
 
-            await load()
+            // await load()
             let {abi, bytecode} = await compile(filePath)
 
             let compiledObject =  {
