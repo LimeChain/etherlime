@@ -39,29 +39,35 @@ const runCoverage = async (files, solcVersion, enableGasReport, port, runs, buil
 
 		mocha.addFile(file);
 	});
-	const coverageProvider = await prepareCoverage(workingDirectory, port)
-	await setJSTestGlobals(port, coverageProvider);
-	if (enableGasReport) {
-		mocha.reporter(CustomReporter, { port });
-	}
-
-	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, undefined, workingDirectory);
-
-	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
-	await runMocha(mocha);
-
 	try {
+		const coverageProvider = await prepareCoverage(workingDirectory, port)
+		await setJSTestGlobals(port, coverageProvider);
+		if (enableGasReport) {
+			mocha.reporter(CustomReporter, { port });
+		}
+
+		await compiler.run('.', undefined, solcVersion, false, undefined, false, true, undefined, workingDirectory);
+
+		await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
+		await runMocha(mocha);
 		await generateCoverageResults();
+
 	} catch (e) {
-		console.log(e)
+		return e
 	}
+
+
+	// try {
+	// } catch (e) {
+	// 	console.log(e)
+	// }
 }
 
 // Compile contracts in desired format in order to pass them to coverage library
 const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs, buildDirectory) => {
 	const compilerOptions = {
-		contractsDir: workingDirectory,
-		artifactsDir: artifacts,
+		contractsDir: `${process.cwd()}/${workingDirectory}`,
+		artifactsDir: `${process.cwd()}/${artifacts}`,
 		compilerSettings: {
 			outputSelection: {
 				['*']: {
@@ -78,15 +84,19 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	};
 
 	const compiler = new Compiler(compilerOptions);
+
 	console.log('Preparing coverage environment and building artifacts...');
 	try {
 		await compiler.compileAsync();
+		await prepareCoverageBuildedFiles(buildDirectory)
 	} catch (e) {
-		console.log(e)
+		return e
 	}
 
 
-	// TO DO - move in another method
+}
+
+const prepareCoverageBuildedFiles = async (buildDirectory) => {
 	let buildFilesPaths = await findFiles(buildDirectory);
 	let coverageBuildFilesPaths = await findFiles(artifacts);
 
@@ -105,7 +115,6 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 		}
 	}
 }
-
 
 // Create mocha
 const createMocha = (config, files) => {
@@ -176,12 +185,7 @@ const prepareCoverage = async (workingDirectory, port) => {
 	});
 
 	// start pulling blocks
-	provider.start(err => {
-		if (err !== undefined) {
-			console.log(err);
-			process.exit(1);
-		}
-	});
+	provider.start();
 	return provider
 }
 
@@ -253,7 +257,6 @@ const generateCoverageResults = async () => {
 
 // Find compiled files from passed directory, e.g ./build
 const findFiles = async (directory) => {
-
 	return new Promise((resolve, reject) => {
 		dir.files(directory, function (err, files) {
 			if (err) {

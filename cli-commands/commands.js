@@ -337,7 +337,12 @@ const commands = [
 			recordEvent('etherlime coverage', {
 				argv
 			});
-			await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
+			try {
+				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
+			} catch (e) {
+				console.error(e);
+			}
+
 		}
 	},
 	{
