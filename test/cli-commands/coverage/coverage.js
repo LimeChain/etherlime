@@ -13,6 +13,7 @@ let exampleTestForCoverageWithPort = require('../examples/exampleTestForCoverage
 let exampleTestForCoverage = require('../examples/exampleTestForCoverageWithPort').pathToExampleTest;
 let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let pathToExampleWithPort = './testsToRun/exampleTestForCoverageWithPort.js'
+let wrongPath = './test2/wrongTest.js';
 let currentDir;
 
 let port = 5000;
@@ -26,68 +27,67 @@ describe('coverage cli command', () => {
         process.chdir('./tmpTest')
         fs.mkdirSync('./build')
         fs.mkdirSync('./contracts')
+        fs.mkdirSync('./contracts2')
         fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
+        fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts2/LimeFactory.sol')
+
         fs.mkdirSync('./testsToRun')
-        fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
+        // fs.writeFileSync('./testsToRun/exampleTestForCoverageWithPort.js', exampleTestForCoverageWithPort)
         fs.writeFileSync('./testsToRun/exampleTestForCoverage.js', exampleTestForCoverage)
     })
-
-    // it('should run coverage cli command', async function () {
-    //     console.log('START3')
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort}`, expectedOutput);
-    //     assert.isTrue(childProcess.result)
-    // })
-
-    // it('should run coverage cli command by specifying number runs', async function () {
-    //     let runs = 10;
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleWithPort} --runs ${runs} --port ${port}`, expectedOutput);
-    //     assert.isTrue(childProcess.result)
-    // });
-
-    // files, solcVersion, true, port, runs, buildDirectory, workingDirectory
 
     it('should execute coverage cli command with default port specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
         await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], undefined, true, 8545, undefined, `./build`, `./contracts`)
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with number runs', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
         await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, undefined, `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], undefined, true, 8545, 10, `./build`, `./contracts`)
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, undefined, `./build`, `./contracts`)
         etherlimeTestSpy.restore();
     });
 
-    // it('should execute coverage cli command with specific solc version', async function () {
-    //     let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-    //     this.timeout(5000);
-    //     await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, '0.5.1', `./build`, `./contracts`))
-    //     sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], '0.5.1', true, 8545, 10, `./build`, `./contracts`)
-    //     etherlimeTestSpy.restore();
-    // });
+    it('should execute coverage cli command when path does not includes specific .js file', async function () {
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`./testsToRun`, 8545, 10, undefined, `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/testsToRun/exampleTestForCoverage.js`], 8545, 10, undefined, `./build`, `./contracts`)
+        etherlimeTestSpy.restore();
+    });
 
-    // it('should execute coverage cli command with wrong entry folders', async function () {
-    //     let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-    //     this.timeout(5000);
-    //     await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, '0.5.6', `./build2`, `./contracts2`))
-    //     sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], '0.5.6', true, 8545, 10, `./build2`, `./contracts2`)
-    //     etherlimeTestSpy.restore();
-    // });
+    it('should execute coverage cli command with specific solc version', async function () {
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, '0.5.4', `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, '0.5.4', `./build`, `./contracts`)
+        etherlimeTestSpy.restore();
+    });
 
-    // it('should run coverage cli command', async function () {
-    //     console.log('START3')
-    //     this.timeout(5000)
-    //     let childProcess = await runCmdHandler(`etherlime coverage --path ${pathToExampleTest}`, expectedOutput);
-    //     console.log('child process:', childProcess)
-    //     assert.include(childProcess.result, expectedOutput)
-    // })
+    it('should execute coverage cli command with specific build and contracts folder', async function () {
+
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, undefined, `./build2`, `./contracts2`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, undefined, `./build2`, `./contracts2`)
+        etherlimeTestSpy.restore();
+    });
+
+    it('should throw on wrong path', async () => {
+        it('should throw on wrong path', async function () {
+            await assert.isRejected(test.runCoverage('wrongTestDirectory'));
+        });
+    });
+
+    it('should throw if find files method trows', async () => {
+        await assert.isRejected(etherlimeCoverage.findFiles('wrongFolder'));
+    })
 
     after(async function () {
-        process.chdir(currentDir);
-        fs.removeSync('./tmpTest')
-        fs.removeSync('./coverage')
+        setTimeout(() => {
+            process.chdir(currentDir);
+            fs.removeSync('./tmpTest')
+            fs.removeSync('./coverage')
+        }, 1000)
     })
 
 })

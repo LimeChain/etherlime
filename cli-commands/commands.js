@@ -341,6 +341,9 @@ const commands = [
 				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
 			} catch (e) {
 				console.error(e);
+				global.provider.stop();
+			} finally {
+				logger.removeOutputStorage();
 			}
 
 		}

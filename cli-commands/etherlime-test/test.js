@@ -85,7 +85,13 @@ const runCoverage = async (path, port, runs, solcVersion, buildDirectory, workin
 	var config = Config.default();
 	var testDirectory = '';
 	if (path.includes('.js')) {
-		await etherlimeCoverage.runCoverage([path], solcVersion, true, port, runs, buildDirectory, workingDirectory);
+		// try {
+		await etherlimeCoverage.runCoverage([path], port, runs, solcVersion, buildDirectory, workingDirectory);
+
+		// } catch (e) {
+		// 	// console.log('OGI error')
+		// 	throw new Error(e)
+		// }
 
 		return;
 	}
@@ -97,7 +103,14 @@ const runCoverage = async (path, port, runs, solcVersion, buildDirectory, workin
 	}
 
 	const files = await getFiles(testDirectory, config);
-	await etherlimeCoverage.runCoverage(files, solcVersion, true, port, runs, buildDirectory, workingDirectory);
+	// try {
+	await etherlimeCoverage.runCoverage(files, port, runs, solcVersion, buildDirectory, workingDirectory);
+
+	// } catch (e) {
+	// 	// console.log('OGI2 error')
+
+	// 	throw new Error(e)
+	// }
 }
 
 module.exports = {

@@ -29,32 +29,31 @@ const fs = require('fs')
 var istanbul = require('istanbul');
 const shell = require('shelljs');
 
-const runCoverage = async (files, solcVersion, enableGasReport, port, runs, buildDirectory, workingDirectory) => {
+const runCoverage = async (files, port, runs, solcVersion, buildDirectory, workingDirectory) => {
 	// await runCoverageGanacheEnvironment(port);
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
+	mocha.reporter(CustomReporter, { port });
 
 	files.forEach(function (file) {
 		delete originalRequire.cache[file];
 
 		mocha.addFile(file);
 	});
-	try {
-		const coverageProvider = await prepareCoverage(workingDirectory, port)
-		await setJSTestGlobals(port, coverageProvider);
-		if (enableGasReport) {
-			mocha.reporter(CustomReporter, { port });
-		}
+	// try {
+	const coverageProvider = await prepareCoverage(workingDirectory, port)
+	await setJSTestGlobals(port, coverageProvider);
 
-		await compiler.run('.', undefined, solcVersion, false, undefined, false, true, undefined, workingDirectory);
+	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, buildDirectory, workingDirectory);
+	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
+	await runMocha(mocha);
+	await generateCoverageReports();
 
-		await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
-		await runMocha(mocha);
-		await generateCoverageResults();
-
-	} catch (e) {
-		return e
-	}
+	// } catch (e) {
+	// 	provider.stop();
+	// 	console.log('here error', e)
+	// 	throw e
+	// }
 
 
 	// try {
@@ -86,12 +85,13 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	const compiler = new Compiler(compilerOptions);
 
 	console.log('Preparing coverage environment and building artifacts...');
-	try {
-		await compiler.compileAsync();
-		await prepareCoverageBuildedFiles(buildDirectory)
-	} catch (e) {
-		return e
-	}
+	// try {
+	await compiler.compileAsync();
+	await prepareCoverageBuildedFiles(buildDirectory)
+	// } catch (e) {
+	// 	console.log('here error2', e)
+	// 	return e
+	// }
 
 
 }
@@ -137,6 +137,19 @@ const runMocha = async (mocha) => {
 			resolve();
 		});
 	})
+
+	// return new Promise((resolve, reject) => {
+	// 	mocha.run(failures => {
+	// 		process.exitCode = failures ? -1 : 0;
+	// 		if (failures) {
+	// 			reject('Some of the test scenarios failed!')
+	// 		} else {
+	// 			writeCoverageFile();
+	// 			resolve();
+
+	// 		}
+	// 	});
+	// })
 }
 
 
@@ -169,6 +182,7 @@ const setJSTestGlobals = async (port, coverageProvider) => {
 
 // Set and run coverage providers
 const prepareCoverage = async (workingDirectory, port) => {
+
 	let artifactAdapter = new SolCompilerArtifactAdapter(artifacts, workingDirectory);
 	global.coverageSubprovider = new CoverageSubprovider(
 		artifactAdapter,
@@ -179,10 +193,10 @@ const prepareCoverage = async (workingDirectory, port) => {
 	provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${port}` }));
 	global.provider = provider;
 
-	provider.on('error', function (err) {
-		// report connectivity errors
-		console.error(err.stack)
-	});
+	// provider.on('error', function (err) {
+	// 	// report connectivity errors
+	// 	console.error(err.stack)
+	// });
 
 	// start pulling blocks
 	provider.start();
@@ -227,23 +241,25 @@ const prepareCoverage = async (workingDirectory, port) => {
 
 // Write coverage.json file
 const writeCoverageFile = async () => {
-
 	await global.coverageSubprovider.writeCoverageAsync();
 	provider.stop();
 }
 
 
 // Generate html report and table report 
-const generateCoverageResults = async () => {
+const generateCoverageReports = async () => {
 
 	const collector = new istanbul.Collector();
 	const reporter = new istanbul.Reporter();
 	const sync = false;
 	const coverageFile = require(`${process.cwd()}/coverage/coverage.json`);
 	collector.add(coverageFile);
-	reporter.addAll(['text', 'html']);
+	reporter.add(['text']);
+	reporter.add(['html']);
+
 	setTimeout(async () => {
-		reporter.write(collector, sync, function () {
+		console.log();
+		await reporter.write(collector, sync, function () {
 			console.log('All reports generated');
 
 			// const url = `${process.cwd()}/coverage/index.html`;
@@ -251,7 +267,7 @@ const generateCoverageResults = async () => {
 			// require('child_process').exec(start + ' ' + url);
 			//process.exit();
 		});
-	}, 1000);
+	}, 10);
 }
 
 
@@ -271,5 +287,6 @@ const findFiles = async (directory) => {
 }
 
 module.exports = {
-	runCoverage
+	runCoverage,
+	findFiles
 }
