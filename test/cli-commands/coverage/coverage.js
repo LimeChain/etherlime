@@ -57,13 +57,6 @@ describe('coverage cli command', () => {
         etherlimeTestSpy.restore();
     });
 
-    it('should execute coverage cli command with specific solc version', async function () {
-        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, '0.5.4', `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, '0.5.4', `./build`, `./contracts`)
-        etherlimeTestSpy.restore();
-    });
-
     it('should execute coverage cli command with specific build and contracts folder', async function () {
 
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
@@ -83,11 +76,11 @@ describe('coverage cli command', () => {
     })
 
     after(async function () {
-        setTimeout(() => {
-            process.chdir(currentDir);
-            fs.removeSync('./tmpTest')
-            fs.removeSync('./coverage')
-        }, 1000)
+        // setTimeout(() => {
+        process.chdir(currentDir);
+        fs.removeSync('./tmpTest')
+        fs.removeSync('./coverage')
+        // }, 1000)
     })
 
 })

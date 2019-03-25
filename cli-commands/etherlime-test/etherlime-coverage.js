@@ -40,7 +40,7 @@ const runCoverage = async (files, port, runs, solcVersion, buildDirectory, worki
 
 		mocha.addFile(file);
 	});
-	// try {
+
 	const coverageProvider = await prepareCoverage(workingDirectory, port)
 	await setJSTestGlobals(port, coverageProvider);
 
@@ -48,18 +48,6 @@ const runCoverage = async (files, port, runs, solcVersion, buildDirectory, worki
 	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
 	await runMocha(mocha);
 	await generateCoverageReports();
-
-	// } catch (e) {
-	// 	provider.stop();
-	// 	console.log('here error', e)
-	// 	throw e
-	// }
-
-
-	// try {
-	// } catch (e) {
-	// 	console.log(e)
-	// }
 }
 
 // Compile contracts in desired format in order to pass them to coverage library
@@ -85,14 +73,17 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	const compiler = new Compiler(compilerOptions);
 
 	console.log('Preparing coverage environment and building artifacts...');
-	// try {
-	await compiler.compileAsync();
+	try {
+		await compiler.compileAsync();
+	} catch (e) {
+		return e
+	}
+
 	await prepareCoverageBuildedFiles(buildDirectory)
 	// } catch (e) {
 	// 	console.log('here error2', e)
 	// 	return e
 	// }
-
 
 }
 
@@ -138,18 +129,6 @@ const runMocha = async (mocha) => {
 		});
 	})
 
-	// return new Promise((resolve, reject) => {
-	// 	mocha.run(failures => {
-	// 		process.exitCode = failures ? -1 : 0;
-	// 		if (failures) {
-	// 			reject('Some of the test scenarios failed!')
-	// 		} else {
-	// 			writeCoverageFile();
-	// 			resolve();
-
-	// 		}
-	// 	});
-	// })
 }
 
 
@@ -166,7 +145,6 @@ const setJSTestGlobals = async (port, coverageProvider) => {
 		parseLogs: events.parseLogs,
 		hasEvent: events.hasEvent
 	}
-	// const localNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
 	const localNodeProvider = new ethers.providers.Web3Provider(coverageProvider)
 	global.ganacheProvider = localNodeProvider
 	const importedAccounts = new Array();
@@ -192,11 +170,6 @@ const prepareCoverage = async (workingDirectory, port) => {
 	provider.addProvider(global.coverageSubprovider);
 	provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${port}` }));
 	global.provider = provider;
-
-	// provider.on('error', function (err) {
-	// 	// report connectivity errors
-	// 	console.error(err.stack)
-	// });
 
 	// start pulling blocks
 	provider.start();
@@ -262,10 +235,10 @@ const generateCoverageReports = async () => {
 		await reporter.write(collector, sync, function () {
 			console.log('All reports generated');
 
-			// const url = `${process.cwd()}/coverage/index.html`;
-			// const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
-			// require('child_process').exec(start + ' ' + url);
-			//process.exit();
+			const url = `${process.cwd()}/coverage/index.html`;
+			const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
+			require('child_process').exec(start + ' ' + url);
+			// process.exit();
 		});
 	}, 10);
 }
