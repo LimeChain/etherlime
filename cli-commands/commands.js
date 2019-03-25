@@ -332,13 +332,19 @@ const commands = [
 				default: './contracts'
 			})
 
+			yargs.positional('shouldOpenCoverage', {
+				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
+				type: 'string',
+				default: 'false'
+			})
+
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime coverage', {
 				argv
 			});
 			try {
-				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory);
+				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.shouldOpenCoverage);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();

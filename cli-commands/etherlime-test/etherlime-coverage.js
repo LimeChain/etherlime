@@ -29,7 +29,7 @@ const fs = require('fs')
 var istanbul = require('istanbul');
 const shell = require('shelljs');
 
-const runCoverage = async (files, port, runs, solcVersion, buildDirectory, workingDirectory) => {
+const runCoverage = async (files, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
 	// await runCoverageGanacheEnvironment(port);
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
@@ -47,7 +47,7 @@ const runCoverage = async (files, port, runs, solcVersion, buildDirectory, worki
 	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, buildDirectory, workingDirectory);
 	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
 	await runMocha(mocha);
-	await generateCoverageReports();
+	await generateCoverageReports(shouldOpenCoverage);
 }
 
 // Compile contracts in desired format in order to pass them to coverage library
@@ -73,11 +73,11 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	const compiler = new Compiler(compilerOptions);
 
 	console.log('Preparing coverage environment and building artifacts...');
-	try {
-		await compiler.compileAsync();
-	} catch (e) {
-		return e
-	}
+	// try {
+	await compiler.compileAsync();
+	// } catch (e) {
+	// 	return e
+	// }
 
 	await prepareCoverageBuildedFiles(buildDirectory)
 	// } catch (e) {
@@ -220,7 +220,7 @@ const writeCoverageFile = async () => {
 
 
 // Generate html report and table report 
-const generateCoverageReports = async () => {
+const generateCoverageReports = async (shouldOpenCoverage) => {
 
 	const collector = new istanbul.Collector();
 	const reporter = new istanbul.Reporter();
@@ -234,10 +234,11 @@ const generateCoverageReports = async () => {
 		console.log();
 		await reporter.write(collector, sync, function () {
 			console.log('All reports generated');
-
-			const url = `${process.cwd()}/coverage/index.html`;
-			const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
-			require('child_process').exec(start + ' ' + url);
+			if (shouldOpenCoverage) {
+				const url = `${process.cwd()}/coverage/index.html`;
+				const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
+				require('child_process').exec(start + ' ' + url);
+			}
 			// process.exit();
 		});
 	}, 10);
