@@ -13,7 +13,7 @@ const flatten = require('./flattener/flatten');
 
 const commands = [
 	{
-		command: 'ganache [port] [output] [fork]',
+		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -31,7 +31,18 @@ const commands = [
 			yargs.positional('fork', {
 				describe: 'Define the fork network where etherlime ganache-cli can fork and continue to exists',
 				type: 'string'
+			});
+
+			yargs.positional('gasPrice', {
+				describe: 'The price of gas in wei - default is 20000000000',
+				type: 'number'
 			})
+
+			yargs.positional('gasLimit', {
+				describe: 'The block gas limit default is 0x6691b7',
+				type: 'number'
+			})
+
 		},
 		commandProcessor: (argv) => {
 			recordEvent('etherlime ganache', {
@@ -41,7 +52,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, logger, argv.fork);
+				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit);
 			} catch (err) {
 				console.error(err);
 			} finally {
