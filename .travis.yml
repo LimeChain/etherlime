@@ -4,6 +4,7 @@ node_js:
 python:
   - "3.6"
 install:
+  - pip install vyper
   - npm install
   - npm link
 script:
