@@ -13,7 +13,7 @@ let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let currentDir;
 let originalPlatform;
 
-describe.only('coverage cli command', () => {
+describe('coverage cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./tmpTest')
