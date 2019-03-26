@@ -95,9 +95,21 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
 
-    it('should throw if flatten failed', async function() {
+    it('should throw if flatten failed', async function () {
         let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
         let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if coverage failed with specific path', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if coverage failed', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
         assert.include(childProcess, expectedOutput)
     })
 })

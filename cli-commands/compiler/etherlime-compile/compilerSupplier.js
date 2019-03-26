@@ -355,16 +355,8 @@ class CompilerSupplier {
 
 }
 
-// Check for current working directory if includes 'coverageEnv'
-isCoverage = () => {
-    return process.cwd().includes('coverageEnv');
-}
 
-// If isCoverage() return true, we are moving one level up because 'etherlime coverage' makes a temporary folder 'coverageEnv' where all the tests are stored, but there is no node_modules folder
 getLocalSolcPath = () => {
-    if (isCoverage()) {
-        return `${path.resolve(`${process.cwd()}/../node_modules/solc`)}`;
-    }
     return `${process.cwd()}/node_modules/solc`;
 }
 
