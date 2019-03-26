@@ -2,15 +2,20 @@ const ganache = require('ganache-cli');
 const setup = require('./setup.json');
 const colors = require('./../../utils/colors');
 const logger = require('../../logger-service/logger-service').logger;
+const ethers = require('ethers');
 let port;
 
-const run = (inPort, inLogger, forkParams) => {
+const run = (inPort, inLogger, forkParams, gasPrice, gasLimit) => {
 	port = (inPort) ? inPort : setup.defaultPort;
 	fork = (forkParams) ? forkParams : setup.forkParams;
+	gasPrice = (gasPrice) ? ethers.utils.hexlify(gasPrice) : setup.gasPrice;
+	gasLimit = (gasLimit) ? ethers.utils.hexlify(gasLimit) : setup.gasLimit;
 	const server = ganache.server({
 		accounts: setup.accounts,
 		logger: inLogger,
-		fork
+		fork,
+		gasPrice,
+		gasLimit
 	});
 
 	server.listen(port, ganacheServerListenCallback);
