@@ -30,7 +30,6 @@ var istanbul = require('istanbul');
 const shell = require('shelljs');
 
 const runCoverage = async (files, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
-	// await runCoverageGanacheEnvironment(port);
 	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 	mocha.reporter(CustomReporter, { port });
@@ -73,17 +72,11 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	const compiler = new Compiler(compilerOptions);
 
 	console.log('Preparing coverage environment and building artifacts...');
-	// try {
+
 	await compiler.compileAsync();
-	// } catch (e) {
-	// 	return e
-	// }
+
 
 	await prepareCoverageBuildedFiles(buildDirectory)
-	// } catch (e) {
-	// 	console.log('here error2', e)
-	// 	return e
-	// }
 
 }
 
@@ -131,7 +124,6 @@ const runMocha = async (mocha) => {
 
 }
 
-
 // Set test globals
 const setJSTestGlobals = async (port, coverageProvider) => {
 
@@ -157,7 +149,6 @@ const setJSTestGlobals = async (port, coverageProvider) => {
 	global.accounts = importedAccounts;
 }
 
-
 // Set and run coverage providers
 const prepareCoverage = async (workingDirectory, port) => {
 
@@ -175,42 +166,6 @@ const prepareCoverage = async (workingDirectory, port) => {
 	provider.start();
 	return provider
 }
-
-
-// Run local etherlime ganache for coverage purpose
-// const runCoverageGanacheEnvironment = async (port) => {
-// 	const isPortTaken = await checkPort(port);
-// 	if (isPortTaken) {
-// 		return;
-// 	}
-
-// 	try {
-// 		console.log(`Running etherlime ganache on port: ${port}`);
-// 		ganache.run(port, {});
-// 	} catch (e) {
-// 		console.log(e);
-// 	}
-// }
-
-// Check if port is busy, otherwise run the etherlime ganache
-// const checkPort = async (port) => {
-// 	return new Promise((resolve, reject) => {
-// 		var net = require('net');
-// 		var server = net.createServer();
-// 		server.once('error', function (err) {
-// 			if (err.code === 'EADDRINUSE') {
-// 				resolve(true)
-// 			}
-// 		});
-
-// 		server.once('listening', function () {
-// 			// close the server if listening doesn't fail
-// 			server.close();
-// 			resolve(false)
-// 		});
-// 		server.listen(port);
-// 	})
-// }
 
 // Write coverage.json file
 const writeCoverageFile = async () => {
@@ -241,7 +196,7 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 			}
 			// process.exit();
 		});
-	}, 10);
+	}, 100);
 }
 
 

@@ -3,10 +3,6 @@ let etherlimeCoverage = require('./etherlime-coverage');
 let dir = require('node-dir');
 let Config = require('./../compiler/etherlime-config');
 
-let App = require('solidity-coverage/lib/app');
-let defaultCoverageConfig = require('./coverage-config.json');
-let accounts = require('./../ganache/setup.json').accounts;
-
 const run = async (path, skipCompilation, solcVersion, enableGasReport, port) => {
 
 	var config = Config.default();
@@ -47,39 +43,6 @@ const getFiles = async function (testDirectory, config) {
 		});
 	});
 }
-
-// const runWithCoverage = async (path, port, runs) => {
-// 	var accountsData = ''
-// 	accounts.forEach(account => {
-// 		let accountData = `--account "${account.secretKey},${account.balance.replace('0x', '')}" `;
-// 		accountsData += accountData;
-// 	});
-
-// 	const config = JSON.parse(JSON.stringify(defaultCoverageConfig));
-
-// 	if (path) {
-// 		config['testCommand'] = `${config['testCommand']} --path ${path}`;
-// 	}
-
-// 	if (runs) {
-// 		config["compileCommand"] = `${config["compileCommand"]} --runs ${runs}`;
-// 	}
-
-// 	config['port'] = port;
-
-// 	config["testrpcOptions"] = `${accountsData}`;
-
-// 	if (port) {
-// 		config["testrpcOptions"] += `--port ${port}`;
-// 	}
-// 	const app = new App(config);
-// 	app.generateCoverageEnvironment();
-// 	app.instrumentTarget();
-// 	await app.launchTestrpc();
-// 	app.runTestCommand();
-// 	await app.generateReport();
-
-// }
 
 const runCoverage = async (path, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
 	var config = Config.default();

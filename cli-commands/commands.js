@@ -295,7 +295,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [port] [runs] [skip-compilation] [solcVersion] [buildDirectory] [workingDirectory]',
+		command: 'coverage [path] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [shouldOpenCoverage]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -333,7 +333,7 @@ const commands = [
 			})
 
 			yargs.positional('shouldOpenCoverage', {
-				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
+				describe: 'Defines either to open automatically with you default browser the html coverage report located in: ./coverage',
 				type: 'string',
 				default: 'false'
 			})
