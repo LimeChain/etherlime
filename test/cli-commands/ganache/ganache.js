@@ -33,6 +33,9 @@ const ADDRESS_LENGTH = 42;
 const PRIVATE_KEY_START_INDEX = 69;
 const PRIVATE_KEY_LENGTH = 66;
 
+const GAS_PRICE = 200000;
+const GAS_LIMIT = 250000;
+
 const FIRST_PRIVATE_KEY = ganacheSetupFile.accounts[0].secretKey;
 const FIRST_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[0].secretKey);
 
@@ -379,5 +382,33 @@ describe('Ganache fork from specific block number', async () => {
 	});
 	after(async () => {
 		killProcessByPID(childResponse.process.pid);
+	});
+});
+
+describe('Etherlime ganache with specific gasPrice and gasLimit', async () => {
+
+	it('should start ganache server with specific default gasPrice of transactions', async () => {
+
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --gasPrice ${GAS_PRICE}`, expectedOutput);
+		assert.include(childResponse.output, expectedOutput, 'The ganache is not runned with specific default gasPrice');
+	});
+
+	it('should start ganache server with specific default gasLimit of transactions', async () => {
+
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --gasLimit ${GAS_LIMIT}`, expectedOutput);
+		assert.include(childResponse.output, expectedOutput, 'The ganache is not runned with specific default gasPrice');
+	});
+
+	it('should start ganache server with specific default gasPrice & gasLimit of transactions', async () => {
+
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --gasPrice ${GAS_PRICE} --gasLimit ${GAS_LIMIT}`, expectedOutput);
+		assert.include(childResponse.output, expectedOutput, 'The ganache is not runned with specific default gasPrice');
+	});
+
+	afterEach(async () => {
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
 	});
 });
