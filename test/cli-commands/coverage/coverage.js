@@ -11,17 +11,20 @@ const sinon = require('sinon');
 let exampleTestForCoverage = require('../examples/exampleTestForCoverageWithPort').pathToExampleTest;
 let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let currentDir;
+let originalPlatform;
 
-describe('coverage cli command', () => {
+describe.only('coverage cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./tmpTest')
+        originalPlatform = process.platform;
         currentDir = process.cwd();
         process.chdir('./tmpTest')
         fs.mkdirSync('./build')
         fs.mkdirSync('./contracts')
         fs.mkdirSync('./contracts2')
         fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
+        fs.copyFileSync('../test/cli-commands/examples/FoodCart.sol', './contracts/FoodCart.sol')
         fs.copyFileSync('../test/cli-commands/examples/LimeFactory.sol', './contracts2/LimeFactory.sol')
 
         fs.mkdirSync('./testsToRun')
@@ -64,6 +67,25 @@ describe('coverage cli command', () => {
         etherlimeTestSpy.restore();
     });
 
+    it('should execute coverage cli command with shouldOpenCoverage param on windows', async function () {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32'
+        });
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`, true))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`, true)
+        etherlimeTestSpy.restore();
+    });
+
+    it('should execute coverage cli command with shouldOpenCoverage param on MocOs', async function () {
+        Object.defineProperty(process, 'platform', {
+            value: 'MocOs'
+        });
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`, true))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`, true)
+        etherlimeTestSpy.restore();
+    });
 
     it('should throw on wrong path', async () => {
         it('should throw on wrong path', async function () {
@@ -76,6 +98,9 @@ describe('coverage cli command', () => {
     })
 
     after(async function () {
+        Object.defineProperty(process, 'platform', {
+            value: originalPlatform
+        });
         process.chdir(currentDir);
         fs.removeSync('./tmpTest')
         fs.removeSync('./coverage')
