@@ -61,7 +61,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'init [output]',
+		command: 'init [output] [zk-enabled]',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('output', {
@@ -71,6 +71,14 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
+
+		argumentsProcessor: (yargs) => {
+			yargs.positional('zk-enabled', {
+				describe: 'Defines if to include in project a zk-proof folder with primary circuit for compiling',
+				type: 'string',
+				default: false,
+			});
+		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime init', {
 				argv
@@ -78,7 +86,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await init.run(argv.output);
+				await init.run(argv.zkEnabled);
 			} catch (err) {
 				console.error(err);
 			} finally {

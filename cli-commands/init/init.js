@@ -11,6 +11,10 @@ const testFileDestination = `${testDir}/exampleTest.js`;
 const contractsDir = './contracts';
 const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
 
+const zkProofDir = './zero-knowledge-proof';
+const zkProofCircuitDir = './circuits';
+const zkCircuitDestination = `${zkProofDir}/${zkProofCircuitDir}/limecirc.circuit`;
+
 const packageJsonDestination = './package.json';
 
 const gitIgnoreFileDestination = './.gitignore';
@@ -84,12 +88,35 @@ const createGitIgnoreFile = (libraryDirectory) => {
 		logger.log('===== Creating .gitignore file =====');
 
 		const gitIgnoreSource = `${libraryDirectory}/gitIgnoreSource.js`;
-		
+
 		fs.copyFileSync(gitIgnoreSource, gitIgnoreFileDestination)
 	}
 }
 
-const run = async () => {
+const createZKProofFolder = () => {
+	logger.log('===== Creating ZK Proof file structure =====');
+	if (!fs.existsSync(zkProofDir)) {
+		fs.mkdirSync(zkProofDir);
+	}
+}
+
+const createZKProofCircuitFolder = () => {
+	logger.log('===== Creating ZK Proof circuit folder =====');
+	if (!fs.existsSync(`${zkProofDir}/${zkProofCircuitDir}`)) {
+		fs.mkdirSync(`${zkProofDir}/${zkProofCircuitDir}`);
+	}
+}
+
+const copyCircuitFile = (libraryDirectory) => {
+	if (fs.existsSync(zkCircuitDestination)) {
+		throw new Error(`limecirc.circuit already exists in ${zkProofDir} directory. You've probably already initialized etherlime for this project.`);
+	}
+
+	const circuitFileSource = `${libraryDirectory}/limecirc.circuit`;
+	fs.copyFileSync(circuitFileSource, zkCircuitDestination);
+};
+
+const run = async (zkEnabled) => {
 	const libraryDirectory = __dirname;
 
 	try {
@@ -104,6 +131,11 @@ const run = async () => {
 		copyDeployFile(libraryDirectory);
 		copyTestFile(libraryDirectory);
 		createGitIgnoreFile(libraryDirectory)
+		if (zkEnabled) {
+			createZKProofFolder();
+			createZKProofCircuitFolder()
+			copyCircuitFile(libraryDirectory)
+		}
 		logger.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {
 		throw new Error(e.message);
