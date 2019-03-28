@@ -51,7 +51,7 @@ const installIdeModules = async () => {
 }
 
 const runIde = async (rootDir, port) => {
-    console.log("====== Run IDE ======");
+    console.log("====== Running IDE ======");
     await exec('npm run build-local')
     changeCWD(projectWorkingDir); //return to project's working dir
     runGanache(port) //run etherlime ganache
@@ -70,7 +70,7 @@ const runIde = async (rootDir, port) => {
 }
 
 const runGanache = (port) => {
-    if(port) {
+    if (port) {
         spawn('etherlime', ['ganache', `--port=${port}`])
         return
     }

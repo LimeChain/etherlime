@@ -8,6 +8,7 @@ const killProcessByPID = require('../utils/spawn-child-process').killProcessByPI
 const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache');
 const shape = require('../../../cli-commands/shape/shape');
+const ide = require('../../../cli-commands/etherlime-ide/etherlime-ide');
 const eventTracker = require('../../../cli-commands/event-tracker');
 
 const commands = require('../../../cli-commands/commands');
@@ -103,10 +104,20 @@ describe('root calling cli commands', () => {
     })
 
     it('should throw if etherlime ide failed', async function () {
-        let expectedOutput = " is not a directory";
-        let childProcess = await runCmdHandler(`etherlime ide`, expectedOutput);
-        assert.include(childProcess.output, expectedOutput)
-        killProcessByPID(childProcess.process.pid)
+        let stub = sinon.stub(ide, "run")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[11].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
     })
 
     after(async function () {

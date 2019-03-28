@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'",
-    "test": "nyc --check-coverage -x 'Solidity-IDE/*.js' --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
+    "test": "nyc --check-coverage --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
+  },
+  "nyc": {
+    "exclude": ["Solidity-IDE/*.js","test/**/*.js", "tmpTest/**/*.js"] 
   },
   "repository": {
     "type": "git",
