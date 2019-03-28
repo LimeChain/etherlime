@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'",
-    "test": "nyc --check-coverage --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
+    "test": "nyc --check-coverage -x 'Solidity-IDE/*.js' --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
@@ -56,7 +56,7 @@
   "devDependencies": {
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "nyc": "^12.0.2",
+    "nyc": "git://github.com/istanbuljs/nyc#master",
     "sinon": "^7.1.0",
     "openzeppelin-solidity": "^2.1.2"
   },
