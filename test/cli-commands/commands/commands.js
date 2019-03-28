@@ -4,6 +4,7 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
+const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID
 const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache');
 const shape = require('../../../cli-commands/shape/shape');
@@ -99,5 +100,16 @@ describe('root calling cli commands', () => {
         let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
         let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
         assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if etherlime ide failed', async function () {
+        let expectedOutput = " is not a directory";
+        let childProcess = await runCmdHandler(`etherlime ide`, expectedOutput);
+        assert.include(childProcess.output, expectedOutput)
+        killProcessByPID(childProcess.process.pid)
+    })
+
+    after(async function () {
+        fs.removeSync('./Solidity-IDE');
     })
 })

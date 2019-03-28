@@ -10,6 +10,7 @@ const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
+const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
 	{
@@ -411,6 +412,25 @@ const commands = [
 		commandProcessor: async (argv) => {
 			try {
 				await flatten.run(argv.file, argv.solcVersion);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'ide [port]',
+		description: 'Runs web-based Solidity IDE that works with the file system',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('port', {
+				describe: 'port to run ganache-cli on',
+				type: 'number'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await ide.run(argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {

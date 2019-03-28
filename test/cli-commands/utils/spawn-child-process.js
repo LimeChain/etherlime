@@ -42,17 +42,20 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 		});
 
 		process.stderr.on('data', function (data) {
-			const err = data.toString('utf-8');
-			if (!err.includes('EADDRINUSE')) {
-				return resolve(err);
-			}
-
-			const errResponse = {
-				portInUse: true
-			};
-
-			resolve(errResponse);
-		});
+            const err = data.toString('utf-8');
+            if (!err.includes('EADDRINUSE')) {
+                if(!err.includes('From https://github.com/LimeChain')){
+                    return resolve(err);
+                }   
+            } else {
+                const errResponse = {
+                    portInUse: true
+                };
+    
+                resolve(errResponse);
+            }
+            
+        });
 
 		if (additionalCommand) {
 			setTimeout(() => {
