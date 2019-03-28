@@ -44,13 +44,13 @@ const runCoverage = async (files, port, runs, solcVersion, buildDirectory, worki
 	await setJSTestGlobals(port, coverageProvider);
 
 	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, buildDirectory, workingDirectory);
-	await compilationCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
+	await compileCoverageArtifacts(solcVersion, workingDirectory, runs, buildDirectory);
 	await runMocha(mocha);
 	await generateCoverageReports(shouldOpenCoverage);
 }
 
 // Compile contracts in desired format in order to pass them to coverage library
-const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs, buildDirectory) => {
+const compileCoverageArtifacts = async (solcVersion, workingDirectory, runs, buildDirectory) => {
 	const compilerOptions = {
 		contractsDir: `${process.cwd()}/${workingDirectory}`,
 		artifactsDir: `${process.cwd()}/${artifacts}`,
@@ -76,11 +76,13 @@ const compilationCoverageArtifacts = async (solcVersion, workingDirectory, runs,
 	await compiler.compileAsync();
 
 
-	await prepareCoverageBuildedFiles(buildDirectory)
+	await overrideCoverageBytecodes(buildDirectory)
 
 }
 
-const prepareCoverageBuildedFiles = async (buildDirectory) => {
+
+// Override necessary bytecode params in order to pass them to coverage
+const overrideCoverageBytecodes = async (buildDirectory) => {
 	let buildFilesPaths = await findFiles(buildDirectory);
 	let coverageBuildFilesPaths = await findFiles(artifacts);
 

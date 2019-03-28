@@ -306,7 +306,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [shouldOpenCoverage]',
+		command: 'coverage [path] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -343,8 +343,8 @@ const commands = [
 				default: './contracts'
 			})
 
-			yargs.positional('shouldOpenCoverage', {
-				describe: 'Defines either to open automatically with you default browser the html coverage report located in: ./coverage',
+			yargs.positional('html', {
+				describe: 'Defines whether to open automatically the html coverage report located in: ./coverage',
 				type: 'string',
 				default: 'false'
 			})
@@ -355,7 +355,7 @@ const commands = [
 				argv
 			});
 			try {
-				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.shouldOpenCoverage);
+				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();

@@ -4,7 +4,7 @@ const isUrl = require('./../../utils/url-utils').isUrl;
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('./../../utils/colors');
 const logger = require('./../../logger-service/logger-service').logger;
-
+const COVERAGE_PROVIDER_INDEX = 1; // This is the index of the desired provider located in global.providers. We have two providers there: one for coverage which is listening for blocks and one for deploying contracts
 class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	/**
@@ -19,7 +19,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		let localNodeProvider;
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 		if (global.coverageSubprovider) {
-			global.provider._providers[1].rpcUrl = nodeUrl;
+			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = nodeUrl;
 			localNodeProvider = new ethers.providers.Web3Provider(global.provider);
 			localNodeProvider.connection.url = nodeUrl;
 		} else {
