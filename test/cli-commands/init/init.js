@@ -22,6 +22,7 @@ const gitignoreFileDestination = './.gitignore';
 
 const zkProofDir = './zero-knowledge-proof';
 const circuitsDir = './circuits';
+const zkProofError = 'limecirc.circuit already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.'
 
 const zkProofEnabled = true;
 describe('Init cli command', () => {
@@ -104,7 +105,7 @@ describe('Init cli command', () => {
 
 });
 
-describe('Init cli command with optional parameter', () => {
+describe.only('Init cli command with optional parameter', () => {
     let currentDir;
 
     before(async function () {
@@ -148,19 +149,35 @@ describe('Init cli command with optional parameter', () => {
         assert.isTrue(fileExists, "The 'deployment example file' should be copied in deployment folder");
     });
 
+    it('should have zero-knowledge-proof folder and example circuit file', async () => {
+        let dirExists = fs.existsSync(zkProofDir);
+        let fileExists = fs.existsSync(`${zkProofDir}/${circuitsDir}`);
+
+        assert.isTrue(dirExists, "The 'zero-knowledge-proof' folder should exist.");
+        assert.isTrue(fileExists, "The 'circuit file' should be copied in zero-knowledge-proof");
+    });
+
+
     it('should throw error if contract example file already exists', async () => {
-        await assert.isRejected(init.run(), contractError, "Expected throw not received");
+        await assert.isRejected(init.run(zkProofEnabled), contractError, "Expected throw not received");
     });
 
     it('should throw error if deployment example file already exists', async () => {
         fs.removeSync(contractsDir);
-        await assert.isRejected(init.run(), deploymentError, "Expected throw not received");
+        await assert.isRejected(init.run(zkProofEnabled), deploymentError, "Expected throw not received");
     });
 
     it('should throw error if test example file already exists', async () => {
         fs.removeSync(contractsDir);
         fs.removeSync(deploymentDir);
-        await assert.isRejected(init.run(), testError, "Expected throw not received");
+        await assert.isRejected(init.run(zkProofEnabled), testError, "Expected throw not received");
+    });
+
+    it('should throw error if zero-knowledge proof folder already exists', async () => {
+        fs.removeSync(deploymentDir);
+        fs.removeSync(testDir);
+        fs.removeSync(contractsDir);
+        await assert.isRejected(init.run(zkProofEnabled), zkProofError, "Expected throw not received");
     });
 
     it('should have .gitignore file', async () => {
@@ -184,6 +201,7 @@ describe('Init cli command with optional parameter', () => {
         fs.removeSync(testDir);
         fs.removeSync(contractsDir);
         fs.removeSync(packageJsonDestination);
+        fs.removeSync(zkProofDir);
         fs.removeSync('./package-lock.json');
         fs.removeSync('./node_modules');
         fs.removeSync('./.gitignore');
