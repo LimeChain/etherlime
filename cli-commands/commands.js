@@ -10,6 +10,7 @@ const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
+const circuitCompile = require('./zk-proof/circuit-compile');
 
 const commands = [
 	{
@@ -430,6 +431,25 @@ const commands = [
 		commandProcessor: async (argv) => {
 			try {
 				await flatten.run(argv.file, argv.solcVersion);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'circuit-compile',
+		description: 'Compile a circuit file located in zero-knowledge-proof/circuits',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('file', {
+				describe: 'Specifies the file to be flattened',
+				type: 'string'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await circuitCompile.run();
 			} catch (err) {
 				console.error(err);
 			} finally {
