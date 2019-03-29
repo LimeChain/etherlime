@@ -18,9 +18,10 @@ describe.only('etherlime-ide cli command', () => {
         let expectedOutput = "Starting solc server"
         let childProcess = await runCmdHandler(`etherlime ide`, expectedOutput);
         assert.include(childProcess.output, expectedOutput)
-        console.log("process", childProcess)
-        killProcessByPID(childProcess.process.pid)
-        await exec(`kill $(lsof -t -i :3000)`)
+        console.log("process", process)
+        process.kill(childProcess.process.pid)
+        // killProcessByPID(childProcess.process.pid)
+        await exec(`kill $(lsof -t -i :8081)`)
     })
 
     it('should update ide repo if it was already cloned', async () => {
