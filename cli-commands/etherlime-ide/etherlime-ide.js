@@ -29,7 +29,7 @@ const fetchIdeRepo = async (rootDir) => {
     if(fs.existsSync(`${rootDir}/${ideFolder}`)) {
         console.log("====== Updating IDE ======")
         try {
-            await changeCWD(`${rootDir}/${ideFolder}`) //change working dir in order to pull the repo
+            changeCWD(`${rootDir}/${ideFolder}`) //change working dir in order to pull the repo
             await git.pull('origin', 'master')
         } catch (e) {
         }
@@ -41,7 +41,7 @@ const fetchIdeRepo = async (rootDir) => {
 
     console.log('====== Initializing IDE ======')
     await git.clone(ideRepoUrl, `${rootDir}/${ideFolder}`);
-    await changeCWD(`${rootDir}/${ideFolder}`); //change working dir to install the packages
+    changeCWD(`${rootDir}/${ideFolder}`); //change working dir to install the packages
     await installIdeModules();
 }
 
