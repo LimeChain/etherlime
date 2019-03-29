@@ -99,8 +99,13 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
     })
 
-    it('should throw if can not compile vyper contract', async function () {
+    it('should throw if try to compile unexisting vyper contract', async function () {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'unexistingFile.vy'))
+    })
+
+    it('should throw if can not compile vyper contract', async function() {
+        fs.copyFileSync('./test/cli-commands/compile/examples/contractForFailVyperCompilation.vy', './contracts/contractForFailVyperCompilation.vy')
+        await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/contractForFailVyperCompilation.vy'))
     })
 
     it('should compile only contract that has been updated', async function () {

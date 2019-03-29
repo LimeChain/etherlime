@@ -1,14 +1,16 @@
-const child_process = require('child_process');
+const dockerCLI = require('docker-cli-js');
+const docker = new dockerCLI.Docker();
 const path = require("path");
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 const find_contracts = require("./../etherlime-contract-sources");
 
+
 const run = async (allFiles, buildDirectory) => {
 
     for (let i = 0; i < allFiles.length; i++) {
         try {
-            let filePath = allFiles[i]
+            let filePath = path.normalize(path.relative(process.cwd(), allFiles[i])) //extract pure file path
             let fileBaseName = path.basename(filePath, ".vy")
             let fileTimestampStatus = await getFileTimestampStatus(filePath)
 
@@ -16,23 +18,16 @@ const run = async (allFiles, buildDirectory) => {
                 return
             }
 
-
-            let {abi, bytecode} = await compile(filePath)
-
-            let compiledObject =  {
-                "contractName": fileBaseName,
-                "abi": abi,
-                "bytecode": bytecode,
-                "updatedAt": fileTimestampStatus
-            }
+            let compiledObject = await compile(filePath)
+            compiledObject = Object.assign({"contractName": fileBaseName}, compiledObject[filePath]) //restructuring the compiled object
+            compiledObject.updatedAt = fileTimestampStatus
 
             await recordCompiledObject(compiledObject, buildDirectory)
 
-            const displayPath = "." + path.sep + path.relative(`${process.cwd()}`, filePath);
+            const displayPath = "." + path.sep + filePath;
             console.log(`Compiling ${displayPath}...`);
         } catch (e) {
-            console.log(e.message)
-            throw new Error("Vyper compilation failed." + e.message)
+            throw new Error("Vyper compilation failed." + e)
         }
     }
 
@@ -68,20 +63,22 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
 
 const compile = async (filePath) => {
-    let abi = await child_process.execSync(`vyper -f abi ${filePath}`, {
-        'encoding': 'utf8'
+    let compiledObject;
+    await docker.command("pull ethereum/vyper", function (err, data) {
+       if (err) {
+           throw err
+       }
     })
-    let bytecode = await child_process.execSync(`vyper -f bytecode ${filePath}`, {
-        'encoding': 'utf8'
+
+    await docker.command(`run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`, function (err, data) {
+        if (err) {
+            throw err
+        }
+        compiledObject = JSON.parse(data.raw)
+        
     })
-    
-    abi = JSON.parse(abi)
-    bytecode = bytecode.replace('\n', '')
-   
-    return {
-        abi,
-        bytecode
-    }
+
+    return compiledObject
 }
 
 const recordCompiledObject = (compiledObject, buildDirectory) => {
@@ -90,10 +87,11 @@ const recordCompiledObject = (compiledObject, buildDirectory) => {
         mkdirp.sync(buildDirectory);
     }
 
-    const spaces = 4; // number of space characters to be inserted for readability purposes
+    const spaces = 2; // number of space characters to be inserted for readability purposes
     fs.writeFileSync(`${buildDirectory}/${compiledObject.contractName}.json`, JSON.stringify(compiledObject, null, spaces)) //second param is a string replacer if needed
 
 }
 
 
 module.exports = run;
+
