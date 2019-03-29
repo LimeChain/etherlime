@@ -29,7 +29,7 @@ const fetchIdeRepo = async (rootDir) => {
     if(fs.existsSync(`${rootDir}/${ideFolder}`)) {
         console.log("====== Updating IDE ======")
         try {
-            changeCWD(`${rootDir}/${ideFolder}`) //change working dir in order to pull the repo
+            changeCurrentWorkingDir(`${rootDir}/${ideFolder}`) //change working dir in order to pull the repo
             await git.pull('origin', 'master')
         } catch (e) {
         }
@@ -41,7 +41,7 @@ const fetchIdeRepo = async (rootDir) => {
 
     console.log('====== Initializing IDE ======')
     await git.clone(ideRepoUrl, `${rootDir}/${ideFolder}`);
-    changeCWD(`${rootDir}/${ideFolder}`); //change working dir to install the packages
+    changeCurrentWorkingDir(`${rootDir}/${ideFolder}`); //change working dir to install the packages
     await installIdeModules();
 }
 
@@ -53,7 +53,7 @@ const installIdeModules = async () => {
 const runIde = async (rootDir, port) => {
     console.log("====== Running IDE ======");
     await exec('npm run build-local')
-    changeCWD(projectWorkingDir); //return to project's working dir
+    changeCurrentWorkingDir(projectWorkingDir); //return to project's working dir
     runGanache(port) //run etherlime ganache
     let path = `${projectWorkingDir}/contracts`; // path to folder with .sol contracts that will be opened in IDE
     let ideProcess = spawn('node', [`${rootDir}/${ideServerRun}`, `--path=${path}`, '--noganache']) //run IDE
@@ -77,7 +77,7 @@ const runGanache = (port) => {
     spawn('etherlime', ['ganache'])
 }
 
-const changeCWD = (dir) => {
+const changeCurrentWorkingDir = (dir) => {
     process.chdir(`${dir}`);
 }
 

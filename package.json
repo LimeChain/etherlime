@@ -9,7 +9,11 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "nyc": {
-    "exclude": ["Solidity-IDE/*.js","test/**/*.js", "tmpTest/**/*.js"] 
+    "exclude": [
+      "Solidity-IDE/*.js",
+      "test/**/*.js",
+      "tmpTest/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -59,7 +63,7 @@
   "devDependencies": {
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "nyc": "git://github.com/istanbuljs/nyc#master",
+    "nyc": "^12.0.2",
     "sinon": "^7.1.0",
     "openzeppelin-solidity": "^2.1.2"
   },
