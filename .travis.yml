@@ -3,6 +3,8 @@ language:
 install:
   - npm install
   - npm link
+services:
+  - docker
 script:
   - etherlime ganache &> /dev/null &
   - sleep 10
