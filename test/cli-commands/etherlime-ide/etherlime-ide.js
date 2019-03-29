@@ -16,6 +16,7 @@ describe.only('etherlime-ide cli command', () => {
         let expectedOutput = "Starting solc server"
         let childProcess = await runCmdHandler(`etherlime ide`, expectedOutput);
         assert.include(childProcess.output, expectedOutput)
+        console.log("process", childProcess)
         killProcessByPID(childProcess.process.pid)
     })
 
@@ -35,7 +36,7 @@ describe.only('etherlime-ide cli command', () => {
 
     after(async function () {
         fs.removeSync('./contracts');
-        // fs.removeSync('./Solidity-IDE');
+        fs.removeSync('./Solidity-IDE');
     })
 
 
