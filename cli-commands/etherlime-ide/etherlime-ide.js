@@ -34,7 +34,6 @@ const fetchIdeRepo = async (rootDir) => {
         } catch (e) {
         }
         
-        console.log("working dir", process.cwd())
         fs.removeSync('./node_modules');
         await installIdeModules()
         return
