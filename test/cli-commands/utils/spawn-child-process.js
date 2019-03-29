@@ -30,7 +30,6 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 			commandOutput += data.toString('utf-8');
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
-			console.log("commandOutput", commandOutput)
 			if (outputLoaded) {
 				const processRespond = {
 					process: process,
@@ -44,7 +43,6 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 		process.stderr.on('data', function (data) {
             const err = data.toString('utf-8');
-			console.log("111", err)
             if (!err.includes('EADDRINUSE')) {
                 if(!err.includes('From https://github.com/LimeChain')){
                     return resolve(err);
