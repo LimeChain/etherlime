@@ -4,7 +4,6 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
-const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID
 const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache');
 const shape = require('../../../cli-commands/shape/shape');
