@@ -1,9 +1,7 @@
-const zkSnark = require("snarkjs");
 const circom = require("circom");
 const fs = require("fs");
 const dir = require("node-dir");
 const path = require("path");
-const child_process = require("child_process");
 
 const circuitsPath = './zero-knowledge-proof/circuits';
 const compiledCircuits = './zero-knowledge-proof/compiled-circuits';

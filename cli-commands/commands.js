@@ -11,6 +11,7 @@ const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
 const circuitCompile = require('./zk-proof/circuit-compile');
+const trustedSetup = require('./zk-proof/trusted-setup');
 
 const commands = [
 	{
@@ -442,14 +443,33 @@ const commands = [
 		command: 'circuit-compile',
 		description: 'Compile a circuit file located in zero-knowledge-proof/circuits',
 		argumentsProcessor: (yargs) => {
-			yargs.positional('file', {
-				describe: 'Specifies the file to be flattened',
-				type: 'string'
-			});
+			// yargs.positional('file', {
+			// 	describe: 'Specifies the file to be flattened',
+			// 	type: 'string'
+			// });
 		},
 		commandProcessor: async (argv) => {
 			try {
 				await circuitCompile.run();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'trusted-setup',
+		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		argumentsProcessor: (yargs) => {
+			// yargs.positional('file', {
+			// 	describe: 'Specifies the file to be flattened',
+			// 	type: 'string'
+			// });
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await trustedSetup.run();
 			} catch (err) {
 				console.error(err);
 			} finally {

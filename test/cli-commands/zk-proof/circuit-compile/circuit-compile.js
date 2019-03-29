@@ -9,8 +9,6 @@ const exampleCircuit = require('../examples/example-circuit').circuit;
 const exampleCircuitWithError = require('../examples/example-circuit-with-error').circuit;
 const circuitCompile = require('../../../../cli-commands/zk-proof/circuit-compile');
 
-// const init = require('../../../cli-commands/init/init');
-
 describe('etherlime circuit-compile command', () => {
 	let currentDir;
 
@@ -23,7 +21,7 @@ describe('etherlime circuit-compile command', () => {
 		fs.writeFileSync('./zero-knowledge-proof/circuits/circuit.circom', exampleCircuit);
 	});
 
-	it('should execute etherlime compile', async () => {
+	it('should execute etherlime compile-circuit', async () => {
 		const expectedOutput = '===== Compilation Finished ====='
 		const childResponse = await runCmdHandler(`etherlime circuit-compile`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The compilation process does not finish properly');
