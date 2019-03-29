@@ -7,6 +7,7 @@ const runCmdHandler = require('../../utils/spawn-child-process').runCmdHandler;
 
 const exampleCircuit = require('../examples/example-circuit').circuit;
 const exampleCircuitWithError = require('../examples/example-circuit-with-error').circuit;
+const circuitCompile = require('../../../../cli-commands/zk-proof/circuit-compile');
 
 // const init = require('../../../cli-commands/init/init');
 
@@ -34,6 +35,10 @@ describe('etherlime circuit-compile command', () => {
 		const childResponse = await runCmdHandler(`etherlime circuit-compile`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The compilation process does not throw');
 	});
+
+	it('should throw if find files method trows', async () => {
+		await assert.isRejected(circuitCompile.findFiles('wrongFolder'));
+	})
 
 	after(async function () {
 		process.chdir(currentDir);
