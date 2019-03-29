@@ -5,7 +5,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const spawn = require('child_process').spawn;
 
-const ideRepoUrl = 'https://github.com/System-Glitch/Solidity-IDE.git';
+const ideRepoUrl = 'https://github.com/LimeChain/Solidity-IDE.git';
 const ideFolder = 'Solidity-IDE';
 const ideServerRun = 'Solidity-IDE/solc-server.js';
 
