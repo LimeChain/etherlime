@@ -12,7 +12,7 @@ let CustomReporter = require('./gas-logger/gas-reporter');
 chai.use(require("./assertions"));
 
 const run = async (files, skipCompilation, solcVersion, enableGasReport, port) => {
-	var mochaConfig = {'useColors': true};
+	var mochaConfig = { 'useColors': true };
 	let mocha = createMocha(mochaConfig, files);
 
 	files.forEach(function (file) {
@@ -23,7 +23,7 @@ const run = async (files, skipCompilation, solcVersion, enableGasReport, port) =
 
 	setJSTestGlobals(port);
 	if (enableGasReport) {
-		mocha.reporter(CustomReporter, {port});
+		mocha.reporter(CustomReporter, { port });
 	}
 	if (!skipCompilation) {
 		await compiler.run('.', undefined, solcVersion, false, undefined, false, true);
@@ -49,7 +49,8 @@ const runMocha = async (mocha) => {
 			if (failures) {
 				reject('Some of the test scenarios failed!')
 			} else {
-				resolve()
+				resolve();
+
 			}
 		});
 	})
@@ -79,5 +80,5 @@ const setJSTestGlobals = async (port) => {
 }
 
 module.exports = {
-	run
+	run,
 }
