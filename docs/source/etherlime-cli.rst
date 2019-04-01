@@ -15,3 +15,4 @@ Etherlime CLI
    cli/debug
    cli/shape
    cli/flattener
+   cli/ide

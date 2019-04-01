@@ -39,6 +39,8 @@ describe('Shape cli command', () => {
         fs.removeSync('./deployment')
         fs.removeSync('./test')
         fs.removeSync('./web')
+        fs.removeSync('./build')
+        fs.removeSync('./config.json')
         fs.removeSync('./node_modules')
         fs.removeSync('./package.json')
         fs.removeSync('./package-lock.json');

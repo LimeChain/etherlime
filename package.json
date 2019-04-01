@@ -8,6 +8,13 @@
     "test": "nyc --check-coverage --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
+  "nyc": {
+    "exclude": [
+      "Solidity-IDE/*.js",
+      "test/**/*.js",
+      "tmpTest/**/*.js"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/LimeChain/etherlime"
