@@ -23,6 +23,7 @@ const gitignoreFileDestination = './.gitignore';
 const zkProofDir = './zero-knowledge-proof';
 const circuitsDir = './circuits';
 const zkProofError = 'limecirc.circuit already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.'
+const inputParamsDir = './input';
 
 const zkProofEnabled = true;
 describe('Init cli command', () => {
@@ -105,7 +106,7 @@ describe('Init cli command', () => {
 
 });
 
-describe.only('Init cli command with optional parameter', () => {
+describe('Init cli command with optional parameter', () => {
     let currentDir;
 
     before(async function () {
@@ -155,6 +156,14 @@ describe.only('Init cli command with optional parameter', () => {
 
         assert.isTrue(dirExists, "The 'zero-knowledge-proof' folder should exist.");
         assert.isTrue(fileExists, "The 'circuit file' should be copied in zero-knowledge-proof");
+    });
+
+    it('should have zero-knowledge-proof folder and example input file', async () => {
+        let dirExists = fs.existsSync(zkProofDir);
+        let fileExists = fs.existsSync(`${zkProofDir}/${inputParamsDir}`);
+
+        assert.isTrue(dirExists, "The 'zero-knowledge-proof' folder should exist.");
+        assert.isTrue(fileExists, "The 'input file' should be copied in zero-knowledge-proof");
     });
 
 

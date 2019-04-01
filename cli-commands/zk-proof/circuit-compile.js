@@ -9,14 +9,9 @@ const compiledCircuits = './zero-knowledge-proof/compiled-circuits';
 const run = async () => {
 
 	createZKProofCompiledCircuitFolder()
-	try {
-		const circuitFiles = await findFiles(circuitsPath);
-		await compileCircuits(circuitFiles);
-		console.log('===== Compilation Finished =====');
-	} catch (e) {
-		console.log(e);
-		return e
-	}
+	const circuitFiles = await findFiles(circuitsPath);
+	await compileCircuits(circuitFiles);
+	console.log('===== Compilation Finished =====');
 };
 
 let findFiles = async (workingDirectory) => {
@@ -45,12 +40,8 @@ const compileCircuits = async (circuitFiles) => {
 	for (circuitFile of circuitFiles) {
 		let extension = path.extname(circuitFile, 'circom');
 		let nameOfFile = path.basename(circuitFile, extension);
-		try {
-			let compiledCir = await circom.compile(circuitFile);
-			fs.writeFileSync(`${compiledCircuits}/${nameOfFile}.json`, JSON.stringify(compiledCir, null, 1), "utf8")
-		} catch (e) {
-			throw e
-		}
+		let compiledCir = await circom.compile(circuitFile);
+		fs.writeFileSync(`${compiledCircuits}/${nameOfFile}.json`, JSON.stringify(compiledCir, null, 1), "utf8")
 	}
 }
 

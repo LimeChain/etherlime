@@ -31,7 +31,7 @@ describe('etherlime circuit-compile command', () => {
 		fs.writeFileSync('./zero-knowledge-proof/circuits/circuit.circom', exampleCircuitWithError);
 		const expectedOutput = 'Error: A main component must be defined'
 		const childResponse = await runCmdHandler(`etherlime circuit-compile`, expectedOutput);
-		assert.include(childResponse.output, expectedOutput, 'The compilation process does not throw');
+		assert.include(childResponse, expectedOutput, 'The compilation process does not throw');
 	});
 
 	it('should throw if find files method trows', async () => {

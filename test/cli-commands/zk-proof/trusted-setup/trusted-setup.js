@@ -9,7 +9,7 @@ const exampleCompiledCircuit = require('../examples/example-compiled-circuit');
 const exampleCompiledCircuitWithError = require('../examples/example-compiled-circuit-with-error');
 const trustedSetup = require('../../../../cli-commands/zk-proof/trusted-setup');
 
-describe('etherlime circuit-compile command', () => {
+describe('etherlime trusted-setup command', () => {
 	let currentDir;
 
 	before(async function () {
@@ -31,7 +31,7 @@ describe('etherlime circuit-compile command', () => {
 		fs.writeFileSync('./zero-knowledge-proof/compiled-circuits/circuit-with-error.json', JSON.stringify(exampleCompiledCircuitWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property 'length' of undefined";
 		const childResponse = await runCmdHandler(`etherlime trusted-setup`, expectedOutput);
-		assert.include(childResponse.output, expectedOutput, 'The compilation process does not throw');
+		assert.include(childResponse, expectedOutput, 'The compilation process does not throw');
 	});
 
 	it('should throw if find files method trows', async () => {

@@ -15,6 +15,9 @@ const zkProofDir = './zero-knowledge-proof';
 const zkProofCircuitDir = './circuits';
 const zkCircuitDestination = `${zkProofDir}/${zkProofCircuitDir}/limecirc.circuit`;
 
+const zkInputParamsDir = './input';
+const zkInputParamsDestionation = `${zkProofDir}/${zkInputParamsDir}/input.json`;
+
 const packageJsonDestination = './package.json';
 
 const gitIgnoreFileDestination = './.gitignore';
@@ -116,6 +119,21 @@ const copyCircuitFile = (libraryDirectory) => {
 	fs.copyFileSync(circuitFileSource, zkCircuitDestination);
 };
 
+const createZKProofInputParamsFolder = () => {
+	logger.log('===== Creating ZK Proof input params folder =====');
+	if (!fs.existsSync(`${zkProofDir}/${zkInputParamsDir}`)) {
+		fs.mkdirSync(`${zkProofDir}/${zkInputParamsDir}`);
+	}
+}
+
+const copyInputParamsFile = (libraryDirectory) => {
+	if (fs.existsSync(zkInputParamsDestionation)) {
+		throw new Error(`input.json already exists in ${zkProofDir} directory. You've probably already initialized etherlime for this project.`);
+	}
+	const inputFileSource = `${libraryDirectory}/input.json`;
+	fs.copyFileSync(inputFileSource, zkInputParamsDestionation);
+};
+
 const run = async (zkEnabled) => {
 	const libraryDirectory = __dirname;
 
@@ -133,8 +151,10 @@ const run = async (zkEnabled) => {
 		createGitIgnoreFile(libraryDirectory)
 		if (zkEnabled) {
 			createZKProofFolder();
-			createZKProofCircuitFolder()
-			copyCircuitFile(libraryDirectory)
+			createZKProofCircuitFolder();
+			copyCircuitFile(libraryDirectory);
+			createZKProofInputParamsFolder();
+			copyInputParamsFile(libraryDirectory);
 		}
 		logger.log(`Etherlime was successfully initialized! Check ${deploymentFileDestination} for your deployment script.`);
 	} catch (e) {

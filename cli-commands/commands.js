@@ -12,6 +12,7 @@ const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
 const circuitCompile = require('./zk-proof/circuit-compile');
 const trustedSetup = require('./zk-proof/trusted-setup');
+const proof = require('./zk-proof/generate-proof');
 
 const commands = [
 	{
@@ -470,6 +471,36 @@ const commands = [
 		commandProcessor: async (argv) => {
 			try {
 				await trustedSetup.run();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'proof [signal] [circuit] [proving_key]',
+		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('signal', {
+				describe: 'Specifies the file with signals to be used for generating a proof. Defaults to input.json',
+				type: 'string',
+				default: 'input.json'
+			});
+			yargs.positional('circuit', {
+				describe: 'Specifies the compiled circuit for checking of matched signals. Defaults to: circuit.json',
+				type: 'string',
+				default: 'circuit.json'
+			});
+			yargs.positional('proving_key', {
+				describe: 'Specifies the prooving key to be used for generating a proof. Defaults to: circuit_proving_key.json',
+				type: 'string',
+				default: 'circuit_proving_key.json'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await proof.run(argv.signal, argv.circuit, argv.proving_key);
 			} catch (err) {
 				console.error(err);
 			} finally {
