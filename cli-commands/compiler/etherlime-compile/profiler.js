@@ -2,8 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const Parser = require("./parser");
 const expect = require("./../etherlime-expect");
-const find_contracts = require("./../etherlime-contract-sources");
-const vyperCompiler = require('../vyperCompiler/vyperCompiler');
+const find_contracts = require("./../etherlime-contract-sources").find_contracts;
+const fetchSolAndVyperFiles = require("./../etherlime-contract-sources").fetchSolAndVyperFiles;
+const vyperCompiler = require('../vyper-compiler/vyper-compiler');
 
 const CompilerSupplier = require("./compilerSupplier");
 
@@ -30,19 +31,20 @@ let updated = async (options) => {
 let prepareFiles = async (options) => {
   let sourceFilesArtifacts = {};
   try {
-    let files = await getFiles(options);
-
-    if(files.vyperFiles && files.vyperFiles.length > 0) {
-      await vyperCompiler(files.vyperFiles, options.contracts_build_directory)
+    let {solFiles, vyperFiles} = await getFiles(options);
+    
+    if(vyperFiles && vyperFiles.length > 0) {
+      await vyperCompiler(vyperFiles, options.contracts_build_directory)
+    }
+    
+    if(solFiles && solFiles.length > 0) {
+      solFiles.forEach(function (sourceFile) {
+      sourceFilesArtifacts[sourceFile] = [];
+      });
     }
 
-    let solFiles = files.solFiles || files
-    
-    solFiles.forEach(function (sourceFile) {
-    sourceFilesArtifacts[sourceFile] = [];
-    });
-
     return sourceFilesArtifacts
+
   }
   catch (e) {
     throw e;
@@ -51,7 +53,7 @@ let prepareFiles = async (options) => {
 
 let getFiles = async (options) => {
   if (options.files) {
-    return (options.files);
+    return fetchSolAndVyperFiles(options.files);
   } else {
 
     let files;

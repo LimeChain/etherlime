@@ -3,31 +3,33 @@ const docker = new dockerCLI.Docker();
 const path = require("path");
 const fs = require("fs");
 const mkdirp = require("mkdirp");
-const find_contracts = require("./../etherlime-contract-sources");
 
+const VYPER_EXTENSION = '.vy';
 
 const run = async (allFiles, buildDirectory) => {
+
+    await docker.command("pull ethereum/vyper")
 
     for (let i = 0; i < allFiles.length; i++) {
         try {
             let filePath = path.normalize(path.relative(process.cwd(), allFiles[i])) //extract pure file path
-            let fileBaseName = path.basename(filePath, ".vy")
+            let fileBaseName = path.basename(filePath, VYPER_EXTENSION)
             let fileTimestampStatus = await getFileTimestampStatus(filePath)
 
             if (!await isFileUpdated(fileBaseName, fileTimestampStatus, buildDirectory)) {
                 return
             }
 
-            let compiledObject = await compile(filePath)
-            compiledObject = Object.assign({"contractName": fileBaseName}, compiledObject[filePath]) //restructuring the compiled object
-            compiledObject.updatedAt = fileTimestampStatus
+            const displayPath = '.' + path.sep + filePath;
+            console.log(`Compiling ${displayPath}...`);
+
+            let compiledObject = await compile(filePath, fileBaseName, fileTimestampStatus)
 
             await recordCompiledObject(compiledObject, buildDirectory)
 
-            const displayPath = "." + path.sep + filePath;
-            console.log(`Compiling ${displayPath}...`);
         } catch (e) {
-            throw new Error("Vyper compilation failed." + e)
+            console.error('Vyper compilation failed.')
+            throw e;
         }
     }
 
@@ -35,13 +37,8 @@ const run = async (allFiles, buildDirectory) => {
 
 //gets timestamp indicating the last time the file was changed or modified
 const getFileTimestampStatus = async (filePath) => {
-    try {
-        let stats = fs.statSync(filePath)
-        return (stats.ctime || stats.mtime).getTime()
-    } catch (e) {
-        throw e
-    }
-
+    let stats = fs.statSync(filePath)
+    return (stats.ctime || stats.mtime).getTime()
 }
 
 //checks if file was changed or modified since once compiled
@@ -56,27 +53,17 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
     current = JSON.parse(current)
 
-    if (current.updatedAt < fileTimestampStatus) return true
-
-    return false
+    return (current.updatedAt < fileTimestampStatus)
 }
 
 
-const compile = async (filePath) => {
-    let compiledObject;
-    await docker.command("pull ethereum/vyper", function (err, data) {
-       if (err) {
-           throw err
-       }
-    })
+const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
-    await docker.command(`run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`, function (err, data) {
-        if (err) {
-            throw err
-        }
-        compiledObject = JSON.parse(data.raw)
-        
-    })
+    let data = await docker.command(`run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`)
+     
+    let compiledObject = JSON.parse(data.raw)
+    compiledObject = Object.assign({contractName: fileBaseName}, compiledObject[filePath]) //restructuring the compiled object
+    compiledObject.updatedAt = fileTimestampStatus
 
     return compiledObject
 }

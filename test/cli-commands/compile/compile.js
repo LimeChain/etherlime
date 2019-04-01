@@ -109,11 +109,6 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.'), "It is not successfully executed!")
     })
 
-    it('should throw if can not compile vyper contract', async function() {
-        fs.copyFileSync('./test/cli-commands/compile/examples/contractForFailVyperCompilation.vy', './contracts/contractForFailVyperCompilation.vy')
-        await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/contractForFailVyperCompilation.vy'))
-    })
-
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
