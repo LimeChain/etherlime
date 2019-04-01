@@ -102,7 +102,6 @@ describe('root calling cli commands', () => {
         assert.include(childProcess, expectedOutput)
     })
 
-<<<<<<< HEAD
     it('should throw if etherlime ide failed', async function () {
         let stub = sinon.stub(ide, "run")
         stub.throws()
@@ -120,9 +119,6 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
 
-    after(async function () {
-        fs.removeSync('./Solidity-IDE');
-=======
     it('should throw if coverage failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
@@ -133,6 +129,9 @@ describe('root calling cli commands', () => {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
         assert.include(childProcess, expectedOutput)
->>>>>>> master
+    })
+
+    after(async function () {
+        fs.removeSync('./Solidity-IDE');
     })
 })
