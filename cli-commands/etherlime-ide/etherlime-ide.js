@@ -11,10 +11,10 @@ const ideServerRun = 'Solidity-IDE/solc-server.js';
 
 let projectWorkingDir = process.cwd(); //save current working dir of the project
 
-const run = async (port) => {
+const run = async () => {
     let etherlimeRootDir = getRootDir();
     await fetchIdeRepo(etherlimeRootDir);
-    await runIde(etherlimeRootDir, port)
+    await runIde(etherlimeRootDir)
 }
 
 // find etherlime root dir
@@ -40,7 +40,7 @@ const fetchIdeRepo = async (rootDir) => {
     }
 
     console.log('====== Initializing IDE ======')
-    await git.clone(ideRepoUrl, `${rootDir}/${ideFolder}`);
+    await git.clone(ideRepoUrl, `${rootDir}${path.sep}${ideFolder}`);
     changeCurrentWorkingDir(`${rootDir}/${ideFolder}`); //change working dir to install the packages
     await installIdeModules();
 }
@@ -54,7 +54,6 @@ const runIde = async (rootDir, port) => {
     console.log("====== Running IDE ======");
     await exec('npm run build-local')
     changeCurrentWorkingDir(projectWorkingDir); //return to project's working dir
-    runGanache(port) //run etherlime ganache
     let path = `${projectWorkingDir}/contracts`; // path to folder with .sol contracts that will be opened in IDE
     let ideProcess = spawn('node', [`${rootDir}/${ideServerRun}`, `--path=${path}`, '--noganache']) //run IDE
 
@@ -67,14 +66,6 @@ const runIde = async (rootDir, port) => {
         console.log(`stderr: ${data}`);
     });
 
-}
-
-const runGanache = (port) => {
-    if (port) {
-        spawn('etherlime', ['ganache', `--port=${port}`])
-        return
-    }
-    spawn('etherlime', ['ganache'])
 }
 
 const changeCurrentWorkingDir = (dir) => {

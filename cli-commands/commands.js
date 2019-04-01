@@ -431,17 +431,13 @@ const commands = [
 		}
 	},
 	{
-		command: 'ide [port]',
+		command: 'ide',
 		description: 'Runs web-based Solidity IDE that works with the file system',
 		argumentsProcessor: (yargs) => {
-			yargs.positional('port', {
-				describe: 'port to run ganache-cli on',
-				type: 'number'
-			});
 		},
 		commandProcessor: async (argv) => {
 			try {
-				await ide.run(argv.port);
+				await ide.run();
 			} catch (err) {
 				console.error(err);
 			} finally {
