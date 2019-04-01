@@ -16,7 +16,7 @@ Parameters:
 * ``solcVersion`` - [Optional] By specifying ``solcVersion`` you can choose a specific solc version to be used for compilation and coverage reports.
 * ``buildDirectory`` - [Optional] By specifying ``buildDirectory`` you can choose which folder to use for reading builded contracts from, instead of the default one: ``./build``.
 * ``workingDirectory`` - [Optional] By specifying ``workingDirectory`` you can choose which folder to use for reading contracts from, instead of the default one: ``./contracts``.
-* ``shouldOpenCoverage`` - [Optional] By specifying ``shouldOpenCoverage`` you can choose either to open automatically with you default browser the html coverage report located in: ``./coverage``. Defaults to ``false``.
+* ``html`` - [Optional] By specifying ``html`` you can choose either to open automatically with you default browser the html coverage report located in: ``./coverage``. Defaults to ``false``.
 
 
 
