@@ -54,8 +54,8 @@ const runIde = async (rootDir, port) => {
     console.log("====== Running IDE ======");
     await exec('npm run build-local')
     changeCurrentWorkingDir(projectWorkingDir); //return to project's working dir
-    let path = `${projectWorkingDir}${path.sep}contracts`; // path to folder with .sol contracts that will be opened in IDE
-    let ideProcess = spawn('node', [`${rootDir}${path.sep}${ideServerRun}`, `--path=${path}`, '--noganache']) //run IDE
+    let pathToFolder = `${projectWorkingDir}${path.sep}contracts`; // path to folder with .sol contracts that will be opened in IDE
+    let ideProcess = spawn('node', [`${rootDir}${path.sep}${ideServerRun}`, `--path=${pathToFolder}`, '--noganache']) //run IDE
 
     // log the data form the running process
     ideProcess.stdout.on('data', (data) => {
