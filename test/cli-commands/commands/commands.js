@@ -96,12 +96,13 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
 
-    it('should throw if flatten failed', async function() {
+    it('should throw if flatten failed', async function () {
         let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
         let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
         assert.include(childProcess, expectedOutput)
     })
 
+<<<<<<< HEAD
     it('should throw if etherlime ide failed', async function () {
         let stub = sinon.stub(ide, "run")
         stub.throws()
@@ -121,5 +122,17 @@ describe('root calling cli commands', () => {
 
     after(async function () {
         fs.removeSync('./Solidity-IDE');
+=======
+    it('should throw if coverage failed', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+>>>>>>> master
     })
 })

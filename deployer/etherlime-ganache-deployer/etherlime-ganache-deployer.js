@@ -16,6 +16,7 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 */
 	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
 		EtherlimeGanacheDeployer._validatePortInput(port);
+
 		const nodeUrl = `http://localhost:${port}/`;
 
 		super(privateKey, nodeUrl, defaultOverrides);

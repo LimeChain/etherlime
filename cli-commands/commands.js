@@ -307,12 +307,13 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [port] [runs]',
+		command: 'coverage [path] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
-				type: 'string'
+				type: 'string',
+				default: './test'
 			})
 
 			yargs.positional('port', {
@@ -325,12 +326,44 @@ const commands = [
 				describe: 'enables the optimizer on the compiler and specifies the runs',
 				type: 'number'
 			})
+
+			yargs.positional('solcVersion', {
+				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
+				type: 'string'
+			});
+
+			yargs.positional('buildDirectory', {
+				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
+				type: 'string',
+				default: './build'
+			})
+
+			yargs.positional('workingDirectory', {
+				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
+				type: 'string',
+				default: './contracts'
+			})
+
+			yargs.positional('html', {
+				describe: 'Defines whether to open automatically the html coverage report located in: ./coverage',
+				type: 'string',
+				default: 'false'
+			})
+
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime coverage', {
 				argv
 			});
-			await test.runWithCoverage(argv.path, argv.port, argv.runs);
+			try {
+				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
+			} catch (e) {
+				console.error(e);
+				global.provider.stop();
+			} finally {
+				logger.removeOutputStorage();
+			}
+
 		}
 	},
 	{
