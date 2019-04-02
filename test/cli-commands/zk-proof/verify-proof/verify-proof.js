@@ -31,7 +31,7 @@ describe('etherlime verify command', () => {
 	it('should execute etherlime verify', async () => {
 		const expectedOutput = '===== Verifying Completed. Please check output.json ====='
 		const childResponse = await runCmdHandler(`etherlime verify`, expectedOutput);
-		assert.include(childResponse.output, expectedOutput, 'The gverify process does not finish properly');
+		assert.include(childResponse.output, expectedOutput, 'The verify process does not finish properly');
 	});
 
 	it('should execute etherlime verify with optional params', async () => {

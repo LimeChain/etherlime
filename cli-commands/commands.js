@@ -15,6 +15,7 @@ const trustedSetup = require('./zk-proof/trusted-setup');
 const proof = require('./zk-proof/generate-proof');
 const verifier = require('./zk-proof/verify-proof');
 const generateVerify = require('./zk-proof/generate-verify');
+const generateCall = require('./zk-proof/generate-call');
 const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
@@ -495,10 +496,7 @@ const commands = [
 		command: 'circuit-compile',
 		description: 'Compile a circuit file located in zero-knowledge-proof/circuits',
 		argumentsProcessor: (yargs) => {
-			// yargs.positional('file', {
-			// 	describe: 'Specifies the file to be flattened',
-			// 	type: 'string'
-			// });
+
 		},
 		commandProcessor: async (argv) => {
 			try {
@@ -514,10 +512,7 @@ const commands = [
 		command: 'trusted-setup',
 		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
 		argumentsProcessor: (yargs) => {
-			// yargs.positional('file', {
-			// 	describe: 'Specifies the file to be flattened',
-			// 	type: 'string'
-			// });
+
 		},
 		commandProcessor: async (argv) => {
 			try {
@@ -608,7 +603,32 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
-	}
+	},
+	{
+		command: 'generate-call [public_signals] [proof]',
+		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('public_signals', {
+				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
+				type: 'string',
+				default: 'circuit_public_signals.json'
+			});
+			yargs.positional('proof', {
+				describe: 'Specifies the compiled proof that would be used for prooving it. Defaults to: circuit_proof.json',
+				type: 'string',
+				default: 'circuit_proof.json'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await generateCall.run(argv.public_signals, argv.proof);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
 ]
 
 module.exports = commands;
