@@ -31,7 +31,7 @@ describe('etherlime trusted-setup command', () => {
 		fs.writeFileSync('./zero-knowledge-proof/compiled-circuits/circuit-with-error.json', JSON.stringify(exampleCompiledCircuitWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property 'length' of undefined";
 		const childResponse = await runCmdHandler(`etherlime trusted-setup`, expectedOutput);
-		assert.include(childResponse, expectedOutput, 'The compilation process does not throw');
+		assert.include(childResponse, expectedOutput, 'The trusted-setup process does not throw');
 	});
 
 	it('should throw if find files method trows', async () => {

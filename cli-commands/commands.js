@@ -13,6 +13,8 @@ const flatten = require('./flattener/flatten');
 const circuitCompile = require('./zk-proof/circuit-compile');
 const trustedSetup = require('./zk-proof/trusted-setup');
 const proof = require('./zk-proof/generate-proof');
+const verifier = require('./zk-proof/verify-proof');
+const generateVerify = require('./zk-proof/generate-verify');
 
 const commands = [
 	{
@@ -501,6 +503,56 @@ const commands = [
 		commandProcessor: async (argv) => {
 			try {
 				await proof.run(argv.signal, argv.circuit, argv.proving_key);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'verify [public_signals] [proof] [verifier_key]',
+		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('public_signals', {
+				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
+				type: 'string',
+				default: 'circuit_public_signals.json'
+			});
+			yargs.positional('proof', {
+				describe: 'Specifies the compiled proof that would be used for prooving it. Defaults to: circuit_proof.json',
+				type: 'string',
+				default: 'circuit_proof.json'
+			});
+			yargs.positional('verifier_key', {
+				describe: 'Specifies the verifier key to be used for checking if proof is valid. Defaults to: circuit_verification_key.json',
+				type: 'string',
+				default: 'circuit_verification_key.json'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await verifier.run(argv.public_signals, argv.proof, argv.verifier_key);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'generate-verifier [verifier_key]',
+		description: 'Generates a verifier smart contract based on verification key. The smart contract is written in contracts folder.',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('verifier_key', {
+				describe: 'Specifies the verifier key to be used for generating a verifier smart contract. Defaults to: circuit_verification_key.json',
+				type: 'string',
+				default: 'circuit_verification_key.json'
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await generateVerify.run(argv.verifier_key);
 			} catch (err) {
 				console.error(err);
 			} finally {

@@ -29,23 +29,23 @@ describe('etherlime proof command', () => {
 		fs.writeFileSync('./zero-knowledge-proof/input/input.json', JSON.stringify(input, null, 1), "utf8");
 	});
 
-	it('should execute etherlime trusted-setup', async () => {
+	it('should execute etherlime proof command', async () => {
 		const expectedOutput = '===== Generation Finished ====='
 		const childResponse = await runCmdHandler(`etherlime proof`, expectedOutput);
-		assert.include(childResponse.output, expectedOutput, 'The trusted-setup process does not finish properly');
+		assert.include(childResponse.output, expectedOutput, 'The proof process does not finish properly');
 	});
 
-	it('should execute etherlime trusted-setup with optional params', async () => {
+	it('should execute etherlime proof command with optional params', async () => {
 		const expectedOutput = '===== Generation Finished ====='
 		const childResponse = await runCmdHandler(`etherlime proof --signal=input.json --circuit=circuit.json --proving_key=circuit_proving_key.json`, expectedOutput);
-		assert.include(childResponse.output, expectedOutput, 'The trusted-setup process does not finish properly');
+		assert.include(childResponse.output, expectedOutput, 'The proof process does not finish properly');
 	});
 
 	it('should throw on proof error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/trusted-setup/circuit_proving_key-with-error.json', JSON.stringify(pkWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property '0' of undefined";
 		const childResponse = await runCmdHandler(`etherlime proof --proving_key=circuit_proving_key-with-error.json`, expectedOutput);
-		assert.include(childResponse, expectedOutput, 'The compilation process does not throw');
+		assert.include(childResponse, expectedOutput, 'The proof process does not throw');
 	});
 
 	after(async function () {
