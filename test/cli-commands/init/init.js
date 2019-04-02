@@ -4,6 +4,7 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const init = require('../../../cli-commands/init/init');
+const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 
 const contractsDir = './contracts';
 const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
@@ -22,7 +23,7 @@ const gitignoreFileDestination = './.gitignore';
 
 const zkProofDir = './zero-knowledge-proof';
 const circuitsDir = './circuits';
-const zkProofError = 'limecirc.circuit already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.'
+const zkProofError = 'limecirc.circuit already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.';
 const inputParamsDir = './input';
 
 const zkProofEnabled = true;
@@ -106,7 +107,7 @@ describe('Init cli command', () => {
 
 });
 
-describe('Init cli command with optional parameter', () => {
+describe('Init cli command with zkProof optional parameter', () => {
     let currentDir;
 
     before(async function () {
@@ -189,6 +190,15 @@ describe('Init cli command with optional parameter', () => {
         await assert.isRejected(init.run(zkProofEnabled), zkProofError, "Expected throw not received");
     });
 
+    it('should throw error if input file already exists', async () => {
+        const expectedError = "input.json already exists in ./zero-knowledge-proof directory. You've probably already initialized etherlime for this project.";
+        fs.removeSync(deploymentDir);
+        fs.removeSync(testDir);
+        fs.removeSync(contractsDir);
+        fs.removeSync(`${zkProofDir}/${circuitsDir}`);
+        await assert.isRejected(init.run(zkProofEnabled), expectedError, "Expected throw not received");
+    });
+
     it('should have .gitignore file', async () => {
         let gitignoreFile = fs.existsSync(gitignoreFileDestination);
         assert.isTrue(gitignoreFile, "The 'gitignoreFile' file should exist.");
@@ -211,6 +221,34 @@ describe('Init cli command with optional parameter', () => {
         fs.removeSync(contractsDir);
         fs.removeSync(packageJsonDestination);
         fs.removeSync(zkProofDir);
+        fs.removeSync('./package-lock.json');
+        fs.removeSync('./node_modules');
+        fs.removeSync('./.gitignore');
+        process.chdir(currentDir);
+    });
+
+});
+
+
+describe('Init cli command with output optional parameter', () => {
+    let currentDir;
+
+    before(async function () {
+        currentDir = process.cwd();
+        process.chdir('/tmp');
+    });
+
+    it('should execute etherlime init with output param', async () => {
+        const expectedOutput = 'Etherlime was successfully initialized!'
+        const childResponse = await runCmdHandler(`etherlime init --output=normal`, expectedOutput);
+        assert.include(childResponse.output, expectedOutput, 'The initialization process does not finish properly');
+    });
+
+    after(async function () {
+        fs.removeSync(deploymentDir);
+        fs.removeSync(testDir);
+        fs.removeSync(contractsDir);
+        fs.removeSync(packageJsonDestination);
         fs.removeSync('./package-lock.json');
         fs.removeSync('./node_modules');
         fs.removeSync('./.gitignore');
