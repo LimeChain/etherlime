@@ -2,6 +2,12 @@ const etherlime = require('./../../../index.js');
 const assert = require('assert');
 
 const config = require('./../../config.json');
+const ProviderEngine = require("web3-provider-engine");
+const { CoverageSubprovider } = require("@0x/sol-coverage");
+const RpcProvider = require("web3-provider-engine/subproviders/rpc.js");
+
+
+
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -39,6 +45,23 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			assert(typeof returnedString === 'string', "The returned toString method did not return string");
 			assert(returnedString.includes(config.nodeUrl), `The returned toString method did not contain ${config.nodeUrl}`)
 		})
+
+		it('Should set the right localNodeProvider if the deployer is runned from coverage command', () => {
+			const provider = new ProviderEngine();
+			global.coverageSubprovider = new CoverageSubprovider();
+			provider.addProvider(global.coverageSubprovider);
+			provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${config.alternativePort}` }));
+			global.provider = provider;
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.alternativeNodeUrl, defaultConfigs);
+			assert.deepEqual(global.provider._providers[1].rpcUrl, config.alternativeNodeUrl, "The stored provider url does not match the inputted one");
+			assert.deepEqual(global.provider._providers[1].rpcUrl, deployer.provider.connection.url, "The stored connection url does not match the inputted one");
+
+		})
+
+		after('Normalize global.coverageSubprovider', () => {
+			global.coverageSubprovider = undefined;
+		})
+
 	});
 
 	describe('Setters', () => {

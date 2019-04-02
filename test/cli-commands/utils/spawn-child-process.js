@@ -43,17 +43,17 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 		});
 
 		process.stderr.on('data', function (data) {
-			const err = data.toString('utf-8');
-			if (!err.includes('EADDRINUSE')) {
-				return resolve(err);
-			}
+            const err = data.toString('utf-8');
+            if (!err.includes('EADDRINUSE') && err.includes(outputCondition)) {
+                   return resolve(err);  
+            }
 
-			const errResponse = {
-				portInUse: true
-			};
-
+            const errResponse = {
+            	portInUse: true
+                };
 			resolve(errResponse);
-		});
+            
+        });
 
 		if (additionalCommand) {
 			setTimeout(() => {

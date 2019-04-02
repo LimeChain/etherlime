@@ -1,17 +1,21 @@
-global.window = {
-	location: {
-		href: {
-			value: 'http://this.is.etherlime.test.value'
-		}
-	}
-}
 
 const assert = require('chai').assert;
 delete require.cache[require.resolve('./../../logger-service/logger-service')];
-let loggerWindow = require('./../../logger-service/logger-service').logger;
+let loggerWindow;
 
 
 describe('Window compatible logger service', async () => {
+	beforeEach(() => {
+		global.window = {
+			location: {
+				href: {
+					value: 'http://this.is.etherlime.test.value'
+				}
+			}
+		}
+		delete require.cache[require.resolve('./../../logger-service/logger-service')];
+		loggerWindow = require('./../../logger-service/logger-service').logger;
+	})
 
 	it('should return undefined calling storeOutputParameter', async () => {
 		const outputStoredValue = loggerWindow.storeOutputParameter();
