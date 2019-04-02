@@ -10,15 +10,12 @@ const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
-<<<<<<< HEAD
 const circuitCompile = require('./zk-proof/circuit-compile');
 const trustedSetup = require('./zk-proof/trusted-setup');
 const proof = require('./zk-proof/generate-proof');
 const verifier = require('./zk-proof/verify-proof');
 const generateVerify = require('./zk-proof/generate-verify');
-=======
 const ide = require('./etherlime-ide/etherlime-ide');
->>>>>>> master
 
 const commands = [
 	{
