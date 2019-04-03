@@ -16,7 +16,7 @@ describe('Shape cli command', () => {
     it('should throw err if can not find a proper shape', async () => {
         let expectedOutput = 'Invalid shape'
         let childProcess = await runCmdHandler(`etherlime shape ${unexistingShape}`, expectedOutput)
-        assert.include(childProcess, expectedOutput)
+        assert.include(childProcess.output, expectedOutput)
     })
 
     it('should shape new dApp with Angular front-end', async () => {
@@ -39,6 +39,8 @@ describe('Shape cli command', () => {
         fs.removeSync('./deployment')
         fs.removeSync('./test')
         fs.removeSync('./web')
+        fs.removeSync('./build')
+        fs.removeSync('./config.json')
         fs.removeSync('./node_modules')
         fs.removeSync('./package.json')
         fs.removeSync('./package-lock.json');

@@ -7,6 +7,7 @@ const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
 const ganache = require('../../../cli-commands/ganache/ganache');
 const shape = require('../../../cli-commands/shape/shape');
+const ide = require('../../../cli-commands/etherlime-ide/etherlime-ide');
 const eventTracker = require('../../../cli-commands/event-tracker');
 
 const commands = require('../../../cli-commands/commands');
@@ -95,9 +96,42 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
 
-    it('should throw if flatten failed', async function() {
+    it('should throw if flatten failed', async function () {
         let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
         let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
         assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if etherlime ide failed', async function () {
+        let stub = sinon.stub(ide, "run")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[11].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
+    })
+
+    it('should throw if coverage failed', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+    })
+
+    it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
+        assert.include(childProcess, expectedOutput)
+    })
+
+    after(async function () {
+        fs.removeSync('./Solidity-IDE');
     })
 })

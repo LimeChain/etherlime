@@ -444,7 +444,11 @@ describe('Debug cli command', () => {
 		});
 
 		it('should return error trying to compile with wrong config file', async function () {
+<<<<<<< HEAD
 			let expectedOutput = 'Error: ParsedContract.sol';
+=======
+			let expectedOutput = 'Error: ParsedContract.sol:';
+>>>>>>> master
 			childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput);
 			assert.include(childProcess.output, expectedOutput);
 		});
