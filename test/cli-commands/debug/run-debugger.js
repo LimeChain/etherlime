@@ -598,7 +598,8 @@ describe('Debug utils', async () => {
 		'\tfunction () external payable {',
 		'',
 		'\t}',
-		'}']
+		'}'
+	]
 
 	const expectedValue = `1: pragma solidity ^0.5.0;\n2: \n3: contract FoodCart{\n   \u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m`
 	it('should return the line prefix with correct number of spaces or tabs(4)', async function () {
@@ -624,8 +625,14 @@ describe('Debug utils', async () => {
 
 	it('should correct format range lines', async function () {
 		const result = await DebugUtils.formatRangeLines(source, {
-			start: { line: 2, column: 0 },
-			end: { line: null, column: null }
+			start: {
+				line: 2,
+				column: 0
+			},
+			end: {
+				line: null,
+				column: null
+			}
 		}, 4);
 		assert.deepStrictEqual(result, expectedValue);
 

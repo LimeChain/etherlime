@@ -2,7 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const Parser = require("./parser");
 const expect = require("./../etherlime-expect");
-const find_contracts = require("./../etherlime-contract-sources");
+const find_contracts = require("./../etherlime-contract-sources").find_contracts;
+const fetchSolAndVyperFiles = require("./../etherlime-contract-sources").fetchSolAndVyperFiles;
+const vyperCompiler = require('../vyper-compiler/vyper-compiler');
 
 const CompilerSupplier = require("./compilerSupplier");
 
@@ -29,12 +31,20 @@ let updated = async (options) => {
 let prepareFiles = async (options) => {
   let sourceFilesArtifacts = {};
   try {
-    let files = await getFiles(options);
-    files.forEach(function (sourceFile) {
+    let {solFiles, vyperFiles} = await getFiles(options);
+    
+    if(vyperFiles && vyperFiles.length > 0) {
+      await vyperCompiler(vyperFiles, options.contracts_build_directory)
+    }
+    
+    if(solFiles && solFiles.length > 0) {
+      solFiles.forEach(function (sourceFile) {
       sourceFilesArtifacts[sourceFile] = [];
-    });
+      });
+    }
 
     return sourceFilesArtifacts
+
   }
   catch (e) {
     throw e;
@@ -43,12 +53,13 @@ let prepareFiles = async (options) => {
 
 let getFiles = async (options) => {
   if (options.files) {
-    return (options.files);
+    return fetchSolAndVyperFiles(options.files);
   } else {
 
     let files;
     try {
       files = await find_contracts(options.contracts_directory);
+
       return files;
     } catch (e) {
       throw e;
@@ -183,20 +194,21 @@ let required_sources = async function (options) {
     let resolver = options.resolver;
 
     // Fetch the whole contract set
-    let allPathsInitial;
+    let allSolPathsInitial;
     try {
-      allPathsInitial = await find_contracts(options.contracts_directory);
+      let allPathsInitial = await find_contracts(options.contracts_directory);
+      allSolPathsInitial = allPathsInitial.solFiles;
     } catch (e) {
       return reject(e)
     }
 
     options.paths.forEach(_path => {
-      if (!allPathsInitial.includes(_path)) {
-        allPathsInitial.push(_path)
+      if (!allSolPathsInitial.includes(_path)) {
+        allSolPathsInitial.push(_path)
       }
     });
     let updates = convert_to_absolute_paths(options.paths, options.base_path).sort();
-    let allPaths = convert_to_absolute_paths(allPathsInitial, options.base_path).sort();
+    let allPaths = convert_to_absolute_paths(allSolPathsInitial, options.base_path).sort();
 
     let allSources = {};
     let compilationTargets = [];
