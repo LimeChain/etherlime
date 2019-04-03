@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const mkdirp = require("mkdirp");
 
-const VYPER_EXTENSION = '.vy';
+const VYPER_EXTENSION = require('./config.js').VYPER_EXTENSION;
 
 const run = async (allFiles, buildDirectory) => {
 

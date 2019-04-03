@@ -1,9 +1,9 @@
 const dir = require("node-dir");
 const path = require("path");
 const fs = require("fs");
-
+const VYPER_EXTENSION = require('../vyper-compiler/config.js').VYPER_EXTENSION;
 const SOL_EXTENSION = '.sol';
-const VYPER_EXTENSION = '.vy';
+
 
 let find_contracts = async (workingPath) => {
   return new Promise(async (resolve, reject) => {
