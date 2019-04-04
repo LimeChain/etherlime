@@ -23,10 +23,7 @@ const profiler = require('../../../cli-commands/compiler/etherlime-compile/profi
 const parser = require('../../../cli-commands/compiler/etherlime-compile/parser');
 const Config = require('../../../cli-commands/compiler/etherlime-config');
 const CompilerSupplier = require('../../../cli-commands/compiler/etherlime-compile/compilerSupplier');
-const solcWraper = require('solc/wrapper');
 let compilerSupplier;
-let soljson = require('./examples/soljson');
-let soljsonDifVersion = require('./examples/soljsonDifVersion');
 let file;
 
 let compiledContract = require('./examples/compiledContract');
@@ -659,16 +656,6 @@ describe('Compile dependencies', () => {
               "bzzr://8f3c028825a1b72645f46920b67dca9432a87fc37a8940a2b2ce1dd6ddc2e29b"`
             let result = await compilerSupplier.getCommitFromVersion(version)
             assert.include(result, 'commit.6ff4cd6')
-        })
-
-        it('should wrap soljson module', async () => {
-            let result = solcWraper(soljson);
-            assert.isObject(result)
-        })
-
-        it('should wrap dif version of soljson', async () => {
-            let result = solcWraper(soljsonDifVersion)
-            assert.isObject(result)
         })
 
     });

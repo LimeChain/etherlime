@@ -3,7 +3,7 @@ const path = require("path");
 const Profiler = require("./profiler");
 const CompileError = require("./compile-error");
 const expect = require("./../etherlime-expect");
-const find_contracts = require("./../etherlime-contract-sources");
+const find_contracts = require("./../etherlime-contract-sources").find_contracts;
 const Config = require("./../etherlime-config");
 const CompilerSupplier = require("./compilerSupplier");
 const logger = require('./../../../logger-service/logger-service').logger;
@@ -200,7 +200,7 @@ compile.all = async (options) => {
 	try {
 		files = await find_contracts(options.contracts_directory);
 
-		options.paths = files;
+		options.paths = files.solFiles;
 		object = await compile.with_dependencies(options);
 		return object;
 	} catch (e) {
@@ -221,9 +221,7 @@ compile.necessary = async (options) => {
 			resolve(object);
 		}
 		catch (e) {
-			if (e) {
 				return reject(e);
-			}
 		}
 
 	});

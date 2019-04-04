@@ -1,6 +1,11 @@
 etherlime compile
 *****************
 
+
+Running this command will compile all smart contracts along with imported sources.
+The command comes with integrated solidity and vyper compiler and would automatically fetch all files with '.sol' and '.vy' extensions and would record the compiled json object in './build' folder.
+Note! To enable the vyper compiler you need to have running docker.
+
 Syntax
 ------
 
