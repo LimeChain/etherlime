@@ -68,7 +68,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'init [output] [zk-enabled]',
+		command: 'init [output] [zk]',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('output', {
@@ -80,7 +80,7 @@ const commands = [
 		},
 
 		argumentsProcessor: (yargs) => {
-			yargs.positional('zk-enabled', {
+			yargs.positional('zk', {
 				describe: 'Defines if to include in project a zk-proof folder with primary circuit for compiling',
 				type: 'string',
 				default: false,
@@ -493,7 +493,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'circuit-compile',
+		command: 'zk-circuit-compile',
 		description: 'Compile a circuit file located in zero-knowledge-proof/circuits',
 		argumentsProcessor: (yargs) => {
 
@@ -509,7 +509,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'trusted-setup',
+		command: 'zk-trusted-setup',
 		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
 		argumentsProcessor: (yargs) => {
 
@@ -525,7 +525,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'proof [signal] [circuit] [proving_key]',
+		command: 'zk-proof [signal] [circuit] [proving_key]',
 		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('signal', {
@@ -555,7 +555,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'verify [public_signals] [proof] [verifier_key]',
+		command: 'zk-verify [public_signals] [proof] [verifier_key]',
 		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('public_signals', {
@@ -585,7 +585,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'generate-verifier [verifier_key]',
+		command: 'zk-generate-verifier [verifier_key]',
 		description: 'Generates a verifier smart contract based on verification key. The smart contract is written in contracts folder.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('verifier_key', {
@@ -605,7 +605,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'generate-call [public_signals] [proof]',
+		command: 'zk-generate-call [public_signals] [proof]',
 		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('public_signals', {
@@ -628,7 +628,7 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
-	},
+	}
 ]
 
 module.exports = commands;

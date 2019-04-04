@@ -23,14 +23,14 @@ describe('etherlime trusted-setup command', () => {
 
 	it('should execute etherlime trusted-setup', async () => {
 		const expectedOutput = '===== Trusted Setup Completed ====='
-		const childResponse = await runCmdHandler(`etherlime trusted-setup`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk-trusted-setup`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The trusted-setup process does not finish properly');
 	});
 
 	it('should throw on circuit with error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/compiled-circuits/circuit-with-error.json', JSON.stringify(exampleCompiledCircuitWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property 'length' of undefined";
-		const childResponse = await runCmdHandler(`etherlime trusted-setup`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk-trusted-setup`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The trusted-setup process does not throw');
 	});
 
