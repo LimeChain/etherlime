@@ -526,7 +526,7 @@ const commands = [
 	},
 	{
 		command: 'zk-proof [signal] [circuit] [proving_key]',
-		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		description: 'Generates a proof based on compiled circuit, public signal input and proving key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('signal', {
 				describe: 'Specifies the file with signals to be used for generating a proof. Defaults to input.json',
@@ -556,7 +556,7 @@ const commands = [
 	},
 	{
 		command: 'zk-verify [public_signals] [proof] [verifier_key]',
-		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		description: 'Generates a verifier based on public signals file that comes out of the proof command, the proof itself and verifier key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('public_signals', {
 				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
@@ -564,7 +564,7 @@ const commands = [
 				default: 'circuit_public_signals.json'
 			});
 			yargs.positional('proof', {
-				describe: 'Specifies the compiled proof that would be used for prooving it. Defaults to: circuit_proof.json',
+				describe: 'Specifies the compiled proof that would be used for proving it. Defaults to: circuit_proof.json',
 				type: 'string',
 				default: 'circuit_proof.json'
 			});
@@ -606,7 +606,7 @@ const commands = [
 	},
 	{
 		command: 'zk-generate-call [public_signals] [proof]',
-		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
+		description: 'Establish a trusted setup based on circuit and generates proving key and verification key',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('public_signals', {
 				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
@@ -614,7 +614,7 @@ const commands = [
 				default: 'circuit_public_signals.json'
 			});
 			yargs.positional('proof', {
-				describe: 'Specifies the compiled proof that would be used for prooving it. Defaults to: circuit_proof.json',
+				describe: 'Specifies the compiled proof that would be used for proving it. Defaults to: circuit_proof.json',
 				type: 'string',
 				default: 'circuit_proof.json'
 			});
