@@ -10,6 +10,12 @@ const eventTracker = require('./event-tracker');
 const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
+const circuitCompile = require('./zk-proof/circuit-compile');
+const trustedSetup = require('./zk-proof/trusted-setup');
+const generateProof = require('./zk-proof/generate-proof');
+const verifier = require('./zk-proof/verify-proof');
+const generateVerify = require('./zk-proof/generate-verify');
+const generateCall = require('./zk-proof/generate-call');
 const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
@@ -62,7 +68,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'init [output]',
+		command: 'init [output] [zk]',
 		description: 'initialize deployment folder structure and deployment files ready for etherlime deploy',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('output', {
@@ -72,6 +78,14 @@ const commands = [
 				choices: ['none', 'normal', 'structured']
 			});
 		},
+
+		argumentsProcessor: (yargs) => {
+			yargs.positional('zk', {
+				describe: 'Defines if to include in project a zk-proof folder with primary circuit for compiling',
+				type: 'string',
+				default: false,
+			});
+		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime init', {
 				argv
@@ -79,7 +93,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await init.run(argv.output);
+				await init.run(argv.zkEnabled);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -477,7 +491,89 @@ const commands = [
 				logger.removeOutputStorage();
 			}
 		}
+	},
+	{
+		command: 'zk <zk-command>',
+		description: 'Ability to work with Zero Knowledge Concept',
+		argumentsProcessor: (yargs) => {
+			yargs.positional('zk-command', {
+				describe: "Specify the desired command that you want to run: ['compile', 'setup', 'proof', 'verify', 'generate', 'call']",
+				type: 'string',
+				choices: ['compile', 'setup', 'proof', 'verify', 'generate', 'call']
+			});
+		},
+		commandProcessor: async (argv) => {
+			try {
+				await zkCommandProcessor(argv);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
 	}
-]
+];
+
+const zkCommandProcessor = async (argv) => {
+
+	// Set default command values for optional params:
+	let signal = 'input.json';
+	let circuit = 'circuit.json';
+	let proovingKey = 'circuit_proving_key.json';
+	let publicSignals = 'circuit_public_signals.json';
+	let proof = 'circuit_proof.json';
+	let verifierKey = 'circuit_verification_key.json';
+
+
+	// check command and optional scenarios:
+	switch (argv.zkCommand) {
+		case 'compile':
+		await circuitCompile.run();
+			break;
+		case 'setup':
+			await trustedSetup.run();
+			break;
+		case 'proof':
+			if (argv.signal) {
+				signal = argv.signal;
+			}
+			if (argv.circuit) {
+				circuit = argv.circuit;
+			}
+			if (argv.proovingKey) {
+				proovingKey = argv.proovingKey;
+			}
+			await generateProof.run(signal, circuit, proovingKey);
+			break;
+		case 'verify':
+			if (argv.publicSignals) {
+				publicSignals = argv.publicSignals;
+			}
+			if (argv.proof) {
+				proof = argv.proof;
+			}
+			if (argv.verifierKey) {
+				verifierKey = argv.verifierKey;
+			}
+			
+			await verifier.run(publicSignals, proof, verifierKey);
+			break;
+		case 'generate':
+			if (argv.verifierKey) {
+				verifierKey = argv.verifierKey;
+			}
+			await generateVerify.run(verifierKey);
+			break;
+		case 'call':
+			if (argv.publicSignals) {
+				publicSignals = argv.publicSignals;
+			}
+			if (argv.proof) {
+				proof = argv.proof;
+			}
+			await generateCall.run(publicSignals, proof);
+			break;		
+	}
+}
 
 module.exports = commands;
