@@ -26,20 +26,20 @@ describe('etherlime generate-call command', () => {
 
 	it('should execute etherlime generate-call command', async () => {
 		const expectedOutput = '===== Generated Call Complete! ====='
-		const childResponse = await runCmdHandler(`etherlime zk-generate-call`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk call`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The generate-call process does not finish properly');
 	});
 
 	it('should execute etherlime generate-call command with optional params', async () => {
 		const expectedOutput = '===== Generated Call Complete! ====='
-		const childResponse = await runCmdHandler(`etherlime zk-generate-call --public_signals=circuit_public_signals.json --proof=circuit_proof.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk call --publicSignals=circuit_public_signals.json --proof=circuit_proof.json`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The generate-call process does not finish properly');
 	});
 
 	it('should throw on generate-call error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/generated-proof/circuit_proof-with-error.json', JSON.stringify(proofWithErrors, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property";
-		const childResponse = await runCmdHandler(`etherlime zk-generate-call --proof=circuit_proof-with-error.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk call --proof=circuit_proof-with-error.json`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The generate-call process does not throw');
 	});
 

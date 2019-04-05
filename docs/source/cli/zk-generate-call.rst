@@ -1,4 +1,4 @@
-etherlime zk-generate-call
+etherlime zk call
 *****************
 
 Syntax
@@ -6,11 +6,11 @@ Syntax
 
 ::
 
-    etherlime zk-generate-call [public_signals] [proof]
+    etherlime zk call [publicSignals] [proof]
 
 Parameters:
 
-* ``public_signals`` - [Optional] Specifies the file with signals to be used for generating verifying a proof. Defaults to ``circuit_public_signals.json`` read from ``zero-knowledge-proof/generated-proof`` folder.
+* ``publicSignals`` - [Optional] Specifies the file with signals to be used for generating verifying a proof. Defaults to ``circuit_public_signals.json`` read from ``zero-knowledge-proof/generated-proof`` folder.
 * ``proof`` - [Optional] Specifies the compiled proof that would be used for generating a proof based on it. Defaults to: ``circuit_proof.json`` read from ``zero-knowledge-proof/generated-proof`` folder.
 
 

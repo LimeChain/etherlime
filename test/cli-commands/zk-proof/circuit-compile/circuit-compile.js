@@ -23,14 +23,14 @@ describe('etherlime circuit-compile command', () => {
 
 	it('should execute etherlime compile-circuit', async () => {
 		const expectedOutput = '===== Compilation Finished ====='
-		const childResponse = await runCmdHandler(`etherlime zk-circuit-compile`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk compile`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The compilation process does not finish properly');
 	});
 
 	it('should throw on circuit with error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/circuits/circuit.circom', exampleCircuitWithError);
 		const expectedOutput = 'Error: A main component must be defined'
-		const childResponse = await runCmdHandler(`etherlime zk-circuit-compile`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk compile`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The compilation process does not throw');
 	});
 

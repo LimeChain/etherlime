@@ -30,20 +30,20 @@ describe('etherlime verify command', () => {
 
 	it('should execute etherlime verify', async () => {
 		const expectedOutput = '===== Verifying Completed. Please check output.json ====='
-		const childResponse = await runCmdHandler(`etherlime zk-verify`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk verify`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The verify process does not finish properly');
 	});
 
 	it('should execute etherlime verify with optional params', async () => {
 		const expectedOutput = '===== Verifying Completed. Please check output.json ====='
-		const childResponse = await runCmdHandler(`etherlime zk-verify --public_signals=circuit_public_signals.json --proof=circuit_proof --verifier_key=circuit_verification_key.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk verify --publicSignals=circuit_public_signals.json --proof=circuit_proof --verifierKey=circuit_verification_key.json`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The verify process does not finish properly');
 	});
 
 	it('should throw on verify error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/trusted-setup/circuit_verification_key-with-error.json', JSON.stringify(vkWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property \'2\' of undefined";
-		const childResponse = await runCmdHandler(`etherlime zk-verify --verifier_key=circuit_verification_key-with-error.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk verify --verifierKey=circuit_verification_key-with-error.json`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The verify process does not throw');
 	});
 

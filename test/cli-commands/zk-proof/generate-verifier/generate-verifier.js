@@ -24,20 +24,20 @@ describe('etherlime generate-verifier command', () => {
 
 	it('should execute etherlime generate-verifier command', async () => {
 		const expectedOutput = '===== Smart Contract Created Successfully. Please check your contracts folder ====='
-		const childResponse = await runCmdHandler(`etherlime zk-generate-verifier`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk generate`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The generate-verifier process does not finish properly');
 	});
 
 	it('should execute etherlime generate-verifier with optional params', async () => {
 		const expectedOutput = '===== Smart Contract Created Successfully. Please check your contracts folder ====='
-		const childResponse = await runCmdHandler(`etherlime zk-generate-verifier --verifier_key=circuit_verification_key.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk generate --verifierKey=circuit_verification_key.json`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The generate-verifier process does not finish properly');
 	});
 
 	it('should throw on generate-verifier error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/trusted-setup/circuit_verification_key-with-error.json', JSON.stringify(vkWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property '0' of undefined";
-		const childResponse = await runCmdHandler(`etherlime zk-generate-verifier --verifier_key=circuit_verification_key-with-error.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk generate --verifierKey=circuit_verification_key-with-error.json`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The generate-verifier process does not throw');
 	});
 

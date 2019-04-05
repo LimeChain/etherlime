@@ -12,7 +12,7 @@ const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
 const circuitCompile = require('./zk-proof/circuit-compile');
 const trustedSetup = require('./zk-proof/trusted-setup');
-const proof = require('./zk-proof/generate-proof');
+const generateProof = require('./zk-proof/generate-proof');
 const verifier = require('./zk-proof/verify-proof');
 const generateVerify = require('./zk-proof/generate-verify');
 const generateCall = require('./zk-proof/generate-call');
@@ -493,135 +493,18 @@ const commands = [
 		}
 	},
 	{
-		command: 'zk-circuit-compile',
-		description: 'Compile a circuit file located in zero-knowledge-proof/circuits',
+		command: 'zk <zk-command>',
+		description: 'Ability to work with Zero Knowledge Concept',
 		argumentsProcessor: (yargs) => {
-
-		},
-		commandProcessor: async (argv) => {
-			try {
-				await circuitCompile.run();
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'zk-trusted-setup',
-		description: 'Establish a trusted setup based on circuit and generates prooving key and verification key',
-		argumentsProcessor: (yargs) => {
-
-		},
-		commandProcessor: async (argv) => {
-			try {
-				await trustedSetup.run();
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'zk-proof [signal] [circuit] [proving_key]',
-		description: 'Generates a proof based on compiled circuit, public signal input and proving key',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('signal', {
-				describe: 'Specifies the file with signals to be used for generating a proof. Defaults to input.json',
+			yargs.positional('zk-command', {
+				describe: "Specify the desired command that you want to run: ['compile', 'setup', 'proof', 'verify', 'generate', 'call']",
 				type: 'string',
-				default: 'input.json'
-			});
-			yargs.positional('circuit', {
-				describe: 'Specifies the compiled circuit for checking of matched signals. Defaults to: circuit.json',
-				type: 'string',
-				default: 'circuit.json'
-			});
-			yargs.positional('proving_key', {
-				describe: 'Specifies the prooving key to be used for generating a proof. Defaults to: circuit_proving_key.json',
-				type: 'string',
-				default: 'circuit_proving_key.json'
+				choices: ['compile', 'setup', 'proof', 'verify', 'generate', 'call']
 			});
 		},
 		commandProcessor: async (argv) => {
 			try {
-				await proof.run(argv.signal, argv.circuit, argv.proving_key);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'zk-verify [public_signals] [proof] [verifier_key]',
-		description: 'Generates a verifier based on public signals file that comes out of the proof command, the proof itself and verifier key',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('public_signals', {
-				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
-				type: 'string',
-				default: 'circuit_public_signals.json'
-			});
-			yargs.positional('proof', {
-				describe: 'Specifies the compiled proof that would be used for proving it. Defaults to: circuit_proof.json',
-				type: 'string',
-				default: 'circuit_proof.json'
-			});
-			yargs.positional('verifier_key', {
-				describe: 'Specifies the verifier key to be used for checking if proof is valid. Defaults to: circuit_verification_key.json',
-				type: 'string',
-				default: 'circuit_verification_key.json'
-			});
-		},
-		commandProcessor: async (argv) => {
-			try {
-				await verifier.run(argv.public_signals, argv.proof, argv.verifier_key);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'zk-generate-verifier [verifier_key]',
-		description: 'Generates a verifier smart contract based on verification key. The smart contract is written in contracts folder.',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('verifier_key', {
-				describe: 'Specifies the verifier key to be used for generating a verifier smart contract. Defaults to: circuit_verification_key.json',
-				type: 'string',
-				default: 'circuit_verification_key.json'
-			});
-		},
-		commandProcessor: async (argv) => {
-			try {
-				await generateVerify.run(argv.verifier_key);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'zk-generate-call [public_signals] [proof]',
-		description: 'Establish a trusted setup based on circuit and generates proving key and verification key',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('public_signals', {
-				describe: 'Specifies the file with signals to be used for generating verifying a proof. Defaults to circuit_public_signals.json',
-				type: 'string',
-				default: 'circuit_public_signals.json'
-			});
-			yargs.positional('proof', {
-				describe: 'Specifies the compiled proof that would be used for proving it. Defaults to: circuit_proof.json',
-				type: 'string',
-				default: 'circuit_proof.json'
-			});
-		},
-		commandProcessor: async (argv) => {
-			try {
-				await generateCall.run(argv.public_signals, argv.proof);
+				await zkCommandProcessor(argv);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -629,6 +512,68 @@ const commands = [
 			}
 		}
 	}
-]
+];
+
+const zkCommandProcessor = async (argv) => {
+
+	// Set default command values for optional params:
+	let signal = 'input.json';
+	let circuit = 'circuit.json';
+	let proovingKey = 'circuit_proving_key.json';
+	let publicSignals = 'circuit_public_signals.json';
+	let proof = 'circuit_proof.json';
+	let verifierKey = 'circuit_verification_key.json';
+
+
+	// check command and optional scenarios:
+	switch (argv.zkCommand) {
+		case 'compile':
+		await circuitCompile.run();
+			break;
+		case 'setup':
+			await trustedSetup.run();
+			break;
+		case 'proof':
+			if (argv.signal) {
+				signal = argv.signal;
+			}
+			if (argv.circuit) {
+				circuit = argv.circuit;
+			}
+			if (argv.proovingKey) {
+				proovingKey = argv.proovingKey;
+			}
+			await generateProof.run(signal, circuit, proovingKey);
+			break;
+		case 'verify':
+			if (argv.publicSignals) {
+				publicSignals = argv.publicSignals;
+			}
+			if (argv.proof) {
+				proof = argv.proof;
+			}
+			if (argv.verifierKey) {
+				verifierKey = argv.verifierKey;
+			}
+			
+			await verifier.run(publicSignals, proof, verifierKey);
+			break;
+		case 'generate':
+			if (argv.verifierKey) {
+				verifierKey = argv.verifierKey;
+			}
+			await generateVerify.run(verifierKey);
+			break;
+		case 'call':
+			if (argv.publicSignals) {
+				publicSignals = argv.publicSignals;
+			}
+			if (argv.proof) {
+				proof = argv.proof;
+			}
+			await generateCall.run(publicSignals, proof);
+			break;		
+	}
+}
 
 module.exports = commands;

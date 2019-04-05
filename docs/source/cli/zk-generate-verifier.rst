@@ -1,4 +1,4 @@
-etherlime zk-generate-verifier
+etherlime zk generate
 *****************
 
 Syntax
@@ -6,11 +6,11 @@ Syntax
 
 ::
 
-    etherlime zk-generate-verifier [verifier_key]
+    etherlime zk generate  [verifierKey]
 
 Parameters:
 
-* ``verifier_key`` - [Optional] Specifies the verifier key to be used for generating a verifier smart contract. Defaults to: circuit_verification_key.json read from ``zero-knowledge-proof/generated-proof`` folder.
+* ``verifierKey`` - [Optional] Specifies the verifier key to be used for generating a verifier smart contract. Defaults to: circuit_verification_key.json read from ``zero-knowledge-proof/generated-proof`` folder.
 
 
 Generates a verifier smart contract based on verification key which can be used for on-chain verification. The smart contract is written in contracts folder and it is ready to be compiled and deployed with ``etherlime compile`` and ``etherlime deploy``.
