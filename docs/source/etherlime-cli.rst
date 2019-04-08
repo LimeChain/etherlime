@@ -16,9 +16,4 @@ Etherlime CLI
    cli/shape
    cli/flattener
    cli/ide
-   cli/zk-circuit-compile
-   cli/zk-trusted-setup
-   cli/zk-proof
-   cli/zk-verify
-   cli/zk-generate-verifier
-   cli/zk-generate-call
+   cli/zero-knowledge-proof
