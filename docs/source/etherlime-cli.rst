@@ -16,4 +16,4 @@ Etherlime CLI
    cli/shape
    cli/flattener
    cli/ide
-   cli/zero-knowledge-proof
+   cli/zk
