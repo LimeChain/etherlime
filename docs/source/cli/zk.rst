@@ -4,8 +4,8 @@ etherlime zk
 In order to start a project with Zero Knowledge Proof, please refer to `etherlime init command <https://etherlime.readthedocs.io/en/latest/cli/init.html#>`_.
 
 
-Available Commands
-******************
+Available Commands:
+-------------------
 
 
 Circuit Compilation
@@ -29,7 +29,7 @@ Generate ZK Proof
 			* ``provingKey`` - [Optional] Specifies the prooving key to be used for generating a proof. Defaults to: ``circuit_proving_key.json`` read from ``zero-knowledge-proof/trusted-setup`` folder.
 
 Verify Proof (Off-chain)
-------------
+------------------------
 
 	* ``etherlime zk verify [publicSignals] [proof] [verifierKey]`` Running this command will generates a verifier based on public signals file that comes out of the proof command, the proof itself and verifier key. A new folder ``verified-proof`` is generated with ``output.json`` file.
 		
