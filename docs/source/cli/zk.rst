@@ -5,7 +5,6 @@ In order to start a project with Zero Knowledge Proof, please refer to `etherlim
 
 
 Available Commands:
--------------------
 
 
 Circuit Compilation
