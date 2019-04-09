@@ -11,10 +11,10 @@ const ideServerRun = `Solidity-IDE${path.sep}solc-server.js`;
 
 let projectWorkingDir = process.cwd(); //save current working dir of the project
 
-const run = async () => {
+const run = async (port) => {
     let etherlimeRootDir = getRootDir();
     await fetchIdeRepo(etherlimeRootDir);
-    await runIde(etherlimeRootDir)
+    await runIde(etherlimeRootDir, port)
 }
 
 // find etherlime root dir
@@ -52,6 +52,9 @@ const installIdeModules = async () => {
 
 const runIde = async (rootDir, port) => {
     console.log("====== Running IDE ======");
+    if(port){
+        fs.writeFileSync('.env', `VUE_APP_PORT=${port}`)
+    }
     await exec('npm run build-local')
     changeCurrentWorkingDir(projectWorkingDir); //return to project's working dir
     let pathToFolder = `${projectWorkingDir}${path.sep}contracts`; // path to folder with .sol contracts that will be opened in IDE
