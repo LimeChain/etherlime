@@ -29,8 +29,8 @@ const fs = require('fs')
 var istanbul = require('istanbul');
 const shell = require('shelljs');
 
-const runCoverage = async (files, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
-	var mochaConfig = { 'useColors': true };
+const runCoverage = async (files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
+	var mochaConfig = { 'useColors': true, 'timeout': timeout };
 	let mocha = createMocha(mochaConfig, files);
 	mocha.reporter(CustomReporter, { port });
 

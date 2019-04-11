@@ -11,8 +11,8 @@ let CustomReporter = require('./gas-logger/gas-reporter');
 
 chai.use(require("./assertions"));
 
-const run = async (files, skipCompilation, solcVersion, enableGasReport, port) => {
-	var mochaConfig = { 'useColors': true };
+const run = async (files, timeout, skipCompilation, solcVersion, enableGasReport, port) => {
+	var mochaConfig = { 'useColors': true, 'timeout': timeout };
 	let mocha = createMocha(mochaConfig, files);
 
 	files.forEach(function (file) {

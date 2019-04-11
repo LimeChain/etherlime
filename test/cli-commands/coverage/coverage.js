@@ -10,8 +10,11 @@ const sinon = require('sinon');
 
 let exampleTestForCoverage = require('../examples/exampleTestForCoverageWithPort').pathToExampleTest;
 let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
+let defaultTimeout = 10000;
+let customTimeout = 12000;
 let currentDir;
 let originalPlatform;
+
 
 describe('coverage cli command', () => {
 
@@ -33,37 +36,44 @@ describe('coverage cli command', () => {
 
     it('should execute coverage cli command with default port specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`)
+        etherlimeTestSpy.restore();
+    });
+
+    it('should execute coverage cli command with custom timeout specified', async function () {
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, customTimeout, 8545, undefined, undefined, `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], customTimeout, 8545, undefined, undefined, `./build`, `./contracts`)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with number runs', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, undefined, `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, undefined, `./build`, `./contracts`)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, 10, undefined, `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, 10, undefined, `./build`, `./contracts`)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command when path does not includes specific .js file', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`./testsToRun`, 8545, 10, undefined, `./build`, `./contracts`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/testsToRun/exampleTestForCoverage.js`], 8545, 10, undefined, `./build`, `./contracts`)
+        await assert.isFulfilled(test.runCoverage(`./testsToRun`, defaultTimeout, 8545, 10, undefined, `./build`, `./contracts`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/testsToRun/exampleTestForCoverage.js`], defaultTimeout, 8545, 10, undefined, `./build`, `./contracts`)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with specific build and contracts folder', async function () {
 
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, 10, undefined, `./build2`, `./contracts2`))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, 10, undefined, `./build2`, `./contracts2`)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, 10, undefined, `./build2`, `./contracts2`))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, 10, undefined, `./build2`, `./contracts2`)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with shouldOpenCoverage param', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`, true))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`, true)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true)
         etherlimeTestSpy.restore();
     });
 
@@ -72,8 +82,8 @@ describe('coverage cli command', () => {
             value: 'win32'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`, true))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`, true)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true)
         etherlimeTestSpy.restore();
     });
 
@@ -82,8 +92,8 @@ describe('coverage cli command', () => {
             value: 'MocOs'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, 8545, undefined, undefined, `./build`, `./contracts`, true))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], 8545, undefined, undefined, `./build`, `./contracts`, true)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${pathToExampleTest}`], defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true)
         etherlimeTestSpy.restore();
     });
 
