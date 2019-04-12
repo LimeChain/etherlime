@@ -5,9 +5,19 @@ function spawnProcess(cmd) {
 }
 
 function spawnLinuxProcess(cmd) {
-	let cmdParts = cmd.split(/\s+/);
+	let cmdParts = cmd.split(/\s+(?=(?:[^\'"]*[\'"][^\'"]*[\'"])*[^\'"]*$)/g);
+	// console.log('COMMAND', cmd)
+	// console.log('COMMANDS', cmdParts)
+	let cmdCommands = [];
+	for (let command of cmdParts) {
+		if (command.startsWith('"') && command.endsWith('"')) {
+			command = command.substring(1, command.length - 1);
+		}
+		cmdCommands.push(command);
+	}
+	// console.log('COMMANDS', cmdCommands)
 
-	return spawn(cmdParts[0], cmdParts.slice(1));
+	return spawn(cmdCommands[0], cmdCommands.slice(1));
 }
 
 function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditionalCommand, thirdAdditionalCommand) {
@@ -17,6 +27,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 		try {
 			process = spawnProcess(cmd);
+			// console.log(process)
 		} catch (e) {
 			console.error(`Error trying to execute command ${cmd} in directory ${dir}`);
 			console.error(e);
