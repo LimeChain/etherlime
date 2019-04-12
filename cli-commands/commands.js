@@ -308,7 +308,7 @@ const commands = [
 			yargs.positional('timeout', {
 				describe: 'Set test timeout in milliseconds',
 				type: 'number',
-				default: 10000
+				default: 2000
 			});
 		},
 		commandProcessor: async (argv) => {
@@ -373,7 +373,7 @@ const commands = [
 			yargs.positional('timeout', {
 				describe: 'Set test timeout in milliseconds',
 				type: 'number',
-				default: 10000
+				default: 2000
 			});
 
 		},
