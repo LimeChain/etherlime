@@ -1,5 +1,6 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
+const defaultSetupAccounts = require('../../deployer/setup.json').accounts;
 const colors = require('./../../utils/colors');
 const logger = require('../../logger-service/logger-service').logger;
 const ethers = require('ethers');
@@ -42,7 +43,9 @@ const ganacheServerListenCallback = (err, blockchain) => {
 };
 
 const generateAccounts = (mnemonic, generate) => {
-	const currentAccounts = setup.accounts;
+	// fs.writeFileSync(path.resolve(__dirname, 'setup.json'), JSON.stringify(defaultSetupAccounts, null, '\t'), "utf8");
+	
+	const currentAccounts = defaultSetupAccounts;
 	for (let i = 0; i < generate; i++) {
 		let path = `m/44'/60'/${i}'/0/0`;
 		let wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
