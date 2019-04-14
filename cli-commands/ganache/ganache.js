@@ -43,8 +43,8 @@ const ganacheServerListenCallback = (err, blockchain) => {
 };
 
 const generateAccounts = (mnemonic, generate) => {
-	// fs.writeFileSync(path.resolve(__dirname, 'setup.json'), JSON.stringify(defaultSetupAccounts, null, '\t'), "utf8");
-	
+
+	// Every time the command is run with mnemonic, reset the account list with the default one and add the number of accounts, the user specifies.
 	const currentAccounts = defaultSetupAccounts;
 	for (let i = 0; i < generate; i++) {
 		let path = `m/44'/60'/${i}'/0/0`;
