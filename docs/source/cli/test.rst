@@ -6,11 +6,12 @@ Syntax
 
 ::
 
-    etherlime test [path] [skip-compilation] [gas-report] [solc-version] [output] [port]
+    etherlime test [path] [timeout] [skip-compilation] [gas-report] [solc-version] [output] [port]
 
 Parameters:
 
 * ``path`` - [Optional] By specifying ``path`` you can set a path to a selected directory or you can set the path directly to the javascript file which contains your tests. By default the ``path`` points to ``./test``.
+* ``timeout`` - [Optional] This parameter defines the test timeout in milliseconds. Defaults to 2000 ms.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
 * ``gas-report`` - [Optional] Enables Gas reporting future that will show Gas Usage after each test. Default: false.
 * ``solc-version`` - [Optional] By specifying ``solc-version`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.

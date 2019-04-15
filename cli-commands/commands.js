@@ -277,7 +277,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [skip-compilation] [gas-report] [solc-version] [output] [port]',
+		command: 'test [path] [timeout] [skip-compilation] [gas-report] [solc-version] [output] [port]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -315,6 +315,12 @@ const commands = [
 				type: 'number',
 				default: 8545
 			});
+
+			yargs.positional('timeout', {
+				describe: 'Set test timeout in milliseconds',
+				type: 'number',
+				default: 2000
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime test', {
@@ -323,7 +329,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.skipCompilation, argv.solcVersion, argv.gasReport, argv.port);
+				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -332,25 +338,25 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html]',
+		command: 'coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
 				describe: 'Specifies the path in which tests should be ran',
 				type: 'string',
 				default: './test'
-			})
+			});
 
 			yargs.positional('port', {
 				describe: 'The port to run the solidity coverage testrpc (compatible with etherlime ganache deployer)',
 				type: 'number',
 				default: 8545
-			})
+			});
 
 			yargs.positional('runs', {
 				describe: 'enables the optimizer on the compiler and specifies the runs',
 				type: 'number'
-			})
+			});
 
 			yargs.positional('solcVersion', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
@@ -361,19 +367,25 @@ const commands = [
 				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
 				type: 'string',
 				default: './build'
-			})
+			});
 
 			yargs.positional('workingDirectory', {
 				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
 				type: 'string',
 				default: './contracts'
-			})
+			});
 
 			yargs.positional('html', {
 				describe: 'Defines whether to open automatically the html coverage report located in: ./coverage',
 				type: 'string',
 				default: 'false'
-			})
+			});
+
+			yargs.positional('timeout', {
+				describe: 'Set test timeout in milliseconds',
+				type: 'number',
+				default: 2000
+			});
 
 		},
 		commandProcessor: async (argv) => {
@@ -381,7 +393,7 @@ const commands = [
 				argv
 			});
 			try {
-				await test.runCoverage(argv.path, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
+				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();
