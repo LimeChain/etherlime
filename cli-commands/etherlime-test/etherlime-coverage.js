@@ -27,7 +27,6 @@ const dir = require('node-dir');
 const path = require('path');
 const fs = require('fs')
 var istanbul = require('istanbul');
-const shell = require('shelljs');
 
 const runCoverage = async (files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
 	var mochaConfig = { 'useColors': true, 'timeout': timeout };

@@ -5,9 +5,16 @@ function spawnProcess(cmd) {
 }
 
 function spawnLinuxProcess(cmd) {
-	let cmdParts = cmd.split(/\s+/);
+	let cmdParts = cmd.split(/\s+(?=(?:[^\'"]*[\'"][^\'"]*[\'"])*[^\'"]*$)/g);
+	let cmdCommands = [];
+	for (let command of cmdParts) {
+		if (command.startsWith('"') && command.endsWith('"')) {
+			command = command.substring(1, command.length - 1);
+		}
+		cmdCommands.push(command);
+	}
 
-	return spawn(cmdParts[0], cmdParts.slice(1));
+	return spawn(cmdCommands[0], cmdCommands.slice(1));
 }
 
 function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditionalCommand, thirdAdditionalCommand) {

@@ -6,15 +6,13 @@ const timeout = require('../../utils/timeout').timeout;
 const hookStream = require('../../utils/hookup-standard-output').hookStream;
 const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
 const signerUtil = require('./../utils/signer');
-const find = require('find-process');
 
 const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
-const ganacheRun = require('../../../cli-commands/ganache/ganache').run;
 const config = require('../../config.json');
 const ethers = require('ethers')
-const logger = require('../../logger-service/logger-service').logger;
-const ganache = require("ganache-cli");
 const Billboard = require('../../testContracts/Billboard.json');
+const fs = require('fs');
+const path = require('path');
 
 
 
@@ -44,6 +42,16 @@ const THIRD_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile
 
 const TENTH_PRIVATE_KEY = ganacheSetupFile.accounts[9].secretKey;
 const TENTH_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[9].secretKey);
+
+const OPTIONAL_ACCOUNT_PRIVATE_KEY = '0xb96e9ccb774cc33213cbcb2c69d3cdae17b0fe4888a1ccd343cbd1a17fd98b18';
+const OPTIONAL_ACCOUNT_ADDRESS = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9';
+
+const SECOND_OPTIONAL_ACCOUNT_PRIVATE_KEY = '0xfb848dd410a29bc784745d01c877a2934a3711a2dd53b8e5c5c651139a3b3689';
+const SECOND_OPTIONAL_ACCOUNT_ADDRESS = '0x9f7ffcb016b0f7b142529bf27ef1ec5b0039c32c';
+
+const MNEMONIC = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
+const NUMBER_OF_ACCOUNTS = 2;
+
 const LOCAL_NETWORK_FORK_ADDRESS = "http://localhost:8545";
 const LOCAL_NETWORK_URL = "http://localhost";
 
@@ -406,6 +414,84 @@ describe('Etherlime ganache with specific gasPrice and gasLimit', async () => {
 	});
 
 	afterEach(async () => {
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
+	});
+});
+
+describe('Run ganache server with optional mnemonic and optional number of accounts to generate', async () => {
+	it('should start ganache server with optional param mnemonic', async () => {
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --mnemonic "${MNEMONIC}"`, expectedOutput);
+
+		ganacheCommandOutput = childResponse.output;
+		const rawAccountsString = ganacheCommandOutput.split(/\r?\n/).slice(0, 11);
+		const firstOutputtedAddress = rawAccountsString[0].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const firstOutputtedPrivateKey = rawAccountsString[0].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(firstOutputtedAddress, FIRST_ACCOUNT_ADDRESS, 'There is mismatch of first account address');
+		assert.equal(firstOutputtedPrivateKey, FIRST_PRIVATE_KEY, 'There is mismatch of first account private key');
+
+		const thirdOutputtedAddress = rawAccountsString[2].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const thirdOutputtedPrivateKey = rawAccountsString[2].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(thirdOutputtedAddress, THIRD_ACCOUNT_ADDRESS, 'There is mismatch of third account address');
+		assert.equal(thirdOutputtedPrivateKey, THIRD_PRIVATE_KEY, 'There is mismatch of third account private key');
+
+		const tenthOutputtedAddress = rawAccountsString[9].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const tenthOutputtedPrivateKey = rawAccountsString[9].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(tenthOutputtedAddress, TENTH_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
+		assert.equal(tenthOutputtedPrivateKey, TENTH_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+		const eleventhOutputtedAddress = rawAccountsString[10].substr(14, ADDRESS_LENGTH);
+		const eleventhOutputtedPrivateKey = rawAccountsString[10].substr(70, PRIVATE_KEY_LENGTH);
+
+		assert.equal(eleventhOutputtedAddress, OPTIONAL_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
+		assert.equal(eleventhOutputtedPrivateKey, OPTIONAL_ACCOUNT_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+	});
+
+	it('should start ganache server with optional param mnemonic and optional param generate', async () => {
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --mnemonic "${MNEMONIC}" --count ${NUMBER_OF_ACCOUNTS}`, expectedOutput);
+
+		ganacheCommandOutput = childResponse.output;
+		const rawAccountsString = ganacheCommandOutput.split(/\r?\n/).slice(0, 12);
+		const firstOutputtedAddress = rawAccountsString[0].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const firstOutputtedPrivateKey = rawAccountsString[0].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(firstOutputtedAddress, FIRST_ACCOUNT_ADDRESS, 'There is mismatch of first account address');
+		assert.equal(firstOutputtedPrivateKey, FIRST_PRIVATE_KEY, 'There is mismatch of first account private key');
+
+		const thirdOutputtedAddress = rawAccountsString[2].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const thirdOutputtedPrivateKey = rawAccountsString[2].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(thirdOutputtedAddress, THIRD_ACCOUNT_ADDRESS, 'There is mismatch of third account address');
+		assert.equal(thirdOutputtedPrivateKey, THIRD_PRIVATE_KEY, 'There is mismatch of third account private key');
+
+		const tenthOutputtedAddress = rawAccountsString[9].substr(ADDRESS_START_INDEX, ADDRESS_LENGTH);
+		const tenthOutputtedPrivateKey = rawAccountsString[9].substr(PRIVATE_KEY_START_INDEX, PRIVATE_KEY_LENGTH);
+
+		assert.equal(tenthOutputtedAddress, TENTH_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
+		assert.equal(tenthOutputtedPrivateKey, TENTH_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+		const eleventhOutputtedAddress = rawAccountsString[10].substr(14, ADDRESS_LENGTH);
+		const eleventhOutputtedPrivateKey = rawAccountsString[10].substr(70, PRIVATE_KEY_LENGTH);
+
+		assert.equal(eleventhOutputtedAddress, OPTIONAL_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
+		assert.equal(eleventhOutputtedPrivateKey, OPTIONAL_ACCOUNT_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+		const twelveOutputtedAddress = rawAccountsString[11].substr(14, ADDRESS_LENGTH);
+		const twelveOutputtedPrivateKey = rawAccountsString[11].substr(70, PRIVATE_KEY_LENGTH);
+
+		assert.equal(twelveOutputtedAddress, SECOND_OPTIONAL_ACCOUNT_ADDRESS, 'There is mismatch of tenth account address');
+		assert.equal(twelveOutputtedPrivateKey, SECOND_OPTIONAL_ACCOUNT_PRIVATE_KEY, 'There is mismatch of tenth account private key');
+
+	});
+
+	afterEach(async () => {
+		fs.writeFileSync(`${process.cwd()}/cli-commands/ganache/setup.json`, JSON.stringify(ganacheSetupFile, null, '\t'), "utf8");
 		if (childResponse && childResponse.process) {
 			killProcessByPID(childResponse.process.pid)
 			childResponse = '';

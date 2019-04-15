@@ -20,7 +20,7 @@ const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
 	{
-		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit]',
+		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -43,12 +43,23 @@ const commands = [
 			yargs.positional('gasPrice', {
 				describe: 'The price of gas in wei - default is 20000000000',
 				type: 'number'
-			})
+			});
 
 			yargs.positional('gasLimit', {
 				describe: 'The block gas limit default is 0x6691b7',
 				type: 'number'
-			})
+			});
+
+			yargs.positional('mnemonic', {
+				describe: 'Pass mnemonic to generate account',
+				type: 'string'
+			});
+
+			yargs.positional('count', {
+				describe: 'Number of accounts to generate based on passed mnemonic',
+				type: 'number',
+				default: 1
+			});
 
 		},
 		commandProcessor: (argv) => {
@@ -59,7 +70,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit);
+				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count);
 			} catch (err) {
 				console.error(err);
 			} finally {
