@@ -6,7 +6,7 @@ Syntax
 
 ::
 
-    etherlime ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [generate]
+    etherlime ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count]
 
 Parameters:
 
@@ -16,7 +16,7 @@ Parameters:
 * ``gasPrice`` - [Optional] By specifying ``--gasPrice`` you can specify the default gas price for transactions. Default: 2000000000 wei (2 Gwei)
 * ``gasLimit`` - [Optional] By specifying ``--gasLimit`` you can specify the default block gas limit. Default: 6721975
 * ``mnemonic`` - [Optional] By specifying ``--mnemonic`` you can generate additional account/accounts to the accounts that are coming with ``etherlime ganache`` command. Please note: Running this command will modify your local ``setup.json``. 
-* ``generate`` - [Optional] By specifying ``--generate`` you can specify how many accounts to generate based on the mnemomic specified with ``--mnemomnic``. Defaults to: 1 and works only if ``--mnemonic`` is passed.
+* ``count`` - [Optional] By specifying ``--count`` you can specify how many accounts to generate based on the mnemomic specified with ``--mnemomnic``. Defaults to: 1 and works only if ``--mnemonic`` is passed.
 
 
 

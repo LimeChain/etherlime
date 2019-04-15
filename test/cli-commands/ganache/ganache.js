@@ -454,7 +454,7 @@ describe('Run ganache server with optional mnemonic and optional number of accou
 	});
 
 	it('should start ganache server with optional param mnemonic and optional param generate', async () => {
-		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --mnemonic "${MNEMONIC}" --generate ${NUMBER_OF_ACCOUNTS}`, expectedOutput);
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --mnemonic "${MNEMONIC}" --count ${NUMBER_OF_ACCOUNTS}`, expectedOutput);
 
 		ganacheCommandOutput = childResponse.output;
 		const rawAccountsString = ganacheCommandOutput.split(/\r?\n/).slice(0, 12);

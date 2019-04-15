@@ -20,7 +20,7 @@ const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
 	{
-		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [generate]',
+		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -55,7 +55,7 @@ const commands = [
 				type: 'string'
 			});
 
-			yargs.positional('generate', {
+			yargs.positional('count', {
 				describe: 'Number of accounts to generate based on passed mnemonic',
 				type: 'number',
 				default: 1
@@ -70,7 +70,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.generate);
+				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count);
 			} catch (err) {
 				console.error(err);
 			} finally {
