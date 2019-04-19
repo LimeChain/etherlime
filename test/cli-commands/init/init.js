@@ -23,7 +23,7 @@ const gitignoreFileDestination = './.gitignore';
 
 const zkProofDir = './zero-knowledge-proof';
 const circuitsDir = './circuits';
-const zkProofError = 'limecirc.circuit already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.';
+const zkProofError = 'circuit.circom already exists in ./zero-knowledge-proof directory. You\'ve probably already initialized etherlime for this project.';
 const inputParamsDir = './input';
 
 const zkProofEnabled = true;

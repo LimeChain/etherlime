@@ -52,7 +52,7 @@ Generate Smart Contract for On-Chain Verification
 Generate output call based for On-chanin Verification
 -----------------------------------------------------
 
-	* ``etherlime zk call [publicSignals] [proof]`` Running this command will generates a call based on proof and public signals. A new folder ``generated-call`` is generated with ``generatedCall.json`` file. This generated call can be used for on-chain verification. The parameter ``generatedCall`` can be used for calling public view method ``verifyProof`` of the generated verifier contract.
+	* ``etherlime zk call [publicSignals] [proof]`` Running this command will generates a call based on proof and public signals. A new folder ``generated-call`` is generated with ``generatedCall.json`` file. This generated call can be used for on-chain verification, for calling public view method ``verifyProof`` of the generated verifier contract with this data.
 		
 		Parameters:
 			* ``publicSignals`` - [Optional] Specifies the file with signals to be used for generating verifying a proof. Defaults to ``circuit_public_signals.json`` read from ``zero-knowledge-proof/generated-proof`` folder.

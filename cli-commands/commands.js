@@ -104,7 +104,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await init.run(argv.zkEnabled);
+				await init.run(argv.zk);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -546,7 +546,7 @@ const zkCommandProcessor = async (argv) => {
 	// Set default command values for optional params:
 	let signal = 'input.json';
 	let circuit = 'circuit.json';
-	let proovingKey = 'circuit_proving_key.json';
+	let provingKey = 'circuit_proving_key.json';
 	let publicSignals = 'circuit_public_signals.json';
 	let proof = 'circuit_proof.json';
 	let verifierKey = 'circuit_verification_key.json';
@@ -567,10 +567,10 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.circuit) {
 				circuit = argv.circuit;
 			}
-			if (argv.proovingKey) {
-				proovingKey = argv.proovingKey;
+			if (argv.provingKey) {
+				provingKey = argv.provingKey;
 			}
-			await generateProof.run(signal, circuit, proovingKey);
+			await generateProof.run(signal, circuit, provingKey);
 			break;
 		case 'verify':
 			if (argv.publicSignals) {
