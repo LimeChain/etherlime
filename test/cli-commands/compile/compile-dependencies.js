@@ -540,8 +540,8 @@ describe('Compile dependencies', () => {
 
         it('should throw err if con not find local path', async function () {
             let options = {
-                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
-                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                versionsUrl: 'https://relay.trufflesuite.com/solc/bin/list.json',
+                compilerUrlRoot: 'https://relay.trufflesuite.com/solc/bin/',
                 dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
                 cache: true,
                 docker: undefined
@@ -563,8 +563,8 @@ describe('Compile dependencies', () => {
 
         it('should save cache of specific version', async function () {
             let options = {
-                versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
-                compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+                versionsUrl: 'https://relay.trufflesuite.com/solc/bin/list.json',
+                compilerUrlRoot: 'https://relay.trufflesuite.com/solc/bin/',
                 dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
                 cache: true,
                 docker: undefined
@@ -663,8 +663,8 @@ describe('Compile dependencies', () => {
     after(async function () {
         compilerSupplier = new CompilerSupplier({
             version: null,
-            versionsUrl: 'https://solc-bin.ethereum.org/bin/list.json',
-            compilerUrlRoot: 'https://solc-bin.ethereum.org/bin/',
+            versionsUrl: 'https://relay.trufflesuite.com/solc/bin/list.json',
+            compilerUrlRoot: 'https://relay.trufflesuite.com/solc/bin/',
             dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
             cache: false,
         })
