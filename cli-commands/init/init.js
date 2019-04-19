@@ -13,7 +13,7 @@ const contractFileDestination = `${contractsDir}/LimeFactory.sol`;
 
 const zkProofDir = './zero-knowledge-proof';
 const zkProofCircuitDir = './circuits';
-const zkCircuitDestination = `${zkProofDir}/${zkProofCircuitDir}/limecirc.circuit`;
+const zkCircuitDestination = `${zkProofDir}/${zkProofCircuitDir}/circuit.circom`;
 
 const zkInputParamsDir = './input';
 const zkInputParamsDestionation = `${zkProofDir}/${zkInputParamsDir}/input.json`;
@@ -112,10 +112,10 @@ const createZKProofCircuitFolder = () => {
 
 const copyCircuitFile = (libraryDirectory) => {
 	if (fs.existsSync(zkCircuitDestination)) {
-		throw new Error(`limecirc.circuit already exists in ${zkProofDir} directory. You've probably already initialized etherlime for this project.`);
+		throw new Error(`circuit.circom already exists in ${zkProofDir} directory. You've probably already initialized etherlime for this project.`);
 	}
 
-	const circuitFileSource = `${libraryDirectory}/limecirc.circuit`;
+	const circuitFileSource = `${libraryDirectory}/circuit.circom`;
 	fs.copyFileSync(circuitFileSource, zkCircuitDestination);
 };
 

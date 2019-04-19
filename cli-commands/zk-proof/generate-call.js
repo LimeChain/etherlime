@@ -11,11 +11,12 @@ const run = async (signals, proof) => {
 	createGenerateCallFolder(generatedCallPath);
 
 	const generatedCall = await zkSnark.generateCall(publicSignals, generatedProof);
-	const object = {
-		generatedCall
-	}
-	fs.writeFileSync(`${generatedCallPath}/generatedCall.json`, JSON.stringify(zkSnark.stringifyBigInts(object), null, 1), "utf8");
+	
+	
+	fs.writeFileSync(`${generatedCallPath}/generatedCall.json`, zkSnark.stringifyBigInts(generatedCall));
 	console.log('===== Generated Call Complete! =====');
+	console.log('===== Generated Call: =====')
+	console.log(generatedCall)
 };
 
 const createGenerateCallFolder = (folderPath) => {
