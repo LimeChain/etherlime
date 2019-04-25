@@ -42,7 +42,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             } else {
                 proxyInstance = await this._createProxy(project, contractToDeploy, deploymentArguments)
             }
-            
+            console.log("proxy", proxyInstance)
             proxyInstance = await this.wrapDeployedContract(contract, proxyInstance.address)
         } catch(e) {
             console.log("ee", e)
