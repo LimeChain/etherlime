@@ -78,8 +78,14 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
     }
 
     async _createProxy(project, contractToDeploy, deploymentArguments) {
-        let proxyInstance = await project.createProxy(contractToDeploy, { initArgs: deploymentArguments }) 
-        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, null, 4)) // second param is replacer if needed, third is number of spaces
+        let proxyInstance = await project.createProxy(contractToDeploy, { initArgs: deploymentArguments })
+        function replacer(key, value) {
+            if(typeof value === 'function') {
+                return value.toString()
+            }
+            return value
+        }
+        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, replacer, 4)) // second param is replacer if needed, third is number of spaces
         return proxyInstance 
     }
 
