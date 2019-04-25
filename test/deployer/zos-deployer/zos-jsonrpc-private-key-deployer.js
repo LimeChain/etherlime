@@ -26,7 +26,7 @@ let ZosContractUpgraded;
 let currentDir;
 
 
-describe('Zos deployer tests', async () => {
+describe.only('Zos deployer tests', async () => {
 
 	describe('deploy proxy', async () => {
 

@@ -45,8 +45,9 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             
             proxyInstance = await this.wrapDeployedContract(contract, proxyInstance.address)
         } catch(e) {
+            console.log("ee", e)
             let { transaction, transactionReceipt } = await this._prepareTransactionStatus(project)
-            await this._postValidateTransaction(contract, transaction, transactionReceipt)
+            // await this._postValidateTransaction(contract, transaction, transactionReceipt)
         }
         
         await this._logAction(this.constructor.name, contract.contractName, 'Not provided', 0, project.txParams.gasPrice,'Not provided', proxyInstance.contractAddress) 
