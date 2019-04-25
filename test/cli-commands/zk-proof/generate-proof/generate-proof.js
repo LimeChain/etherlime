@@ -37,14 +37,14 @@ describe('etherlime proof command', () => {
 
 	it('should execute etherlime proof command with optional params', async () => {
 		const expectedOutput = '===== Generation Finished ====='
-		const childResponse = await runCmdHandler(`etherlime zk proof --signal=input.json --circuit=circuit.json --proovingKey=circuit_proving_key.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk proof --signal=input.json --circuit=circuit.json --provingKey=circuit_proving_key.json`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The proof process does not finish properly');
 	});
 
 	it('should throw on proof error', async () => {
 		fs.writeFileSync('./zero-knowledge-proof/trusted-setup/circuit_proving_key-with-error.json', JSON.stringify(pkWithError, null, 1), "utf8");
 		const expectedOutput = "TypeError: Cannot read property '0' of undefined";
-		const childResponse = await runCmdHandler(`etherlime zk proof --proovingKey=circuit_proving_key-with-error.json`, expectedOutput);
+		const childResponse = await runCmdHandler(`etherlime zk proof --provingKey=circuit_proving_key-with-error.json`, expectedOutput);
 		assert.include(childResponse, expectedOutput, 'The proof process does not throw');
 	});
 
