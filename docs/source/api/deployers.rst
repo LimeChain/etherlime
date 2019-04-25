@@ -270,3 +270,62 @@ Example
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const port = 9545;
 	deployer.setPort(port);
+
+
+
+ZosJSONRPCPrivateKeyDeployer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    ZosJSONRPCPrivateKeyDeployer(privateKey, nodeUrl, [defaultOverrides])
+
+Parameters:
+
+* ``privateKey`` - The private key to the deployment wallet/signer instance
+* ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+* ``defaultOverrides`` - [Optional] object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+
+::
+
+    const etherlime = require('etherlime');
+
+    const TestContract = require('./TestContract.json');
+
+    const defaultConfigs = {
+        gasPrice: 20000000000,
+        gasLimit: 4700000,
+        chainId: 0 // Suitable for deploying on private networks like Quorum
+    }
+
+    const deploy = async (network, secret) => {
+
+        const deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
+        
+        const result = await deployer.deploy(TestContract);
+    }
+
+Setters
+^^^^^^^
+
+    `provider` . setPrivateKey (privateKey)
+        * ``privateKey`` - The private key to the deployment wallet/signer instance
+
+    `provider` . setNodeUrl (nodeUrl)
+        * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
+
+    `provider` . setDefaultOverrides (defaultOverrides)
+        * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
+
+    `provider` . setSigner (signer)
+        * ``signer`` - ethers.Wallet instance
+
+    `provider` . setProvider (provider)
+        * ``provider`` - ethers.provider instance
+
+Example
+::
+
+    const deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(privateKey, nodeUrl, defaultOverrides);
+ 	const newNodeUrl = http://localhost:9545;
+	deployer.setNodeUrl(newNodeUrl);
