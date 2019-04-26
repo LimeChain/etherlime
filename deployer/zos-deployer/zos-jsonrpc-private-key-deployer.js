@@ -118,7 +118,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             }
             return value;
           };
-        fs.writeFileSync('./proxy.json', stringify(proxyInstance, customStringify, 4)) // second param is replacer if needed, third is number of spaces
+        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, customStringify, 4)) // second param is replacer if needed, third is number of spaces
         return proxyInstance 
     }
 
