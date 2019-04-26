@@ -43,12 +43,12 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             } else {
                 proxyInstance = await this._createProxy(project, contractToDeploy, deploymentArguments)
             }
-            console.log("proxy", proxyInstance)
+            // console.log("proxy", proxyInstance)
             proxyInstance = await this.wrapDeployedContract(contract, proxyInstance.address)
         } catch(e) {
             console.log("ee", e)
             let { transaction, transactionReceipt } = await this._prepareTransactionStatus(project)
-            // await this._postValidateTransaction(contract, transaction, transactionReceipt)
+            await this._postValidateTransaction(contract, transaction, transactionReceipt)
         }
         
         await this._logAction(this.constructor.name, contract.contractName, 'Not provided', 0, project.txParams.gasPrice,'Not provided', proxyInstance.contractAddress) 
@@ -74,19 +74,51 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
         let methodName = deploymentArguments[0]  // the name of the initMethod (if any)
         deploymentArguments.splice(0, 1) //init arguments
         let proxyInstance = await project.upgradeProxy(proxyAddress, contractToDeploy, { initMethod: methodName, initArgs: [deploymentArguments] })
-        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, null, 4)) // update json file with new data
+        function customStringify (key, value) {
+            if (typeof value === 'object' && value !== null) {
+            let cache = new Set();
+              if (cache.has(value)) {
+                // Circular reference found
+                try {
+                  // If this value does not reference a parent it can be deduped
+                 return JSON.parse(JSON.stringify(value));
+                }
+                catch (err) {
+                  // discard key if value cannot be deduped
+                 return;
+                }
+              }
+              // Store value in our set
+              cache.add(value);
+            }
+            return value;
+          };
+        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, customStringify, 4)) // update json file with new data
         return proxyInstance 
     }
 
     async _createProxy(project, contractToDeploy, deploymentArguments) {
         let proxyInstance = await project.createProxy(contractToDeploy, { initArgs: deploymentArguments })
-        function replacer(key, value) {
-            if(typeof value === 'function') {
-                return value.toString()
+        function customStringify (key, value) {
+            if (typeof value === 'object' && value !== null) {
+            let cache = new Set();
+              if (cache.has(value)) {
+                // Circular reference found
+                try {
+                  // If this value does not reference a parent it can be deduped
+                 return JSON.parse(JSON.stringify(value));
+                }
+                catch (err) {
+                  // discard key if value cannot be deduped
+                 return;
+                }
+              }
+              // Store value in our set
+              cache.add(value);
             }
-            return value
-        }
-        fs.writeFileSync('./proxy.json', stringify(proxyInstance, null, 4)) // second param is replacer if needed, third is number of spaces
+            return value;
+          };
+        fs.writeFileSync('./proxy.json', stringify(proxyInstance, customStringify, 4)) // second param is replacer if needed, third is number of spaces
         return proxyInstance 
     }
 

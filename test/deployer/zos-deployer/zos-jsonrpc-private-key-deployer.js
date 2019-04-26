@@ -89,7 +89,7 @@ describe.only('Zos deployer tests', async () => {
 		})
 
 		after(async() => {
-			fs.removeSync('./proxy.json')
+			// fs.removeSync('./proxy.json')
 			fs.removeSync('./build')
 			process.chdir(currentDir)
 		})
