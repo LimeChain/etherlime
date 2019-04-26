@@ -1,4 +1,5 @@
 const { ZWeb3, Contracts, SimpleProject } = require('zos-lib')
+var stringify = require('json-stringify-safe');
 const fs = require('fs') 
 const path = require('path')
 
@@ -85,7 +86,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             }
             return value
         }
-        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, replacer, 4)) // second param is replacer if needed, third is number of spaces
+        fs.writeFileSync('./proxy.json', stringify(proxyInstance, null, 4)) // second param is replacer if needed, third is number of spaces
         return proxyInstance 
     }
 
