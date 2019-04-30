@@ -16,10 +16,6 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
 	 */
 	constructor(privateKey, nodeUrl, defaultOverrides) {
         super(privateKey, nodeUrl, defaultOverrides)
-        this.initializeZWeb3()
-    }
-
-    initializeZWeb3() {
         ZWeb3.initialize(this.nodeUrl)
     }
 
@@ -34,17 +30,24 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
         const project = await this._createProject()
         const contractToDeploy = await this._readContract(contract)
    
-        let proxyInstance 
-        try {
-            /* check if proxy already exit and just update it or create new one and write its data in json file */
-            if(fs.existsSync('./proxy.json')) {
-                proxyInstance =  await this._updateProxy(project, contractToDeploy, deploymentArguments)
+        let proxyInstance;
+        // ToDo rewrite this AI to a smarter code :))))
+        if(!fs.existsSync('./proxy.json')) {
+            proxyInstance = await this._createProxy(project, contractToDeploy, deploymentArguments)
+        } else {
+            let createdProxy = JSON.parse(fs.readFileSync('./proxy.json'))
+            createdProxy = createdProxy[contractToDeploy.schema.contractName]
+            if(createdProxy && createdProxy.network === this.nodeUrl) {
+                proxyInstance = await this._updateProxy(project, contractToDeploy, deploymentArguments)
             } else {
                 proxyInstance = await this._createProxy(project, contractToDeploy, deploymentArguments)
             }
-            
+
+        }
+
+        try{
             proxyInstance = await this.wrapDeployedContract(contract, proxyInstance.address)
-        } catch(e) {
+        } catch (e) {
             let { transaction, transactionReceipt } = await this._prepareTransactionStatus(project)
             await this._postValidateTransaction(contract, transaction, transactionReceipt)
         }
@@ -52,7 +55,6 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
         await this._logAction(this.constructor.name, contract.contractName, 'Not provided', 0, project.txParams.gasPrice,'Not provided', proxyInstance.contractAddress) 
         return proxyInstance
     }
-
 
     async _readContract(contract) {
         await Contracts.setLocalBuildDir(`${process.cwd()}/build`)
@@ -68,18 +70,28 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
 
 
     async _updateProxy(project, contractToDeploy, deploymentArguments) {
-        let proxyAddress = JSON.parse(fs.readFileSync('./proxy.json')).options.address 
+        let proxy = JSON.parse(fs.readFileSync('./proxy.json'))
+        let proxyAddress = proxy[contractToDeploy.schema.contractName].address 
         let methodName = deploymentArguments[0]  // the name of the initMethod (if any)
         deploymentArguments.splice(0, 1) //init arguments
         let proxyInstance = await project.upgradeProxy(proxyAddress, contractToDeploy, { initMethod: methodName, initArgs: [deploymentArguments] })
-        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, null, 4)) // update json file with new data
         return proxyInstance 
     }
 
+
     async _createProxy(project, contractToDeploy, deploymentArguments) {
-        let proxyInstance = await project.createProxy(contractToDeploy, { initArgs: deploymentArguments }) 
-        fs.writeFileSync('./proxy.json', JSON.stringify(proxyInstance, null, 4)) // second param is replacer if needed, third is number of spaces
-        return proxyInstance 
+        let proxyInstance = await project.createProxy(contractToDeploy, { initArgs: deploymentArguments })
+        let readContract = {};
+        
+        if(fs.existsSync('./proxy.json')) {
+            readContract = JSON.parse(fs.readFileSync('./proxy.json'));
+            readContract[proxyInstance.schema.contractName] = {address: proxyInstance.options.address, deployer: proxyInstance.options.from, network: proxyInstance.currentProvider.host}
+        } else {
+            readContract[proxyInstance.schema.contractName] = {address: proxyInstance.options.address, deployer: proxyInstance.options.from, network: proxyInstance.currentProvider.host}
+        } 
+        
+        fs.writeFileSync('./proxy.json', JSON.stringify(readContract, null, 4)) // second param is replacer if needed, third is number of spaces
+        return proxyInstance
     }
 
 

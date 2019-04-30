@@ -11,6 +11,8 @@ const ganacheSetupConfig = require('../../../cli-commands/ganache/setup');
 const compiler = require('../../../cli-commands/compiler/compiler')
 const config = require('./../../config.json');
 
+const upgradedContract = require('./contracts/ZosContractUpgraded').upgradedContract
+
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit
@@ -22,7 +24,7 @@ let deployer;
 let signer;
 let notAdmin;
 let ZosContract;
-let ZosContractUpgraded;
+let LimeFactory;
 let currentDir;
 
 
@@ -52,7 +54,7 @@ describe('Zos deployer tests', async () => {
 		it('should have json file created with proxy instance data', async () => {
 			assert.ok(fs.existsSync('./proxy.json'))
 			proxyInstance = JSON.parse(fs.readFileSync('./proxy.json'))
-			let proxyAddress = proxyInstance.options.address
+			let proxyAddress = proxyInstance[ZosContract.contractName].address
 			assert.deepEqual(proxyAddress, contractInstance.contractAddress)
 		})
 	
@@ -70,23 +72,52 @@ describe('Zos deployer tests', async () => {
 		})
 	
 		it('should update contract correctly', async () => {
-			ZosContractUpgraded = JSON.parse(fs.readFileSync('./build/ZosContractUpgraded.json'));
+			let zosContractInitial = fs.readFileSync('./contracts/ZosContract.sol')
+			fs.writeFileSync('./contracts/ZosContract.sol', upgradedContract)
+			fs.removeSync('./build')
+			await compiler.run('.')
+			ZosContract = JSON.parse(fs.readFileSync('./build/ZosContract.json'));
 			let contractAddressBeforeUpgrading = contractInstance.contractAddress;
-			contractInstance = await deployer.deploy(ZosContractUpgraded);
+			contractInstance = await deployer.deploy(ZosContract);
 			assert.ok(isAddress(contractInstance.contractAddress), 'The deployed address is incorrect');
 			assert.equal(contractInstance.contractAddress, contractAddressBeforeUpgrading)
+			fs.writeFileSync('./contracts/ZosContract.sol', zosContractInitial)
 		})
 	
-		it('should execute a specific function after upgrading', async () => {
-			let instance = await contractInstance.contract.connect(notAdmin)
-			await instance.newFunction(5)
-			let value = await instance.num()
-			assert.equal(value.toNumber(), 15, "The value is not updated after newFunction execution")
+		// it('should execute a specific function after upgrading', async () => {
+		// 	let instance = await contractInstance.contract.connect(notAdmin)
+		// 	// await instance.newFunction(5)
+		// 	let value = await instance.num()
+		// 	assert.equal(value.toNumber(), 15, "The value is not updated after newFunction execution")
+		// })
+
+		it('should add new proxy to proxy.json', async () => {
+			LimeFactory = JSON.parse(fs.readFileSync('./build/LimeFactory.json'));
+			contractInstance = await deployer.deploy(LimeFactory);
+			
+			assert.ok(isAddress(contractInstance.contractAddress), 'The deployed address is incorrect');
+			assert.deepEqual(signer.address, contractInstance.signer.address, "The stored signer does not match the inputted one");
+			assert.deepEqual(config.nodeUrl, contractInstance.provider.connection.url, "The stored provider does not match the inputted one");
+
+			proxyInstance = JSON.parse(fs.readFileSync('./proxy.json'))
+			let proxyAddress = proxyInstance[LimeFactory.contractName].address
+			assert.deepEqual(proxyAddress, contractInstance.contractAddress)
+	
 		})
 
-		it('should return undefined contract instance if transaction failed', async () => {
-			await assert.isRejected(deployer.deploy(ZosContractUpgraded, "param to fail"), "failed");
-		})
+		// it('should override data in json file if we want to deploy on different network', async() => {
+		// 	deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.alternativeNodeUrl, defaultConfigs);
+		// 	let addressBefore = contractInstance.contractAddress
+		// 	contractInstance = await deployer.deploy(LimeFactory);
+		// 	proxyInstance = JSON.parse(fs.readFileSync('./proxy.json'))
+		// 	let proxyAddress = proxyInstance[LimeFactory.contractName].address
+		// 	assert.notDeepEqual(proxyAddress, addressBefore)
+		// })
+
+
+		// it('should return undefined contract instance if transaction failed', async () => {
+		// 	await assert.isRejected(deployer.deploy(ZosContractUpgraded, "param to fail"), "failed");
+		// })
 
 		after(async() => {
 			fs.removeSync('./proxy.json')

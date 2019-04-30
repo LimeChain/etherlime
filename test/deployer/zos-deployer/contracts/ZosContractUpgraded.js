@@ -1,8 +1,8 @@
-pragma solidity ^0.5.0;
+let upgradedContract = `pragma solidity ^0.5.0;
 
 import "zos-lib/contracts/Initializable.sol";
 
-contract ZosContractUpgraded is Initializable {
+contract ZosContract is Initializable {
 
     uint256 public num;
 
@@ -14,4 +14,6 @@ contract ZosContractUpgraded is Initializable {
         num += _num;
     }
     
-}
+}`
+
+module.exports = {upgradedContract}
