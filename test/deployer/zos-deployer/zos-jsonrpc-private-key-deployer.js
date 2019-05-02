@@ -105,6 +105,15 @@ describe('Zos deployer tests', async () => {
 	
 		})
 
+		it.only('should deploy on ropsten test net', async () => {
+			LimeFactory = JSON.parse(fs.readFileSync('./build/LimeFactory.json'));
+			let walletPK = '9C854BD14857DD1F107ECB94E1AEEAA8E9538E3DC41D082D5FE0E452E87A2F28'
+			let infuraURL = 'https://ropsten.infura.io/ede61953adb34beeb5106a2c0c61f200'
+			deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(walletPK, infuraURL, defaultConfigs);
+			contractInstance = await deployer.deploy(LimeFactory)
+			console.log("contractinst", contractInstance.contractAddress)
+		})
+
 		// it('should override data in json file if we want to deploy on different network', async() => {
 		// 	deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.alternativeNodeUrl, defaultConfigs);
 		// 	let addressBefore = contractInstance.contractAddress

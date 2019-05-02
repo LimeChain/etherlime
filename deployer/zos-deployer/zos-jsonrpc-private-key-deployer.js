@@ -97,11 +97,11 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
 
     async _setTransactionParams() {
         let txParams = {} 
-        txParams.from = this.signer.address
-
+        let wallet = await ZWeb3.eth().accounts.wallet.add(this.signer.privateKey)
+        txParams.from = wallet.address
         txParams = await this._overrideDeployTransactionConfig(txParams)
         txParams.gas = txParams.gasLimit // Zos deployer requires gas property, not gasLimit
-
+        Contracts.artifactDefaults = txParams
 		return txParams 
     }
 
