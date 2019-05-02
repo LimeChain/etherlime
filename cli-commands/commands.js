@@ -277,7 +277,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'test [path] [timeout] [skip-compilation] [gas-report] [solc-version] [output] [port]',
+		command: 'test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version] [output] [port]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -296,6 +296,11 @@ const commands = [
 				describe: 'Enables Gas reporting future that will show Gas Usage after each test.',
 				type: 'boolean',
 				default: 'false'
+			});
+
+			yargs.positional('runs', {
+				describe: 'enables the optimizer and runs it the specified number of times',
+				type: 'number'
 			});
 
 			yargs.positional('solc-version', {

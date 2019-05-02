@@ -6,7 +6,7 @@ Syntax
 
 ::
 
-    etherlime test [path] [timeout] [skip-compilation] [gas-report] [solc-version] [output] [port]
+    etherlime test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version] [output] [port]
 
 Parameters:
 
@@ -14,6 +14,7 @@ Parameters:
 * ``timeout`` - [Optional] This parameter defines the test timeout in milliseconds. Defaults to 2000 ms.
 * ``skip-compilation`` - [Optional] This parameter controls wether a compilation will be ran before the tests are started. Default: false.
 * ``gas-report`` - [Optional] Enables Gas reporting future that will show Gas Usage after each test. Default: false.
+* ``runs`` - [Optional] By specifying ``runs`` between 1 and 999 you enabled the optimizer and set how many times the optimizer will be run. By default the optimizer is not enabled.
 * ``solc-version`` - [Optional] By specifying ``solc-version`` you can set the version of the solc which will be used for compiling the smart contracts. By default it use the solc version from the node_modules folder.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 * ``port`` - [Optional] The port that the etherlime ganache is runing. Used for wiring up the default accounts correctly. Defaults to 8545

@@ -33,22 +33,22 @@ let customTimeout = 12000;
 
         it('should execute test cli command with gas-report flag on', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isFulfilled(test.run(path, defaultTimeout, false, false, true, 8545))
-            sinon.assert.calledWith(etherlimeTestSpy, [path], defaultTimeout, false, false, true, 8545)
+            await assert.isFulfilled(test.run(path, defaultTimeout, false, false, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], defaultTimeout, false, false, false, true, 8545)
             etherlimeTestSpy.restore();
         });
 
         it('should execute test cli command with timeout flag on', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isFulfilled(test.run(path, customTimeout, false, false, true, 8545))
-            sinon.assert.calledWith(etherlimeTestSpy, [path], customTimeout, false, false, true, 8545)
+            await assert.isFulfilled(test.run(path, customTimeout, false, false, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], customTimeout, false, false, false, true, 8545)
             etherlimeTestSpy.restore();
         });
 
         it('should execute test cli command with gas-report flag on and report properly with failed test', async function() {
             let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
-            await assert.isRejected(test.run(pathToTestThatWithFail, defaultTimeout, false, false, true, 8545))
-            sinon.assert.calledWith(etherlimeTestSpy, [pathToTestThatWithFail], defaultTimeout, false, false, true, 8545)
+            await assert.isRejected(test.run(pathToTestThatWithFail, defaultTimeout, false, false, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [pathToTestThatWithFail], defaultTimeout, false, false, false, true, 8545)
             etherlimeTestSpy.restore();
         });
     
@@ -73,6 +73,13 @@ let customTimeout = 12000;
         it('should execute test cli command if path includes ./test folder', async function(){
             fs.mkdirSync('./test');
             await assert.isFulfilled(test.run(`${process.cwd()}/test`))
+        })
+
+        it('should execute test cli command with runs flag', async function() {
+            let etherlimeTestSpy = sinon.spy(etherlimeTest, "run")
+            await assert.isFulfilled(test.run(path, defaultTimeout, false, 999, false, true, 8545))
+            sinon.assert.calledWith(etherlimeTestSpy, [path], defaultTimeout, false, 999, false, true, 8545)
+            etherlimeTestSpy.restore();
         })
 
     

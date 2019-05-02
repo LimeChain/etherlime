@@ -3,13 +3,13 @@ let etherlimeCoverage = require('./etherlime-coverage');
 let dir = require('node-dir');
 let Config = require('./../compiler/etherlime-config');
 
-const run = async (path, timeout, skipCompilation, solcVersion, enableGasReport, port) => {
+const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasReport, port) => {
 
 	var config = Config.default();
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		await etherlimeTest.run([path], timeout, skipCompilation, solcVersion, enableGasReport, port);
+		await etherlimeTest.run([path], timeout, skipCompilation, runs, solcVersion, enableGasReport, port);
 
 		return;
 	}
@@ -22,7 +22,7 @@ const run = async (path, timeout, skipCompilation, solcVersion, enableGasReport,
 
 	const files = await getFiles(testDirectory, config);
 
-	await etherlimeTest.run(files, timeout, skipCompilation, solcVersion, enableGasReport, port);
+	await etherlimeTest.run(files, timeout, skipCompilation, runs, solcVersion, enableGasReport, port);
 }
 
 const getFiles = async function (testDirectory, config) {
