@@ -16,7 +16,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
 	 */
 	constructor(privateKey, nodeUrl, defaultOverrides) {
         super(privateKey, nodeUrl, defaultOverrides);
-        ZWeb3.initialize(this.nodeUrl, 'web3.js');
+        ZWeb3.initialize(this.nodeUrl);
     }
 
     
@@ -44,7 +44,6 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             proxyInstance = await this.wrapDeployedContract(contract, proxyInstance.address);
 
         } catch (e) {
-            console.log("e", e)
             // if a transaction failed we need to customize params for the table result
             let { transaction, transactionReceipt } = await this._prepareTransactionStatus(project);
             await this._postValidateTransaction(contract, transaction, transactionReceipt);
@@ -57,7 +56,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
     async _instantiateProject() {
         let projectName = path.parse(process.cwd()).name; // the name of the project is needed to instantiate it
         let transactionParams = await this._setTransactionParams();
-        return new SimpleProject(projectName, undefined, transactionParams);
+        return new SimpleProject(projectName, transactionParams);
     }
 
 
