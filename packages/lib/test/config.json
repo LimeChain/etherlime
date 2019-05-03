@@ -1,0 +1,23 @@
+{
+    "infuraAPIKey": "Up5uvBHSCSqtOmnlhL87",
+    "infuraNetwork": "rinkeby",
+    "infuraPrivateKey": "09d63a68dafa08dffee686e044f8dc4fe4fc368011d757edf68de4fe8af89f82",
+    "randomPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
+    "randomAddress": "0xda8a06f1c910cab18ad187be1faa2b8606c2ec86",
+    "randomDeployedAddress": "0x54a298ee9fccbf0ad8e55bc641d3086b81a48c41",
+    "randomTxHash": "0xbbba1af7de2eaf6835432d3119616201005d603ce49ab52655b3bf51ae9c31d8",
+    "defaultGasPrice": 50000000000,
+    "defaultGasLimit": 4700000,
+    "defaultChainId": 0,
+    "nodeUrl": "http://localhost:8545/",
+    "alternativeNodeUrl": "http://localhost:9545/",
+    "ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
+    "ganacheCliPort": 8545,
+    "alternativePort": 9545,
+    "infuraForkAPIKey": "abca6d1110b443b08ef271545f24b80d",
+    "alternativeApiKey": "fdcadd1410c443e08ff281545f24b70a",
+    "specificBlockNumber": 2,
+    "deployedContractAddress": "0x78ed7A34D67fB3eAc745e7af78aE1bcA770C26de",
+    "localPrivateKey": "0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8"
+  }
+  
