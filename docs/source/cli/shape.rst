@@ -20,6 +20,7 @@ Follow up the steps to set up your project here:
 
 * Angular:  https://github.com/LimeChain/etherlime-shape-angular/blob/master/README.md
 * React: https://github.com/LimeChain/etherlime-shape-react/blob/master/README.md
+* Monoplasma Demo: https://github.com/LimeChain/etherlime-shape-monoplasma
 
 
 Running this command will create integrated blockchain project with all modules and settings needed.

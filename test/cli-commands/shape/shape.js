@@ -33,6 +33,12 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./web'))
     });
 
+    it('should shape new dApp with Monoplasma shape', async () => {
+        let expectedOutput = 'Shaping finished successful';
+        let childProcess = await runCmdHandler('etherlime shape monoplasma', expectedOutput)
+        assert.include(childProcess.output, expectedOutput)
+        assert(fs.existsSync('./demo'))
+    });
 
     afterEach(async function () {
         fs.removeSync('./contracts')
@@ -46,8 +52,17 @@ describe('Shape cli command', () => {
         fs.removeSync('./package-lock.json');
         fs.removeSync('./README.md');
         fs.removeSync('./.git');
-        fs.removeSync('./.etherlime-store')
-        fs.removeSync('./.gitignore')
+        fs.removeSync('./.etherlime-store');
+        fs.removeSync('./.gitignore');
+        fs.removeSync('./demo');
+        fs.removeSync('./src');
+        fs.removeSync('./start_operator.js');
+        fs.removeSync('./start_validator.js');
+        fs.removeSync('./strings');
+        fs.removeSync('./99999_addresses.txt');
+        fs.removeSync('./copy-abi-to-ui.js');
+        fs.removeSync('./defaultServers.json');
+
         process.chdir(currentDir);
     });
 
