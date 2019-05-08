@@ -64,21 +64,15 @@ describe('Init cli command', () => {
     });
 
     it('should throw error if contract example file already exists', async () => {
-        // fs.removeSync('./package-lock.json');
-        // fs.removeSync('./node_modules');
         await assert.isRejected(init.run(), contractError, "Expected throw not received");
     });
 
     it('should throw error if deployment example file already exists', async () => {
-        // fs.removeSync('./package-lock.json');
-        // fs.removeSync('./node_modules');
         fs.removeSync(contractsDir);
         await assert.isRejected(init.run(), deploymentError, "Expected throw not received");
     });
 
     it('should throw error if test example file already exists', async () => {
-        // fs.removeSync('./package-lock.json');
-        // fs.removeSync('./node_modules');
         fs.removeSync(contractsDir);
         fs.removeSync(deploymentDir);
         await assert.isRejected(init.run(), testError, "Expected throw not received");
@@ -90,8 +84,6 @@ describe('Init cli command', () => {
     });
 
     it('should not override .gitignore file if it was already created', async () => {
-        // fs.removeSync('./package-lock.json');
-        // fs.removeSync('./node_modules');
         fs.removeSync(deploymentDir);
         fs.removeSync(testDir);
         fs.removeSync(contractsDir);
@@ -177,23 +169,17 @@ describe('Init cli command with zkProof optional parameter', () => {
 
 
     it('should throw error if contract example file already exists', async () => {
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await assert.isRejected(init.run(zkProofEnabled), contractError, "Expected throw not received");
     });
 
     it('should throw error if deployment example file already exists', async () => {
         fs.removeSync(contractsDir);
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await assert.isRejected(init.run(zkProofEnabled), deploymentError, "Expected throw not received");
     });
 
     it('should throw error if test example file already exists', async () => {
         fs.removeSync(contractsDir);
         fs.removeSync(deploymentDir);
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await assert.isRejected(init.run(zkProofEnabled), testError, "Expected throw not received");
     });
 
@@ -201,8 +187,6 @@ describe('Init cli command with zkProof optional parameter', () => {
         fs.removeSync(deploymentDir);
         fs.removeSync(testDir);
         fs.removeSync(contractsDir);
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await assert.isRejected(init.run(zkProofEnabled), zkProofError, "Expected throw not received");
     });
 
@@ -212,8 +196,6 @@ describe('Init cli command with zkProof optional parameter', () => {
         fs.removeSync(testDir);
         fs.removeSync(contractsDir);
         fs.removeSync(`${zkProofDir}/${circuitsDir}`);
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await assert.isRejected(init.run(zkProofEnabled), expectedError, "Expected throw not received");
     });
 
@@ -228,8 +210,6 @@ describe('Init cli command with zkProof optional parameter', () => {
         fs.removeSync(contractsDir);
         fs.removeSync('./.gitignore');
         fs.writeFileSync('.gitignore', "myCustomFile");
-        fs.removeSync('./package-lock.json');
-        fs.removeSync('./node_modules');
         await init.run();
         let file = fs.readFileSync('.gitignore', "utf8");
         assert.notInclude('build')
