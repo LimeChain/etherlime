@@ -225,7 +225,7 @@ describe('Ganache cli command', () => {
 	});
 });
 
-describe.only('Ganache fork command', () => {
+describe('Ganache fork command', () => {
 
 	describe('Ganache server forking from local RPC network - straight test', async () => {
 		it('should start ganache server forking from specific network', async () => {
