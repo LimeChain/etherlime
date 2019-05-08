@@ -227,13 +227,11 @@ describe('Ganache cli command', () => {
 
 describe.only('Ganache fork command', () => {
 
-	describe.only('Ganache server forking from local RPC network - straight test', async () => {
+	describe('Ganache server forking from local RPC network - straight test', async () => {
 		it('should start ganache server forking from specific network', async () => {
 
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
-			console.log("child output", childResponse.output)
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14);
-			console.log("raw", rawOutputNetworkData)
 			const forkedNetwork = rawOutputNetworkData[0].split(/:(.+)/)[1].trim();
 			assert.equal(forkedNetwork, LOCAL_NETWORK_FORK_ADDRESS, 'The network that is forked from does not match');
 

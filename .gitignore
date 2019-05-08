@@ -1,1 +1,4 @@
 node_modules
+.nyc_output
+.etherlime-store
+coverage.lcov

@@ -39,10 +39,6 @@
 		{
 			"secretKey": "0xfac0bc9325ad342033afe956e83f0bf8f1e863c1c3e956bc75d66961fe4cd186",
 			"balance": "0x90000000000000000000000000000000"
-		},
-		{
-			"secretKey": "0xb96e9ccb774cc33213cbcb2c69d3cdae17b0fe4888a1ccd343cbd1a17fd98b18",
-			"balance": "0x90000000000000000000000000000000"
 		}
 	],
 	"defaultPort": 8545,
