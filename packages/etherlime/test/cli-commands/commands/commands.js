@@ -15,9 +15,11 @@ const commands = require('../../../cli-commands/commands');
 
 describe('root calling cli commands', () => {
 
-    it('should throw err if init cli command failed', async function () {
+    it.only('should throw err if init cli command failed', async function () {
         let expectedOutput = "Command failed:"
+        console.log("working dir", process.cwd())
         let childProcess = await runCmdHandler(`etherlime init`, expectedOutput);
+        console.log("childProcess", childProcess)
         assert.include(JSON.stringify(childProcess), expectedOutput)
     });
 
