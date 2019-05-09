@@ -8,6 +8,8 @@ install:
   - lerna link
   - npm link
   - cd packages/etherlime
+  - lerna bootstrap
+  - lerna link
   - npm link
   - cd ../..
 services:
