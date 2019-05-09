@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc --check-coverage --lines 95 mocha 'test/*.js'"
+    "test": "nyc --temp-dir '../../.nyc_output' --check-coverage --lines 95 mocha 'test/*.js'"
   },
   "keywords": [],
   "author": "",
