@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "lerna run test --concurrency=1",
-    "test:ci": "nyc lerna run --parallel test",
+    "test:ci": "nyc lerna run --concurrency=1 test",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
