@@ -6,12 +6,6 @@
   "scripts": {
     "test": "nyc --check-coverage --lines 95 mocha 'test/*.js'"
   },
-  "nyc": {
-    "exclude": [
-      "etherlime/**/*.js",
-      "test/*.js"
-    ]
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
