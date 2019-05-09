@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "nyc --temp-dir '../../.nyc_output' --check-coverage --lines 95 mocha 'test/*.js'"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
