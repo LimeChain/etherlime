@@ -6,6 +6,7 @@ before_install:
 install:
   - lerna bootstrap
   - lerna link
+  - npm link
 services:
   - docker
 script:
