@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc --check-coverage --lines 95 mocha 'test/*.js'"
+    "test": "nyc --temp-dir '../../.nyc_output' --check-coverage --lines 95 mocha 'test/*.js'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "assert": "^1.4.1",
     "nyc": "^14.1.0",
-    "sinon": "^7.1.0"
+    "sinon": "^7.1.0",
+    "mocha": "5.2.0"
   }
 }

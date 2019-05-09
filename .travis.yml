@@ -12,4 +12,4 @@ script:
   - sleep 10
   - npm test
 after_success: 
-  - lerna run coverage
+  - npm run coverage
