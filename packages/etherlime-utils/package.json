@@ -8,7 +8,8 @@
   },
   "nyc": {
     "exclude": [
-      "etherlime/cli-commands/util.js"
+      "etherlime/**/*.js",
+      "test/*.js"
     ]
   },
   "keywords": [],
