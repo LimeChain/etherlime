@@ -4,9 +4,10 @@ const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID
 
-describe('etherlime-ide cli command', () => {
+describe.only('etherlime-ide cli command', () => {
 
     before(async function () {
+        console.log("cwd", process.cwd())
         fs.mkdirSync('./contracts');
         fs.copyFileSync('./test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
     })
