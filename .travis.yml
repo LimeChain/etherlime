@@ -12,6 +12,7 @@ install:
   - cd ../..
   - cd packages/etherlime
   - npm link etherlime-utils
+  - npm link
   - cd ../..
 services:
   - docker
