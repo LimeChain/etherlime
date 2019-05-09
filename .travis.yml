@@ -7,10 +7,11 @@ install:
   - lerna bootstrap
   - lerna link
   - npm link
-  - cd packages/etherlime
-  - lerna bootstrap
-  - lerna link
+  - cd packages/etherlime-utils
   - npm link
+  - cd ../..
+  - cd packages/etherlime
+  - npm link etherlime-utils
   - cd ../..
 services:
   - docker
