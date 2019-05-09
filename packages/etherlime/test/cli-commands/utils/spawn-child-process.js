@@ -13,7 +13,6 @@ function spawnLinuxProcess(cmd) {
 		}
 		cmdCommands.push(command);
 	}
-	console.log("process in process1", process.cwd())
 	return spawn(cmdCommands[0], cmdCommands.slice(1));
 }
 
@@ -24,9 +23,8 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 		try {
 			process = spawnProcess(cmd);
-			console.log("process in process2", process.cwd())
 		} catch (e) {
-			console.error(`Error trying to execute command ${cmd} in directory ${dir}`);
+			console.error(`Error trying to execute command ${cmd} in directory`);
 			console.error(e);
 			console.log('error', e.message);
 			console.log('Finished');

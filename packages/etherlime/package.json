@@ -55,8 +55,7 @@
       "solc": "^0.5.1",
       "tcp-port-used": "^1.0.1",
       "yargs": "11.0.0",
-      "etherlime-utils": "1.0.0",
-      "etherlime": "1.1.2"
+      "etherlime-utils": "1.0.0"
     },
     "bin": {
       "etherlime": "./cli.js"

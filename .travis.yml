@@ -4,10 +4,12 @@ language:
 before_install:
   - npm install -g lerna
 install:
-  - npm install
   - lerna bootstrap
   - lerna link
   - npm link
+  - cd packages/etherlime
+  - npm link
+  - cd ../..
 services:
   - docker
 script:
