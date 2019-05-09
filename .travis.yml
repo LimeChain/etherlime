@@ -4,6 +4,7 @@ language:
 before_install:
   - npm install -g lerna
 install:
+  - npm install
   - lerna bootstrap
   - lerna link
   - npm link
