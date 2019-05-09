@@ -3,13 +3,12 @@ language:
 before_install:
   - npm install -g lerna
 install:
-  - lerna bootstrap
-  - lerna link
+  - ./bin/travis-bootstrap.sh
 services:
   - docker
 script:
   - etherlime ganache &> /dev/null &
   - sleep 10
-  - npm test
+  - ./bin/travis-test.sh
 after_success: 
   - lerna run coverage
