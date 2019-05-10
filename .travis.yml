@@ -9,7 +9,7 @@ install:
   - npm link
   - cd ..
   - cd etherlime
-  - npm link etherlime-utils@1.0.0
+  - npm link etherlime-utils
   - npm link
   - cd ../..
   - lerna bootstrap
