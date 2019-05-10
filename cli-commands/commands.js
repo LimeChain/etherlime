@@ -113,7 +113,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret] [compile] [runs] [output]',
+		command: 'deploy [file] [network] [secret] [compile] [runs] [output] [apiKey]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -148,12 +148,16 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+			yargs.positional('apiKey', {
+				describe: 'Etherscan apiKey for contract verification API',
+				type: 'string'
+			});
 		},
 		commandProcessor: async (argv) => {
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output, argv.apiKey);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -560,7 +564,7 @@ const zkCommandProcessor = async (argv) => {
 	// check command and optional scenarios:
 	switch (argv.zkCommand) {
 		case 'compile':
-		await circuitCompile.run();
+			await circuitCompile.run();
 			break;
 		case 'setup':
 			await trustedSetup.run();
@@ -587,7 +591,7 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.verifierKey) {
 				verifierKey = argv.verifierKey;
 			}
-			
+
 			await verifier.run(publicSignals, proof, verifierKey);
 			break;
 		case 'generate':
@@ -604,7 +608,7 @@ const zkCommandProcessor = async (argv) => {
 				proof = argv.proof;
 			}
 			await generateCall.run(publicSignals, proof);
-			break;		
+			break;
 	}
 }
 

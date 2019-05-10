@@ -5,6 +5,7 @@ const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
 const logger = require('./../../logger-service/logger-service').logger;
 const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
+const Verifier = require('../verifier/verifier');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -21,18 +22,18 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
+const run = async (deploymentFilePath, network, secret, silent, compile, runs, output, apiKey) => {
 	if (compile && typeof (runs) === 'number') {
 		await compiler.run('.', runs);
 	} else if (compile) {
 		await compiler.run('.');
 	}
-
 	const initialRecords = logsStore.getHistory();
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {
-		await deployMethod(network, secret);
+		global.Verifier = new Verifier();
+		await deployMethod(network, secret, apiKey);
 		logger.log(`Your deployment script finished successfully!`);
 	} catch (e) {
 		if (!silent) {

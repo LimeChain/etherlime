@@ -19,8 +19,9 @@ const printReportTable = (recordActions) => {
 			{ 'Status': `${getReadableStatus(action.status)}` },
 			{ 'Gas Price': `${ethersUtils.formatUnits(action.gasPrice, 'gwei')} Gwei` },
 			{ 'Gas Used': `${action.gasUsed}` },
-			{ 'NetworkID': action.networkID ? `${action.networkID}` : `Not recorded.`},
-			{ 'Result': `${action.result}` }
+			{ 'NetworkID': action.networkID ? `${action.networkID}` : `Not recorded` },
+			{ 'Result': `${action.result}` },
+			{ 'Contract Verification': action.verification ? `${getVerificationStatus(action.verification)}` : `Not recorded` }
 		);
 
 		if (recordActions.length > 1 && actionIndex < recordActions.length) {
@@ -38,6 +39,14 @@ const getReadableStatus = (status) => {
 
 	return `${colors.colorFailure('Fail')}`
 };
+
+const getVerificationStatus = (status) => {
+	if (status === 'Success') {
+		return `${colors.colorSuccess(status)}`
+	}
+
+	return `${colors.colorFailure(status)}`
+}
 
 module.exports = {
 	printReportTable,

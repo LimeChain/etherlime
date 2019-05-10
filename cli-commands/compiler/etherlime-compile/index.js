@@ -107,7 +107,9 @@ let compile = async (sources, options) => {
 					unlinked_binary: "0x" + contract.evm.bytecode.object,
 					compiler: {
 						"name": "solc",
-						"version": solc.version()
+						"version": solc.version(),
+						"optimizer": options.solc.optimizer.enabled,
+						"runs": options.solc.optimizer.runs
 					}
 				}
 				contract_definition.abi = orderABI(contract_definition);
@@ -221,7 +223,7 @@ compile.necessary = async (options) => {
 			resolve(object);
 		}
 		catch (e) {
-				return reject(e);
+			return reject(e);
 		}
 
 	});
@@ -238,7 +240,7 @@ compile.with_dependencies = async (options) => {
 		const config = Config.default().merge(options);
 		let result;
 		try {
-				result = await Profiler.required_sources(config.with({
+			result = await Profiler.required_sources(config.with({
 				paths: options.paths,
 				base_path: options.contracts_directory,
 				resolver: options.resolver

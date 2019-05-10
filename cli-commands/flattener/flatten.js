@@ -2,13 +2,13 @@
 const fs = require('fs-extra');
 const path = require('path');
 let Profiler = require("../compiler/etherlime-compile/profiler");
-let {resolver, supplier} = require('./config.js')
+let { resolver, supplier } = require('./config.js')
 
 const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files
 
 const run = async (file, solcVersion) => {
-	if(solcVersion) {
+	if (solcVersion) {
 		supplier.config.version = solcVersion
 	}
 
@@ -21,7 +21,24 @@ const run = async (file, solcVersion) => {
 	} catch (e) {
 		throw new Error(e.message);
 	}
-	
+
+
+};
+
+const runWithoutWriteFiles = async (file, solcVersion) => {
+	if (solcVersion) {
+		supplier.config.version = solcVersion
+	}
+
+	try {
+		let resolvedFiles = await resolveSources(`${file}`)
+		let resolvedPaths = resolvePaths(resolvedFiles)
+		let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+		return returnFiles(file, resolvedFiles, orderedPaths)
+	} catch (e) {
+		throw new Error(e.message);
+	}
+
 
 };
 
@@ -31,7 +48,7 @@ const resolveSources = async (file) => {
 	let resolvedFiles
 	try {
 		resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
-	} catch(e) {
+	} catch (e) {
 		throw e
 	}
 
@@ -45,22 +62,22 @@ const resolvePaths = (files) => {
 //sort files according imported dependencies; contracts with no imports are added first
 const orderPaths = (resolvedFiles, resolvedPaths) => {
 	let orderedPaths = new Array();
-	while(resolvedPaths.length > orderedPaths.length){
-		
-		for(let i = 0; i < resolvedPaths.length; i++) {
+	while (resolvedPaths.length > orderedPaths.length) {
+
+		for (let i = 0; i < resolvedPaths.length; i++) {
 			let currentPath = resolvedPaths[i]
 			let imports = resolvedFiles[currentPath].body.match(importRegex)
-			
-			if(!imports) {
+
+			if (!imports) {
 				pushPath(orderedPaths, currentPath)
 				continue
 			}
 
 			let importsCount = countOrderedImports(imports, resolvedPaths, orderedPaths)
-			if(importsCount === imports.length) {
-				pushPath(orderedPaths, currentPath)	
+			if (importsCount === imports.length) {
+				pushPath(orderedPaths, currentPath)
 			}
-		}	
+		}
 	}
 
 	return orderedPaths
@@ -69,19 +86,19 @@ const orderPaths = (resolvedFiles, resolvedPaths) => {
 //counts if all imported sources in current file has already been ordered
 const countOrderedImports = (imports, resolvedPaths, orderedPaths) => {
 	let counter = 0;
-		for(let i = 0; i < imports.length; i++) {
-			let currentImport = imports[i].replace(/[\n\'\"\;]/g, '') //removes quotes and semicolon
-			currentImport = path.basename(currentImport, '.sol') //extract the base name of file
-			let fullPath = findFullPath(resolvedPaths, currentImport) //find full path
-			if(orderedPaths.includes(fullPath)){
-				counter++
-			}
+	for (let i = 0; i < imports.length; i++) {
+		let currentImport = imports[i].replace(/[\n\'\"\;]/g, '') //removes quotes and semicolon
+		currentImport = path.basename(currentImport, '.sol') //extract the base name of file
+		let fullPath = findFullPath(resolvedPaths, currentImport) //find full path
+		if (orderedPaths.includes(fullPath)) {
+			counter++
 		}
+	}
 	return counter
 }
 
 const pushPath = (orderedPaths, currentPath) => {
-	if(!orderedPaths.includes(currentPath)){
+	if (!orderedPaths.includes(currentPath)) {
 		orderedPaths.push(currentPath)
 	}
 }
@@ -95,31 +112,48 @@ const recordFiles = (fileName, resolvedFiles, orderedPaths) => {
 	orderedPaths.forEach(dependencyPath => {
 		let content = resolvedFiles[dependencyPath].body
 		content = removeVersionAndImports(content)
-
 		fs.appendFileSync(flatFileName, content)
 	})
 
 	orderedPaths = []
 }
 
+const returnFiles = (fileName, resolvedFiles, orderedPaths) => {
+	let sourceCode = returnSourceCode(resolvedFiles, fileName)
+
+	orderedPaths.forEach(dependencyPath => {
+		let content = resolvedFiles[dependencyPath].body
+		content = removeVersionAndImports(content)
+		sourceCode += content;
+	})
+
+	orderedPaths = [];
+	return sourceCode
+}
+
 const createFolderAndFile = (resolvedFiles, fileName, flatFileName) => {
 	let solidityVersion = resolvedFiles[`./contracts/${fileName}`].body.match(versionRegex) //takes pragma solidity version
-	
-	if(!fs.existsSync('./flat')){
+
+	if (!fs.existsSync('./flat')) {
 		fs.mkdirSync('./flat')
 	}
 
 	fs.writeFileSync(flatFileName, solidityVersion[0])
 }
 
+const returnSourceCode = (resolvedFiles, fileName) => {
+	let solidityVersion = resolvedFiles[`${fileName}`].body.match(versionRegex) //takes pragma solidity version
+	return solidityVersion[0]
+}
+
 const removeVersionAndImports = (fileContent) => {
-    return fileContent.replace(versionRegex, '').replace(importRegex, '') //removes pragma solidity version and imported files
+	return fileContent.replace(versionRegex, '').replace(importRegex, '') //removes pragma solidity version and imported files
 }
 
 const findFullPath = (resolvedPaths, importPath) => {
-	for(let i = 0; i < resolvedPaths.length; i++) {
+	for (let i = 0; i < resolvedPaths.length; i++) {
 		let basePath = path.basename(resolvedPaths[i], '.sol')
-		if(basePath === importPath){
+		if (basePath === importPath) {
 			return resolvedPaths[i]
 		}
 	}
@@ -127,5 +161,6 @@ const findFullPath = (resolvedPaths, importPath) => {
 
 
 module.exports = {
-	run
+	run,
+	runWithoutWriteFiles
 }

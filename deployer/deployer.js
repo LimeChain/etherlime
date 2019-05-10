@@ -44,6 +44,10 @@ class Deployer {
 		this.defaultOverrides = defaultOverrides;
 	}
 
+	setVerifierApiKey(apiKey) {
+		this.defaultOverrides.apiKey = apiKey;
+	}
+
 	_validateInput(signer, provider, defaultOverrides) {
 		if (!(isSigner(signer))) {
 			throw new Error('Passed signer is not valid signer instance of ethers Wallet');
@@ -79,6 +83,38 @@ class Deployer {
 
 		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
 		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
+
+		return deploymentResult;
+	}
+
+
+	async deployAndVerify(contract, libraries) {
+		if (!this.defaultOverrides.apiKey) {
+			throw new Error('Please provide Etherscan API key!')
+		}
+		const deploymentArguments = Array.prototype.slice.call(arguments);
+		deploymentArguments.splice(0, 2);
+
+		await this._preValidateArguments(contract, deploymentArguments);
+
+		let contractCopy = JSON.parse(JSON.stringify(contract));
+
+		contractCopy.bytecode = await this._prepareBytecode(libraries, contractCopy.bytecode);
+
+		let deployTransaction = await this._prepareDeployTransaction(contractCopy, deploymentArguments);
+		deployTransaction = await this._overrideDeployTransactionConfig(deployTransaction);
+
+		const transaction = await this._sendDeployTransaction(deployTransaction);
+
+		const transactionReceipt = await this._waitForDeployTransaction(transaction);
+
+		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
+
+		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
+
+		const verification = await Verifier.verifySmartContract(deploymentResult, deploymentArguments, libraries, this.defaultOverrides);
+
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, verification);
 
 		return deploymentResult;
 	}
@@ -202,9 +238,9 @@ class Deployer {
 	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
-	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, verification) {
 		const network = await this.provider.getNetwork();
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result);
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, verification);
 	}
 
 	/**
