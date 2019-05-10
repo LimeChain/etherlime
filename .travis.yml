@@ -5,6 +5,8 @@ before_install:
   - npm install -g lerna
   - npm install -g nyc
 install:
+  - lerna bootstrap
+  - lerna link
   - cd packages/etherlime-utils
   - npm link
   - cd ..
@@ -12,9 +14,6 @@ install:
   - npm link etherlime-utils
   - npm link
   - cd ../..
-  - lerna bootstrap
-  - lerna link
-  - npm link
 services:
   - docker
 script:
