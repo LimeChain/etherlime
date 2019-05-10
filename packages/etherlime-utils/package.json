@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "assert": "^1.4.1",
     "nyc": "^14.1.0",
     "mocha": "5.2.0",

@@ -4,15 +4,15 @@ language:
 before_install:
   - npm install -g lerna
   - npm install -g nyc
+  # Repo for Yarn
+  - sudo apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
 install:
   - lerna bootstrap
-  - lerna link
   - cd packages/etherlime-utils
-  - npm link
-  - cd ..
-  - cd etherlime
-  - npm link etherlime-utils
-  - npm link
+  - yarn link
   - cd ../..
 services:
   - docker
