@@ -3,12 +3,13 @@ language:
 - node_js:
 before_install:
   - npm install -g lerna
+  - npm install -g nyc
 install:
   - cd packages/etherlime-utils
   - npm link
   - cd ..
   - cd etherlime
-  - npm link etherlime-utils
+  - npm link etherlime-utils@1.0.0
   - npm link
   - cd ../..
   - lerna bootstrap
@@ -19,6 +20,6 @@ services:
 script:
   - etherlime ganache &> /dev/null &
   - sleep 10
-  - npm test
+  - lerna run test
 after_success: 
-  - lerna run coverage
+  - nyc report --reporter=text-lcov > coverage.lcov && codecov
