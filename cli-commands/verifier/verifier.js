@@ -30,7 +30,7 @@ class Verifier {
 		let data = this._constructRequestData();
 
 		const response = await this._sendVerificationRequest(data);
-		return await this._checkVerification(response);
+		return await this._checkVerificationStatus(response);
 	}
 
 	async _flattenSourceCode(contractPath) {
@@ -126,7 +126,7 @@ class Verifier {
 
 	}
 
-	async _checkVerification(response) {
+	async _checkVerificationStatus(response) {
 		let params = {
 			guid: response.result,
 			module: "contract", // DO NOT CHANGE
