@@ -5,6 +5,7 @@ sudo: required
 before_install:
   - npm install -g lerna
   - npm install -g nyc
+  - npm install -g codecov
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
   - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
