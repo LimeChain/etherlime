@@ -22,6 +22,6 @@ services:
 script:
   - etherlime ganache &> /dev/null &
   - sleep 10
-  - lerna run test
+  - travis_wait 50 lerna run test
 after_success: 
   - nyc report --reporter=text-lcov > coverage.lcov && codecov
