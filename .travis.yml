@@ -12,6 +12,8 @@ install:
   - cd ../..
   - cd packages/etherlime
   - npm link etherlime-utils
+  - lerna bootstrap
+  - lerna link
   - npm link
   - cd ../..
 services:
