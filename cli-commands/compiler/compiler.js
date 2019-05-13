@@ -56,14 +56,14 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	if (deleteCompiledFiles) {
-		if (fs.existsSync(compileOptions.contracts_build_directory)) {
-			const files = fs.readdirSync(compileOptions.contracts_build_directory);
-			for (const file of files) {
-				await fs.unlinkSync(path.join(compileOptions.contracts_build_directory, file));
-			}
+
+	if (deleteCompiledFiles && fs.existsSync(compileOptions.contracts_build_directory)) {
+		const files = fs.readdirSync(compileOptions.contracts_build_directory);
+		for (const file of files) {
+			await fs.unlinkSync(path.join(compileOptions.contracts_build_directory, file));
 		}
 	}
+
 
 	return await compilePromise(compileOptions, quiet);
 };
