@@ -45,6 +45,12 @@ class Deployer {
 	}
 
 	setVerifierApiKey(apiKey) {
+		if (!this.defaultOverrides) {
+			this.defaultOverrides = {
+				apiKey
+			}
+			return;
+		}
 		this.defaultOverrides.apiKey = apiKey;
 	}
 
@@ -89,7 +95,7 @@ class Deployer {
 
 
 	async deployAndVerify(contract, libraries) {
-		if (!this.defaultOverrides.apiKey) {
+		if (!this.defaultOverrides || !this.defaultOverrides.apiKey) {
 			throw new Error('Please provide Etherscan API key!')
 		}
 		const deploymentArguments = Array.prototype.slice.call(arguments);

@@ -31,7 +31,7 @@ const runWithoutWriteFiles = async (file, solcVersion) => {
 	}
 
 	try {
-		let resolvedFiles = await resolveSources(`${file}`)
+		let resolvedFiles = await resolveSources(`./contracts/${file}`)
 		let resolvedPaths = resolvePaths(resolvedFiles)
 		let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
 		return returnFiles(file, resolvedFiles, orderedPaths)
@@ -142,7 +142,7 @@ const createFolderAndFile = (resolvedFiles, fileName, flatFileName) => {
 }
 
 const returnSourceCode = (resolvedFiles, fileName) => {
-	let solidityVersion = resolvedFiles[`${fileName}`].body.match(versionRegex) //takes pragma solidity version
+	let solidityVersion = resolvedFiles[`./contracts/${fileName}`].body.match(versionRegex) //takes pragma solidity version
 	return solidityVersion[0]
 }
 

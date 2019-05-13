@@ -15,8 +15,8 @@ class Verifier {
 
 		this.apiKey = defaultOverrides.apiKey;
 		this.contractAddress = contractWrapper.contractAddress;
-		this.flattenCode = await this._flattenSourceCode(contractWrapper);
 		this.contractName = contractWrapper._contract.contractName;
+		this.flattenCode = await this._flattenSourceCode(contractWrapper);
 		this.optimization = contractWrapper._contract.compiler.optimizer;
 		this.runs = contractWrapper._contract.compiler.runs;
 		this.optimization = contractWrapper._contract.compiler.optimizer ? 1 : 0;
@@ -25,7 +25,6 @@ class Verifier {
 		this.apiUrl = await this._buildApiUrl(contractWrapper.provider);
 		this.solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
 		logger.log(`Attempting to verify your contract: ${colors.colorName(this.contractName)} on network ${colors.colorParams(this.name)}`);
-
 		let data = this._constructRequestData();
 
 		const response = await this._sendVerificationRequest(data);
@@ -36,7 +35,7 @@ class Verifier {
 		const regexp = /[0-9]?\.[0-9]?\.[0-9]?/;
 		const sourcePath = contractWrapper._contract.sourcePath;
 		const solcVersion = regexp.exec(contractWrapper._contract.compiler.version)[0];
-		const sourceCode = await runWithoutWriteFiles(sourcePath, solcVersion);
+		const sourceCode = await runWithoutWriteFiles(`${this.contractName}.sol`, solcVersion);
 		return sourceCode
 	}
 
