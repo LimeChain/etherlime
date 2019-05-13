@@ -1,4 +1,4 @@
-const isNumber = require('./../../utils/number-utils').isNumber;
+const isNumber = require('./../../packages/etherlime-utils/utils/number-utils').isNumber;
 const assert = require('assert');
 
 describe('Number utils tests', () => {

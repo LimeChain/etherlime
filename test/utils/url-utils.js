@@ -1,4 +1,4 @@
-const isUrl = require('./../../utils/url-utils').isUrl;
+const isUrl = require('./../../packages/etherlime-utils/utils/url-utils').isUrl;
 const config = require('./../config.json');
 const assert = require('assert');
 

@@ -3,7 +3,7 @@ let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
-const init = require('../../../cli-commands/init/init');
+const init = require('../../../packages/etherlime/cli-commands/init/init');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 
 const contractsDir = './contracts';

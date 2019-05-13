@@ -7,22 +7,22 @@ const fs = require('fs-extra');
 const util = require('util');
 const request = require('request-promise');
 
-const compiler = require('../../../cli-commands/compiler/compiler');
-const contracts = require('../../../cli-commands/compiler/etherlime-workflow-compile/index');
-const etherlimeCompile = require('../../../cli-commands/compiler/etherlime-compile/index');
-const Artifactor = require('../../../cli-commands/compiler/etherlime-artifactor');
-const Resolver = require('../../../cli-commands/compiler/etherlime-resolver');
-const EPMSource = require("../../../cli-commands/compiler/etherlime-resolver/epm");
-const FSSource = require("../../../cli-commands/compiler/etherlime-resolver/fs");
-const NPMSource = require('../../../cli-commands/compiler/etherlime-resolver/npm');
-const expect = require('../../../cli-commands/compiler/etherlime-expect/index');
-const schema = require('../../../cli-commands/compiler/etherlime-contract-schema/index');
-const error = require('../../../cli-commands/compiler/etherlime-error/index');
-const compileError = require('../../../cli-commands/compiler/etherlime-compile/compile-error');
-const profiler = require('../../../cli-commands/compiler/etherlime-compile/profiler');
-const parser = require('../../../cli-commands/compiler/etherlime-compile/parser');
-const Config = require('../../../cli-commands/compiler/etherlime-config');
-const CompilerSupplier = require('../../../cli-commands/compiler/etherlime-compile/compilerSupplier');
+const compiler = require('../../../packages/etherlime/cli-commands/compiler/compiler');
+const contracts = require('../../../packages/etherlime/cli-commands/compiler/etherlime-workflow-compile/index');
+const etherlimeCompile = require('../../../packages/etherlime/cli-commands/compiler/etherlime-compile/index');
+const Artifactor = require('../../../packages/etherlime/cli-commands/compiler/etherlime-artifactor');
+const Resolver = require('../../../packages/etherlime/cli-commands/compiler/etherlime-resolver');
+const EPMSource = require("../../../packages/etherlime/cli-commands/compiler/etherlime-resolver/epm");
+const FSSource = require("../../../packages/etherlime/cli-commands/compiler/etherlime-resolver/fs");
+const NPMSource = require('../../../packages/etherlime/cli-commands/compiler/etherlime-resolver/npm');
+const expect = require('../../../packages/etherlime/cli-commands/compiler/etherlime-expect/index');
+const schema = require('../../../packages/etherlime/cli-commands/compiler/etherlime-contract-schema/index');
+const error = require('../../../packages/etherlime/cli-commands/compiler/etherlime-error/index');
+const compileError = require('../../../packages/etherlime/cli-commands/compiler/etherlime-compile/compile-error');
+const profiler = require('../../../packages/etherlime/cli-commands/compiler/etherlime-compile/profiler');
+const parser = require('../../../packages/etherlime/cli-commands/compiler/etherlime-compile/parser');
+const Config = require('../../../packages/etherlime/cli-commands/compiler/etherlime-config');
+const CompilerSupplier = require('../../../packages/etherlime/cli-commands/compiler/etherlime-compile/compilerSupplier');
 let compilerSupplier;
 let file;
 
@@ -50,7 +50,7 @@ describe('Compile dependencies', () => {
     before(async function () {
         fs.mkdirSync('./contracts')
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/Empty.sol', './contracts/Empty.sol');
     });
@@ -580,7 +580,7 @@ describe('Compile dependencies', () => {
 
             await compilerSupplier.addToCache(code, file);
 
-            assert.isTrue(fs.existsSync('./node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js'))
+            assert.isTrue(fs.existsSync('./packages/etherlime/node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js'))
 
         });
 

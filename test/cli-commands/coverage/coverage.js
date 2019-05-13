@@ -3,8 +3,8 @@ const chai = require('chai')
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
-const test = require('../../../cli-commands/etherlime-test/test');
-let etherlimeCoverage = require('../../../cli-commands/etherlime-test/etherlime-coverage');
+const test = require('../../../packages/etherlime/cli-commands/etherlime-test/test');
+let etherlimeCoverage = require('../../../packages/etherlime/cli-commands/etherlime-test/etherlime-coverage');
 
 const sinon = require('sinon');
 

@@ -1,4 +1,4 @@
-const isAddress = require('./../../utils/address-utils').isAddress;
+const isAddress = require('./../../packages/etherlime-utils/utils/address-utils').isAddress;
 const config = require('./../config.json');
 const assert = require('assert');
 

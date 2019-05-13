@@ -7,7 +7,7 @@ const runCmdHandler = require('../../utils/spawn-child-process').runCmdHandler;
 
 const exampleCircuit = require('../examples/example-circuit').circuit;
 const exampleCircuitWithError = require('../examples/example-circuit-with-error').circuit;
-const circuitCompile = require('../../../../cli-commands/zk-proof/circuit-compile');
+const circuitCompile = require('../../../../packages/etherlime/cli-commands/zk-proof/circuit-compile');
 
 describe('etherlime circuit-compile command', () => {
 	let currentDir;

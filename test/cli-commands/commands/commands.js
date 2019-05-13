@@ -5,12 +5,12 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
-const ganache = require('../../../cli-commands/ganache/ganache');
-const shape = require('../../../cli-commands/shape/shape');
-const ide = require('../../../cli-commands/etherlime-ide/etherlime-ide');
-const eventTracker = require('../../../cli-commands/event-tracker');
+const ganache = require('../../../packages/etherlime/cli-commands/ganache/ganache');
+const shape = require('../../../packages/etherlime/cli-commands/shape/shape');
+const ide = require('../../../packages/etherlime/cli-commands/etherlime-ide/etherlime-ide');
+const eventTracker = require('../../../packages/etherlime/cli-commands/event-tracker');
 
-const commands = require('../../../cli-commands/commands');
+const commands = require('../../../packages/etherlime/cli-commands/commands');
 
 
 describe('root calling cli commands', () => {

@@ -1,4 +1,4 @@
-const etherlime = require('./../../../index.js');
+const etherlime = require('./../../../packages/etherlime/index');
 const assert = require('assert');
 
 const config = require('./../../config.json');

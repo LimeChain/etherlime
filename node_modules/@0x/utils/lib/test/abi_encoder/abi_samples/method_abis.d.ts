@@ -1,0 +1,25 @@
+import { MethodAbi } from 'ethereum-types';
+export declare const simpleAbi: MethodAbi;
+export declare const stringAbi: MethodAbi;
+export declare const GAbi: MethodAbi;
+export declare const typesWithDefaultWidthsAbi: MethodAbi;
+export declare const multiDimensionalArraysStaticTypeAbi: MethodAbi;
+export declare const multiDimensionalArraysDynamicTypeAbi: MethodAbi;
+export declare const dynamicTupleAbi: MethodAbi;
+export declare const arrayOfStaticTuplesWithDefinedLengthAbi: MethodAbi;
+export declare const arrayOfStaticTuplesWithDynamicLengthAbi: MethodAbi;
+export declare const arrayOfDynamicTuplesWithDefinedLengthAbi: MethodAbi;
+export declare const arrayOfDynamicTuplesWithUndefinedLengthAbi: MethodAbi;
+export declare const arrayOfDynamicTuplesAbi: MethodAbi;
+export declare const multidimensionalArrayOfDynamicTuplesAbi: MethodAbi;
+export declare const staticTupleAbi: MethodAbi;
+export declare const staticArrayAbi: MethodAbi;
+export declare const staticArrayDynamicMembersAbi: MethodAbi;
+export declare const dynamicArrayDynamicMembersAbi: MethodAbi;
+export declare const dynamicArrayStaticMembersAbi: MethodAbi;
+export declare const largeFlatAbi: MethodAbi;
+export declare const largeNestedAbi: MethodAbi;
+export declare const nestedTuples: MethodAbi;
+export declare const simpleAbi2: MethodAbi;
+export declare const fillOrderAbi: MethodAbi;
+//# sourceMappingURL=method_abis.d.ts.map

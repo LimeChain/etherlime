@@ -1,6 +1,6 @@
 
 const assert = require('chai').assert;
-delete require.cache[require.resolve('./../../logger-service/logger-service')];
+delete require.cache[require.resolve('./../../packages/etherlime/logger-service/logger-service')];
 let loggerWindow;
 
 

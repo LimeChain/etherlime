@@ -4,10 +4,10 @@ const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const killProcessByPID = require('../utils/spawn-child-process').killProcessByPID;
 const timeout = require('../../utils/timeout').timeout;
 const hookStream = require('../../utils/hookup-standard-output').hookStream;
-const ganacheSetupFile = require('../../../cli-commands/ganache/setup.json');
+const ganacheSetupFile = require('../../../packages/etherlime/cli-commands/ganache/setup.json');
 const signerUtil = require('./../utils/signer');
 
-const ganacheServerListenCallback = require('../../../cli-commands/ganache/ganache').ganacheServerListenCallback;
+const ganacheServerListenCallback = require('../../../packages/etherlime/cli-commands/ganache/ganache').ganacheServerListenCallback;
 const config = require('../../config.json');
 const ethers = require('ethers')
 const Billboard = require('../../testContracts/Billboard.json');

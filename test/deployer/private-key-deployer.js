@@ -1,8 +1,8 @@
-const etherlime = require('./../../index.js');
+const etherlime = require('./../../packages/etherlime/index');
 const ethers = require('ethers')
 const assert = require('assert');
 
-const isAddress = require('./../../utils/address-utils').isAddress;
+const isAddress = require('./../../packages/etherlime-utils/utils/address-utils').isAddress;
 const config = require('./../config.json');
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
 const VestingContract = require('./../testContracts/Vesting.json');

@@ -5,9 +5,9 @@ chai.use(chaiAsPromised);
 const sinon = require('sinon');
 const fs = require('fs-extra');
 
-const deployer = require('../../../cli-commands/deployer/deployer');
-const compiler = require('../../../cli-commands/compiler/compiler');
-const logger = require('../../../logger-service/logger-service').logger;
+const deployer = require('../../../packages/etherlime/cli-commands/deployer/deployer');
+const compiler = require('../../../packages/etherlime/cli-commands/compiler/compiler');
+const logger = require('../../../packages/etherlime/logger-service/logger-service').logger;
 const file = require('./deploymentScriptsFile').file;
 const deploymentWithLib = require('./deploymentWithLib').deploymentWithLib;
 let compileSpy = sinon.spy(compiler, "run");

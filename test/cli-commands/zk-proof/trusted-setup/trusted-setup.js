@@ -7,7 +7,7 @@ const runCmdHandler = require('../../utils/spawn-child-process').runCmdHandler;
 
 const exampleCompiledCircuit = require('../examples/example-compiled-circuit');
 const exampleCompiledCircuitWithError = require('../examples/example-compiled-circuit-with-error');
-const trustedSetup = require('../../../../cli-commands/zk-proof/trusted-setup');
+const trustedSetup = require('../../../../packages/etherlime/cli-commands/zk-proof/trusted-setup');
 
 describe('etherlime trusted-setup command', () => {
 	let currentDir;

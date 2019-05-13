@@ -3,10 +3,10 @@ let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
-const test = require('../../../cli-commands/etherlime-test/test');
+const test = require('../../../packages/etherlime/cli-commands/etherlime-test/test');
 const sinon = require('sinon');
 
-let etherlimeTest = require('../../../cli-commands/etherlime-test/etherlime-test');
+let etherlimeTest = require('../../../packages/etherlime/cli-commands/etherlime-test/etherlime-test');
 let calledArgs = [ `${process.cwd()}/tmpTest/exampleToRun/exampleTest.js` ];
 let exampleTest = require('../examples/exampleTest').exampleTest;
 let exampleTestWithFailingTest = require('../examples/exampleTestWithFailingTest').exampleTestWithFailingTest;

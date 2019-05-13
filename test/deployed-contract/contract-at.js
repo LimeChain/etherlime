@@ -1,4 +1,4 @@
-const etherlime = require('../../index.js');
+const etherlime = require('../../packages/etherlime/index');
 const ethers = require('ethers')
 const chai = require('chai')
 let chaiAsPromised = require("chai-as-promised");

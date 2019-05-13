@@ -1,4 +1,4 @@
-const compiler = require('../../../cli-commands/compiler/compiler');
+const compiler = require('../../../packages/etherlime/cli-commands/compiler/compiler');
 const assert = require('chai').assert;
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
@@ -15,9 +15,9 @@ describe('Compile cli command', () => {
         fs.mkdirSync('./contracts')
         fs.mkdirSync('./custom-contracts');
         fs.mkdirSync('./single-contract-folder');
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './custom-contracts/LimeFactory.sol');
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './single-contract-folder/LimeFactory.sol');
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './contracts/LimeFactory.sol');
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './custom-contracts/LimeFactory.sol');
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './single-contract-folder/LimeFactory.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
         fs.copyFileSync('./test/cli-commands/compile/examples/wallet.vy', './contracts/wallet.vy');
@@ -30,7 +30,7 @@ describe('Compile cli command', () => {
     it('should run compile with specific path', async function () {
         fs.mkdirpSync('./specific')
         fs.mkdirpSync('./specific/contracts')
-        fs.copyFileSync('./cli-commands/init/LimeFactory.sol', './specific/contracts/LimeFactory.sol');
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './specific/contracts/LimeFactory.sol');
         await assert.isFulfilled(compiler.run('specific'), "It is not successfully executed!");
     });
 

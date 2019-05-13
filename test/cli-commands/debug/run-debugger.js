@@ -7,12 +7,12 @@ const killProcessByPID = require('../utils/spawn-child-process').killProcessByPI
 
 
 
-const compiler = require('../../../cli-commands/compiler/compiler');
+const compiler = require('../../../packages/etherlime/cli-commands/compiler/compiler');
 const config = require('../../config.json')
 const ethers = require('ethers');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 let contractForFailCompilation = require('../compile/examples/ContractForFailCompilation').contractForFailCompilation;
-const DebugUtils = require('../../../cli-commands/debugger/etherlime-debug-utils');
+const DebugUtils = require('../../../packages/etherlime/cli-commands/debugger/etherlime-debug-utils');
 
 let currentDir;
 

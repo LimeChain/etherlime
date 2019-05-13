@@ -1,12 +1,12 @@
-const etherlime = require('./../../index.js');
+const etherlime = require('./../../packages/etherlime/index');
 const ethers = require('ethers')
 const chai = require('chai')
 const assert = chai.assert;
 const config = require('./../config.json');
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
 const Greetings = require('./../testContracts/Greetings.json');
-const store = require('./../../logs-store/logs-store');
-const ganacheSetupConfig = require('./../../cli-commands/ganache/setup');
+const store = require('./../../packages/etherlime/logs-store/logs-store');
+const ganacheSetupConfig = require('./../../packages/etherlime/cli-commands/ganache/setup');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,

@@ -4,7 +4,7 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require("fs-extra")
 
-const flattener = require('../../../cli-commands/flattener/flatten')
+const flattener = require('../../../packages/etherlime/cli-commands/flattener/flatten')
 let currentDir;
 
 let contractWithExternalImports = require('../compile/examples/contractWithExternalImports').contractWithExternalImports

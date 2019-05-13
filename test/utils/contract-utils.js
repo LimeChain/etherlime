@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-const isValidContract = require('./../../utils/contract-utils').isValidContract;
-const isValidBytecode = require('./../../utils/contract-utils').isValidBytecode;
+const isValidContract = require('./../../packages/etherlime-utils/utils/contract-utils').isValidContract;
+const isValidBytecode = require('./../../packages/etherlime-utils/utils/contract-utils').isValidBytecode;
 
 const ICOTokenContract = require('./../testContracts/ICOToken.json');
 

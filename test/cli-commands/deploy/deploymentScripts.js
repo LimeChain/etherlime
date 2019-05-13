@@ -1,4 +1,4 @@
-const etherlime = require('./../../../index.js');
+const etherlime = require('./../../../packages/etherlime/index');
 
 const ICOToken = require('../../testContracts/ICOToken.json')
 

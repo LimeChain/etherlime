@@ -1,0 +1,70 @@
+# cli-table-2-json
+Convert command line table output into json object
+
+[![NPM](https://nodei.co/npm/cli-table-2-json.png?downloads=true&downloadRank=true)](https://nodei.co/npm/cli-table-2-json/)
+[![NPM](https://nodei.co/npm-dl/cli-table-2-json.png?months=6&height=3)](https://nodei.co/npm/cli-table-2-json/)
+
+## Installation
+    
+    npm install cli-table-2-json
+    
+Then:
+
+```js
+var cliTable2Json = require('cli-table-2-json');
+```
+
+Usage:
+
+```js
+var lines = ['NAME      ACTIVE   DRIVER      STATE     URL                         SWARM',
+              'consul1   -        amazonec2   Running   tcp://54.175.200.212:2376   ',
+              'consul2   -        amazonec2   Running   tcp://52.23.236.38:2376     ',
+              'consul3   -        amazonec2   Running   tcp://54.85.111.241:2376    ',
+              ''];
+
+var result = cliTable2Json.cliTable2Json(lines);
+console.log(result);
+
+//[{
+//  name: 'consul1',
+//  active: '-',
+//  driver: 'amazonec2',
+//  state: 'Running',
+//  url: 'tcp://54.175.200.212:2376',
+//  swarm: ''
+//},
+//  {
+//    name: 'consul2',
+//    active: '-',
+//    driver: 'amazonec2',
+//    state: 'Running',
+//    url: 'tcp://52.23.236.38:2376',
+//    swarm: ''
+//  },
+//  {
+//    name: 'consul3',
+//    active: '-',
+//    driver: 'amazonec2',
+//    state: 'Running',
+//    url: 'tcp://54.85.111.241:2376',
+//    swarm: ''
+//  }]
+
+
+```
+
+## Typescript
+
+```
+import { cliTable2Json } from 'cli-table-2-json';
+
+var lines = ['NAME      ACTIVE   DRIVER      STATE     URL                         SWARM',
+  'consul1   -        amazonec2   Running   tcp://54.175.200.212:2376   ',
+  'consul2   -        amazonec2   Running   tcp://52.23.236.38:2376     ',
+  'consul3   -        amazonec2   Running   tcp://54.85.111.241:2376    ',
+  ''];
+
+var result = cliTable2Json(lines);
+console.log(result);
+```

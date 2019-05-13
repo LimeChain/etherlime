@@ -1,7 +1,7 @@
 
 
 const assert = require('assert');
-delete require.cache[require.resolve('./../../logs-store/logs-store')];
+delete require.cache[require.resolve('./../../packages/etherlime/logs-store/logs-store')];
 let store;
 
 describe('Window compatible logs store', async function () {

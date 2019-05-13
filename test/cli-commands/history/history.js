@@ -1,11 +1,11 @@
 const assert = require('chai').assert;
-let etherlime = require('./../../../index.js');
+let etherlime = require('./../../../packages/etherlime/index');
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const sinon = require('sinon');
-const history = require('../../../cli-commands/history/history');
-const logger = require('../../../logger-service/logger-service').logger;
+const history = require('../../../packages/etherlime/cli-commands/history/history');
+const logger = require('../../../packages/etherlime/logger-service/logger-service').logger;
 const Greetings = require('../../testContracts/Greetings.json');
 
 describe('History cli command', () => {

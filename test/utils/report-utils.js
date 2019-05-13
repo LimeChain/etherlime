@@ -1,5 +1,5 @@
-const util = require('../../cli-commands/util');
-const colors = require('../../utils/colors')
+const util = require('../../packages/etherlime/cli-commands/util');
+const colors = require('../../packages/etherlime-utils/utils/colors')
 const assert = require('assert');
 const sinon = require('sinon');
 

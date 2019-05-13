@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-const isValidLibrary = require('./../../utils/linking-utils').isValidLibrary;
-const linkLibrary = require('./../../utils/linking-utils').linkLibrary;
+const isValidLibrary = require('./../../packages/etherlime-utils/utils/linking-utils').isValidLibrary;
+const linkLibrary = require('./../../packages/etherlime-utils/utils/linking-utils').linkLibrary;
 
 const DataContract = require('./../testContracts/DataContract.json');
 const Greetings = require('./../testContracts/Greetings.json');
