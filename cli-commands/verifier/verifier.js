@@ -15,9 +15,8 @@ class Verifier {
 
 		this.apiKey = defaultOverrides.apiKey;
 		this.contractAddress = contractWrapper.contractAddress;
-		this.flattenCode = await this._flattenSourceCode(contractWrapper._contract.sourcePath);
+		this.flattenCode = await this._flattenSourceCode(contractWrapper);
 		this.contractName = contractWrapper._contract.contractName;
-		this.compilerVersion = contractWrapper._contract.compiler.version;
 		this.optimization = contractWrapper._contract.compiler.optimizer;
 		this.runs = contractWrapper._contract.compiler.runs;
 		this.optimization = contractWrapper._contract.compiler.optimizer ? 1 : 0;
@@ -33,11 +32,11 @@ class Verifier {
 		return await this._checkVerificationStatus(response);
 	}
 
-	async _flattenSourceCode(contractPath) {
-
-		// TO DO Pass the solc version from the contract
-		const sourceCode = await runWithoutWriteFiles(contractPath, '0.5.1');
-		// console.log(sourceCode)
+	async _flattenSourceCode(contractWrapper) {
+		const regexp = /[0-9]?\.[0-9]?\.[0-9]?/;
+		const sourcePath = contractWrapper._contract.sourcePath;
+		const solcVersion = regexp.exec(contractWrapper._contract.compiler.version)[0];
+		const sourceCode = await runWithoutWriteFiles(sourcePath, solcVersion);
 		return sourceCode
 	}
 
@@ -51,7 +50,6 @@ class Verifier {
 			types.push(element.type);
 		});
 		let encodedConstructorArgs = (await encoder.encode(types, deploymentArguments)).substr(2);
-		console.log(deploymentArguments)
 		return encodedConstructorArgs;
 	}
 

@@ -64,7 +64,7 @@ class LogsStore {
 	 * @param {*} networkID id of the network
 	 * @param {*} result arbitrary result text
 	 */
-	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result, verification) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result, solcVersion, verification) {
 		if (!this.isInitied) {
 			return;
 		}
@@ -80,6 +80,7 @@ class LogsStore {
 			gasUsed,
 			networkID,
 			result,
+			solcVersion,
 			verification
 		}
 

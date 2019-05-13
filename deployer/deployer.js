@@ -82,7 +82,7 @@ class Deployer {
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
 
 		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version);
 
 		return deploymentResult;
 	}
@@ -114,7 +114,7 @@ class Deployer {
 
 		const verification = await Verifier.verifySmartContract(deploymentResult, deploymentArguments, libraries, this.defaultOverrides);
 
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, verification);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version, verification);
 
 		return deploymentResult;
 	}
@@ -238,9 +238,9 @@ class Deployer {
 	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
-	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, verification) {
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, solcVersion, verification) {
 		const network = await this.provider.getNetwork();
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, verification);
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);
 	}
 
 	/**

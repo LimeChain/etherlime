@@ -21,6 +21,7 @@ const printReportTable = (recordActions) => {
 			{ 'Gas Used': `${action.gasUsed}` },
 			{ 'NetworkID': action.networkID ? `${action.networkID}` : `Not recorded` },
 			{ 'Result': `${action.result}` },
+			{ 'Solc Version': `${action.solcVersion}` },
 			{ 'Contract Verification': action.verification ? `${getVerificationStatus(action.verification)}` : `Not recorded` }
 		);
 
