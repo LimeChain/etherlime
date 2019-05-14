@@ -9,7 +9,7 @@ const sinon = require('sinon');
 let error = "In order to use the docker, please set an image name: --solcVersion=<image-name>"
 let singleFileError = "Your file is not solidity file!";
 
-describe.only('Compile cli command', () => {
+describe('Compile cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./contracts')
