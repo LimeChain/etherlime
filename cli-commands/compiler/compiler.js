@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const compiler = require("./etherlime-workflow-compile/index");
 const Resolver = require("./etherlime-resolver/index");
 const colors = require("./../../utils/colors");
@@ -5,7 +7,7 @@ const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles) => {
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -14,10 +16,10 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, 
 
 	defaultPath = `${process.cwd()}/${defaultPath}`;
 
-	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory);
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -54,7 +56,20 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return await compilePromise(compileOptions, quiet);
+	if (!deleteCompiledFiles) {
+		return await compilePromise(compileOptions, quiet);
+	}
+
+	if (!fs.existsSync(compileOptions.contracts_build_directory)) {
+		return await compilePromise(compileOptions, quiet)
+	}
+
+	const files = fs.readdirSync(compileOptions.contracts_build_directory);
+	for (const file of files) {
+		await fs.unlinkSync(path.join(compileOptions.contracts_build_directory, file));
+	}
+	return await compilePromise(compileOptions, quiet)
+
 };
 
 const compilePromise = async (compileOptions, quiet) => {
