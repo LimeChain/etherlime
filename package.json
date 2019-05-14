@@ -60,6 +60,7 @@
     "etherlime": "./cli.js"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.16.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
     "nyc": "^13.3.0",

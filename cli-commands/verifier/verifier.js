@@ -33,7 +33,6 @@ class Verifier {
 
 	async _flattenSourceCode(contractWrapper) {
 		const regexp = /[0-9]?\.[0-9]?\.[0-9]?/;
-		const sourcePath = contractWrapper._contract.sourcePath;
 		const solcVersion = regexp.exec(contractWrapper._contract.compiler.version)[0];
 		const sourceCode = await runWithoutWriteFiles(`${this.contractName}.sol`, solcVersion);
 		return sourceCode
@@ -68,7 +67,8 @@ class Verifier {
 	async _buildApiUrl(provider) {
 		const { name } = await provider.getNetwork();
 		this.name = name;
-		if (this.name === 'ropsten' || 'rinkeby' || 'kovan' || 'goerli') {
+
+		if ((/^(ropsten|rinkeby|kovan|goerli)$/.test(this.name))) {
 			return `https://api-${this.name}.etherscan.io/api`;
 		}
 		return 'https://api.etherscan.io/api';
@@ -131,7 +131,6 @@ class Verifier {
 		};
 		const ms = 5000;
 		let count = 0;
-
 		const self = this;
 		async function checkGuid(ms) {
 			await self.timeout(ms);

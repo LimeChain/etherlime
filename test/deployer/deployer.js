@@ -2,13 +2,13 @@ const etherlime = require('./../../index.js');
 const ethers = require('ethers');
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised');
-
-const expect = chai.expect
 chai.use(chaiAsPromised)
 const assert = require('assert');
 const store = require('./../../logs-store/logs-store');
 const sinon = require('sinon');
 const fs = require('fs-extra');
+var axios = require('axios');
+var MockAdapter = require('axios-mock-adapter');
 
 const isAddress = require('./../../utils/address-utils').isAddress;
 const config = require('./../config.json');
@@ -30,7 +30,7 @@ let sandbox = sinon.createSandbox();
 const GAS_DEPLOY_TX = 2455692;
 const GAS_DEPLOY_WITH_LINK = 1629070;
 
-describe('Deployer tests', () => {
+describe.only('Deployer tests', () => {
 
 	describe('Initialization', async () => {
 		it('should initialize the signer with correct values', () => {
@@ -305,6 +305,9 @@ describe('Deployer tests', () => {
 			let provider;
 			let deployer;
 			let LimeFactory;
+			let TestToken;
+			let ECTools;
+			let Escrow;
 
 			before(async () => {
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
@@ -312,8 +315,17 @@ describe('Deployer tests', () => {
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
 				fs.mkdirSync('./contracts');
 				fs.copyFileSync('./test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+				fs.copyFileSync('./test/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
+				fs.copyFileSync('./test/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
+				fs.copyFileSync('./test/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
+
+
 				LimeFactory = require('./examples/compiledLimeFactory');
+				TestToken = require('./examples/compiledMockToken');
+				ECTools = require('./examples/compiledECToolsContract');
+				Escrow = require('./examples/compiledEscrowContract');
 				global.Verifier = new Verifier();
+
 
 
 			});
@@ -339,12 +351,115 @@ describe('Deployer tests', () => {
 				assert.strictEqual(deployer.defaultOverrides.apiKey, config.secondRandomEtherscanApiKey);
 				stubRequest.restore();
 				stubCheckStatus.restore();
+			});
+
+			it('should deploy and verify smart contract with mocked request data', async () => {
+				let mock = new MockAdapter(axios);
+
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+
+				mock.onGet('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'Pass - Verified'
+				});
+				contractWrapper = await deployer.deployAndVerify(LimeFactory);
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
+				assert.strictEqual(deployer.defaultOverrides.apiKey, config.secondRandomEtherscanApiKey);
+				mock.restore();
 			})
+
+			it('should throw if request for sending contract verification takes too long', async () => {
+				let mock = new MockAdapter(axios);
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '0',
+					message: 'NOTOK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				// await deployer.deployAndVerify(LimeFactory)
+				mock.restore();
+			});
+
+			it('should throw if timeout for verification status request reached', async () => {
+				let mock = new MockAdapter(axios);
+
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+
+				mock.onGet('https://api.etherscan.io/api').reply(200, {
+					status: '0',
+					message: 'NOTOK',
+					result: 'Pending in queue'
+				});
+				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				// await deployer.deployAndVerify(LimeFactory)
+				mock.restore();
+			});
+
+			it('should return message for contract verification failed', async () => {
+				let mock = new MockAdapter(axios);
+
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+
+				mock.onGet('https://api.etherscan.io/api').reply(200, {
+					status: '0',
+					message: 'NOTOK',
+					result: 'Fail - Unable to verify'
+				});
+				// await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				await deployer.deployAndVerify(LimeFactory)
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.verification, 'Fail - Unable to verify', 'Contract verification is not successful');
+				mock.restore();
+			});
 
 			it('should throw if no Etherscan API key provided', async () => {
 				deployer.setVerifierApiKey(undefined)
 				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
-			})
+			});
+
+
+			it('shoud deploy and verify smart contract with libraries and constructor arguments', async () => {
+				let mock = new MockAdapter(axios);
+				const DAPP_ADMIN = "0x8E8FD30C784BBb9B80877052AAE4bd9D43BCc032";
+				deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY');
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+
+				mock.onGet('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'Pass - Verified'
+				});
+
+				const tokenContractDeployed = await deployer.deployAndVerify(TestToken, {});
+				const ecToolContract = await deployer.deployAndVerify(ECTools);
+				const escrowContractDeployed_V2 = await deployer.deployAndVerify(Escrow, {
+					ECTools: ecToolContract.contractAddress
+				}, tokenContractDeployed.contractAddress, DAPP_ADMIN);
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
+				mock.restore();
+			});
 
 			after(async function () {
 				fs.removeSync('./contracts');
