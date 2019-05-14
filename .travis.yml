@@ -12,6 +12,7 @@ before_install:
 cache:
   yarn: true
 install:
+  - npm install
   - lerna bootstrap
   - cd packages/etherlime
   - yarn link
