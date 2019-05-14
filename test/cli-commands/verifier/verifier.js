@@ -21,7 +21,7 @@ describe.only('Verifier class methods tests', () => {
 		global.Verifier = new Verifier();
 	});
 
-	it('should return the right API url based on the deployment network - mainet', async () => {
+	it('should return the right API url based on the deployment network - mainnet', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "mainnet", "d780223beae54bfea08c9c26689609e9");
 		const URL = await global.Verifier._buildApiUrl(deployer.provider);
 		assert.strictEqual(URL, API_URL_MAINNET, 'The API URL does not match');

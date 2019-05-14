@@ -4,7 +4,8 @@ const querystring = require('querystring');
 const logger = require('../../logger-service/logger-service').logger;
 const colors = require('../../utils/colors');
 const ethers = require('ethers');
-
+const DEFAULT_SEND_REQUEST_TIMEOUT = 10000;
+const DEFAULT_CHECK_STATUS_TIMEOUT = 5000;
 class Verifier {
 
 	constructor() {
@@ -27,8 +28,8 @@ class Verifier {
 		logger.log(`Attempting to verify your contract: ${colors.colorName(this.contractName)} on network ${colors.colorParams(this.name)}`);
 		let data = this._constructRequestData();
 
-		const response = await this._sendVerificationRequest(data);
-		return await this._checkVerificationStatus(response);
+		const response = await this._sendVerificationRequest(data, defaultOverrides);
+		return await this._checkVerificationStatus(response, defaultOverrides);
 	}
 
 	async _flattenSourceCode(contractWrapper) {
@@ -97,9 +98,9 @@ class Verifier {
 		return stringData
 	}
 
-	async _sendVerificationRequest(stringData) {
+	async _sendVerificationRequest(stringData, defaultOverrides) {
 
-		const ms = 10000;
+		const ms = defaultOverrides.waitInterval || DEFAULT_SEND_REQUEST_TIMEOUT;
 		let count = 0;
 		const self = this;
 		async function sendRequest(ms) {
@@ -123,13 +124,13 @@ class Verifier {
 
 	}
 
-	async _checkVerificationStatus(response) {
+	async _checkVerificationStatus(response, defaultOverrides) {
 		let params = {
 			guid: response.result,
 			module: "contract", // DO NOT CHANGE
 			action: "checkverifystatus" // DO NOT CHANGE
 		};
-		const ms = 5000;
+		const ms = defaultOverrides.waitInterval || DEFAULT_CHECK_STATUS_TIMEOUT;
 		let count = 0;
 		const self = this;
 		async function checkGuid(ms) {

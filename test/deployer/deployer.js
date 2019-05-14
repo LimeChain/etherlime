@@ -308,6 +308,7 @@ describe.only('Deployer tests', () => {
 			let TestToken;
 			let ECTools;
 			let Escrow;
+			let TestTokenOptimized
 
 			before(async () => {
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
@@ -318,12 +319,14 @@ describe.only('Deployer tests', () => {
 				fs.copyFileSync('./test/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
 				fs.copyFileSync('./test/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
 				fs.copyFileSync('./test/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
-
+				fs.copyFileSync('./test/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
 
 				LimeFactory = require('./examples/compiledLimeFactory');
 				TestToken = require('./examples/compiledMockToken');
 				ECTools = require('./examples/compiledECToolsContract');
 				Escrow = require('./examples/compiledEscrowContract');
+				TestTokenOptimized = require('./examples/compiledMockTokenOptimized');
+
 				global.Verifier = new Verifier();
 
 
@@ -377,6 +380,7 @@ describe.only('Deployer tests', () => {
 
 			it('should throw if request for sending contract verification takes too long', async () => {
 				let mock = new MockAdapter(axios);
+				defaultConfigs.waitInterval = 100;
 				mock.onPost('https://api.etherscan.io/api').reply(200, {
 					status: '0',
 					message: 'NOTOK',
@@ -455,6 +459,29 @@ describe.only('Deployer tests', () => {
 				const escrowContractDeployed_V2 = await deployer.deployAndVerify(Escrow, {
 					ECTools: ecToolContract.contractAddress
 				}, tokenContractDeployed.contractAddress, DAPP_ADMIN);
+				const currentRecord = store.getCurrentWorkingRecord();
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
+				mock.restore();
+			});
+
+			it('should deploy and verify smart contract with optimizer enabled', async () => {
+				let mock = new MockAdapter(axios);
+				const DAPP_ADMIN = "0x8E8FD30C784BBb9B80877052AAE4bd9D43BCc032";
+				deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY');
+				mock.onPost('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
+				});
+
+				mock.onGet('https://api.etherscan.io/api').reply(200, {
+					status: '1',
+					message: 'OK',
+					result: 'Pass - Verified'
+				});
+
+				const tokenContractDeployed = await deployer.deployAndVerify(TestTokenOptimized, {});
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
