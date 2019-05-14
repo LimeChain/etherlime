@@ -10,7 +10,7 @@ const API_URL_GOERLI = 'https://api-goerli.etherscan.io/api';
 
 
 
-describe.only('Verifier class methods tests', () => {
+describe('Verifier class methods tests', () => {
 
 	let signer;
 	let provider;

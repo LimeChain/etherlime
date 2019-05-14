@@ -30,7 +30,7 @@ let sandbox = sinon.createSandbox();
 const GAS_DEPLOY_TX = 2455692;
 const GAS_DEPLOY_WITH_LINK = 1629070;
 
-describe.only('Deployer tests', () => {
+describe('Deployer tests', () => {
 
 	describe('Initialization', async () => {
 		it('should initialize the signer with correct values', () => {
