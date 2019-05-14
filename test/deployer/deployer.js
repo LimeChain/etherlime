@@ -387,7 +387,6 @@ describe.only('Deployer tests', () => {
 					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
 				});
 				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
-				// await deployer.deployAndVerify(LimeFactory)
 				mock.restore();
 			});
 
@@ -406,7 +405,6 @@ describe.only('Deployer tests', () => {
 					result: 'Pending in queue'
 				});
 				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
-				// await deployer.deployAndVerify(LimeFactory)
 				mock.restore();
 			});
 
@@ -424,7 +422,6 @@ describe.only('Deployer tests', () => {
 					message: 'NOTOK',
 					result: 'Fail - Unable to verify'
 				});
-				// await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
 				await deployer.deployAndVerify(LimeFactory)
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
