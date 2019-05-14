@@ -1,4 +1,4 @@
-const exampleTestWithFailingTest = `const etherlime = require('../../index.js');
+const exampleTestWithFailingTest = `const etherlime = require('../../packages/etherlime/index.js');
 const LimeFactory = require('../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {

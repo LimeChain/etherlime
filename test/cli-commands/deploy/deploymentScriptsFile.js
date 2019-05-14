@@ -1,4 +1,4 @@
-const file = `const etherlime = require('./../index.js');
+const file = `const etherlime = require('./../packages/etherlime/index.js');
 const ICOToken = require('../test/testContracts/ICOToken.json')
 const deploy = async (network, secret) => {
 	const deployer = new etherlime.EtherlimeGanacheDeployer();

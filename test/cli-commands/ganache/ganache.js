@@ -491,7 +491,7 @@ describe('Run ganache server with optional mnemonic and optional number of accou
 	});
 
 	afterEach(async () => {
-		fs.writeFileSync(`${process.cwd()}/cli-commands/ganache/setup.json`, JSON.stringify(ganacheSetupFile, null, '\t'), "utf8");
+		fs.writeFileSync(`${process.cwd()}/packages/etherlime/cli-commands/ganache/setup.json`, JSON.stringify(ganacheSetupFile, null, '\t'), "utf8");
 		if (childResponse && childResponse.process) {
 			killProcessByPID(childResponse.process.pid)
 			childResponse = '';
