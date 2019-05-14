@@ -69,6 +69,58 @@ Skipping linking on contract with arguments
     await deployer.deploy(contractWithoutLibraries, false, param1, param2);
 
 
+deployAndVerify(contract, [libraries], [params])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The main functionality the deployAndVerify exposes is (obviously) the ability
+to deploy and then verify compiled contract on Etherscan. This method exposes the same features as `deploy` method, but in addition automatically verifies the deployed smart contract using Etherscan API with Etherscan API Key.
+
+In order to use the `deployAndVerify` method of the deployer, an Etherscan API Key is used. You can create your Etherscan API Key here_.
+
+.. _here: https://etherscan.io/login?cmd=last
+
+Parameters:
+
+* ``contract`` - descriptor object for contract to be deployed. More details below
+* ``libraries`` - key-value object containing all libraries which will be linked to the contract.
+* ``params`` - the constructor params you'd need to pass on deploy (if there are any)
+
+The deployment method reads the API Key form the deployer `defaultOverrides` object.
+
+Passing API Key to the deployer:
+
+* Passing the API Key to the `defaultOverrides` object:
+
+:: 
+
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, apiKey: '3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY' };
+
+* Setting the API Key through the deployer `setVerifierApiKey` setter:
+
+::
+
+    deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY')
+
+
+* Passing the API Key from `etherlime deploy` command with optional parameter `apiKey`:
+    `etherlime deploy --secret="Your private key" --network="rinkeby" --apiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"` 
+
+::
+
+    const deploy = async (network, secret, apiKey) => {
+    const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, apiKey };
+    };
+
+Network is automatically detected based on the network that the deployer is set to deploy. The supported networks are:
+
+* ``mainnet``
+* ``ropsten``
+* ``rinkeby``
+* ``kovan``
+* ``goerli``
+
+
 estimateGas(contract, [libraries], [params])
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -127,23 +179,26 @@ Parameters:
 Setters
 ^^^^^^^
 
-    `provider` . setPrivateKey (privateKey)
+    `deployer` . setPrivateKey (privateKey)
         * ``privateKey`` - The private key to the deployment wallet/signer instance
 
-    `provider` . setNetwork (network)
+    `deployer` . setNetwork (network)
         * ``network`` - network as found in ``ethers.providers.networks``
 
-    `provider` . setApiKey (apiKey)
+    `deployer` . setApiKey (apiKey)
         * ``apiKey`` - your Infura API key
 
-    `provider` . setDefaultOverrides (defaultOverrides)
+    `deployer` . setDefaultOverrides (defaultOverrides)
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-    `provider` . setSigner (signer)
+    `deployer` . setSigner (signer)
         * ``signer`` - ethers.Wallet instance
 
-    `provider` . setProvider (provider)
+    `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
+
+    `deployer` . setVerifierApiKey (apiKey)
+        * ``apiKey`` - Etherscan API Key
 
 Example
 ::
@@ -187,20 +242,23 @@ Parameters:
 Setters
 ^^^^^^^
 
-    `provider` . setPrivateKey (privateKey)
+    `deployer` . setPrivateKey (privateKey)
         * ``privateKey`` - The private key to the deployment wallet/signer instance
 
-    `provider` . setNodeUrl (nodeUrl)
+    `deployer` . setNodeUrl (nodeUrl)
         * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
-    `provider` . setDefaultOverrides (defaultOverrides)
+    `deployer` . setDefaultOverrides (defaultOverrides)
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-    `provider` . setSigner (signer)
+    `deployer` . setSigner (signer)
         * ``signer`` - ethers.Wallet instance
 
-    `provider` . setProvider (provider)
+    `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
+
+    `deployer` . setVerifierApiKey (apiKey)
+        * ``apiKey`` - Etherscan API Key
 
 Example
 ::
@@ -246,23 +304,26 @@ Parameters:
 Setters
 ^^^^^^^
 
-    `provider` . setPrivateKey (privateKey)
+    `deployer` . setPrivateKey (privateKey)
         * ``privateKey`` - The private key to the deployment wallet/signer instance
 
-    `provider` . setPort (port)
+    `deployer` . setPort (port)
         * ``port`` - the port you've ran the etherlime ganache on.
 
-    `provider` . setDefaultOverrides (defaultOverrides)
+    `deployer` . setDefaultOverrides (defaultOverrides)
         * ``defaultOverrides`` - object overriding the deployment settings for ``gasPrice`` , ``gasLimit`` and ``chainId``.
 
-    `provider` . setNodeUrl (nodeUrl)
+    `deployer` . setNodeUrl (nodeUrl)
         * ``nodeUrl`` - the url to the node you are trying to connect (local or remote)
 
-    `provider` . setSigner (signer)
+    `deployer` . setSigner (signer)
         * ``signer`` - ethers.Wallet instance
 
-    `provider` . setProvider (provider)
+    `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
+
+    `deployer` . setVerifierApiKey (apiKey)
+        * ``apiKey`` - Etherscan API Key
 
 Example
 ::
