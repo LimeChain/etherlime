@@ -86,6 +86,10 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', 'single-contract-folder/LimeFactory.sol'), "It is not successfully executed!")
     });
 
+    it('should run compile successfully and add abis folder with abi files', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, undefined, true), "It is not successfully executed!")
+    });
+
     it('should run compile with custom working directory parameter that is single file with wrong file extension and return error', async function () {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory'));
     });
@@ -94,7 +98,7 @@ describe('Compile cli command', () => {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
     })
 
-    it('should compile specific vyper contract', async function() {
+    it('should compile specific vyper contract', async function () {
         fs.copyFileSync('./test/cli-commands/compile/examples/crowdfund.vy', './contracts/crowdfund.vy')
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
     })
@@ -112,7 +116,7 @@ describe('Compile cli command', () => {
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
-        fs.removeSync('./build');
+        // fs.removeSync('./build');
         fs.removeSync('./customBuild/build');
         fs.removeSync('./custom-contracts');
         fs.removeSync('./single-contract-build-directory');

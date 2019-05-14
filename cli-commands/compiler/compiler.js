@@ -5,7 +5,7 @@ const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, abiOnly) => {
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -14,10 +14,10 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, 
 
 	defaultPath = `${process.cwd()}/${defaultPath}`;
 
-	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory);
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory, abiOnly);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory, abiOnly) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -44,6 +44,8 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
 	};
+
+	compileOptions.abiOnly = abiOnly;
 
 	if (runs) {
 		compileOptions.solc = {

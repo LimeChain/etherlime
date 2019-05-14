@@ -260,6 +260,12 @@ const commands = [
 				describe: 'Defines which folder to use for reading contracts from, instead of the default one: ./contracts',
 				type: 'string',
 			});
+
+			yargs.positional('abiOnly', {
+				describe: 'Creates abi directory inside the build directory containing only the ABIs of all contract',
+				type: 'boolean',
+				default: false
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime compile', {
@@ -268,7 +274,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.abiOnly);
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -560,7 +566,7 @@ const zkCommandProcessor = async (argv) => {
 	// check command and optional scenarios:
 	switch (argv.zkCommand) {
 		case 'compile':
-		await circuitCompile.run();
+			await circuitCompile.run();
 			break;
 		case 'setup':
 			await trustedSetup.run();
@@ -587,7 +593,7 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.verifierKey) {
 				verifierKey = argv.verifierKey;
 			}
-			
+
 			await verifier.run(publicSignals, proof, verifierKey);
 			break;
 		case 'generate':
@@ -604,7 +610,7 @@ const zkCommandProcessor = async (argv) => {
 				proof = argv.proof;
 			}
 			await generateCall.run(publicSignals, proof);
-			break;		
+			break;
 	}
 }
 

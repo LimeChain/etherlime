@@ -1,3 +1,4 @@
+const mkdirp = require("mkdirp");
 const Schema = require("./../etherlime-contract-schema");
 const fs = require("fs-extra");
 const path = require("path");
@@ -9,15 +10,17 @@ class Artifactor {
 	 * @param {*} destination destination of the contracts build directory 
 	 */
 
-  constructor (destination) {
+  constructor(destination) {
     this.destination = destination
   }
 
 
-  async save (object) {
+  async save(object, extra_opts, skipNormalize) {
     const self = this;
 
-    object = Schema.normalize(object);
+    if (!skipNormalize) {
+      object = Schema.normalize(object);
+    }
 
     if (object.contractName == null) {
       throw new Error('You must specify a contract name.');
@@ -30,42 +33,64 @@ class Artifactor {
     output_path = `${output_path}.json`;
 
     let finalObject = object;
-    
+
     try {
       let json = await fs.readFile(output_path, { encoding: "utf8" });
 
       let existingObjDirty = JSON.parse(json);
 
-      finalObject = Schema.normalize(existingObjDirty);
+      if (!skipNormalize) {
+        finalObject = Schema.normalize(existingObjDirty);
+      }
       let finalNetworks = {};
 
       _.merge(finalNetworks, finalObject.networks, object.networks);
       _.assign(finalObject, object);
 
       finalObject.networks = finalNetworks;
-    
+
     } catch (error) {
-       
+
     }
 
     finalObject.updatedAt = new Date().toISOString();
     await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
+    if (extra_opts.abiOnly) {
+      await self.saveABIOnly(finalObject)
+    }
+
+  }
+
+  async saveABIOnly(object) {
+    const self = this;
+    const ABIsDirName = 'abis';
+    const abiDir = path.join(self.destination, ABIsDirName)
+
+    if (!fs.existsSync(abiDir)) {
+      mkdirp.sync(abiDir);
+    }
+
+    const contractName = object.contractName;
+    let output_path = path.join(abiDir, contractName);
+    output_path = `${output_path}-abi.json`;
+
+    await fs.outputFile(output_path, JSON.stringify(object.abi, null, 2), "utf8");
 
   }
 
 
-  async saveAll (objects) {
+  async saveAll(objects, extra_options) {
     const self = this;
 
     if (Array.isArray(objects)) {
       let array = objects;
-      objects = {};   
+      objects = {};
 
       array.forEach((item) => {
         objects[item.contract_name] = item;
       })
     }
-    
+
     try {
       await fs.stat(self.destination);
 
@@ -75,9 +100,9 @@ class Artifactor {
         let object = objects[contractName];
 
         object.contractName = contractName;
-        promises.push(self.save(object));
+        promises.push(self.save(object, extra_options));
       });
-      
+
       return Promise.all(promises);
 
     } catch (error) {
