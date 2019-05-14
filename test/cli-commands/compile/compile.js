@@ -90,11 +90,15 @@ describe('Compile cli command', () => {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, './single-contract-build-directory', '/single-contract-folder/LimeFactory'));
     });
 
+    it('should run compile with deleteCompiledFiles parameter and delete the files before compilation', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, undefined, true));
+    });
+
     it('should throw err if try to compile unexisting specific file', async function () {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
     })
 
-    it('should compile specific vyper contract', async function() {
+    it('should compile specific vyper contract', async function () {
         fs.copyFileSync('./test/cli-commands/compile/examples/crowdfund.vy', './contracts/crowdfund.vy')
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
     })
