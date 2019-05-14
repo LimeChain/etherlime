@@ -1,2 +1,0 @@
-default:
-	wstest -m fuzzingclient
