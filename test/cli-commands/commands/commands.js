@@ -16,6 +16,7 @@ const commands = require('../../../packages/etherlime/cli-commands/commands');
 describe('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
+        fs.writeFileSync('./deploy.js', 'deployment script')
         let expectedOutput = "Command failed:"
         let childProcess = await runCmdHandler(`etherlime init`, expectedOutput);
         assert.include(JSON.stringify(childProcess), expectedOutput)
@@ -132,6 +133,7 @@ describe('root calling cli commands', () => {
     })
 
     after(async function () {
+        fs.removeSync('.deploy.js');
         fs.removeSync('./Solidity-IDE');
     })
 })
