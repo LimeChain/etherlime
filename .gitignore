@@ -1,6 +1,6 @@
 .DS_Store
 dist
-node_modules
+node_modules/
 .nyc_output
 .etherlime-store
 .testcases
