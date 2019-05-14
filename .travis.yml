@@ -12,11 +12,11 @@ before_install:
 cache:
   yarn: true
 install:
+  - npm install
   - lerna bootstrap
   - cd packages/etherlime
   - yarn link
   - cd ../..
-  - npm install
 services:
   - docker
 script:
