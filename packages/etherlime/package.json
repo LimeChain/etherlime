@@ -44,7 +44,6 @@
     "ganache-cli": "^6.4.1",
     "keen-tracking": "4.0.15",
     "mkdirp": "0.5.1",
-    "mocha": "5.2.0",
     "moment": "2.22.2",
     "node-dir": "0.1.17",
     "original-require": "1.0.1",
@@ -59,13 +58,6 @@
   },
   "bin": {
     "etherlime": "./cli.js"
-  },
-  "devDependencies": {
-    "chai-as-promised": "^7.1.1",
-    "codecov": "^3.0.2",
-    "nyc": "^13.3.0",
-    "openzeppelin-solidity": "^2.1.2",
-    "sinon": "^7.1.0"
   },
   "browser": {
     "fs": false,

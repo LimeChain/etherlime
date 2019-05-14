@@ -8,8 +8,8 @@
   },
   "nyc": {
     "exclude": [
-      "Solidity-IDE/*.js",
-      "test/**/*.js",
+      "packages/etherlime/Solidity-IDE/*.js",
+      "test/**/**/*.js",
       "tmpTest/**/*.js"
     ]
   },
@@ -29,7 +29,6 @@
     "ethers": "^4.0.27",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "lerna": "^3.13.4",
     "nyc": "^13.3.0",
     "openzeppelin-solidity": "^2.1.2",
     "sinon": "^7.1.0",
