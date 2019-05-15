@@ -6,7 +6,9 @@ const mkdirp = require("mkdirp");
 
 const VYPER_EXTENSION = require('./config.js').VYPER_EXTENSION;
 
-const run = async (allFiles, buildDirectory) => {
+const run = async (allFiles, options) => {
+
+    const buildDirectory = options.contracts_build_directory;
 
     await docker.command("pull ethereum/vyper")
 
@@ -25,7 +27,7 @@ const run = async (allFiles, buildDirectory) => {
 
             let compiledObject = await compile(filePath, fileBaseName, fileTimestampStatus)
 
-            await recordCompiledObject(compiledObject, buildDirectory)
+            await options.artifactor.save(compiledObject, options, true)
 
         } catch (e) {
             console.error('Vyper compilation failed.')
@@ -60,25 +62,13 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
     let data = await docker.command(`run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`)
-     
+
     let compiledObject = JSON.parse(data.raw)
-    compiledObject = Object.assign({contractName: fileBaseName}, compiledObject[filePath]) //restructuring the compiled object
+    compiledObject = Object.assign({ contractName: fileBaseName }, compiledObject[filePath]) //restructuring the compiled object
     compiledObject.updatedAt = fileTimestampStatus
 
     return compiledObject
 }
-
-const recordCompiledObject = (compiledObject, buildDirectory) => {
-
-    if (!fs.existsSync(buildDirectory)) {
-        mkdirp.sync(buildDirectory);
-    }
-
-    const spaces = 2; // number of space characters to be inserted for readability purposes
-    fs.writeFileSync(`${buildDirectory}/${compiledObject.contractName}.json`, JSON.stringify(compiledObject, null, spaces)) //second param is a string replacer if needed
-
-}
-
 
 module.exports = run;
 
