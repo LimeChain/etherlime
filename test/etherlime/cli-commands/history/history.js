@@ -33,4 +33,8 @@ describe('History cli command', () => {
         loggerSpy.restore()
     });
 
+    afterEach(async function() {
+        sinon.restore()
+    })
+
 });
