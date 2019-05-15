@@ -120,7 +120,7 @@ describe('Compile cli command', () => {
     after(async function () {
         fs.removeSync('./contracts');
         fs.removeSync('./specific');
-        // fs.removeSync('./build');
+        fs.removeSync('./build');
         fs.removeSync('./customBuild/build');
         fs.removeSync('./custom-contracts');
         fs.removeSync('./single-contract-build-directory');
