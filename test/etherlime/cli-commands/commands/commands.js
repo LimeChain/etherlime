@@ -13,7 +13,7 @@ const eventTracker = require('../../../../packages/etherlime/cli-commands/event-
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
 
-describe.only('root calling cli commands', () => {
+describe('root calling cli commands', () => {
 
     // it('should throw err if init cli command failed', async function () {
     //     fs.writeFileSync('./deploy.js', 'deployment script')
