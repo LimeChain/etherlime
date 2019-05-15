@@ -55,13 +55,20 @@ class Artifactor {
 
     finalObject.updatedAt = new Date().toISOString();
     await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
-    if (extra_opts && extra_opts.abiOnly) {
-      await self.saveABIOnly(finalObject)
+
+    if (typeof extra_opts == 'undefined') {
+      return;
     }
+
+    if (!extra_opts.exportAbi) {
+      return
+    }
+
+    await self.exportABI(finalObject)
 
   }
 
-  async saveABIOnly(object) {
+  async exportABI(object) {
     const self = this;
     const ABIsDirName = 'abis';
     const abiDir = path.join(self.destination, ABIsDirName)

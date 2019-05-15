@@ -84,7 +84,7 @@ const write_contracts = async function (contracts, options) {
 
       let extra_opts = {
         network_id: options.network_id,
-        abiOnly: options.abiOnly
+        exportAbi: options.exportAbi
       };
 
       await options.artifactor.saveAll(contracts, extra_opts);
