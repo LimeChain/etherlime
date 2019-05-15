@@ -8,4 +8,4 @@ build
 docs/build
 .idea/
 .outputParameter
-coverage
+.coverage

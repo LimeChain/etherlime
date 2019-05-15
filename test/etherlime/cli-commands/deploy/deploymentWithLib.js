@@ -1,4 +1,4 @@
-let deploymentWithLib = `const etherlime = require('../index.js');
+let deploymentWithLib = `const etherlime = require('./../packages/etherlime/index.js');
  const LimeFactory = require('../build/LimeFactory.json');
 const LimeFactoryLib = require('../build/LimeFactoryLib.json');
  const deploy = async (network, secret) => {
