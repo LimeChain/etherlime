@@ -257,7 +257,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and when "b" is send with specific wrong line number, a message is expexted', async function () {
-		let expectedOutput = "Offset must be an integer.";
+		let expectedOutput = "Offset must be an integer."; 
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b + 19\n');
 		assert.include(childProcess.output, expectedOutput);
 
