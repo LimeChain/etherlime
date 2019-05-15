@@ -202,7 +202,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
@@ -261,6 +261,12 @@ const commands = [
 				type: 'string',
 			});
 
+			yargs.positional('deleteCompiledFiles', {
+				describe: 'Delete previously compiled files from build directory before compilation of the contracts files',
+				type: 'boolean',
+				default: false
+			});
+
 			yargs.positional('abiOnly', {
 				describe: 'Creates abi directory inside the build directory containing only the ABIs of all contract',
 				type: 'boolean',
@@ -274,7 +280,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.abiOnly);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles, argv.abiOnly);
 			} catch (err) {
 				console.error(err);
 			} finally {

@@ -55,7 +55,7 @@ class Artifactor {
 
     finalObject.updatedAt = new Date().toISOString();
     await fs.outputFile(output_path, JSON.stringify(finalObject, null, 2), "utf8");
-    if (extra_opts.abiOnly) {
+    if (extra_opts && extra_opts.abiOnly) {
       await self.saveABIOnly(finalObject)
     }
 
