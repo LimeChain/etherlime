@@ -16,7 +16,7 @@ const DebugUtils = require('../../../../packages/etherlime/cli-commands/debugger
 
 let currentDir;
 
-describe('Debug cli command', () => {
+describe.only('Debug cli command', () => {
 	let txHash;
 	let foodCartTxHash;
 	let contractAddress;
@@ -34,14 +34,20 @@ describe('Debug cli command', () => {
 		await compiler.run('.');
 
 		jsonRpcProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
+		console.log("jsProvider", jsonRpcProvider)
 		localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
+		console.log("localWallet", localInitializedWallet)
 		const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
+		console.log("cwdir", process.cwd())
 		const FoodCart = require(`${process.cwd()}/build/FoodCart.json`);
 		let factory = new ethers.ContractFactory(LimeFactory.abi, LimeFactory.bytecode, localInitializedWallet);
+		console.log("111")
 		let factoryFoodCart = new ethers.ContractFactory(FoodCart.abi, FoodCart.bytecode, localInitializedWallet);
+		console.log("222")
 		let contract = await factory.deploy();
+		console.log("333")
 		let foodCartContract = await factoryFoodCart.deploy();
-
+		console.log("444")
 		let localDeployedFoodCart = await foodCartContract.deployed();
 		let localDeployedContractResult = await contract.deployed();
 		contractAddress = localDeployedContractResult.address;

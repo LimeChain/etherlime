@@ -8,12 +8,10 @@ const history = require('../../../../packages/etherlime/cli-commands/history/his
 const logger = require('../../../../packages/etherlime/logger-service/logger-service').logger;
 const Greetings = require('../../../testContracts/Greetings.json');
 
-describe.only('History cli command', () => {
+describe('History cli command', () => {
 
     before(async function() {
-        console.log("etherlime", etherlime)
         let deployer = new etherlime.EtherlimeGanacheDeployer();
-        console.log("deployer", deployer)
         await deployer.deploy(Greetings)
     })
 
