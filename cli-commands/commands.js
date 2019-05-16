@@ -270,6 +270,12 @@ const commands = [
 				type: 'boolean',
 				default: false
 			});
+
+			yargs.positional('exportAbi', {
+				describe: 'Creates abi directory inside the build directory containing only the ABIs of all contract',
+				type: 'boolean',
+				default: false
+			});
 		},
 		commandProcessor: async (argv) => {
 			recordEvent('etherlime compile', {
@@ -278,7 +284,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles);
+				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles, argv.exportAbi);
 			} catch (err) {
 				console.error(err);
 			} finally {
