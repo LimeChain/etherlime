@@ -7,11 +7,9 @@ status](https://img.shields.io/codecov/c/github/LimeChain/etherlime/master.svg)]
 [![Gitter
 chat](https://badges.gitter.im/lime-tech-talks/Lobby.png)](https://gitter.im/lime-tech-talks/Lobby)
 
-etherlime
-=========
+# etherlime
 
-What is etherlime?
-------------------
+## What is etherlime?
 
 **etherlime** is an ethereum development and deployment framework based
 on [ethers.js](https://github.com/ethers-io/ethers.js/).
@@ -35,24 +33,29 @@ plain old node.js including the etherlime library.
 
 ### Milestones
 
--   [Ready] Being able to deploy compiled contracts on local and infura
-    nodes \<---- **Done**
--   [Ready] Being able to compile contracts to the desired formats for
+  - \[Ready\] Being able to deploy compiled contracts on local and
+    infura nodes \<---- **Done**
+  - \[Ready\] Being able to compile contracts to the desired formats for
     deployment \<---- **Done**
--   [Ready] Being able to run unit tests on the compiled contracts
+  - \[Ready\] Being able to run unit tests on the compiled contracts
     \<---- **Done**
--   [Ready] Being able to run unit tests with code coverage \<----
+  - \[Ready\] Being able to run unit tests with code coverage \<----
     **Done**
--   [Ready] Being able to debug transactions \<---- **Done**
--   [Not Ready] Being able to verify contracts \<---- **Next**
+  - \[Ready\] Being able to debug transactions \<---- **Done**
+  - \[Not Ready\] Being able to verify contracts \<---- **Next**
 
 ### Community
 
 [Join our community group](https://t.me/etherlime/)
 
-* * * * *
+<div class="toctree" data-maxdepth="3" data-caption="Developer Documentation">
 
-License
--------
+getting-started etherlime-api etherlime-cli migration-from-truffle-guide
+
+</div>
+
+-----
+
+## License
 
 Completely MIT Licensed. Including ALL dependencies.

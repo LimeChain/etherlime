@@ -1,5 +1,5 @@
 etherlime debug
-**************
+***************
 
 In order to debug transaction, you will need the following:
 
@@ -25,7 +25,7 @@ Using the command will start the debugger interface with the following informati
 * The entry point of the transaction, including code preview and the source file.
 
 Available Commands
----------------
+------------------
 
 The enter key is sending to the debugger the last command that is entered. After the initial start of the debugger, the enter key is set to step to the next logical source code element (the next statement or expression that is evaluated by the EVM). You can use n or enter initially.
 

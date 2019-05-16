@@ -33,10 +33,12 @@ Write new scripts for deployment using the template provided
 
 *with Truffle*
 ::
+
     const LimeFactory = artifacts.require("./LimeFactory.sol");
 
 *with Etherlime*
 ::
+
     const etherlime = require('etherlime')
     const LimeFactory = require('../build/LimeFactory.json');
 
@@ -44,6 +46,7 @@ Write new scripts for deployment using the template provided
 
 *Local deployment with Etherlime*
 ::
+
     const etherlime = require('etherlime')
     const LimeFactory = require('../build/LimeFactory.json');
     const InterfaceFactory = require('../build/InterfaceFactory.json')
@@ -66,6 +69,7 @@ In order to modify the tests from Truffle to Etherlime, slight changes are neede
 
 *with Truffle*
 ::
+
     const LimeFactory = artifacts.require("./LimeFactory.sol");
 
     contract('LimeFactory tests', async (accounts) => {
@@ -83,6 +87,7 @@ In order to modify the tests from Truffle to Etherlime, slight changes are neede
 
 *with Etherlime*
 ::
+
     // step1: require Etherlime module
     const etherlime = require('etherlime')
 
@@ -117,11 +122,13 @@ Flexibility
 
 *with Truffle*
 ::
+
     await limeFactory.createLime(newLime' 0, 10, 12, {from: accounts[1]})
 
 
 *with Etherlime*
 ::
+
     await limeFactory.from(2).createLime('newLime' 0, 10, 12);
 
     // as a param you may also use:
@@ -140,6 +147,7 @@ For more convenience Etherlime provides some additional assertions and global ut
 
 **assert it is an address**
 ::
+
     it('should be valid address', async () => {
         assert.isAddress(limeFactory.contractAddress, "The contract was not deployed");
     })
@@ -148,6 +156,7 @@ For more convenience Etherlime provides some additional assertions and global ut
 
 **assert a function revert**
 ::
+
     it('should revert if try to create lime with 0 carbohydrates', async () => {
         let carbohydrates = 0;
         await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
