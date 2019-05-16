@@ -37,6 +37,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 			commandOutput += data.toString('utf-8');
 			outputLoaded = data.toString('utf-8').includes(outputCondition);
+			console.log("output", commandOutput)
 			if (outputLoaded) {
 				const processRespond = {
 					process: process,
