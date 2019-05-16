@@ -51,6 +51,7 @@ function runCmdHandler(cmd, outputCondition, additionalCommand, secondAdditional
 
 		process.stderr.on('data', function (data) {
             const err = data.toString('utf-8');
+			console.log("error", err)
             if (!err.includes('EADDRINUSE') && err.includes(outputCondition)) {
                    return resolve(err);  
             }
