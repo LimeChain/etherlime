@@ -8,7 +8,7 @@ let etherlimeCoverage = require('../../../../packages/etherlime/cli-commands/eth
 
 const sinon = require('sinon');
 
-let exampleTestForCoverage = require('../examples/exampleTestForCoverageWithPort').pathToExampleTest;
+let exampleTestForCoverage = require('../examples/exampleTestForCoverageWithPort').exampleTestForCoverageWithPort;
 let pathToExampleTest = './testsToRun/exampleTestForCoverage.js'
 let defaultTimeout = 10000;
 let customTimeout = 12000;

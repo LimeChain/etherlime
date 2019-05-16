@@ -34,31 +34,18 @@ describe('Debug cli command', () => {
 		await compiler.run('.');
 
 		jsonRpcProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
-		console.log("provider", jsonRpcProvider)
 		localInitializedWallet = new ethers.Wallet(config.localPrivateKey, jsonRpcProvider);
-		console.log("wallet", localInitializedWallet)
 		const LimeFactory = require(`${process.cwd()}/build/LimeFactory.json`);
-		console.log("1111")
 		const FoodCart = require(`${process.cwd()}/build/FoodCart.json`);
-		console.log("2222")
 		let factory = new ethers.ContractFactory(LimeFactory.abi, LimeFactory.bytecode, localInitializedWallet);
-		console.log("3333")
 		let factoryFoodCart = new ethers.ContractFactory(FoodCart.abi, FoodCart.bytecode, localInitializedWallet);
-		console.log("444")
 		let contract = await factory.deploy();
-		console.log("5555")
 		let foodCartContract = await factoryFoodCart.deploy();
-		console.log("6666")
 		let localDeployedFoodCart = await foodCartContract.deployed();
-		console.log("7777")
 		let localDeployedContractResult = await contract.deployed();
-		console.log("888")
 		contractAddress = localDeployedContractResult.address;
-		console.log("9999")
 		const transaction = await localDeployedContractResult.createLime('ogi', 1, 2, 3);
-		console.log("10 10 10")
 		const foodCartTransaction = await localDeployedFoodCart.addFoodItem('Item1', 10);
-		console.log("11 11 11")
 		foodCartTxHash = foodCartTransaction.hash;
 
 		txHash = transaction.hash;
