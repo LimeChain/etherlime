@@ -14,7 +14,7 @@ class Verifier {
 
 	async verifySmartContract(contractWrapper, deploymentArguments, libraries, defaultOverrides) {
 
-		this.apiKey = defaultOverrides.apiKey;
+		this.etherscanApiKey = defaultOverrides.etherscanApiKey;
 		this.contractAddress = contractWrapper.contractAddress;
 		this.contractName = contractWrapper._contract.contractName;
 		this.flattenCode = await this._flattenSourceCode(contractWrapper);
@@ -77,7 +77,7 @@ class Verifier {
 
 	_constructRequestData() {
 		let data = {
-			apikey: this.apiKey,
+			apikey: this.etherscanApiKey,
 			module: 'contract', // DO NOT CHANGE
 			action: 'verifysourcecode', // DO NOT CHANGE
 			contractaddress: this.contractAddress,

@@ -93,7 +93,7 @@ Passing API Key to the deployer:
 
 :: 
 
-    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, apiKey: '3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY' };
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, etherscanApiKey: '3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY' };
 
 * Setting the API Key through the deployer `setVerifierApiKey` setter:
 
@@ -102,14 +102,14 @@ Passing API Key to the deployer:
     deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY')
 
 
-* Passing the API Key from `etherlime deploy` command with optional parameter `apiKey`:
-    `etherlime deploy --secret="Your private key" --network="rinkeby" --apiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"` 
+* Passing the API Key from `etherlime deploy` command with optional parameter `etherscanApiKey`:
+    `etherlime deploy --secret="Your private key" --network="rinkeby" --etherscanApiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"` 
 
 ::
 
-    const deploy = async (network, secret, apiKey) => {
+    const deploy = async (network, secret, etherscanApiKey) => {
     const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
-    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, apiKey };
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, etherscanApiKey };
     };
 
 Network is automatically detected based on the network that the deployer is set to deploy. The supported networks are:
@@ -197,8 +197,8 @@ Setters
     `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
 
-    `deployer` . setVerifierApiKey (apiKey)
-        * ``apiKey`` - Etherscan API Key
+    `deployer` . setVerifierApiKey (etherscanApiKey)
+        * ``etherscanApiKey`` - Etherscan API Key
 
 Example
 ::
@@ -257,8 +257,8 @@ Setters
     `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
 
-    `deployer` . setVerifierApiKey (apiKey)
-        * ``apiKey`` - Etherscan API Key
+    `deployer` . setVerifierApiKey (etherscanApiKey)
+        * ``etherscanApiKey`` - Etherscan API Key
 
 Example
 ::
@@ -322,8 +322,8 @@ Setters
     `deployer` . setProvider (provider)
         * ``provider`` - ethers.provider instance
 
-    `deployer` . setVerifierApiKey (apiKey)
-        * ``apiKey`` - Etherscan API Key
+    `deployer` . setVerifierApiKey (etherscanApiKey)
+        * ``etherscanApiKey`` - Etherscan API Key
 
 Example
 ::

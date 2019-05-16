@@ -22,7 +22,7 @@ const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit,
 	chainId: config.defaultChainId,
-	apiKey: config.randomEtherscanApiKey
+	etherscanApiKey: config.randomEtherscanApiKey
 };
 
 let sandbox = sinon.createSandbox();
@@ -124,7 +124,7 @@ describe('Deployer tests', () => {
 			const deployer = new etherlime.Deployer(signer, provider);
 
 			deployer.setVerifierApiKey(config.randomEtherscanApiKey);
-			assert.deepEqual(config.randomEtherscanApiKey, deployer.defaultOverrides.apiKey, "The stored default overrides does not match the inputted one");
+			assert.deepEqual(config.randomEtherscanApiKey, deployer.defaultOverrides.etherscanApiKey, "The stored default overrides does not match the inputted one");
 		});
 
 		it('should set defaultOverrides', () => {
@@ -351,7 +351,7 @@ describe('Deployer tests', () => {
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
-				assert.strictEqual(deployer.defaultOverrides.apiKey, config.secondRandomEtherscanApiKey);
+				assert.strictEqual(deployer.defaultOverrides.etherscanApiKey, config.secondRandomEtherscanApiKey);
 				stubRequest.restore();
 				stubCheckStatus.restore();
 			});
@@ -374,7 +374,7 @@ describe('Deployer tests', () => {
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
-				assert.strictEqual(deployer.defaultOverrides.apiKey, config.secondRandomEtherscanApiKey);
+				assert.strictEqual(deployer.defaultOverrides.etherscanApiKey, config.secondRandomEtherscanApiKey);
 				mock.restore();
 			})
 

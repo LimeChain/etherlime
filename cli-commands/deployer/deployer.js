@@ -22,7 +22,7 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secret, silent, compile, runs, output, apiKey) => {
+const run = async (deploymentFilePath, network, secret, silent, compile, runs, output, etherscanApiKey) => {
 	if (compile && typeof (runs) === 'number') {
 		await compiler.run('.', runs);
 	} else if (compile) {
@@ -33,7 +33,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 
 	try {
 		global.Verifier = new Verifier();
-		await deployMethod(network, secret, apiKey);
+		await deployMethod(network, secret, etherscanApiKey);
 		logger.log(`Your deployment script finished successfully!`);
 	} catch (e) {
 		if (!silent) {
