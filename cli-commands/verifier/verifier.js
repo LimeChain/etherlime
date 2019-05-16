@@ -6,6 +6,9 @@ const colors = require('../../utils/colors');
 const ethers = require('ethers');
 const DEFAULT_SEND_REQUEST_TIMEOUT = 10000;
 const DEFAULT_CHECK_STATUS_TIMEOUT = 5000;
+const MODULE_NAME = 'contract';
+const ACTION_VERIFY_SOURCE = 'verifysourcecode';
+const ACTION_VERIFY_STATUS = 'checkverifystatus';
 class Verifier {
 
 	constructor() {
@@ -14,28 +17,25 @@ class Verifier {
 
 	async verifySmartContract(contractWrapper, deploymentArguments, libraries, defaultOverrides) {
 
-		this.etherscanApiKey = defaultOverrides.etherscanApiKey;
-		this.contractAddress = contractWrapper.contractAddress;
-		this.contractName = contractWrapper._contract.contractName;
-		this.flattenCode = await this._flattenSourceCode(contractWrapper);
-		this.optimization = contractWrapper._contract.compiler.optimizer;
-		this.runs = contractWrapper._contract.compiler.runs;
-		this.optimization = contractWrapper._contract.compiler.optimizer ? 1 : 0;
-		this.constructorArguments = await this._buildConstructorArguments(contractWrapper, deploymentArguments);
-		this.libraries = this._buildLibrariesArguments(libraries);
-		this.apiUrl = await this._buildApiUrl(contractWrapper.provider);
-		this.solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
-		logger.log(`Attempting to verify your contract: ${colors.colorName(this.contractName)} on network ${colors.colorParams(this.name)}`);
-		let data = this._constructRequestData();
+		const etherscanApiKey = defaultOverrides.etherscanApiKey;
+		const contractName = contractWrapper._contract.contractName;
+		const flattenedCode = await this._flattenSourceCode(contractWrapper);
+		const constructorArguments = await this._buildConstructorArguments(contractWrapper, deploymentArguments);
+		const contractLibraries = this._buildLibrariesArguments(libraries);
+		const { apiUrl } = await this._buildApiUrl(contractWrapper);
+		const { networkName } = await this._buildApiUrl(contractWrapper);
+		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
+		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
+		let data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
 
-		const response = await this._sendVerificationRequest(data, defaultOverrides);
-		return await this._checkVerificationStatus(response, defaultOverrides);
+		const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
+		return await this._checkVerificationStatus(response, defaultOverrides, contractName, apiUrl);
 	}
 
 	async _flattenSourceCode(contractWrapper) {
 		const regexp = /[0-9]?\.[0-9]?\.[0-9]?/;
 		const solcVersion = regexp.exec(contractWrapper._contract.compiler.version)[0];
-		const sourceCode = await runWithoutWriteFiles(`${this.contractName}.sol`, solcVersion);
+		const sourceCode = await runWithoutWriteFiles(`${contractWrapper._contract.contractName}.sol`, solcVersion);
 		return sourceCode
 	}
 
@@ -65,100 +65,93 @@ class Verifier {
 		return version;
 	}
 
-	async _buildApiUrl(provider) {
-		const { name } = await provider.getNetwork();
-		this.name = name;
+	async _buildApiUrl(contractWrapper) {
+		const { name } = await contractWrapper.provider.getNetwork();
 
-		if ((/^(ropsten|rinkeby|kovan|goerli)$/.test(this.name))) {
-			return `https://api-${this.name}.etherscan.io/api`;
+		if ((/^(ropsten|rinkeby|kovan|goerli)$/.test(name))) {
+			return { apiUrl: `https://api-${name}.etherscan.io/api`, networkName: name };
 		}
-		return 'https://api.etherscan.io/api';
+		return { apiUrl: 'https://api.etherscan.io/api', networkName: name };
 	}
 
-	_constructRequestData() {
+	_constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments) {
 		let data = {
-			apikey: this.etherscanApiKey,
-			module: 'contract', // DO NOT CHANGE
-			action: 'verifysourcecode', // DO NOT CHANGE
-			contractaddress: this.contractAddress,
-			sourceCode: this.flattenCode,
-			contractname: this.contractName,
-			compilerversion: this.solcVersionCompiler,
-			optimizationUsed: this.optimization,
-			runs: this.runs,
-			constructorArguements: this.constructorArguments
+			apikey: etherscanApiKey,
+			module: MODULE_NAME,
+			action: ACTION_VERIFY_SOURCE, // DO NOT CHANGE
+			contractaddress: contractWrapper.contractAddress,
+			sourceCode: flattenedCode,
+			contractname: contractWrapper._contract.contractName,
+			compilerversion: solcVersionCompiler,
+			optimizationUsed: contractWrapper._contract.compiler.optimizer ? 1 : 0,
+			runs: contractWrapper._contract.compiler.runs,
+			constructorArguements: constructorArguments
 		}
-		if (this.libraries) {
-			for (let i = 0; i < this.libraries.length; i++) {
-				data[`libraryname${i + 1}`] = this.libraries[i].name;
-				data[`libraryaddress${i + 1}`] = this.libraries[i].address;
+		if (contractLibraries) {
+			for (let i = 0; i < contractLibraries.length; i++) {
+				let index = i + 1
+				data[`libraryname${index}`] = contractLibraries[i].name;
+				data[`libraryaddress${index}`] = contractLibraries[i].address;
 			}
 		}
 		let stringData = querystring.stringify(data);
 		return stringData
 	}
 
-	async _sendVerificationRequest(stringData, defaultOverrides) {
+	async _sendVerificationRequest(stringData, defaultOverrides, apiUrl) {
 
 		const ms = defaultOverrides.waitInterval || DEFAULT_SEND_REQUEST_TIMEOUT;
 		let count = 0;
 		const self = this;
-		async function sendRequest(ms) {
-			await self.timeout(ms)
-			const response = await axios.post(self.apiUrl, stringData);
-			if (count < 10) {
-				if (response.data.message == 'OK') {
-					logger.log(`Request successfully sent, your GUID is ${colors.colorParams(response.data.result)}`);
-					return response.data
-				} else {
-					console.log('Processing verification. Please wait. It might take a few minutes');
-					count++;
-					return await sendRequest(ms);
+		async function sendRequest(ms, count) {
+			const response = await axios.post(apiUrl, stringData);
+			if (!(count > 10)) {
+				if (response.data.message !== 'OK') {
+					logger.log('Processing verification. Please wait. It might take a few minutes')
+					await self.timeout(ms);
+					return await sendRequest(ms, ++count);
 				}
-			} else {
-				throw new Error('Contract Verification Timeout!!! Please try again');
+				logger.log(`Request successfully sent, your GUID is ${colors.colorParams(response.data.result)}`);
+				return response.data
 			}
-		}
+			throw new Error('Contract Verification Timeout! Please try again');
 
-		return sendRequest(ms);
+		}
+		await self.timeout(ms)
+		return sendRequest(ms, 0);
 
 	}
 
-	async _checkVerificationStatus(response, defaultOverrides) {
+	async _checkVerificationStatus(response, defaultOverrides, contractName, apiUrl) {
 		let params = {
 			guid: response.result,
-			module: "contract", // DO NOT CHANGE
-			action: "checkverifystatus" // DO NOT CHANGE
+			module: MODULE_NAME,
+			action: ACTION_VERIFY_STATUS
 		};
 		const ms = defaultOverrides.waitInterval || DEFAULT_CHECK_STATUS_TIMEOUT;
-		let count = 0;
 		const self = this;
-		async function checkGuid(ms) {
-			await self.timeout(ms);
-			const response = await axios.get(self.apiUrl, { params });
-			if (count < 10) {
-				if (response.data.result == 'Pending in queue') {
-
-					console.log('Pending...');
-					console.log('Please wait...');
-
-					count++;
-					return await checkGuid(ms);
-				} else {
+		async function checkGuid(ms, count) {
+			const response = await axios.get(apiUrl, { params });
+			if (!(count > 10)) {
+				if (response.data.result !== 'Pending in queue') {
 					return response.data
 				}
-			} else {
-				throw new Error('Contract Verification Timeout!!! Check Final Status on Etherscan');
+				logger.log('Pending...')
+				logger.log('Please wait...')
+				await self.timeout(ms);
+				return await checkGuid(ms, ++count);
 			}
-		}
+			throw new Error('Contract Verification Timeout! Check Final Status on Etherscan');
 
-		const result = await checkGuid(ms);
-		if (result.message === 'OK') {
-			logger.log(`Contract: ${colors.colorName(this.contractName)} is verified ${colors.colorSuccess('successfully!')}`);
-			return 'Success';
 		}
-		logger.log(`Contract: ${colors.colorName(this.contractName)} verification failed with error: ${colors.colorFailure(result.result)}`);
-		return result.result;
+		await self.timeout(ms);
+		const result = await checkGuid(ms, 0);
+		if (result.message !== 'OK') {
+			logger.log(`Contract: ${colors.colorName(contractName)} verification failed with error: ${colors.colorFailure(result.result)}`);
+			return result.result;
+		}
+		logger.log(`Contract: ${colors.colorName(contractName)} is verified ${colors.colorSuccess('successfully!')}`);
+		return 'Success';
 	};
 
 	timeout(ms) {

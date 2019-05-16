@@ -7,39 +7,36 @@ let { resolver, supplier } = require('./config.js')
 const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files
 
-const run = async (file, solcVersion) => {
+const returnFilesAndPaths = async (file, solcVersion) => {
 	if (solcVersion) {
 		supplier.config.version = solcVersion
 	}
 
+	let resolvedFiles = await resolveSources(`./contracts/${file}`)
+	let resolvedPaths = resolvePaths(resolvedFiles)
+	let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+	return { resolvedFiles, orderedPaths }
+}
+
+const run = async (file, solcVersion) => {
+
 	try {
-		let resolvedFiles = await resolveSources(`./contracts/${file}`)
-		let resolvedPaths = resolvePaths(resolvedFiles)
-		let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+		const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
 		recordFiles(file, resolvedFiles, orderedPaths)
 		console.log('Contract was flattened successfully. Check your "./flat" folder')
 	} catch (e) {
 		throw new Error(e.message);
 	}
-
-
 };
 
 const runWithoutWriteFiles = async (file, solcVersion) => {
-	if (solcVersion) {
-		supplier.config.version = solcVersion
-	}
 
 	try {
-		let resolvedFiles = await resolveSources(`./contracts/${file}`)
-		let resolvedPaths = resolvePaths(resolvedFiles)
-		let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+		const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
 		return returnFiles(file, resolvedFiles, orderedPaths)
 	} catch (e) {
 		throw new Error(e.message);
 	}
-
-
 };
 
 
@@ -119,29 +116,29 @@ const recordFiles = (fileName, resolvedFiles, orderedPaths) => {
 }
 
 const returnFiles = (fileName, resolvedFiles, orderedPaths) => {
-	let sourceCode = returnSourceCode(resolvedFiles, fileName)
+	let solVersionAndCode = getSolcVersion(resolvedFiles, fileName)
 
 	orderedPaths.forEach(dependencyPath => {
 		let content = resolvedFiles[dependencyPath].body
 		content = removeVersionAndImports(content)
-		sourceCode += content;
+		solVersionAndCode += content;
 	})
 
 	orderedPaths = [];
-	return sourceCode
+	return solVersionAndCode
 }
 
 const createFolderAndFile = (resolvedFiles, fileName, flatFileName) => {
-	let solidityVersion = resolvedFiles[`./contracts/${fileName}`].body.match(versionRegex) //takes pragma solidity version
+	let solidityVersion = getSolcVersion(resolvedFiles, fileName);
 
 	if (!fs.existsSync('./flat')) {
 		fs.mkdirSync('./flat')
 	}
 
-	fs.writeFileSync(flatFileName, solidityVersion[0])
+	fs.writeFileSync(flatFileName, solidityVersion)
 }
 
-const returnSourceCode = (resolvedFiles, fileName) => {
+const getSolcVersion = (resolvedFiles, fileName) => {
 	let solidityVersion = resolvedFiles[`./contracts/${fileName}`].body.match(versionRegex) //takes pragma solidity version
 	return solidityVersion[0]
 }

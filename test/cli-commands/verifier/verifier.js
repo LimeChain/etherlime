@@ -23,32 +23,37 @@ describe('Verifier class methods tests', () => {
 
 	it('should return the right API url based on the deployment network - mainnet', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "mainnet", "d780223beae54bfea08c9c26689609e9");
-		const URL = await global.Verifier._buildApiUrl(deployer.provider);
-		assert.strictEqual(URL, API_URL_MAINNET, 'The API URL does not match');
+		const { apiUrl, networkName } = await global.Verifier._buildApiUrl(deployer);
+		assert.strictEqual(apiUrl, API_URL_MAINNET, 'The API URL does not match');
+		assert.strictEqual(networkName, 'homestead');
 	});
 
 	it('should return the right API url based on the deployment network - ropsten', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "ropsten", "d780223beae54bfea08c9c26689609e9");
-		const URL = await global.Verifier._buildApiUrl(deployer.provider);
-		assert.strictEqual(URL, API_URL_ROPSTEN, 'The API URL does not match');
+		const { apiUrl, networkName } = await global.Verifier._buildApiUrl(deployer);
+		assert.strictEqual(apiUrl, API_URL_ROPSTEN, 'The API URL does not match');
+		assert.strictEqual(networkName, 'ropsten');
 	});
 
 	it('should return the right API url based on the deployment network - rinkeby', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "rinkeby", "d780223beae54bfea08c9c26689609e9");
-		const URL = await global.Verifier._buildApiUrl(deployer.provider);
-		assert.strictEqual(URL, API_URL_RINKEBY, 'The API URL does not match');
+		const { apiUrl, networkName } = await global.Verifier._buildApiUrl(deployer);
+		assert.strictEqual(apiUrl, API_URL_RINKEBY, 'The API URL does not match');
+		assert.strictEqual(networkName, 'rinkeby');
 	});
 
 	it('should return the right API url based on the deployment network - kovan', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "kovan", "d780223beae54bfea08c9c26689609e9");
-		const URL = await global.Verifier._buildApiUrl(deployer.provider);
-		assert.strictEqual(URL, API_URL_KOVAN, 'The API URL does not match');
+		const { apiUrl, networkName } = await global.Verifier._buildApiUrl(deployer);
+		assert.strictEqual(apiUrl, API_URL_KOVAN, 'The API URL does not match');
+		assert.strictEqual(networkName, 'kovan');
 	});
 
 	it('should return the right API url based on the deployment network - goerli', async () => {
 		deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, "goerli", "d780223beae54bfea08c9c26689609e9");
-		const URL = await global.Verifier._buildApiUrl(deployer.provider);
-		assert.strictEqual(URL, API_URL_GOERLI, 'The API URL does not match');
+		const { apiUrl, networkName } = await global.Verifier._buildApiUrl(deployer);
+		assert.strictEqual(apiUrl, API_URL_GOERLI, 'The API URL does not match');
+		assert.strictEqual(networkName, 'goerli');
 	});
 
 });
