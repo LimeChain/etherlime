@@ -31,15 +31,15 @@ let updated = async (options) => {
 let prepareFiles = async (options) => {
   let sourceFilesArtifacts = {};
   try {
-    let {solFiles, vyperFiles} = await getFiles(options);
-    
-    if(vyperFiles && vyperFiles.length > 0) {
-      await vyperCompiler(vyperFiles, options.contracts_build_directory)
+    let { solFiles, vyperFiles } = await getFiles(options);
+
+    if (vyperFiles && vyperFiles.length > 0) {
+      await vyperCompiler(vyperFiles, options)
     }
-    
-    if(solFiles && solFiles.length > 0) {
+
+    if (solFiles && solFiles.length > 0) {
       solFiles.forEach(function (sourceFile) {
-      sourceFilesArtifacts[sourceFile] = [];
+        sourceFilesArtifacts[sourceFile] = [];
       });
     }
 
@@ -80,7 +80,7 @@ let readFiles = async (build_directory, sourceFilesArtifacts) => {
         } else {
           return reject(error);
         }
-  
+
       }
 
       build_files = build_files.filter(function (build_file) {
@@ -160,7 +160,7 @@ let updateFiles = async (sourceFilesArtifacts, sourceFilesArtifactsUpdatedTimes)
         updatedFiles.push(sourceFile);
       }
     });
-      resolve(updatedFiles);
+    resolve(updatedFiles);
   });
 }
 
@@ -234,7 +234,7 @@ let required_sources = async function (options) {
         // Seed compilationTargets with known updates
 
         updates.forEach(update => compilationTargets.push(update));
-  
+
         // While there are updated files in the queue, we take each one
         // and search the entire file corpus to find any sources that import it.
         // Those sources are added to list of compilation targets as well as
@@ -243,7 +243,7 @@ let required_sources = async function (options) {
           let currentUpdate = updates.shift();
           let files = allPaths.slice();
           while (files.length > 0) {
-    
+
             let currentFile = files.shift();
             // Ignore targets already selected.
 
@@ -258,7 +258,7 @@ let required_sources = async function (options) {
               err.message = "Error parsing " + currentFile + ": " + err.message;
               return reject(err)
             }
-            
+
             // If file imports a compilation target, add it
             // to list of updates and compilation targets
             if (imports.includes(currentUpdate)) {

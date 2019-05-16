@@ -1,11 +1,13 @@
+const fs = require('fs');
 const compiler = require("./etherlime-workflow-compile/index");
 const Resolver = require("./etherlime-resolver/index");
 const colors = require("etherlime-utils").colors;
 const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('./../../logger-service/logger-service').logger;
+const del = require('del');
 
-const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory) => {
+const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
 	if (list !== undefined) {
 		await listVersions(supplier, list, all);
 
@@ -14,10 +16,10 @@ const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, 
 
 	defaultPath = `${process.cwd()}/${defaultPath}`;
 
-	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory);
+	return performCompilation(defaultPath, runs, solcVersion, useDocker, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi);
 };
 
-const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory) => {
+const performCompilation = async (defaultPath, runs, solcVersion, useDocker, quiet, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
 	if (useDocker && !solcVersion) {
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
@@ -45,6 +47,8 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		"quiet": quiet
 	};
 
+	compileOptions.exportAbi = exportAbi;
+
 	if (runs) {
 		compileOptions.solc = {
 			optimizer: {
@@ -54,7 +58,18 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		}
 	}
 
-	return await compilePromise(compileOptions, quiet);
+	if (!deleteCompiledFiles) {
+		return await compilePromise(compileOptions, quiet);
+	}
+
+	if (!fs.existsSync(compileOptions.contracts_build_directory)) {
+		return await compilePromise(compileOptions, quiet)
+	}
+
+	await del(compileOptions.contracts_build_directory);
+
+	return await compilePromise(compileOptions, quiet)
+
 };
 
 const compilePromise = async (compileOptions, quiet) => {

@@ -11,7 +11,7 @@ Syntax
 
 ::
 
-    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quiet] [output]
+    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles]
 
 Parameters:
 
@@ -25,7 +25,8 @@ Parameters:
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
 * ``buildDirectory`` - [Optional] Defines the directory for placing builded contracts.
 * ``workingDirectory`` - [Optional] Defines the folder to use for reading contracts from, instead of the default one: ``./contracts``. Here can be specified also a single solidity file for compiling e.g: ``/contracts/LimeFactory.sol``.
-
+* ``deleteCompiledFiles`` - [Optional] Delete the files in the compilation contract directory before compiling. By the default ``deleteCompiledFiles`` is set to false.
+* ``exportAbi`` - [Optional] In addition to the json build files, etherlime build `abis` folder with files containing the abi of every contract
 
 The ``solcVersion`` can accept the following values:
 
