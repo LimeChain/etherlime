@@ -34,6 +34,7 @@ const fetchIdeRepo = async (rootDir) => {
         } catch (e) {
         }
         
+        fs.removeSync(`.${path.sep}package-lock.json`)
         fs.removeSync(`.${path.sep}node_modules`);
         await installIdeModules()
         return
