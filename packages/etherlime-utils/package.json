@@ -1,10 +1,10 @@
 {
   "name": "etherlime-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "etherlime-utils provides helpful utility functions needed for ethereum development",
   "main": "index.js",
   "keywords": [],
-  "author": "",
+  "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
     "chalk": "2.4.1"
