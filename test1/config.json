@@ -9,6 +9,8 @@
   "defaultGasPrice": 50000000000,
   "defaultGasLimit": 4700000,
   "defaultChainId": 0,
+  "randomEtherscanApiKey": "3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY",
+  "secondRandomEtherscanApiKey": "4PQYBPZZS77YDR15NKJHURVTV9WI2KH6UY",
   "nodeUrl": "http://localhost:8545/",
   "alternativeNodeUrl": "http://localhost:9545/",
   "ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",

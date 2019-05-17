@@ -48,6 +48,27 @@ Deployer Example
     
     module.exports = { deploy }
 
+Verifying Smart Contract Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    const etherlime = require('etherlime');
+
+    const TestContract = require('../build/TestContract.json'); // Path to your etherlime compiled contract json file
+
+    const deploy = async (network, secret, apiKey) => {
+        deployer.defaultOverrides = { apiKey };
+        const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
+        
+        const result = await deployer.deployAndVerify(TestContract, {}); // Add params separated with ,
+    }
+    
+    module.exports = { deploy }
+
+    Result of ``etherlime deploy`` with ``deployAndVerify`` method would be something like this: |Verifier 
+    result|
+
 Deploying
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -80,3 +101,7 @@ command:
 
 .. |Deployment result| image:: ./_docs_static/DeploymentResult.png
    :target: https://imgur.com/a/NyLX9mH
+
+.. |Verifier result| image:: ./_docs_static/DeploymentResult.png
+   :target: https://imgur.com/a/tF9AFe0
+
