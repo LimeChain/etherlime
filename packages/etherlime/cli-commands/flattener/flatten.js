@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 let Profiler = require("../compiler/etherlime-compile/profiler");
-let {resolver, supplier} = require('./config.js')
+let { resolver, supplier } = require('./config.js')
 
 const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files

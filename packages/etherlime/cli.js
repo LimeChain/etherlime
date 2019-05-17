@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const commands = require('./cli-commands/commands');
 const { exec } = require('child_process');
-const globalExceptionHandling = require('etherlime-utils');
+const globalExceptionHandling = require('etherlime-utils').globalExceptionHandling;
 
 run = () => {
 

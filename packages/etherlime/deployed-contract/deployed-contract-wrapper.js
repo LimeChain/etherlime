@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const {isAddress, isSigner, isValidContract, colors} = require('etherlime-utils')
+const { isAddress, isSigner, isValidContract, colors } = require('etherlime-utils')
 const logsStore = require('./../logs-store/logs-store');
 const logger = require('./../logger-service/logger-service').logger;
 

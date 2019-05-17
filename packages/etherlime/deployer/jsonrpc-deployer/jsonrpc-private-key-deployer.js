@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { isUrl, colors} = require('etherlime-utils');
+const { isUrl, colors } = require('etherlime-utils');
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const logger = require('./../../logger-service/logger-service').logger;
