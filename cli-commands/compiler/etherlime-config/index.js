@@ -10,7 +10,7 @@ const path = require("path");
 
 class Config {
 
-  constructor (etherlime_directory, working_directory) {
+  constructor(etherlime_directory, working_directory) {
     const self = this;
 
     let default_tx_values = {
@@ -18,7 +18,7 @@ class Config {
       gasPrice: 100000000000, // 100 Shannon,
       from: null
     };
-  
+
     this._values = {
       etherlime_directory: etherlime_directory || path.resolve(path.join(__dirname, "../")),
       working_directory: working_directory || process.cwd(),
@@ -31,7 +31,7 @@ class Config {
           enabled: false,
           runs: 200
         },
-        evmVersion: "byzantium"
+        // evmVersion: "byzantium"
       },
       logger: {
         log: function () { },
@@ -40,7 +40,7 @@ class Config {
 
 
     this.props = {
-  
+
       etherlime_directory: function () { },
       working_directory: function () { },
       verboseRpc: function () { },
@@ -49,7 +49,7 @@ class Config {
       artifactor: function () { },
       solc: function () { },
       logger: function () { },
-  
+
       build_directory: function () {
         return path.join(self.working_directory, "build");
       },
@@ -63,14 +63,14 @@ class Config {
         return /.*\.(js|es|es6|jsx|sol)$/
       }
     };
-  
+
     Object.keys(self.props).forEach(function (prop) {
       self.addProp(prop, self.props[prop]);
     });
   }
 
 
-  addProp (key, obj) {
+  addProp(key, obj) {
     Object.defineProperty(this, key, {
       get: obj.get || function () {
         return this._values[key] || obj();
@@ -82,43 +82,43 @@ class Config {
       enumerable: true
     });
   };
-  
-  
-  normalize (obj) {
+
+
+  normalize(obj) {
     let clone = {};
-  
+
     Object.keys(obj).forEach(function (key) {
       try {
         clone[key] = obj[key];
       } catch (e) {
-  
+
       }
     });
-  
+
     return clone;
   }
 
 
-  with (obj) {
+  with(obj) {
     let normalized = this.normalize(obj);
     let current = this.normalize(this);
-  
+
     return _.extend({}, current, normalized);
   };
 
 
-  merge (obj) {
+  merge(obj) {
     let self = this;
     let clone = this.normalize(obj);
-  
+
     Object.keys(obj).forEach(function (key) {
       try {
         self[key] = clone[key];
       } catch (e) {
-  
+
       }
     });
-  
+
     return this;
   };
 
