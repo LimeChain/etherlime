@@ -1,7 +1,7 @@
 root: ./doc/ 
 
 structure:
-  summary: index.md
+  summary: .index.md
 
 redirects:
   previous/page: new-folder/page.md
