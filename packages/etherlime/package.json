@@ -25,7 +25,6 @@
     "async": "2.6.1",
     "async-each-series": "1.1.0",
     "async.whilst": "0.5.2",
-    "axios": "^0.18.0",
     "bn": "^1.0.1",
     "chai": "4.1.2",
     "chalk": "2.4.1",
