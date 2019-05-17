@@ -49,8 +49,8 @@ describe('Flatten method without writing files', async () => {
 
         fs.mkdirSync('./contracts')
         fs.writeFileSync('./contracts/contractWithExternalImports.sol', contractWithExternalImports);
-        fs.copyFileSync('./test/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
-        fs.copyFileSync('./test/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
+        fs.copyFileSync('./test/etherlime/cli-commands/compile/examples/BillboardService.sol', './contracts/BillboardService.sol');
+        fs.copyFileSync('./test/etherlime/cli-commands/compile/examples/SafeMath.sol', './contracts/SafeMath.sol');
     });
 
     it('should flatten contract with all dependencies', async () => {
