@@ -64,7 +64,7 @@ class LogsStore {
 	 * @param {*} networkID id of the network
 	 * @param {*} result arbitrary result text
 	 */
-	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result) {
+	logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, networkID, result, solcVersion, verification) {
 		if (!this.isInitied) {
 			return;
 		}
@@ -79,7 +79,9 @@ class LogsStore {
 			gasPrice,
 			gasUsed,
 			networkID,
-			result
+			result,
+			solcVersion,
+			verification
 		}
 
 		const currentRecord = this.getCurrentWorkingRecord();

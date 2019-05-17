@@ -113,7 +113,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'deploy [file] [network] [secret] [compile] [runs] [output]',
+		command: 'deploy [file] [network] [secret] [compile] [runs] [output] [etherscanApiKey]',
 		description: 'run the deployment script passed as file param (default ./deployment/deployer.js). You can optionally pass network param to be passed to the deployer for easy network switching. You can pass secret in order to pass non-committable data - suitable for private keys.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('file', {
@@ -148,12 +148,16 @@ const commands = [
 				default: 'normal',
 				choices: ['none', 'normal', 'structured']
 			});
+			yargs.positional('etherscanApiKey', {
+				describe: 'Etherscan apiKey for contract verification API',
+				type: 'string'
+			});
 		},
 		commandProcessor: async (argv) => {
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output);
+				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output, argv.etherscanApiKey);
 			} catch (err) {
 				console.error(err);
 			} finally {

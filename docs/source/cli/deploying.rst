@@ -6,7 +6,7 @@ Syntax
 
 ::
 
-    etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output]
+    etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output] [apiKey]
 
 Parameters:
 
@@ -17,6 +17,7 @@ Parameters:
 * ``compile`` - [Optional] Enable compilation of the smart contracts before their deployment. By default the deployment is done with a compilation
 * ``runs`` - [Optional] Enables the optimizer and runs it the specified number of times
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
+* ``apiKey`` - [Optional] You can pass Etherscan API KEY in order to use it in the deployment script for verifying smart contracts on Etherscan.
 
 Running this command will deploy the file specified (defaults to ``./deployment/deploy.js``)
 The deployment process is verbose and gives you real-time info about the
