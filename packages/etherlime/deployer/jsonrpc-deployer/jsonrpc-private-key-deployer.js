@@ -2,7 +2,7 @@ const ethers = require('ethers');
 const { isUrl, colors} = require('etherlime-utils');
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
-const logger = require('./../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 const COVERAGE_PROVIDER_INDEX = 1; // This is the index of the desired provider located in global.providers. We have two providers there: one for coverage which is listening for blocks and one for deploying contracts
 class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 

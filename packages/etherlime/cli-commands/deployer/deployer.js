@@ -1,10 +1,8 @@
 const fs = require('fs');
 const defaultDeploymentFilePath = `deployment/deploy.js`;
-const logsStore = require('./../../logs-store/logs-store');
+const { logsStore, logger, AppenderTypes } = require('etherlime-logger');
 const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
-const logger = require('./../../logger-service/logger-service').logger;
-const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -53,7 +51,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 	const currentRecord = records[records.length - 1];
 	logger.log(`\nHere is your report:`);
 
-	if (output === loggerAppenderTypes.NORMAL) {
+	if (output === AppenderTypes.NORMAL) {
 		utils.printReportTable(currentRecord.actions);
 	}
 };

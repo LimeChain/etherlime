@@ -28,6 +28,7 @@ class LogsStore {
 		}
 		this._historyStore.set(this._HISTORY_ID, initialRecord)
 		this.isInitied = true;
+		let history = this.getHistory()
 		return
 	}
 

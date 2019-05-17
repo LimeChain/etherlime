@@ -5,7 +5,7 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const sinon = require('sinon');
 const history = require('../../../../packages/etherlime/cli-commands/history/history');
-const logger = require('../../../../packages/etherlime/logger-service/logger-service').logger;
+const logger = require('../../../../packages/etherlime-logger/logger-service/logger-service').logger;
 const Greetings = require('../../../testContracts/Greetings.json');
 
 describe('History cli command', () => {

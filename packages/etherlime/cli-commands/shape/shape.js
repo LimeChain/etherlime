@@ -1,4 +1,3 @@
-const logger = require('../../logger-service/logger-service').logger;
 const git = require('simple-git/promise')()
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);

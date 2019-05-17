@@ -5,7 +5,7 @@ const assert = chai.assert;
 const config = require('./../../config.json');
 const ICOTokenContract = require('./../../testContracts/ICOToken.json');
 const Greetings = require('./../../testContracts/Greetings.json');
-const store = require('./../../../packages/etherlime/logs-store/logs-store');
+const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 const ganacheSetupConfig = require('./../../../packages/etherlime/cli-commands/ganache/setup');
 
 const defaultConfigs = {

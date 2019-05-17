@@ -1,7 +1,7 @@
 const etherlime = require('./../../../packages/etherlime/index');
 const ethers = require('ethers');
 const assert = require('assert');
-const store = require('./../../../packages/etherlime/logs-store/logs-store');
+const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 const sinon = require('sinon');
 
 const isAddress = require('./../../../packages/etherlime-utils/utils/address-utils').isAddress;
