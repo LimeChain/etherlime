@@ -5,6 +5,7 @@ chai.use(chaiAsPromised);
 const fs = require('fs-extra');
 const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
+const init = require('../../../../packages/etherlime/cli-commands/init/init')
 const ganache = require('../../../../packages/etherlime/cli-commands/ganache/ganache');
 const shape = require('../../../../packages/etherlime/cli-commands/shape/shape');
 const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/etherlime-ide');
@@ -16,11 +17,20 @@ const commands = require('../../../../packages/etherlime/cli-commands/commands')
 describe('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
-        fs.mkdirpSync('./deployment')
-        fs.writeFileSync('./deployment/deploy.js', 'deployment script')
-        let expectedOutput = "deploy.js already exists"
-        let childProcess = await runCmdHandler(`etherlime init`, expectedOutput);
-        assert.include(JSON.stringify(childProcess), expectedOutput)
+        let stub = sinon.stub(init, "run")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[1].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
     });
 
     it('should throw err if compile cli command failed', async function () {
@@ -131,10 +141,5 @@ describe('root calling cli commands', () => {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
         assert.include(childProcess, expectedOutput)
-    })
-
-    after(async function () {
-        fs.removeSync('./deployment');
-        fs.removeSync('./Solidity-IDE');
     })
 })
