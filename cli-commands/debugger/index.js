@@ -56,7 +56,6 @@ const config = {
 config.resolver = new Resolver(config)
 config.solc = {
 	optimizer: { enabled: false, runs: 200 },
-	// evmVersion: "byzantium"
 };
 
 let lastCommand = "n";

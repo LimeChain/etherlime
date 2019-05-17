@@ -22,8 +22,7 @@ class Verifier {
 		const flattenedCode = await this._flattenSourceCode(contractWrapper);
 		const constructorArguments = await this._buildConstructorArguments(contractWrapper, deploymentArguments);
 		const contractLibraries = this._buildLibrariesArguments(libraries);
-		const { apiUrl } = await this._buildApiUrl(contractWrapper);
-		const { networkName } = await this._buildApiUrl(contractWrapper);
+		const { apiUrl, networkName } = await this._buildApiUrl(contractWrapper);
 		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
 		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
 		let data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
@@ -45,9 +44,9 @@ class Verifier {
 		}
 		let encoder = new ethers.utils.AbiCoder();
 		let types = [];
-		contractWrapper.interface.deployFunction.inputs.forEach(element => {
-			types.push(element.type);
-		});
+		for (let i = 0; i < contractWrapper.interface.deployFunction.inputs.length; i++) {
+			types.push(contractWrapper.interface.deployFunction.inputs[i].type);
+		}
 		let encodedConstructorArgs = (await encoder.encode(types, deploymentArguments)).substr(2);
 		return encodedConstructorArgs;
 	}
@@ -101,7 +100,6 @@ class Verifier {
 	async _sendVerificationRequest(stringData, defaultOverrides, apiUrl) {
 
 		const ms = defaultOverrides.waitInterval || DEFAULT_SEND_REQUEST_TIMEOUT;
-		let count = 0;
 		const self = this;
 		async function sendRequest(ms, count) {
 			const response = await axios.post(apiUrl, stringData);

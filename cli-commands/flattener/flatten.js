@@ -20,34 +20,25 @@ const returnFilesAndPaths = async (file, solcVersion) => {
 
 const run = async (file, solcVersion) => {
 
-	try {
-		const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
-		recordFiles(file, resolvedFiles, orderedPaths)
-		console.log('Contract was flattened successfully. Check your "./flat" folder')
-	} catch (e) {
-		throw new Error(e.message);
-	}
+
+	const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
+	recordFiles(file, resolvedFiles, orderedPaths)
+	console.log('Contract was flattened successfully. Check your "./flat" folder')
+
 };
 
 const runWithoutWriteFiles = async (file, solcVersion) => {
 
-	try {
-		const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
-		return returnFiles(file, resolvedFiles, orderedPaths)
-	} catch (e) {
-		throw new Error(e.message);
-	}
+	const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
+	return returnFiles(file, resolvedFiles, orderedPaths)
+
 };
 
 
 const resolveSources = async (file) => {
 	let solc = await supplier.load()
 	let resolvedFiles
-	try {
-		resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
-	} catch (e) {
-		throw e
-	}
+	resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
 
 	return resolvedFiles
 }
@@ -106,26 +97,29 @@ const recordFiles = (fileName, resolvedFiles, orderedPaths) => {
 
 	createFolderAndFile(resolvedFiles, fileName, flatFileName)
 
-	orderedPaths.forEach(dependencyPath => {
-		let content = resolvedFiles[dependencyPath].body
-		content = removeVersionAndImports(content)
-		fs.appendFileSync(flatFileName, content)
-	})
 
-	orderedPaths = []
+	let content = getFlattenedCode(resolvedFiles, orderedPaths);
+	fs.appendFileSync(flatFileName, content)
 }
 
 const returnFiles = (fileName, resolvedFiles, orderedPaths) => {
 	let solVersionAndCode = getSolcVersion(resolvedFiles, fileName)
 
-	orderedPaths.forEach(dependencyPath => {
-		let content = resolvedFiles[dependencyPath].body
+	let content = getFlattenedCode(resolvedFiles, orderedPaths);
+	solVersionAndCode += content;
+	return solVersionAndCode
+}
+
+const getFlattenedCode = (resolvedFiles, orderedPaths) => {
+	let flattenedCode = '';
+	for (let i = 0; i < orderedPaths.length; i++) {
+		let content = resolvedFiles[orderedPaths[i]].body;
 		content = removeVersionAndImports(content)
-		solVersionAndCode += content;
-	})
+		flattenedCode += content;
+	}
 
 	orderedPaths = [];
-	return solVersionAndCode
+	return flattenedCode
 }
 
 const createFolderAndFile = (resolvedFiles, fileName, flatFileName) => {

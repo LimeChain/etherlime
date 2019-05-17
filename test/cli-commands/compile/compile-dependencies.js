@@ -284,7 +284,6 @@ describe('Compile dependencies', () => {
             `${process.cwd()}/contracts/LimeFactory.sol`];
             compileOptions.solc = {
                 optimizer: { enabled: false, runs: 200 },
-                // evmVersion: 'byzantium'
             };
         });
 

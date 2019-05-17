@@ -31,7 +31,6 @@ class Config {
           enabled: false,
           runs: 200
         },
-        // evmVersion: "byzantium"
       },
       logger: {
         log: function () { },
