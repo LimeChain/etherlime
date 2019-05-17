@@ -315,11 +315,11 @@ describe('Deployer tests', () => {
 				signer = new ethers.Wallet('0x' + config.randomPrivateKey);
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
 				fs.mkdirSync('./contracts');
-				fs.copyFileSync('./test/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
-				fs.copyFileSync('./test/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
-				fs.copyFileSync('./test/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
-				fs.copyFileSync('./test/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
-				fs.copyFileSync('./test/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
+				fs.copyFileSync('./test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+				fs.copyFileSync('./test/etherlime/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
+				fs.copyFileSync('./test/etherlime/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
+				fs.copyFileSync('./test/etherlime/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
+				fs.copyFileSync('./test/etherlime/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
 
 				LimeFactory = require('./examples/compiledLimeFactory');
 				TestToken = require('./examples/compiledMockToken');
