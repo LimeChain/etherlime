@@ -350,7 +350,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.solcVersion, argv.gasReport, argv.port);
+				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.runs, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
 				console.error(err);
 			} finally {
