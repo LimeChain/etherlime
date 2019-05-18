@@ -38,6 +38,13 @@ class Deployer {
 		this.defaultOverrides = defaultOverrides;
 	}
 
+	setVerifierApiKey(etherscanApiKey) {
+		if (!this.defaultOverrides) {
+			this.defaultOverrides = {}
+		}
+		this.defaultOverrides.etherscanApiKey = etherscanApiKey;
+	}
+
 	_validateInput(signer, provider, defaultOverrides) {
 		if (!(isSigner(signer))) {
 			throw new Error('Passed signer is not valid signer instance of ethers Wallet');
@@ -52,10 +59,36 @@ class Deployer {
 	 *
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
+
 	async deploy(contract, libraries) {
 		const deploymentArguments = Array.prototype.slice.call(arguments);
 		deploymentArguments.splice(0, 2);
 
+		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this.prepareAndDeployTransaction(contract, libraries, deploymentArguments);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version);
+
+		return deploymentResult;
+	}
+
+
+	async deployAndVerify(contract, libraries) {
+		if (!this.defaultOverrides || !this.defaultOverrides.etherscanApiKey) {
+			throw new Error('Please provide Etherscan API key!')
+		}
+		const deploymentArguments = Array.prototype.slice.call(arguments);
+		deploymentArguments.splice(0, 2);
+
+		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this.prepareAndDeployTransaction(contract, libraries, deploymentArguments);
+
+		const verification = await Verifier.verifySmartContract(deploymentResult, deploymentArguments, libraries, this.defaultOverrides);
+
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version, verification);
+
+		return deploymentResult;
+	}
+
+	async prepareAndDeployTransaction(contract, libraries, deploymentArguments) {
+			
 		await this._preValidateArguments(contract, deploymentArguments);
 
 		let contractCopy = JSON.parse(JSON.stringify(contract));
@@ -72,9 +105,8 @@ class Deployer {
 		await this._postValidateTransaction(contractCopy, transaction, transactionReceipt);
 
 		const deploymentResult = await this._generateDeploymentResult(contractCopy, transaction, transactionReceipt);
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress);
 
-		return deploymentResult;
+		return { contractCopy, transaction, transactionReceipt, deploymentResult }
 	}
 
 	/**
@@ -196,9 +228,9 @@ class Deployer {
 	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
-	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result) {
+	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, solcVersion, verification) {
 		const network = await this.provider.getNetwork();
-		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result);
+		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);
 	}
 
 	/**

@@ -43,7 +43,6 @@ describe('Linking library tests', () => {
         Object.prototype.LinkedList = "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC";
 
         let bytecode = linkLibrary(libraries, Greetings.bytecode);
-        delete Object.prototype.LinkedList
         assert.equal(Greetings.bytecode, bytecode);
     });
 
@@ -52,4 +51,8 @@ describe('Linking library tests', () => {
 
         assert.throws(() => linkLibrary(libraries, DataContract.bytecode), Error, 'Not all libraries were linked.');
     });
+
+    after( function () {
+        delete Object.prototype.LinkedList
+    })
 });

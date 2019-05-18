@@ -86,7 +86,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and proceed when "n" is send, then  print VM instruction when "p" is send', async function () {
-		let expectedOutput = '(30) JUMPDEST';
+		let expectedOutput = '(29) JUMPDEST';
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'n\n', 'p\n');
 		assert.include(childProcess.output, expectedOutput);
 

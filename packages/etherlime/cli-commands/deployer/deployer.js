@@ -3,6 +3,7 @@ const defaultDeploymentFilePath = `deployment/deploy.js`;
 const { logsStore, logger, AppenderTypes } = require('etherlime-logger');
 const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
+const Verifier = require('../verifier/verifier');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -19,18 +20,18 @@ const getDeployMethod = (deploymentFilePath) => {
 	return deployModule.deploy;
 };
 
-const run = async (deploymentFilePath, network, secret, silent, compile, runs, output) => {
+const run = async (deploymentFilePath, network, secret, silent, compile, runs, output, etherscanApiKey) => {
 	if (compile && typeof (runs) === 'number') {
 		await compiler.run('.', runs);
 	} else if (compile) {
 		await compiler.run('.');
 	}
-
 	const initialRecords = logsStore.getHistory();
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {
-		await deployMethod(network, secret);
+		global.Verifier = new Verifier();
+		await deployMethod(network, secret, etherscanApiKey);
 		logger.log(`Your deployment script finished successfully!`);
 	} catch (e) {
 		if (!silent) {

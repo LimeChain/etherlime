@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "fs-extra": "7.0.1",
     "chai": "4.1.2"
   }
