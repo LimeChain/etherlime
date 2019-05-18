@@ -1,7 +1,7 @@
 const { runWithoutWriteFiles } = require('../flattener/flatten');
 const axios = require('axios');
 const querystring = require('querystring');
-const logger = require('../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 const colors = require('etherlime-utils').colors;
 const ethers = require('ethers');
 const DEFAULT_SEND_REQUEST_TIMEOUT = 10000;
