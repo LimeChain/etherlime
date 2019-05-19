@@ -39,8 +39,8 @@ plain old node.js including the etherlime library.
 
 * [Quick Start](getting-started.md)
 * [Etherlime Library API](etherlime-api.md)
-	* [Deployer](.api/deployers.md)
-	* [Deployed Contract Wrapper](.api/wrappers.md)
+	* [Deployer](./api/deployers.md)
+	* [Deployed Contract Wrapper](./api/wrappers.md)
 
 * [Etherlime CLI](etherlime-cli.md)
 * [Migration from Truffle to Etherlime](migration-from-truffle-guide.md)
