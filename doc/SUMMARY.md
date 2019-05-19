@@ -38,14 +38,12 @@ plain old node.js including the etherlime library.
 ## Developer Documentation
 
 * [Quick Start](getting-started.md)
-    * [Installing](#installing)
-    * [Running embedded ganache-cli](getting-started#running-embedded-ganache-cli)
+* [Etherlime Library API](etherlime-api.md)
+* [Etherlime CLI](etherlime-cli.md)
+* [Migration from Truffle to Etherlime](migration-from-truffle-guide.md)
 
-    * [Some other child page](part1/page1-2.md)
-* [Second page's title](page2/README.md)
-    * [Some child page](page2/page2-1.md)
-    * [Some other child page](part2/page2-2.md)
-    
+
+
 
 -----
 

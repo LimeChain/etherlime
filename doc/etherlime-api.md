@@ -1,7 +1,4 @@
 # Etherlime Library API
 
-<div class="toctree" data-maxdepth="3">
-
-api/deployers api/wrappers
-
-</div>
+* [Deployer](api/deployers.md)
+* [Deployed Contract Wrapper](api/wrappers.md)
