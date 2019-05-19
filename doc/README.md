@@ -29,7 +29,7 @@ npm i -g etherlime
 
 ## Documentation
 
-[Documentation](https://etherlime.readthedocs.io/en/latest/)
+[Documentation](getting-started.md)
 
 ## Community
 
