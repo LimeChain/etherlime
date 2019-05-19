@@ -31,19 +31,6 @@ Etherlime can be used as library and/or command line tool. The command
 line tools give you great boosts but you can skip them fully and use
 plain old node.js including the etherlime library.
 
-### Milestones
-
-  - \[Ready\] Being able to deploy compiled contracts on local and
-    infura nodes \<---- **Done**
-  - \[Ready\] Being able to compile contracts to the desired formats for
-    deployment \<---- **Done**
-  - \[Ready\] Being able to run unit tests on the compiled contracts
-    \<---- **Done**
-  - \[Ready\] Being able to run unit tests with code coverage \<----
-    **Done**
-  - \[Ready\] Being able to debug transactions \<---- **Done**
-  - \[Not Ready\] Being able to verify contracts \<---- **Next**
-
 ### Community
 
 [Join our community group](https://t.me/etherlime/)
