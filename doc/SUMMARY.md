@@ -39,7 +39,7 @@ plain old node.js including the etherlime library.
 
 * [Quick Start](getting-started.md)
     * [Installing](#installing)
-    * [Running embedded ganache-cli](#running-embedded-ganache-cli)
+    * [Running embedded ganache-cli](getting-started#running-embedded-ganache-cli)
 
     * [Some other child page](part1/page1-2.md)
 * [Second page's title](page2/README.md)
