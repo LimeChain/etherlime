@@ -37,7 +37,7 @@ plain old node.js including the etherlime library.
 
 ## Developer Documentation
 
-* [Quick Start](getting-started.md)
+* [Quick Start]()
 * [Etherlime Library API](etherlime-api.md)
 	* [Deployer](./api/deployers.md)
 	* [Deployed Contract Wrapper](./api/wrappers.md)
