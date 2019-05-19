@@ -38,8 +38,8 @@ plain old node.js including the etherlime library.
 ## Developer Documentation
 
 * [Quick Start](getting-started.md)
-    * [Installing](getting-started#installing)
-    * [Running embedded ganache-cli](getting-started#running-embedded-ganache-cli)
+    * [Installing](#installing)
+    * [Running embedded ganache-cli](#running-embedded-ganache-cli)
 
     * [Some other child page](part1/page1-2.md)
 * [Second page's title](page2/README.md)
