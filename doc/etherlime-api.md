@@ -1,4 +1,4 @@
 # Etherlime Library API
 
-* [Deployer](./api/deployers.md)
+* [Deployer](deployers.md)
 * [Deployed Contract Wrapper](./api/wrappers.md)
