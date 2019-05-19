@@ -35,11 +35,16 @@ plain old node.js including the etherlime library.
 
 [Join our community group](https://t.me/etherlime/)
 
-<div class="toctree" data-maxdepth="3" data-caption="Developer Documentation">
+## Developer Documentation
 
-getting-started etherlime-api etherlime-cli migration-from-truffle-guide
-
-</div>
+* [Quick Start](getting-started.md)
+    * [Installing](getting-started.md#Installing)
+        * [Some child page](page1/page1-1.md)
+    * [Some other child page](part1/page1-2.md)
+* [Second page's title](page2/README.md)
+    * [Some child page](page2/page2-1.md)
+    * [Some other child page](part2/page2-2.md)
+    
 
 -----
 
