@@ -42,7 +42,20 @@ plain old node.js including the etherlime library.
 	* [Deployer](./api/deployers.md)
 	* [Deployed Contract Wrapper](./api/wrappers.md)
 
-* [Etherlime CLI](etherlime-cli.md)
+* [Etherlime CLI]()
+	* [Installing and Help](./cli/installing.md)
+	* [etherlime init](./cli/init.md)
+	* [etherlime ganache](./cli/ganache.md)
+	* [etherlime compile](./cli/compiling.md)
+	* [etherlime deploy](./cli/deploying.md)
+	* [etherlime history](./cli/history.md)
+	* [etherlime test](./cli/test.md)
+	* [etherlime coverage](./cli/coverage.md)
+	* [etherlime debug](./cli/debug.md)
+	* [etherlime shape](./cli/shape.md)
+	* [etherlime flatten](./cli/flattener.md)
+	* [etherlime ide](./cli/ide.md)
+	* [etherlime zk](./cli/zk.md)
 * [Migration from Truffle to Etherlime](migration-from-truffle-guide.md)
 
 
