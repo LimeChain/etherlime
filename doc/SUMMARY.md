@@ -1,69 +1,27 @@
-[![npm
-version](https://badge.fury.io/js/etherlime.svg)](https://badge.fury.io/js/etherlime)
-[![travis build
-status](https://img.shields.io/travis/LimeChain/etherlime/master.svg)](https://travis-ci.org/LimeChain/etherlime)
-[![coverage
-status](https://img.shields.io/codecov/c/github/LimeChain/etherlime/master.svg)](https://codecov.io/gh/LimeChain/etherlime)
-[![Gitter
-chat](https://badges.gitter.im/lime-tech-talks/Lobby.png)](https://gitter.im/lime-tech-talks/Lobby)
+# Table of contents
 
-# etherlime
-
-## What is etherlime?
-
-**etherlime** is an ethereum development and deployment framework based
-on [ethers.js](https://github.com/ethers-io/ethers.js/).
-
-This framework provides alternative to the other web3.js based
-frameworks and allows for ultimate control by the developer. It also
-adds much needed verboseness in the deployment process so that you can
-be aware of what is really going on (as opposed to the general shooting
-in the dark technique).
-
-This framework was born out of necessity, hardships and trouble in the
-development and deployment of ethereum smart contracts. We are trying to
-ease the pain of deployment, compilation and unit testing and add much
-needed stability to the process. In our mind ethers is much more stable
-alternative than web3.js for the moment therefore this framework is
-born.
-
-Etherlime can be used as library and/or command line tool. The command
-line tools give you great boosts but you can skip them fully and use
-plain old node.js including the etherlime library.
-
-### Community
-
-[Join our community group](https://t.me/etherlime/)
+* [Introduction](README.md)
 
 ## Developer Documentation
 
-* [Quick Start](getting-started.md)
-* [Etherlime Library API]()
-	* [Deployer](./api/deployers.md)
-	* [Deployed Contract Wrapper](./api/wrappers.md)
+* [Quick Start](developer-documentation/getting-started.md)
+* [Etherlime Library API](developer-documentation/etherlime-library-api/README.md)
+  * [Deployer](developer-documentation/etherlime-library-api/deployers.md)
+  * [Deployed Contract Wrapper](developer-documentation/etherlime-library-api/wrappers.md)
+* [Etherlime CLI](developer-documentation/etherlime-cli/README.md)
+  * [Installing and Help](developer-documentation/etherlime-cli/installing.md)
+  * [etherlime init](developer-documentation/etherlime-cli/init.md)
+  * [etherlime ganache](developer-documentation/etherlime-cli/ganache.md)
+  * [etherlime compile](developer-documentation/etherlime-cli/compiling.md)
+  * [etherlime deploy](developer-documentation/etherlime-cli/deploying.md)
+  * [etherlime history](developer-documentation/etherlime-cli/history.md)
+  * [etherlime test](developer-documentation/etherlime-cli/test.md)
+  * [etherlime coverage](developer-documentation/etherlime-cli/coverage.md)
+  * [etherlime debug](developer-documentation/etherlime-cli/debug.md)
+  * [etherlime shape](developer-documentation/etherlime-cli/shape.md)
+  * [etherlime flatten](developer-documentation/etherlime-cli/flattener.md)
+  * [etherlime ide](developer-documentation/etherlime-cli/ide.md)
+  * [etherlime zk](developer-documentation/etherlime-cli/zk.md)
+  * [etherlime utils](developer-documentation/etherlime-cli/utils.md)
+* [Migration from Truffle to Etherlime](developer-documentation/migration-from-truffle-guide.md)
 
-* [Etherlime CLI]()
-	* [Installing and Help](./cli/installing.md)
-	* [etherlime init](./cli/init.md)
-	* [etherlime ganache](./cli/ganache.md)
-	* [etherlime compile](./cli/compiling.md)
-	* [etherlime deploy](./cli/deploying.md)
-	* [etherlime history](./cli/history.md)
-	* [etherlime test](./cli/test.md)
-	* [etherlime coverage](./cli/coverage.md)
-	* [etherlime debug](./cli/debug.md)
-	* [etherlime shape](./cli/shape.md)
-	* [etherlime flatten](./cli/flattener.md)
-	* [etherlime ide](./cli/ide.md)
-	* [etherlime zk](./cli/zk.md)
-	* [etherlime utils](./cli/utils.md)
-* [Migration from Truffle to Etherlime](migration-from-truffle-guide.md)
-
-
-
-
------
-
-## License
-
-Completely MIT Licensed. Including ALL dependencies.
