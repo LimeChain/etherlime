@@ -78,12 +78,11 @@ Skipping linking on contract with arguments
 
 The main functionality the deployAndVerify exposes is (obviously) the
 ability to deploy and then verify compiled contract on Etherscan. This
-method exposes the same features as
-<span class="title-ref">deploy</span> method, but in addition
+method exposes the same features as `deploy` method, but in addition
 automatically verifies the deployed smart contract using Etherscan API
 with Etherscan API Key.
 
-In order to use the <span class="title-ref">deployAndVerify</span>
+In order to use the `deployAndVerify`
 method of the deployer, an Etherscan API Key is used. You can create
 your Etherscan API Key [here](https://etherscan.io/login?cmd=last).
 
@@ -97,12 +96,11 @@ Parameters:
     there are any)
 
 The deployment method reads the API Key form the deployer
-<span class="title-ref">defaultOverrides</span> object.
+`defaultOverrides` object.
 
 Passing API Key to the deployer:
 
-  - Passing the API Key to the
-    <span class="title-ref">defaultOverrides</span> object:
+  - Passing the API Key to the `defaultOverrides` object:
 
 <!-- end list -->
 
@@ -110,8 +108,7 @@ Passing API Key to the deployer:
     deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, etherscanApiKey: '3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY' };
 ```
 
-  - Setting the API Key through the deployer
-    <span class="title-ref">setVerifierApiKey</span> setter:
+  - Setting the API Key through the deployer `setVerifierApiKey` setter:
 
 <!-- end list -->
 
@@ -119,12 +116,8 @@ Passing API Key to the deployer:
     deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY')
 ```
 
-  - Passing the API Key from <span class="title-ref">etherlime
-        deploy</span> command with optional parameter
-        \`etherscanApiKey\`:  
-        <span class="title-ref">etherlime deploy --secret="Your private
-        key" --network="rinkeby"
-        --etherscanApiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"</span>
+  - Passing the API Key from `etherlime deploy` command with optional parameter
+        etherscanApiKey:  `etherlime deploy --secret="Your private key" --network="rinkeby" --etherscanApiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"`
 
 <!-- end list -->
 ```javascript
