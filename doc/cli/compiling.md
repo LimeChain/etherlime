@@ -10,7 +10,7 @@ docker.
 ## Syntax
 
     etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all]
-       [quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles]
+    [quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles]
 
 Parameters:
 
