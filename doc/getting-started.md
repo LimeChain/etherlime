@@ -67,7 +67,6 @@ deployment finishes (as not all of us monitor the deployment process
 constantly);
 
 Result of `etherlime deploy` would be something like this:
-<br>
 <img src="./_docs_static/DeploymentResult.png" width="100%">
 
 
