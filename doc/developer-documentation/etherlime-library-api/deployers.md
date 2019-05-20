@@ -145,18 +145,18 @@ Parameters:
 >
 >     instance
 >
->   * provider . setNetwork \(network\)
->     * `network` - network as found in `ethers.providers.networks`
->   * provider . setApiKey \(apiKey\)
->     * `apiKey` - your Infura API key
->   * provider . setDefaultOverrides \(defaultOverrides\)
->     * `defaultOverrides` - object overriding the deployment settings
+> * provider . setNetwork \(network\)
+>   * `network` - network as found in `ethers.providers.networks`
+> * provider . setApiKey \(apiKey\)
+>   * `apiKey` - your Infura API key
+> * provider . setDefaultOverrides \(defaultOverrides\)
+>   * `defaultOverrides` - object overriding the deployment settings
 >
 >       for `gasPrice` , `gasLimit` and `chainId`.
->   * provider . setSigner \(signer\)
->     * `signer` - ethers.Wallet instance
->   * provider . setProvider \(provider\)
->     * `provider` - ethers.provider instance
+> * provider . setSigner \(signer\)
+>   * `signer` - ethers.Wallet instance
+> * provider . setProvider \(provider\)
+>   * `provider` - ethers.provider instance
 
 Example :
 
@@ -214,18 +214,18 @@ Parameters:
 >
 >     instance
 >
->   * provider . setNodeUrl \(nodeUrl\)
->     * `nodeUrl` - the url to the node you are trying to connect
+> * provider . setNodeUrl \(nodeUrl\)
+>   * `nodeUrl` - the url to the node you are trying to connect
 >
 >       \(local or remote\)
->   * provider . setDefaultOverrides \(defaultOverrides\)
->     * `defaultOverrides` - object overriding the deployment settings
+> * provider . setDefaultOverrides \(defaultOverrides\)
+>   * `defaultOverrides` - object overriding the deployment settings
 >
 >       for `gasPrice` , `gasLimit` and `chainId`.
->   * provider . setSigner \(signer\)
->     * `signer` - ethers.Wallet instance
->   * provider . setProvider \(provider\)
->     * `provider` - ethers.provider instance
+> * provider . setSigner \(signer\)
+>   * `signer` - ethers.Wallet instance
+> * provider . setProvider \(provider\)
+>   * `provider` - ethers.provider instance
 
 Example :
 
@@ -286,20 +286,20 @@ Parameters:
 >
 >     instance
 >
->   * provider . setPort \(port\)
->     * `port` - the port you've ran the etherlime ganache on.
->   * provider . setDefaultOverrides \(defaultOverrides\)
->     * `defaultOverrides` - object overriding the deployment settings
+> * provider . setPort \(port\)
+>   * `port` - the port you've ran the etherlime ganache on.
+> * provider . setDefaultOverrides \(defaultOverrides\)
+>   * `defaultOverrides` - object overriding the deployment settings
 >
 >       for `gasPrice` , `gasLimit` and `chainId`.
->   * provider . setNodeUrl \(nodeUrl\)
->     * `nodeUrl` - the url to the node you are trying to connect
+> * provider . setNodeUrl \(nodeUrl\)
+>   * `nodeUrl` - the url to the node you are trying to connect
 >
 >       \(local or remote\)
->   * provider . setSigner \(signer\)
->     * `signer` - ethers.Wallet instance
->   * provider . setProvider \(provider\)
->     * `provider` - ethers.provider instance
+> * provider . setSigner \(signer\)
+>   * `signer` - ethers.Wallet instance
+> * provider . setProvider \(provider\)
+>   * `provider` - ethers.provider instance
 
 Example :
 
