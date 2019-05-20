@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime/index');
+const etherlime = require('./../../../packages/etherlime-lib/index');
 const ethers = require('ethers')
 const assert = require('assert');
 

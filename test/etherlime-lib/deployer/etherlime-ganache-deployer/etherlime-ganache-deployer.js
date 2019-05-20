@@ -1,4 +1,4 @@
-const etherlime = require('./../../../../packages/etherlime/index');
+const etherlime = require('./../../../../packages/etherlime-lib/index');
 const assert = require('assert');
 const config = require('./../../../config.json');
 const ganacheSetupConfig = require('./../../../../packages/etherlime/cli-commands/ganache/setup');

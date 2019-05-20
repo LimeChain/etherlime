@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime/index');
+const etherlime = require('./../../../packages/etherlime-lib/index');
 const ethers = require('ethers');
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised');
@@ -316,10 +316,10 @@ describe('Deployer tests', () => {
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
 				fs.mkdirSync('./contracts');
 				fs.copyFileSync('./test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
-				fs.copyFileSync('./test/etherlime/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
-				fs.copyFileSync('./test/etherlime/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
-				fs.copyFileSync('./test/etherlime/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
-				fs.copyFileSync('./test/etherlime/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
 
 				LimeFactory = require('./examples/compiledLimeFactory');
 				TestToken = require('./examples/compiledMockToken');

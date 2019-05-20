@@ -1,6 +1,6 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
-const defaultSetupAccounts = require('../../deployer/setup.json').accounts;
+const defaultSetupAccounts = require('../../../etherlime-lib/deployer/setup.json').accounts;
 const colors = require('etherlime-utils').colors;
 const logger = require('etherlime-logger').logger;
 const ethers = require('ethers');

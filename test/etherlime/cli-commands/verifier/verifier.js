@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const Verifier = require('./../../../../packages/etherlime/cli-commands/verifier/verifier');
-const etherlime = require('./../../../../packages/etherlime/index');
+const etherlime = require('./../../../../packages/etherlime-lib/index');
 const API_URL_MAINNET = 'https://api.etherscan.io/api';
 const API_URL_ROPSTEN = 'https://api-ropsten.etherscan.io/api';
 const API_URL_RINKEBY = 'https://api-rinkeby.etherscan.io/api';
