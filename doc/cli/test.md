@@ -119,6 +119,7 @@ methods it exposes:
 
 # accounts
 
+```javascript
     const Billboard = require('../build/Billboard.json');
     const etherlime = require('etherlime');
     
@@ -132,6 +133,7 @@ methods it exposes:
             // Do something with the contract
         });
     });
+```
 
 # assert.revert
 

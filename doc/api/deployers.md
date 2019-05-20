@@ -31,10 +31,12 @@ via <span class="title-ref">etherlime compile</span>
 
 The libraries object should be in the following format:
 
+```javascript
     {
         libraryName0: '0xAddressOfLibrary0',
         libraryName1: '0xAddressOfLibrary1'
     }
+```
 
 If the contract to be deployed doesn't contains any libraries, `{}`,
 `undefined`, `null`, `false` or `0` can be passed. For convenience we
