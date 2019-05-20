@@ -175,8 +175,12 @@ Find more test examples
 
 -----
 
-## Final steps:
+# Final steps:
 
   - **delete** `./migrations` folder
   - **delete** `truffle.js/truffle-config.js` file
-  - \*\*
+  - **delete** `truffle` from `package.json`
+  - **delete** `node_modules`
+  - **run** `npm install`
+  - **open a fresh terminal tab and enter** `etherlime ganache`
+  - **run** `etherlime test`
