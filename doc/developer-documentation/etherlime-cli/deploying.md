@@ -3,7 +3,7 @@
 ## Syntax
 
 ```text
-etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output]
+etherlime deploy [file] [network] [secret] [-s] [compile] [runs] [output] [ethescanApiKey]
 ```
 
 Parameters:
@@ -42,6 +42,8 @@ Parameters:
   verbose logs in the console and `structured` - structured output in
 
   a file meant for inter program communication.
+
+* `ethescanApiKey` - \[Optional\] You can pass Etherscan API KEY in order to use it in the deployment script for verifying smart contracts on Etherscan.
 
 Running this command will deploy the file specified \(defaults to `./deployment/deploy.js`\) The deployment process is verbose and gives you real-time info about the performed actions. In addition there is a report of the actions when the deployment finishes \(as not all of us monitor the deployment process constantly\):
 
