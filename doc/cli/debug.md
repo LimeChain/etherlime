@@ -40,7 +40,7 @@ initially.
 >     in the Solidity source file. Use this command if you don't want to
 >     step into a function call or contract creation on the current
 >     line, or if you'd like to quickly jump to a specific point in the
->     source file
+>     source file.
 
 >   - `(i) step into` Steps into the function call or contract creation
 >     currently being evaluated. Use this command to jump into the
@@ -105,5 +105,4 @@ initially.
 
 Here is example of runned debugger with txHash:
 
-[![Runned
-debugger](../_docs_static/Debugger.png)](../_images/Debugger.png)
+<img src="../_docs_static/Debugger.png" width="100%">
