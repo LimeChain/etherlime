@@ -55,8 +55,9 @@ connected to the same provider.
     const tx = await deployedContract.someMethod(randomParam);
     const result = await deployedContract.verboseWaitForTransaction(tx);
 
-The deployer instance =================== The deployer object allows you
-to wrap such an deployed contract by it's address and continue using the
+### The deployer instance
+
+The deployer object allows you to wrap such an deployed contract by it's address and continue using the
 power of the wrapper object. The function you can use to achieve this is
 `wrapDeployedContract(contract, contractAddress)`.
 
