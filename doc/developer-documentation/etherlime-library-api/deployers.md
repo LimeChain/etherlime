@@ -144,7 +144,6 @@ Parameters:
 >   * `privateKey` - The private key to the deployment wallet/signer
 >
 >     instance
->
 > * provider . setNetwork \(network\)
 >   * `network` - network as found in `ethers.providers.networks`
 > * provider . setApiKey \(apiKey\)
@@ -152,7 +151,7 @@ Parameters:
 > * provider . setDefaultOverrides \(defaultOverrides\)
 >   * `defaultOverrides` - object overriding the deployment settings
 >
->       for `gasPrice` , `gasLimit` and `chainId`.
+>     for `gasPrice` , `gasLimit` and `chainId`.
 > * provider . setSigner \(signer\)
 >   * `signer` - ethers.Wallet instance
 > * provider . setProvider \(provider\)
@@ -213,15 +212,14 @@ Parameters:
 >   * `privateKey` - The private key to the deployment wallet/signer
 >
 >     instance
->
 > * provider . setNodeUrl \(nodeUrl\)
 >   * `nodeUrl` - the url to the node you are trying to connect
 >
->       \(local or remote\)
+>     \(local or remote\)
 > * provider . setDefaultOverrides \(defaultOverrides\)
 >   * `defaultOverrides` - object overriding the deployment settings
 >
->       for `gasPrice` , `gasLimit` and `chainId`.
+>     for `gasPrice` , `gasLimit` and `chainId`.
 > * provider . setSigner \(signer\)
 >   * `signer` - ethers.Wallet instance
 > * provider . setProvider \(provider\)
@@ -285,17 +283,16 @@ Parameters:
 >   * `privateKey` - The private key to the deployment wallet/signer
 >
 >     instance
->
 > * provider . setPort \(port\)
 >   * `port` - the port you've ran the etherlime ganache on.
 > * provider . setDefaultOverrides \(defaultOverrides\)
 >   * `defaultOverrides` - object overriding the deployment settings
 >
->       for `gasPrice` , `gasLimit` and `chainId`.
+>     for `gasPrice` , `gasLimit` and `chainId`.
 > * provider . setNodeUrl \(nodeUrl\)
 >   * `nodeUrl` - the url to the node you are trying to connect
 >
->       \(local or remote\)
+>     \(local or remote\)
 > * provider . setSigner \(signer\)
 >   * `signer` - ethers.Wallet instance
 > * provider . setProvider \(provider\)
