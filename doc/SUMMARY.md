@@ -56,6 +56,7 @@ plain old node.js including the etherlime library.
 	* [etherlime flatten](./cli/flattener.md)
 	* [etherlime ide](./cli/ide.md)
 	* [etherlime zk](./cli/zk.md)
+	* [etherlime utils](./cli/utils.md)
 * [Migration from Truffle to Etherlime](migration-from-truffle-guide.md)
 
 
