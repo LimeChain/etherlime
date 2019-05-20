@@ -74,6 +74,75 @@ Skipping linking on contract with arguments
     await deployer.deploy(contractWithoutLibraries, false, param1, param2);
 ```
 
+#### deployAndVerify(contract, \[libraries\], \[params\])
+
+The main functionality the deployAndVerify exposes is (obviously) the
+ability to deploy and then verify compiled contract on Etherscan. This
+method exposes the same features as
+<span class="title-ref">deploy</span> method, but in addition
+automatically verifies the deployed smart contract using Etherscan API
+with Etherscan API Key.
+
+In order to use the <span class="title-ref">deployAndVerify</span>
+method of the deployer, an Etherscan API Key is used. You can create
+your Etherscan API Key [here](https://etherscan.io/login?cmd=last).
+
+Parameters:
+
+  - `contract` - descriptor object for contract to be deployed. More
+    details below
+  - `libraries` - key-value object containing all libraries which will
+    be linked to the contract.
+  - `params` - the constructor params you'd need to pass on deploy (if
+    there are any)
+
+The deployment method reads the API Key form the deployer
+<span class="title-ref">defaultOverrides</span> object.
+
+Passing API Key to the deployer:
+
+  - Passing the API Key to the
+    <span class="title-ref">defaultOverrides</span> object:
+
+<!-- end list -->
+
+```javascript
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, etherscanApiKey: '3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY' };
+```
+
+  - Setting the API Key through the deployer
+    <span class="title-ref">setVerifierApiKey</span> setter:
+
+<!-- end list -->
+
+```javascript
+    deployer.setVerifierApiKey('3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY')
+```
+
+  - Passing the API Key from <span class="title-ref">etherlime
+        deploy</span> command with optional parameter
+        \`etherscanApiKey\`:  
+        <span class="title-ref">etherlime deploy --secret="Your private
+        key" --network="rinkeby"
+        --etherscanApiKey="3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY"</span>
+
+<!-- end list -->
+```javascript
+    const deploy = async (network, secret, etherscanApiKey) => {
+    const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
+    deployer.defaultOverrides = { gasLimit: 4700000, gasPrice: 3000000000, etherscanApiKey };
+    };
+```
+
+Network is automatically detected based on the network that the deployer
+is set to deploy. The supported networks are:
+
+  - `mainnet`
+  - `ropsten`
+  - `rinkeby`
+  - `kovan`
+  - `goerli`
+
 #### estimateGas\(contract, \[libraries\], \[params\]\)
 
 Estimates the gas that this transaction is going to cost you.
