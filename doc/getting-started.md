@@ -41,6 +41,7 @@ You can use this file to write your deployment procedure.
 
 ### Verifying Smart Contract Example
 
+ ```javascript
     const etherlime = require('etherlime');
     // Path to your etherlime compiled contract json file
     const TestContract = require('../build/TestContract.json'); 
@@ -55,6 +56,7 @@ You can use this file to write your deployment procedure.
     }
     
     module.exports = { deploy }
+```
 
 ### Deploying
 

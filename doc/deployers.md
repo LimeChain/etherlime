@@ -45,6 +45,7 @@ Example
 
 Linking libraries
 
+ ```javascript
     const contractUsingQueueAndLinkedList = require('...');
     
     const libraries = {
@@ -53,18 +54,23 @@ Linking libraries
     }
     
     await deployer.deploy(contractUsingQueueAndLinkedList, libraries);
+```
 
 Skipping linking on contract without arguments
 
+ ```javascript
     const contractWithoutLibraries = require('...');
     
     await deployer.deploy(contractWithoutLibraries);
+```
 
 Skipping linking on contract with arguments
 
+ ```javascript
     const contractWithoutLibraries = require('...');
     
     await deployer.deploy(contractWithoutLibraries, false, param1, param2);
+```
 
 ### estimateGas(contract, \[libraries\], \[params\])
 
@@ -82,8 +88,10 @@ The contract is descriptor object is the same as above.
 
 Example :
 
+ ```javascript
     const estimate = await deployer.estimateGas(TestContract, randomParam1, randomParam2);
     // returns something like "2470692"
+```
 
 ## Deployers
 
@@ -102,6 +110,7 @@ Parameters:
 
 <!-- end list -->
 
+ ```javascript
     const etherlime = require('etherlime');
     
     const TestContract = require('./TestContract.json');
@@ -119,6 +128,7 @@ Parameters:
     
         const result = await deployer.deploy(TestContract, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
     }
+```
 
 ## Setters
 
@@ -152,10 +162,12 @@ Parameters:
 
 Example :
 
+ ```javascript
     const deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey,
        network, apiKey, defaultConfigs);
     const newNetwork = 'ropsten';
     deployer.setNetwork(newNetwork);
+```
 
 # JSONRPCPrivateKeyDeployer
 
@@ -172,6 +184,7 @@ Parameters:
 
 <!-- end list -->
 
+ ```javascript
     const etherlime = require('etherlime');
     
     const TestContract = require('./TestContract.json');
@@ -189,6 +202,7 @@ Parameters:
     
         const result = await deployer.deploy(TestContract);
     }
+```
 
 ## Setters
 
@@ -219,10 +233,12 @@ Parameters:
 
 Example :
 
+ ```javascript
     const deployer = new etherlime.JSONRPCPrivateKeyDeployer(privateKey,
        nodeUrl, defaultOverrides);
     const newNodeUrl = http://localhost:9545;
     deployer.setNodeUrl(newNodeUrl);
+```
 
 
 # EtherlimeGanacheDeployer
@@ -241,6 +257,7 @@ Parameters:
 
 **This deployer only works with etherlime ganache**
 
+ ```javascript
     const etherlime = require('etherlime');
     
     const TestContract = require('./TestContract.json');
@@ -257,6 +274,7 @@ Parameters:
     
         const result = await deployer.deploy(TestContract);
     }
+```
 
 ## Setters
 
@@ -291,6 +309,8 @@ Parameters:
 
 Example :
 
+ ```javascript
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const port = 9545;
     deployer.setPort(port);
+ ```
