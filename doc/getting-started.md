@@ -23,7 +23,7 @@ You can use this file to write your deployment procedure.
 ### Deployer Example
 
     const etherlime = require('etherlime');
-    
+
     // Path to your etherlime compiled contract json file
     const TestContract = require('../build/TestContract.json'); 
     
@@ -31,7 +31,8 @@ You can use this file to write your deployment procedure.
     
         const deployer = new etherlime.EtherlimeGanacheDeployer();
     
-        const result = await deployer.deploy(TestContract, {}); // Add params separated with ,
+        // Add params separated with ,
+        const result = await deployer.deploy(TestContract, {});
     }
     
     module.exports = { deploy }
@@ -46,7 +47,8 @@ You can use this file to write your deployment procedure.
         deployer.defaultOverrides = { apiKey };
         const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
     
-        const result = await deployer.deployAndVerify(TestContract, {}); // Add params separated with ,
+        // Add params separated with ,
+        const result = await deployer.deployAndVerify(TestContract, {});
     }
     
     module.exports = { deploy }
