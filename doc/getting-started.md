@@ -45,7 +45,8 @@ You can use this file to write your deployment procedure.
     
     const deploy = async (network, secret, apiKey) => {
         deployer.defaultOverrides = { apiKey };
-        const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, "INFURA_API_KEY");
+        const deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network,
+            "INFURA_API_KEY");
     
         // Add params separated with ,
         const result = await deployer.deployAndVerify(TestContract, {});
@@ -68,8 +69,8 @@ performed actions. In addition there is a report of the actions when the
 deployment finishes (as not all of us monitor the deployment process
 constantly);
 
-Result of `etherlime deploy` would be something like this: [![Deployment
-result](./_docs_static/DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
+Result of `etherlime deploy` would be something like this: 
+[![Deployment result](./_docs_static/DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
 
 ### History of your deploys
 
