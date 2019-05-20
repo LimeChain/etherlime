@@ -8,7 +8,7 @@ const config = require('./../../config.json');
 const ICOTokenContract = require('./../../testContracts/ICOToken.json');
 const VestingContract = require('./../../testContracts/Vesting.json');
 const Greetings = require('./../../testContracts/Greetings.json');
-const store = require('./../../../packages/etherlime/logs-store/logs-store');
+const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,

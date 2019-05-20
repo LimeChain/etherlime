@@ -1,6 +1,6 @@
 
 const assert = require('chai').assert;
-delete require.cache[require.resolve('./../../../packages/etherlime/logger-service/logger-service')];
+delete require.cache[require.resolve('./../../../packages/etherlime-logger/logger-service/logger-service')];
 let loggerWindow;
 
 
@@ -13,8 +13,8 @@ describe('Window compatible logger service', async () => {
 				}
 			}
 		}
-		delete require.cache[require.resolve('./../../../packages/etherlime/logger-service/logger-service')];
-		loggerWindow = require('./../../../packages/etherlime/logger-service/logger-service').logger;
+		delete require.cache[require.resolve('./../../../packages/etherlime-logger/logger-service/logger-service')];
+		loggerWindow = require('./../../../packages/etherlime-logger/logger-service/logger-service').logger;
 	})
 
 	it('should return undefined calling storeOutputParameter', async () => {

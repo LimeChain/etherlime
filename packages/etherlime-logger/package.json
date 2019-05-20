@@ -1,0 +1,15 @@
+{
+  "name": "etherlime-logger",
+  "version": "1.0.0",
+  "description": "etherlime-logger manages the historical logs of executions and their reports",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "7.0.1"
+  }
+}

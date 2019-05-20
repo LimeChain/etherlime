@@ -22,7 +22,7 @@ const packageJsonDestination = './package.json';
 
 const gitIgnoreFileDestination = './.gitignore';
 
-const logger = require('./../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 
 const createDeploymentDir = () => {
 	logger.log('===== Creating deployment file structure =====');

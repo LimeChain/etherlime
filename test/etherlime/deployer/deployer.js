@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised)
 const assert = require('assert');
-const store = require('./../../../packages/etherlime/logs-store/logs-store');
+const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 const sinon = require('sinon');
 const fs = require('fs-extra');
 var axios = require('axios');

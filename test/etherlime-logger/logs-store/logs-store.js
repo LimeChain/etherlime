@@ -1,10 +1,8 @@
-const store = require('./../../../packages/etherlime/logs-store/logs-store');
+const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 const assert = require('assert');
 
 describe('Logs store tests', () => {
-
 	store.initHistoryRecord();
-
 	const now = Date.now();
 	const deployerType = 'Deployer Type';
 	const label = 'Label Name';

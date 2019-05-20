@@ -1,4 +1,3 @@
-
 const fs = require('fs-extra');
 const path = require('path');
 let Profiler = require("../compiler/etherlime-compile/profiler");

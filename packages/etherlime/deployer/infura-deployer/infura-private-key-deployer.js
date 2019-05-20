@@ -2,7 +2,7 @@ const ethers = require('ethers');
 
 const PrivateKeyDeployer = require('./../private-key-deployer');
 const colors = require('etherlime-utils').colors;
-const logger = require('./../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 

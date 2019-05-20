@@ -1,7 +1,6 @@
 
 
 const assert = require('assert');
-delete require.cache[require.resolve('./../../../packages/etherlime/logs-store/logs-store')];
 let store;
 
 describe('Window compatible logs store', async function () {
@@ -13,8 +12,8 @@ describe('Window compatible logs store', async function () {
 				}
 			}
 		}
-		delete require.cache[require.resolve('./../../../packages/etherlime/logs-store/logs-store')];
-		store = require('./../../../packages/etherlime/logs-store/logs-store');
+		delete require.cache[require.resolve('./../../../packages/etherlime-logger/logs-store/logs-store')];
+		store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 	})
 	it('should return undefined calling initHistoryRecord', async () => {
 		const outputStoredValue = store.initHistoryRecord();

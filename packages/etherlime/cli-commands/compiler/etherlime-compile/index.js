@@ -6,7 +6,7 @@ const expect = require("./../etherlime-expect");
 const find_contracts = require("./../etherlime-contract-sources").find_contracts;
 const Config = require("./../etherlime-config");
 const CompilerSupplier = require("./compilerSupplier");
-const logger = require('./../../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 
 let compile = async (sources, options) => {
 	return new Promise(async (resolve, reject) => {

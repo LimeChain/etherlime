@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
-const logger = require('./../../../packages/etherlime/logger-service/logger-service').logger;
-const loggerAppenderTypes = require('./../../../packages/etherlime/logger-service/logger-service').AppenderTypes;
-const hookStream = require('./../cli-commands/utils/hookup-standard-output').hookStream;
-const timeout = require('./../cli-commands/utils/timeout').timeout;
+const logger = require('./../../../packages/etherlime-logger/logger-service/logger-service').logger;
+const loggerAppenderTypes = require('./../../../packages/etherlime-logger/logger-service/logger-service').AppenderTypes;
+const hookStream = require('./../../etherlime/cli-commands/utils/hookup-standard-output').hookStream;
+const timeout = require('./../../etherlime/cli-commands/utils/timeout').timeout;
 const fsExtra = require('fs-extra');
 
 const testData = 'This is test data';

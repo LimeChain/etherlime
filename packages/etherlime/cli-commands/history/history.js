@@ -1,7 +1,5 @@
-const logsStore = require('./../../logs-store/logs-store');
+const { logsStore, logger, AppenderTypes } = require('etherlime-logger');
 const utils = require('./../util');
-const logger = require('./../../logger-service/logger-service').logger;
-const loggerAppenderTypes = require('./../../logger-service/logger-service').AppenderTypes;
 
 const run = async (limit, output) => {
 	const history = logsStore.getHistory();
@@ -10,7 +8,7 @@ const run = async (limit, output) => {
 		logger.log(`Execution ID: ${i}:`)
 		const currentRecord = history[i];
 
-		if (output === loggerAppenderTypes.NORMAL) {
+		if (output === AppenderTypes.NORMAL) {
 			utils.printReportTable(currentRecord.actions);
 			logger.log();
 		}

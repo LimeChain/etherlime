@@ -4,7 +4,7 @@ const Resolver = require("./etherlime-resolver/index");
 const colors = require("etherlime-utils").colors;
 const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
-const logger = require('./../../logger-service/logger-service').logger;
+const logger = require('etherlime-logger').logger;
 const del = require('del');
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
