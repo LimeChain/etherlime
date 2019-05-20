@@ -2,7 +2,8 @@
 
 ## Syntax
 
-    etherlime test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version] [output] [port]
+    etherlime test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version]
+    [output] [port]
 
 Parameters:
 
@@ -83,7 +84,8 @@ methods it exposes:
             const BillboardContract = await deployer.deploy(Billboard, {});
             let _owner = await BillboardContract.owner();
     
-            assert.strictEqual(_owner, owner.signer.address, 'Initial contract owner does not match');
+            assert.strictEqual(_owner, owner.signer.address,
+              'Initial contract owner does not match');
         });
     });
 
@@ -152,6 +154,7 @@ methods it exposes:
     
             const expectedEvent = 'LogBillboardBought';
     
-            assert.isDefined(transactionReceipt.events.find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
+            assert.isDefined(transactionReceipt.events
+              .find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
         });
     });

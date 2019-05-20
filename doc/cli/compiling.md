@@ -65,7 +65,8 @@ The `solcVersion` can accept the following values:
 
 Here is example of result:
 
-[![Compilation
-result](../_docs_static/CompilationResult.png)](../_images/CompilationResult.png)
+<img src="../_docs_static/CompilationResult.png" width="100%">
+
+
 
 -----

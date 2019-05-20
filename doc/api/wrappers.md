@@ -29,7 +29,8 @@ methods from other default accounts.
 
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const contractWrapper = await deployer.deploy(SomeContract);
-    const tx = await contractWrapper.from(0 /* could be string address or ethers.Wallet instance*/).someFunction(params);
+    const tx = await contractWrapper
+        .from(0 /* could be string address or ethers.Wallet instance*/).someFunction(params);
     const result = await contractWrapper.verboseWaitForTransaction(tx);
 
 ## Working with previously deployed contracts
@@ -63,7 +64,8 @@ The deployer object allows you to wrap such an deployed contract by it's address
 power of the wrapper object. The function you can use to achieve this is
 `wrapDeployedContract(contract, contractAddress)`.
 
-	const deployedContractWrapper = deployer.wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
+	const deployedContractWrapper = deployer
+        .wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
     
     const initTransaction = await deployedContractWrapper.init(randomParam, defaultConfigs);
     const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction,

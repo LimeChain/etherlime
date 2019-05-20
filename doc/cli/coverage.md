@@ -2,7 +2,8 @@
 
 ## Syntax
 
-    etherlime coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [shouldOpenCoverage]
+    etherlime coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory]
+    [workingDirectory] [shouldOpenCoverage]
 
 Parameters:
 

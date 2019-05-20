@@ -31,7 +31,8 @@ you real-time info about the performed actions. In addition there is a
 report of the actions when the deployment finishes (as not all of us
 monitor the deployment process constantly):
 
-[![Deployment
-result](../_docs_static/DeploymentResult.png)](../_images/DeploymentResult.png)
+<img src="../_docs_static/DeploymentResult.png" width="100%">
+
+
 
 -----
