@@ -24,7 +24,8 @@ You can use this file to write your deployment procedure.
 
     const etherlime = require('etherlime');
     
-    const TestContract = require('../build/TestContract.json'); // Path to your etherlime compiled contract json file
+    // Path to your etherlime compiled contract json file
+    const TestContract = require('../build/TestContract.json'); 
     
     const deploy = async (network, secret) => {
     
@@ -38,8 +39,8 @@ You can use this file to write your deployment procedure.
 ### Verifying Smart Contract Example
 
     const etherlime = require('etherlime');
-    
-    const TestContract = require('../build/TestContract.json'); // Path to your etherlime compiled contract json file
+    // Path to your etherlime compiled contract json file
+    const TestContract = require('../build/TestContract.json'); 
     
     const deploy = async (network, secret, apiKey) => {
         deployer.defaultOverrides = { apiKey };
@@ -50,8 +51,8 @@ You can use this file to write your deployment procedure.
     
     module.exports = { deploy }
     
-    Result of ``etherlime deploy`` with ``deployAndVerify`` method would be something like this: |Verifier 
-    result|
+    Result of ``etherlime deploy`` with ``deployAndVerify`` method would be something like this:
+     |Verifier result|
 
 ### Deploying
 
