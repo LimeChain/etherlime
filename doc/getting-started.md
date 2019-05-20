@@ -53,9 +53,6 @@ You can use this file to write your deployment procedure.
     }
     
     module.exports = { deploy }
-    
-    Result of ``etherlime deploy`` with ``deployAndVerify`` method would be something like this:
-     |Verifier result|
 
 ### Deploying
 
@@ -69,7 +66,7 @@ performed actions. In addition there is a report of the actions when the
 deployment finishes (as not all of us monitor the deployment process
 constantly);
 
-Result of `etherlime deploy` would be something like this: 
+Result of `etherlime deploy` would be something like this:
 [![Deployment result](./_docs_static/DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
 
 ### History of your deploys

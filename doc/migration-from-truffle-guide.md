@@ -43,7 +43,8 @@ Note\! These are added just to give you an example. You can remove them.
     const limeFactory = await deployer.deploy(LimeFactory);
     
     //example how to wrap deployed contract and to pass its address
-    const contractInstance = await etherlime.ContractAt(InterfaceFactory, limeFactory.contractAddress)
+    const contractInstance = await etherlime.ContractAt(InterfaceFactory,
+        limeFactory.contractAddress)
 
 Find more examples for deployment
 [here](https://etherlime.readthedocs.io/en/latest/api/deployers.html).
@@ -77,17 +78,20 @@ are needed to be done:
     // step1: require Etherlime module
     const etherlime = require('etherlime')
     
-    // step2: require compiled contract from ./build not the .sol file (as in deployment scripts)
+    // step2: require compiled contract from ./build,
+    // not the .sol file (as in deployment scripts)
     const LimeFactory = require('../build/LimeFactory.json')
     
     
-    // step4: replace 'contract' descriptor to 'describe' then remove (accounts) param in async function 
+    // step4: replace 'contract' descriptor to 'describe', 
+    // then remove (accounts) param in async function 
     describe('LimeFactory tests', async () => {
     
         // step5: initialize account
         let owner = accounts[0];
     
-        // step6: set the deployer in before/beforeEach and fix the deployment scripts as we did before
+        // step6: set the deployer in before/beforeEach
+        // and fix the deployment scripts as we did before
         beforeEach(async function() {
     
             deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
@@ -144,7 +148,8 @@ global utils object:
 
     it('should revert if try to create lime with 0 carbohydrates', async () => {
         let carbohydrates = 0;
-        await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
+        await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2),
+            "Carbohydrates are not set to 0");
     });
 
 **test an event**
@@ -154,7 +159,8 @@ global utils object:
     let expectedEvent = 'FreshLime';
     let result = await limeFactory.createLime('newLime' 8, 10, 12);
     assert.lengthOf(result.logs, 1, "There should be 1 event emitted from new product!");
-    assert.strictEqual(result.logs[0].event, expectedEvent, `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
+    assert.strictEqual(result.logs[0].event, expectedEvent,
+         `The event emitted was ${result.logs[0].event} instead of ${expectedEvent}`);
 
 *with Etherlime*
 
