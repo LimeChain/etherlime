@@ -19,7 +19,7 @@ This framework was born out of necessity, hardships and trouble in the developme
  - [Ready] Being able to run unit tests on the compiled contracts <---- Done
  - [Ready] Being able to run unit tests with code coverage <---- Done
  - [Ready] Being able to debug transactions <---- Done
- - [Not Ready] Being able to verify contracts <---- Next
+ - [Not Ready] Being able to verify contracts <---- Done
 
 ## Installing
 
