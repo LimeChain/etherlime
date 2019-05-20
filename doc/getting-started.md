@@ -68,7 +68,7 @@ constantly);
 
 Result of `etherlime deploy` would be something like this:
 <br>
-<img src="./_docs_static/DeploymentResult.png">
+<img src="./_docs_static/DeploymentResult.png" width="100%">
 
 
 ### History of your deploys
