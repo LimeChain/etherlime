@@ -18,20 +18,24 @@ waiting for, so that you can get a better understanding of what
 transaction is being waited for. This comes in handy when deployment
 scripts start to grow.
 
+```javascript
     const contractWrapper = await deployer.deploy(ICOTokenContract);
     const transferTransaction = await contractWrapper.transferOwnership(randomAddress);
     const result = await contractWrapper.verboseWaitForTransaction(transferTransaction,
          'Transfer Ownership');
+```
 
 If you are working with EtherlimeGanacheDeployer you will have the
 `from` method at your disposal. It will allow you to call certain
 methods from other default accounts.
 
+```javascript
     const deployer = new etherlime.EtherlimeGanacheDeployer();
     const contractWrapper = await deployer.deploy(SomeContract);
     const tx = await contractWrapper
         .from(0 /* could be string address or ethers.Wallet instance*/).someFunction(params);
     const result = await contractWrapper.verboseWaitForTransaction(tx);
+```
 
 ## Working with previously deployed contracts
 
@@ -52,11 +56,13 @@ Alternatively if you want to connect to another provider you can pass it
 as last parameter, but then you must pass a signer too which is already
 connected to the same provider.
 
+```javascript
     const deployedContract = etherlime.ContractAt(ContractDescriptor,
          deployedContractAddress);
     
     const tx = await deployedContract.someMethod(randomParam);
     const result = await deployedContract.verboseWaitForTransaction(tx);
+```
 
 ### The deployer instance
 
@@ -64,9 +70,11 @@ The deployer object allows you to wrap such an deployed contract by it's address
 power of the wrapper object. The function you can use to achieve this is
 `wrapDeployedContract(contract, contractAddress)`.
 
+```javascript
 	const deployedContractWrapper = deployer
         .wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
     
     const initTransaction = await deployedContractWrapper.init(randomParam, defaultConfigs);
     const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction,
          'Init Contract');
+```

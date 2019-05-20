@@ -69,6 +69,7 @@ methods it exposes:
 
 ## General Example
 
+```javascript
     const etherlime = require('etherlime');
     const Billboard = require('../build/Billboard.json');
     
@@ -88,9 +89,11 @@ methods it exposes:
               'Initial contract owner does not match');
         });
     });
+```
 
 ## execute function from another account
 
+```javascript
     const etherlime = require('etherlime');
     const ethers = require('ethers');
     const Billboard = require('../build/Billboard.json');
@@ -112,6 +115,7 @@ methods it exposes:
             assert.equal(transaction.from, bobsAccount.address);
         });
     });
+```
 
 # accounts
 
@@ -131,12 +135,15 @@ methods it exposes:
 
 # assert.revert
 
+```javascript
     it('should throw if throwing method is called', async () => {
         assert.revert(contract.throwingMethod());
     });
+```
 
 # Check if the desired event was broadcasted in the transaction receipt
 
+```javascript
     const etherlime = require('etherlime');
     const Billboard = require('../build/Billboard.json');
     const assert = require('chai').assert;
@@ -158,3 +165,4 @@ methods it exposes:
               .find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
         });
     });
+```
