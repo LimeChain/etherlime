@@ -114,9 +114,11 @@ Parameters:
     
     const deploy = async (network, secret) => {
     
-        const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here', 'ropsten', 'Your Infura API Key', defaultConfigs);
+        const deployer = new etherlime.InfuraPrivateKeyDeployer('Your Private Key Goes Here',
+          'ropsten', 'Your Infura API Key', defaultConfigs);
     
-        const result = await deployer.deploy(TestContract, '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
+        const result = await deployer.deploy(TestContract,
+          '0xda8a06f1c910cab18ad187be1faa2b8606c2ec86', 1539426974);
     }
 
 ## Setters
@@ -151,7 +153,8 @@ Parameters:
 
 Example :
 
-    const deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, network, apiKey, defaultConfigs);
+    const deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey,
+       network, apiKey, defaultConfigs);
     const newNetwork = 'ropsten';
     deployer.setNetwork(newNetwork);
 
@@ -182,7 +185,8 @@ Parameters:
     
     const deploy = async (network, secret) => {
     
-        const deployer = new etherlime.JSONRPCPrivateKeyDeployer('Your Private Key Goes Here', 'http://localhost:8545/', defaultConfigs);
+        const deployer = new etherlime.JSONRPCPrivateKeyDeployer('Your Private Key Goes Here',
+           'http://localhost:8545/', defaultConfigs);
     
         const result = await deployer.deploy(TestContract);
     }
@@ -216,7 +220,8 @@ Parameters:
 
 Example :
 
-    const deployer = new etherlime.JSONRPCPrivateKeyDeployer(privateKey, nodeUrl, defaultOverrides);
+    const deployer = new etherlime.JSONRPCPrivateKeyDeployer(privateKey,
+       nodeUrl, defaultOverrides);
     const newNodeUrl = http://localhost:9545;
     deployer.setNodeUrl(newNodeUrl);
 

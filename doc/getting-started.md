@@ -67,6 +67,7 @@ deployment finishes (as not all of us monitor the deployment process
 constantly);
 
 Result of `etherlime deploy` would be something like this:
+<br>
 [![Deployment result](./_docs_static/DeploymentResult.png)](https://imgur.com/a/NyLX9mH)
 
 ### History of your deploys

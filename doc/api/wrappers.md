@@ -20,7 +20,8 @@ scripts start to grow.
 
     const contractWrapper = await deployer.deploy(ICOTokenContract);
     const transferTransaction = await contractWrapper.transferOwnership(randomAddress);
-    const result = await contractWrapper.verboseWaitForTransaction(transferTransaction, 'Transfer Ownership');
+    const result = await contractWrapper.verboseWaitForTransaction(transferTransaction,
+         'Transfer Ownership');
 
 If you are working with EtherlimeGanacheDeployer you will have the
 `from` method at your disposal. It will allow you to call certain
@@ -50,7 +51,8 @@ Alternatively if you want to connect to another provider you can pass it
 as last parameter, but then you must pass a signer too which is already
 connected to the same provider.
 
-    const deployedContract = etherlime.ContractAt(ContractDescriptor, deployedContractAddress);
+    const deployedContract = etherlime.ContractAt(ContractDescriptor,
+         deployedContractAddress);
     
     const tx = await deployedContract.someMethod(randomParam);
     const result = await deployedContract.verboseWaitForTransaction(tx);
@@ -64,4 +66,5 @@ power of the wrapper object. The function you can use to achieve this is
 	const deployedContractWrapper = deployer.wrapDeployedContract(SomeContractWithInitMethod, alreadyDeployedContractAddress);
     
     const initTransaction = await deployedContractWrapper.init(randomParam, defaultConfigs);
-    const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction, 'Init Contract');
+    const result = await deployedContractWrapper.verboseWaitForTransaction(initTransaction,
+         'Init Contract');
