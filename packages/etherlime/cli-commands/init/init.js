@@ -140,7 +140,7 @@ const run = async (zkEnabled) => {
 	try {
 		logger.log('===== Installing etherlime =====');
 		copyPackageJsonFile(libraryDirectory);
-		const { stdout, stderr } = await exec('npm install etherlime');
+		const { stdout, stderr } = await exec('npm install etherlime-lib');
 		logger.log(stdout);
 		createContractsFolder();
 		copyContractFile(libraryDirectory);
