@@ -11,8 +11,5 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "7.0.1"
-  },
-  "devDependencies": {
-    "chai": "4.1.2"
   }
 }
