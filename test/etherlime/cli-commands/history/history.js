@@ -8,29 +8,31 @@ const history = require('../../../../packages/etherlime/cli-commands/history/his
 const logger = require('../../../../packages/etherlime-logger/logger-service/logger-service').logger;
 const Greetings = require('../../../testContracts/Greetings.json');
 
-describe('History cli command', () => {
+describe.only('History cli command', () => {
 
-    before(async function() {
+    before(async function () {
         let deployer = new etherlime.EtherlimeGanacheDeployer();
         await deployer.deploy(Greetings)
     })
 
-    it('should show history with no parameters', async function() {
+    it('should show history with no parameters', async function () {
         await assert.isFulfilled(history.run(), 'It was not successfully executed');
     });
 
-    it('should show history with specific number of records', async function() {
+    it('should show history with specific number of records', async function () {
         let loggerSpy = sinon.spy(logger, "log");
         await history.run(1);
         sinon.assert.callCount(loggerSpy, 1);
         loggerSpy.restore()
+        sinon.restore();
     });
 
-    it('should print report table', async function() {
+    it('should print report table', async function () {
         let loggerSpy = sinon.spy(logger, "log");
         await history.run(1, "normal");
         sinon.assert.callCount(loggerSpy, 2);
         loggerSpy.restore()
+        sinon.restore();
     });
 
 });

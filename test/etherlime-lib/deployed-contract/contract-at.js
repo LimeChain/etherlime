@@ -1,4 +1,10 @@
-const etherlime = require('../../../packages/etherlime-lib/index');
+
+var resolve = require('resolve');
+const etherlime = resolve.sync('../../../packages/etherlime-lib/index');
+if (require.cache[etherlime]) {
+	delete require.cache[etherlime];
+}
+
 const ethers = require('ethers')
 const chai = require('chai')
 let chaiAsPromised = require("chai-as-promised");

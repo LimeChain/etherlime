@@ -1,4 +1,8 @@
-const etherlime = require('./../../../packages/etherlime-lib/index');
+var resolve = require('resolve');
+const etherlime = resolve.sync('./../../../packages/etherlime-lib/index');
+if (require.cache[etherlime]) {
+	delete require.cache[etherlime];
+}
 const ethers = require('ethers');
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised');
@@ -16,8 +20,10 @@ const ICOTokenContract = require('./../../testContracts/ICOToken.json');
 const DataContract = require('./../../testContracts/DataContract.json');
 const VestingContract = require('./../../testContracts/Vesting.json');
 const Greetings = require('./../../testContracts/Greetings.json');
-const Verifier = require('./../../../packages/etherlime/cli-commands/verifier/verifier');
-
+const Verifier = resolve.sync('./../../../packages/etherlime/cli-commands/verifier/verifier');
+if (require.cache[Verifier]) {
+	delete require.cache[Verifier]
+}
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
 	gasLimit: config.defaultGasLimit,

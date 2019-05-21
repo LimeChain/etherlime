@@ -1,4 +1,8 @@
-const etherlime = require('./../../../packages/etherlime-lib/index');
+var resolve = require('resolve');
+const etherlime = resolve.sync('../../../packages/etherlime-lib/index');
+if (require.cache[etherlime]) {
+	delete require.cache[etherlime];
+}
 const ethers = require('ethers')
 const chai = require('chai')
 const assert = chai.assert;
@@ -131,7 +135,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		it('should call contract correctly via object with signer instance', async () => {
 			const objectWithSigner = {
 				secretKey: ganacheSetupConfig.accounts[5].secretKey,
-        		signer: notDeployer
+				signer: notDeployer
 			}
 
 			const tx = await deployedContract.from(objectWithSigner).transfer(config.randomAddress, 500)
@@ -141,10 +145,10 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		it('should call contract correctly via object with new signer instance', async () => {
 			let newRandomSigner = ethers.Wallet.createRandom();
 			newRandomSigner = await newRandomSigner.connect(deployer.provider);
-			
+
 			const objectWithSigner = {
 				secretKey: newRandomSigner.privateKey,
-        		signer: newRandomSigner
+				signer: newRandomSigner
 			}
 
 			await deployedContract.mint(newRandomSigner.address, 10000);

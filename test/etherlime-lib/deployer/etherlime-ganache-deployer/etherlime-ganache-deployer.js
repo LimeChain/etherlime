@@ -1,4 +1,8 @@
-const etherlime = require('./../../../../packages/etherlime-lib/index');
+var resolve = require('resolve');
+const etherlime = resolve.sync('./../../../../packages/etherlime-lib/index');
+if (require.cache[etherlime]) {
+	delete require.cache[etherlime];
+}
 const assert = require('assert');
 const config = require('./../../../config.json');
 const ganacheSetupConfig = require('./../../../../packages/etherlime/cli-commands/ganache/setup');

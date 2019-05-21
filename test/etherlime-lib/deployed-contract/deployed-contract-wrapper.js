@@ -1,4 +1,8 @@
-const etherlime = require('./../../../packages/etherlime-lib/index');
+var resolve = require('resolve');
+const etherlime = resolve.sync('../../../packages/etherlime-lib/index');
+if (require.cache[etherlime]) {
+	delete require.cache[etherlime];
+}
 const ethers = require('ethers')
 const assert = require('assert');
 const sinon = require('sinon');
@@ -29,7 +33,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		it('should create correct wrapper', () => {
 			const wrapper = new etherlime.DeployedContractWrapper(Greetings, config.randomAddress, deployer.signer, deployer.provider);
-			
+
 			assert(wrapper.contract.hasOwnProperty('setGreetings'), 'The newly created wrapper does not have ethers.Contract function setGreetings');
 			assert(wrapper.contract.hasOwnProperty('getGreetings'), 'The newly created wrapper does not have ethers.Contract function setGreetings');
 			assert.deepEqual(wrapper.signer, deployer.signer, "The stored signer was not the inputted one")

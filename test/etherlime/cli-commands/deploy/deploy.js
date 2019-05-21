@@ -11,7 +11,7 @@ const logger = require('../../../../packages/etherlime-logger/logger-service/log
 const file = require('./deploymentScriptsFile').file;
 const deploymentWithLib = require('./deploymentWithLib').deploymentWithLib;
 let compileSpy = sinon.spy(compiler, "run");
-let loggerSpy = sinon.spy(logger, "log");
+let loggerSpy;
 
 let privateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8";
 let wrongPrivateKey = "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee9";
