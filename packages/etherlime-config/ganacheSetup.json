@@ -42,7 +42,5 @@
 		}
 	],
 	"defaultPort": 8545,
-	"forkParams": null,
-	"gasPrice": "0x77359400",
-	"gasLimit": "0x6691b7"
+	"forkParams": null
 }
