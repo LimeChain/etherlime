@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const ganacheSetupConfig = require('./../deployer/setup.json');
+const ganacheSetupConfig = require('etherlime-config');
 const { isSigner, isProvider } = require('etherlime-utils');
 
 const DeployedContractWrapper = require('./deployed-contract-wrapper');

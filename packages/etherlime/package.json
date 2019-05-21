@@ -53,7 +53,8 @@
     "tcp-port-used": "^1.0.1",
     "yargs": "11.0.0",
     "etherlime-utils": "^1.0.0",
-    "etherlime-logger": "^1.0.0"
+    "etherlime-logger": "^1.0.0",
+    "etherlime-config": "^1.0.0"
   },
   "bin": {
     "etherlime": "./cli.js"

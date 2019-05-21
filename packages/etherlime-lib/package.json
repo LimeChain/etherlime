@@ -1,7 +1,7 @@
 {
   "name": "etherlime-lib",
   "version": "1.0.0",
-  "description": "",
+  "description": "Etherlime Library API for deployment, interaction and testing of Etehreum smart contracts",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,7 @@
   "dependencies": {
     "ethers": "^4.0.27",
     "etherlime-utils": "^1.0.0",
-    "etherlime-logger": "^1.0.0"
+    "etherlime-logger": "^1.0.0",
+    "etherlime-config": "^1.0.0"
   }
 }

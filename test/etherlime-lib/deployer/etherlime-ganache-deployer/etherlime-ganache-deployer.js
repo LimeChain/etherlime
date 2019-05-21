@@ -1,4 +1,4 @@
-const etherlime = require('./../../../../packages/etherlime-lib/index');
+let etherlime;
 const assert = require('assert');
 const config = require('./../../../config.json');
 const ganacheSetupConfig = require('./../../../../packages/etherlime/cli-commands/ganache/setup');
@@ -15,6 +15,10 @@ const defaultNodeUrl = `http://localhost:${ganacheSetupConfig.defaultPort}`;
 const defaultPrivateKey = ganacheSetupConfig.accounts[0].secretKey;
 
 describe('GanacheCli-Deployer tests', () => {
+
+    before(() => {
+        etherlime = require('./../../../../packages/etherlime-lib/index');
+    })
 
 	describe('Initialization', async () => {
 		it('Should take default values on empty privateKey, port and defaultConfigs', () => {

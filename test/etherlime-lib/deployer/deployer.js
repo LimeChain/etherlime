@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime-lib/index');
+let etherlime;
 const ethers = require('ethers');
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised');
@@ -16,7 +16,7 @@ const ICOTokenContract = require('./../../testContracts/ICOToken.json');
 const DataContract = require('./../../testContracts/DataContract.json');
 const VestingContract = require('./../../testContracts/Vesting.json');
 const Greetings = require('./../../testContracts/Greetings.json');
-const Verifier = require('./../../../packages/etherlime/cli-commands/verifier/verifier');
+let Verifier;
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -31,6 +31,10 @@ const GAS_DEPLOY_TX = 2455692;
 const GAS_DEPLOY_WITH_LINK = 1629070;
 
 describe('Deployer tests', () => {
+
+	before(() => {
+		etherlime  = require('./../../../packages/etherlime-lib');
+	})
 
 	describe('Initialization', async () => {
 		it('should initialize the signer with correct values', () => {
@@ -311,6 +315,7 @@ describe('Deployer tests', () => {
 			let TestTokenOptimized
 
 			before(async () => {
+				Verifier = require('./../../../packages/etherlime/cli-commands/verifier/verifier');
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 				signer = new ethers.Wallet('0x' + config.randomPrivateKey);
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);

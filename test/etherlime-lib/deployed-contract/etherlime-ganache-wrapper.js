@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime-lib/index');
+let etherlime;
 const ethers = require('ethers')
 const chai = require('chai')
 const assert = chai.assert;
@@ -14,7 +14,11 @@ const defaultConfigs = {
 }
 
 describe('EtherlimeGanacheWrapper tests', () => {
-	store.initHistoryRecord();
+    store.initHistoryRecord();
+    
+    before(() => {
+        etherlime = require('./../../../packages/etherlime-lib/index');
+    })
 
 	describe('Initialization', async () => {
 		let deployer;

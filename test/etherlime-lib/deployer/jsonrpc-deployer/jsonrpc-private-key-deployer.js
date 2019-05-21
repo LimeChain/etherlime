@@ -1,4 +1,4 @@
-const etherlime = require('./../../../../packages/etherlime-lib/index');
+let etherlime;
 const assert = require('assert');
 
 const config = require('./../../../config.json');
@@ -15,6 +15,10 @@ const defaultConfigs = {
 }
 
 describe('JSONRPC-Private-Key-Deployer tests', () => {
+
+    before(() => {
+        etherlime = require('./../../../../packages/etherlime-lib/index');
+    })
 
 	describe('Initialization', async () => {
 		it('Should initialize the signer with correct values', () => {
