@@ -65,7 +65,7 @@ class Deployer {
 		deploymentArguments.splice(0, 2);
 
 		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this.prepareAndDeployTransaction(contract, libraries, deploymentArguments);
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler ? deploymentResult._contract.compiler.version : null);
 
 		return deploymentResult;
 	}
@@ -82,13 +82,13 @@ class Deployer {
 
 		const verification = await Verifier.verifySmartContract(deploymentResult, deploymentArguments, libraries, this.defaultOverrides);
 
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler.version, verification);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler ? deploymentResult._contract.compiler.version : null, verification);
 
 		return deploymentResult;
 	}
 
 	async prepareAndDeployTransaction(contract, libraries, deploymentArguments) {
-			
+
 		await this._preValidateArguments(contract, deploymentArguments);
 
 		let contractCopy = JSON.parse(JSON.stringify(contract));
