@@ -15,12 +15,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LimeChain/etherlime"
+    "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime"
   },
   "keywords": [],
   "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "@0x/sol-coverage": "^3.0.0",
     "async": "2.6.1",
     "async-each-series": "1.1.0",

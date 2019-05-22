@@ -6,6 +6,10 @@
   "keywords": [],
   "author": "http://www.limechain.tech",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime-utils"
+  },
   "dependencies": {
     "chalk": "2.4.1"
   }
