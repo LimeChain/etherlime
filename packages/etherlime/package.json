@@ -1,6 +1,6 @@
 {
   "name": "etherlime",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
@@ -21,10 +21,10 @@
   "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
     "@0x/sol-coverage": "^3.0.0",
     "async": "2.6.1",
     "async-each-series": "1.1.0",
+    "axios": "^0.18.0",
     "bn": "^1.0.1",
     "chai": "4.1.2",
     "circom": "LimeChain/circom",
@@ -34,6 +34,9 @@
     "del": "^4.1.1",
     "docker-cli-js": "^2.5.2",
     "ethereum-transaction-debugger": "0.0.5",
+    "etherlime-config": "^1.0.0",
+    "etherlime-logger": "^1.0.0",
+    "etherlime-utils": "^1.0.0",
     "ethers": "^4.0.27",
     "find-cache-dir": "2.0.0",
     "find-process": "^1.2.1",
@@ -50,10 +53,7 @@
     "snarkjs": "LimeChain/snarkjs",
     "solc": "^0.5.1",
     "tcp-port-used": "^1.0.1",
-    "yargs": "11.0.0",
-    "etherlime-utils": "^1.0.0",
-    "etherlime-logger": "^1.0.0",
-    "etherlime-config": "^1.0.0"
+    "yargs": "11.0.0"
   },
   "bin": {
     "etherlime": "./cli.js"
