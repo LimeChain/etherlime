@@ -27,7 +27,7 @@ This will create `deployment` directory with `deploy.js` file inside. You can us
 ### Deployer Example
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
 
     // Path to your etherlime compiled contract json file
     const TestContract = require('../build/TestContract.json'); 
@@ -46,7 +46,7 @@ This will create `deployment` directory with `deploy.js` file inside. You can us
 ### Verifying Smart Contract Example
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
     // Path to your etherlime compiled contract json file
     const TestContract = require('../build/TestContract.json'); 
 
