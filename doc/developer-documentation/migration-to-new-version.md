@@ -2,12 +2,18 @@
 
 ## Breaking Changes
 
-### Installing v1.2
+### TLDR:
+
+In your project run: 
 
 ```text
-npm i -g etherlime
+npm i etherlime-lib
 ```
-This command in v1.2 fetch and install the whole library.
+
+Wherever you have `require('etherlime')` you now need to change to `require('etherlime-lib')`.
+You can safely uninstall your project version of etherlime `npm uninstall etherlime`.
+
+**Note:** Do reinstall the global CLI version of etherlime: `npm uninstall -g etherlime`, `npm install -g etherlime`
 
 ### Installing v2.0
 
@@ -26,7 +32,7 @@ npm i etherlime-lib
 
 This command will install **only** etherlime [LIB](https://app.gitbook.com/@etherlime/s/etherlime/developer-documentation/etherlime-library-api) . You can use LIB to deploy, instantiate or test smart contracts.
 
-### Deploying v1.2
+### Deploying in v1.2
 
 Deploying in v1.2 is as follows:
 
@@ -50,7 +56,7 @@ Example:
 ```
 Please **note** that here etherlime is required as `etherlime`.
 
-### Deploying v2.0
+### Deploying in v2.0
 
 Deploying in v2.0 is as follows using Etherlime LIB.
 
