@@ -2,7 +2,6 @@ const dockerCLI = require('docker-cli-js');
 const docker = new dockerCLI.Docker();
 const path = require("path");
 const fs = require("fs");
-const mkdirp = require("mkdirp");
 
 const VYPER_EXTENSION = require('./config.js').VYPER_EXTENSION;
 
