@@ -1,7 +1,7 @@
 const exampleTestForCoverage = `const assert = require('chai').assert;
 const fs = require('fs-extra');
 
-const etherlime = require('../../../packages/etherlime/index.js');
+const etherlime = require('../../../packages/etherlime-lib/index.js');
 const LimeFactory = require('../../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {

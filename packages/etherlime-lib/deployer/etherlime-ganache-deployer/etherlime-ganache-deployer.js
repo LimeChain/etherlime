@@ -1,6 +1,6 @@
 const { colors, isNumber } = require('etherlime-utils');
 const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const ganacheSetupConfig = require('./../setup.json');
+const { ganacheSetupConfig } = require('etherlime-config');
 const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
 const logger = require('etherlime-logger').logger;
 

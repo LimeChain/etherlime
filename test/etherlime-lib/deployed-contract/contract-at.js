@@ -1,4 +1,4 @@
-const etherlime = require('../../../packages/etherlime/index');
+let etherlime;
 const ethers = require('ethers')
 const chai = require('chai')
 let chaiAsPromised = require("chai-as-promised");
@@ -19,6 +19,7 @@ describe('ContractAt tests', () => {
 	let provider;
 
 	before(async () => {
+        etherlime = require('../../../packages/etherlime-lib/index');
 		const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
 		const contractWrapper = await deployer.deploy(ICOTokenContract);
 		owner = deployer.signer;

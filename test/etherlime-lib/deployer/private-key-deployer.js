@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime/index');
+let etherlime;
 const ethers = require('ethers')
 const assert = require('assert');
 
@@ -18,6 +18,7 @@ describe('Private key deployer tests', () => {
 	let provider;
 
 	beforeEach(() => {
+		etherlime = require('./../../../packages/etherlime-lib');
 		provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 	})
 

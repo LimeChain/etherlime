@@ -1,6 +1,6 @@
 const ganache = require('ganache-cli');
 const setup = require('./setup.json');
-const defaultSetupAccounts = require('../../deployer/setup.json').accounts;
+const { ganacheSetupConfig } = require('etherlime-config');
 const colors = require('etherlime-utils').colors;
 const logger = require('etherlime-logger').logger;
 const ethers = require('ethers');
@@ -45,7 +45,7 @@ const ganacheServerListenCallback = (err, blockchain) => {
 const generateAccounts = (mnemonic, generate) => {
 
 	// Every time the command is run with mnemonic, reset the account list with the default one and add the number of accounts, the user specifies.
-	const currentAccounts = defaultSetupAccounts;
+	const currentAccounts = ganacheSetupConfig.accounts;
 	for (let i = 0; i < generate; i++) {
 		let path = `m/44'/60'/${i}'/0/0`;
 		let wallet = ethers.Wallet.fromMnemonic(mnemonic, path);

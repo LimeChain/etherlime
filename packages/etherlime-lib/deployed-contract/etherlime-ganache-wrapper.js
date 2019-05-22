@@ -1,7 +1,7 @@
 const { colors, isSigner } = require('etherlime-utils');
 const DeployedContractWrapper = require('./deployed-contract-wrapper');
 const logger = require('etherlime-logger').logger;
-const ganacheSetupConfig = require('./../deployer/setup.json');
+const { ganacheSetupConfig } = require('etherlime-config');
 const ethers = require('ethers')
 
 class EtherlimeGanacheWrapper extends DeployedContractWrapper {

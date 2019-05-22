@@ -1,4 +1,4 @@
-const etherlime = require('./../../../packages/etherlime/index');
+let etherlime;
 const ethers = require('ethers')
 const assert = require('assert');
 const sinon = require('sinon');
@@ -18,7 +18,11 @@ const defaultConfigs = {
 let sandbox = sinon.createSandbox();
 
 describe('Deployed Contracts Wrapper tests', () => {
-	store.initHistoryRecord();
+    store.initHistoryRecord();
+    
+    before(() => {
+        etherlime = require('./../../../packages/etherlime-lib/index');
+    })
 
 	describe('Initialization', async () => {
 		let deployer;
