@@ -1,4 +1,4 @@
-const etherlime = require('etherlime');
+const etherlime = require('etherlime-lib');
 const LimeFactory = require('../build/LimeFactory.json');
 
 
