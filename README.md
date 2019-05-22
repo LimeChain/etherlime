@@ -27,7 +27,7 @@ npm i -g etherlime
 
 ### Documentation
 
-[Documentation](https://etherlime.readthedocs.io/en/latest/)
+[Documentation](https://etherlime.gitbook.io)
 
 ### Community
 

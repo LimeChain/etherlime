@@ -116,7 +116,7 @@ On your disposal there is a global available utils object. Here are the methods 
 ### General Example
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
     const Billboard = require('../build/Billboard.json');
 
     describe('Example', () => {
@@ -140,7 +140,7 @@ On your disposal there is a global available utils object. Here are the methods 
 ### execute function from another account
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
     const ethers = require('ethers');
     const Billboard = require('../build/Billboard.json');
 
@@ -167,7 +167,7 @@ On your disposal there is a global available utils object. Here are the methods 
 
 ```javascript
     const Billboard = require('../build/Billboard.json');
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
 
     describe('Billboard', () => {
         let owner = accounts[5];
@@ -192,7 +192,7 @@ On your disposal there is a global available utils object. Here are the methods 
 ## Check if the desired event was broadcasted in the transaction receipt
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
     const Billboard = require('../build/Billboard.json');
     const assert = require('chai').assert;
 
