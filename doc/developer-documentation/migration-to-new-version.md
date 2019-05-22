@@ -13,7 +13,7 @@ npm i etherlime-lib
 Wherever you have `require('etherlime')` you now need to change to `require('etherlime-lib')`.
 You can safely uninstall your project version of etherlime `npm uninstall etherlime`.
 
-**Note:** Do reinstall the global CLI version of etherlime: `npm uninstall -g etherlime`, `npm install -g etherlime`
+**Note:** Do reinstall the global [CLI](https://app.gitbook.com/@etherlime/s/etherlime/developer-documentation/etherlime-cli) version of etherlime: `npm uninstall -g etherlime`, `npm install -g etherlime`
 
 ### Installing v2.0
 
