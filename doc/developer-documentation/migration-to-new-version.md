@@ -21,7 +21,7 @@ This command in v2.0 will install **only** the etherlime CLI commands library. Y
 
 #### Installing the LIB: 
 ```text
-npm i -g etherlime-lib
+npm i etherlime-lib
 ```
 
 This command will install **only** etherlime LIB. You can use LIB to deploy, instantiate or test smart contracts.
