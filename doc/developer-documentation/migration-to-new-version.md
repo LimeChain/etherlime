@@ -16,7 +16,7 @@ This command in v1.2 fetch and install the whole library.
 npm i -g etherlime
 ```
 
-This command in v2.0 will install **only** the etherlime CLI commands library. You can use all the [CLI](https://app.gitbook.com/@etherlime/s/etherlime/developer-documentation/etherlime-cli) commands.
+This command in v2.0 will install **only** the etherlime CLI - (command line interface) library. You can use all the [CLI](https://app.gitbook.com/@etherlime/s/etherlime/developer-documentation/etherlime-cli) commands.
 
 
 #### Installing the LIB: 
@@ -24,7 +24,7 @@ This command in v2.0 will install **only** the etherlime CLI commands library. Y
 npm i etherlime-lib
 ```
 
-This command will install **only** etherlime LIB. You can use LIB to deploy, instantiate or test smart contracts.
+This command will install **only** etherlime [LIB](https://app.gitbook.com/@etherlime/s/etherlime/developer-documentation/etherlime-library-api) . You can use LIB to deploy, instantiate or test smart contracts.
 
 ### Deploying v1.2
 
