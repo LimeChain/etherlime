@@ -7,7 +7,7 @@ const assert = require('assert');
 const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 const sinon = require('sinon');
 const fs = require('fs-extra');
-var axios = require('axios');
+var axios = require('../../../packages/etherlime/node_modules/axios');
 var MockAdapter = require('axios-mock-adapter');
 
 const isAddress = require('./../../../packages/etherlime-utils/utils/address-utils').isAddress;
@@ -33,7 +33,7 @@ const GAS_DEPLOY_WITH_LINK = 1629070;
 describe('Deployer tests', () => {
 
 	before(() => {
-		etherlime  = require('./../../../packages/etherlime-lib');
+		etherlime = require('./../../../packages/etherlime-lib');
 	})
 
 	describe('Initialization', async () => {
