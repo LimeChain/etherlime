@@ -1,6 +1,6 @@
-const mkdirp = require("mkdirp");
 const path = require("path");
 const OS = require("os");
+const fs = require('fs-extra');
 
 const Config = require("./../etherlime-config");
 const etherlimeCompile = require("./../etherlime-compile");
@@ -76,7 +76,7 @@ const write_contracts = async function (contracts, options) {
   let logger = options.logger || console;
   return new Promise(async (resolve, reject) => {
     try {
-      mkdirp.sync(options.contracts_build_directory);
+      fs.mkdirpSync(options.contracts_build_directory);
 
       if (options.quiet != true && options.quietWrite != true) {
         logger.log(`Writing artifacts to .${path.sep}${path.relative(options.working_directory, options.contracts_build_directory)}${OS.EOL}`);

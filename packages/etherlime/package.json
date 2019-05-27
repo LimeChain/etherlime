@@ -37,7 +37,6 @@
     "fs-extra": "7.0.1",
     "ganache-cli": "^6.4.1",
     "keen-tracking": "4.0.15",
-    "mkdirp": "0.5.1",
     "mocha": "5.2.0",
     "moment": "2.22.2",
     "node-dir": "0.1.17",
