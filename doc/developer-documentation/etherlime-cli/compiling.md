@@ -6,7 +6,7 @@ Running this command will compile all smart contracts along with imported source
 
 ```text
 etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all]
-[quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles]
+[quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles] [exportAbi]
 ```
 
 Parameters:
@@ -78,6 +78,12 @@ Parameters:
   compilation contract directory before compiling. By the default
 
   `deleteCompiledFiles` is set to false.
+
+* `exportAbi` - \[Optional\] In addition to the json build files, etherlime build `abis` 
+
+  folder with files containing the abi of every contract. By the default
+
+  `exportAbi` is set to false.
 
 The `solcVersion` can accept the following values:
 
