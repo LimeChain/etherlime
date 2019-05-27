@@ -17,6 +17,6 @@
     "etherlime-config": "^1.0.0",
     "etherlime-logger": "^1.0.0",
     "etherlime-utils": "^1.0.0",
-    "ethers": "^4.0.27"
+    "ethers": "git+https://github.com/LimeChain/ethers.js.git#master"
   }
 }
