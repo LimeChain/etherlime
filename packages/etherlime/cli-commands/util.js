@@ -1,7 +1,6 @@
 const ethersUtils = require("ethers").utils;
 const colors = require('etherlime-utils').colors;
 const Table = require('etherlime-utils').Table;
-const moment = require('moment');
 
 const printReportTable = (recordActions) => {
 
@@ -10,9 +9,8 @@ const printReportTable = (recordActions) => {
 
 	for (const action of recordActions) {
 		actionIndex++;
-
 		table.push(
-			{ 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:MM:ss')}` },
+			{ 'Event Time': `${getReadableTime(action.eventTimestamp)}` },
 			{ 'Executor': `${action.deployerType}` },
 			{ 'Name or Label': `${colors.colorName(action.nameOrLabel)}` },
 			{ 'Tx Hash': `${action.transactionHash}` },
@@ -47,6 +45,32 @@ const getVerificationStatus = (status) => {
 	}
 
 	return `${colors.colorFailure(status)}`
+}
+
+const getReadableTime = (timeStamp) => {
+	const monthNames = ["January", "February", "March", "April", "May", "June",
+		"July", "August", "September", "October", "November", "December"
+	];
+	// Full date from timestamp
+	let fullDate = new Date(timeStamp);
+
+	// Current month:
+	let month = monthNames[fullDate.getMonth()]
+
+	// Current day of the month
+	let date = fullDate.getDate();
+
+	// Hours part from the timestamp
+	let hours = fullDate.getHours();
+
+	// Minutes part from the timestamp
+	let minutes = "0" + fullDate.getMinutes();
+
+	// Seconds part from the timestamp
+	let seconds = "0" + fullDate.getSeconds();
+
+	let formattedTime = `${date} ${month}, ${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`;
+	return formattedTime
 }
 
 module.exports = {
