@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const eachSeries = require("async-each-series");
 
 class FS {
   constructor(working_directory, contracts_build_directory) {
@@ -28,7 +27,7 @@ class FS {
     return path.basename(sourcePath, ".sol");
   }
   resolve(import_path, imported_from) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       imported_from = imported_from || "";
 
       let possible_paths = [
@@ -39,24 +38,17 @@ class FS {
       let resolved_body = null;
       let resolved_path = null;
 
-      eachSeries(possible_paths, function (possible_path, finished) {
-        if (resolved_body != null) {
-          return finished();
-        }
-
-        fs.readFile(possible_path, {
-          encoding: "utf8"
-        }, function (err, body) {
+      for (let i = 0; i < possible_paths.length; i++) {
+        if (fs.existsSync(possible_paths[i])) {
+          const body = fs.readFileSync(possible_paths[i], { encoding: "utf8" });
           if (body) {
             resolved_body = body;
-            resolved_path = possible_path;
+            resolved_path = possible_paths[i];
+            resolve({ body: resolved_body, import_path: resolved_path });
           }
-
-          return finished();
-        });
-      }, function () {
-        resolve({ body: resolved_body, import_path: resolved_path });
-      });
+        }
+      }
+      resolve({ body: resolved_body, import_path: resolved_path });
     })
   }
   resolve_dependency_path(import_path, dependency_path) {
