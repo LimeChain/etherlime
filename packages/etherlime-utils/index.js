@@ -9,6 +9,7 @@ const isNumber = require('./utils/number-utils').isNumber;
 const isProvider = require('./utils/provider-utils').isProvider;
 const isSigner = require('./utils/signer-utils').isSigner;
 const isUrl = require('./utils/url-utils').isUrl;
+const Table = require('./utils/table');
 
 
 module.exports = {
@@ -22,5 +23,6 @@ module.exports = {
     isNumber,
     isProvider,
     isSigner,
-    isUrl
+    isUrl,
+    Table
 }
