@@ -206,7 +206,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles]',
+		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles] [exportAbi]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('dir', {
