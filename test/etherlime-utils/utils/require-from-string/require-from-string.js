@@ -20,6 +20,13 @@ it('should accept filename', function () {
 	}, /bug\.js|Unexpected token }/);
 });
 
+it('should work with relative require in file and object as filename', function () {
+	const file = require('./helpers/module.js');
+	let result = requireFromString('', file);
+
+	assert.ok(result);
+});
+
 it('should work with relative require in file', function () {
 	let file = path.join(__dirname, '/helpers/module.js');
 	let code = fs.readFileSync(file, 'utf8');
@@ -27,13 +34,6 @@ it('should work with relative require in file', function () {
 
 	assert.ok(result);
 	assert.ok(module === result.parent.parent);
-});
-
-it('should work with relative require in file and object as filename', function () {
-	const file = require('./helpers/module.js');
-	let result = requireFromString('', file);
-
-	assert.ok(result);
 });
 
 it('should have appended and preppended paths', function () {
