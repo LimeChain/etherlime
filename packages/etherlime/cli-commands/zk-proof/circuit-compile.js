@@ -1,6 +1,5 @@
 const circom = require("circom");
 const fs = require("fs");
-const dir = require("node-dir");
 const path = require("path");
 
 const circuitsPath = './zero-knowledge-proof/circuits';

@@ -1,6 +1,5 @@
 const zkSnark = require("snarkjs");
 const fs = require("fs");
-const dir = require("node-dir");
 const path = require("path");
 
 const trustedSetupPath = './zero-knowledge-proof/trusted-setup';

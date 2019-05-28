@@ -1,6 +1,5 @@
 let etherlimeTest = require('./etherlime-test');
 let etherlimeCoverage = require('./etherlime-coverage');
-let dir = require('node-dir');
 const fs = require('fs-extra');
 const path = require('path');
 let Config = require('./../compiler/etherlime-config');
