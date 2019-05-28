@@ -39,8 +39,6 @@
     "keen-tracking": "4.0.15",
     "mocha": "5.2.0",
     "original-require": "1.0.1",
-    "request-promise": "4.2.2",
-    "require-from-string": "2.0.2",
     "simple-git": "^1.107.0",
     "snarkjs": "LimeChain/snarkjs",
     "solc": "^0.5.1",

@@ -1,8 +1,8 @@
-const path = require('path');
 const fs = require('fs');
 const child = require('child_process');
-const request = require('request-promise');
-const requireFromString = require('require-from-string');
+const axios = require('axios');
+const axiosInstance = axios.create();
+const requireFromString = require('etherlime-utils').requireFromString;
 const findCacheDir = require('find-cache-dir');
 const originalRequire = require('original-require');
 const solcWrap = require('solc/wrapper');
@@ -84,10 +84,9 @@ class CompilerSupplier {
 
     getDockerTags() {
         const self = this;
-        return request(self.config.dockerTagsUrl)
-            .then(list =>
-                JSON
-                    .parse(list)
+        return axiosInstance.get(self.config.dockerTagsUrl)
+            .then(response =>
+                response.data
                     .results
                     .map(item => item.name)
             )
@@ -122,8 +121,11 @@ class CompilerSupplier {
 
     getVersions() {
         const self = this;
-        return request(self.config.versionsUrl)
-            .then(list => JSON.parse(list))
+        return axiosInstance.get(self.config.versionsUrl)
+            .then(response => {
+                return response.data
+            }
+            )
             .catch(err => { throw self.errors('noRequest', self.config.versionsUrl, err) });
     }
 
@@ -166,11 +168,11 @@ class CompilerSupplier {
                 if (self.isCached(file)) return self.getFromCache(file);
 
                 const url = self.config.compilerUrlRoot + file;
-                return request
+                return axiosInstance
                     .get(url)
                     .then(response => {
-                        self.addToCache(response, file);
-                        return self.compilerFromString(response);
+                        self.addToCache(response.data, file);
+                        return self.compilerFromString(response.data);
                     })
                     .catch(err => { throw self.errors('noRequest', url, err) });
             });
