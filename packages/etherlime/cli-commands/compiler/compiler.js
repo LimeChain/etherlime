@@ -149,11 +149,11 @@ const help = () => {
 const deleteFolderRecursive = async (pathForDelete) => {
 	if (fs.existsSync(pathForDelete)) {
 		fs.readdirSync(pathForDelete).forEach(function (file) {
-			var curPath = path.join(pathForDelete, file);
-			if (fs.lstatSync(curPath).isDirectory()) {
-				deleteFolderRecursive(curPath);
+			let currentPath = path.join(pathForDelete, file);
+			if (fs.lstatSync(currentPath).isDirectory()) {
+				deleteFolderRecursive(currentPath);
 			} else {
-				fs.unlinkSync(curPath);
+				fs.unlinkSync(currentPath);
 			}
 		});
 		fs.rmdirSync(pathForDelete);

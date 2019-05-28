@@ -1,5 +1,4 @@
 const OS = require("os");
-const dir = require("node-dir");
 const path = require("path");
 const debug = require("debug")("lib:debug");
 const colors = require('etherlime-utils').colors;
