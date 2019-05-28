@@ -1,6 +1,6 @@
 const ethersUtils = require("ethers").utils;
 const colors = require('etherlime-utils').colors;
-const Table = require('etherlime-utils').Table;
+const Table = require('cli-table');
 
 const printReportTable = (recordActions) => {
 
