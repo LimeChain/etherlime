@@ -147,17 +147,18 @@ const help = () => {
 }
 
 const deleteFolderRecursive = async (pathForDelete) => {
-	if (fs.existsSync(pathForDelete)) {
-		fs.readdirSync(pathForDelete).forEach(function (file) {
-			let currentPath = path.join(pathForDelete, file);
-			if (fs.lstatSync(currentPath).isDirectory()) {
-				deleteFolderRecursive(currentPath);
-			} else {
-				fs.unlinkSync(currentPath);
-			}
-		});
-		fs.rmdirSync(pathForDelete);
+	if (!fs.existsSync(pathForDelete)) {
+		return;
 	}
+	fs.readdirSync(pathForDelete).forEach(function (file) {
+		let currentPath = path.join(pathForDelete, file);
+		if (!fs.lstatSync(currentPath).isDirectory()) {
+			fs.unlinkSync(currentPath);
+		}
+		deleteFolderRecursive(currentPath);
+	});
+	fs.rmdirSync(pathForDelete);
+
 };
 
 module.exports = {
