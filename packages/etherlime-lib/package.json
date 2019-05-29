@@ -1,6 +1,6 @@
 {
   "name": "etherlime-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Etherlime Library API for deployment, interaction and testing of Etehreum smart contracts",
   "main": "index.js",
   "scripts": {
