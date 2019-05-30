@@ -5,13 +5,14 @@ const deleteFolderRecursive = async (pathForDelete) => {
 	if (!fs.existsSync(pathForDelete)) {
 		return;
 	}
-	fs.readdirSync(pathForDelete).forEach(function (file) {
-		let currentPath = path.join(pathForDelete, file);
+	const files = await fs.readdirSync(pathForDelete);
+	for (let i = 0; i < files.length; i++) {
+		let currentPath = path.join(pathForDelete, files[i]);
 		if (!fs.lstatSync(currentPath).isDirectory()) {
 			fs.unlinkSync(currentPath);
 		}
 		deleteFolderRecursive(currentPath);
-	});
+	}
 	fs.rmdirSync(pathForDelete);
 
 };

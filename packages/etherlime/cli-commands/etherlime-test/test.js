@@ -29,10 +29,11 @@ const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasR
 const getFiles = async function (testDirectory, config) {
 
 	let files = [];
-	await fs.readdirSync(testDirectory).forEach(function (file) {
-		let currentPath = path.join(testDirectory, file);
+	const readFiles = await fs.readFileSync(testDirectory);
+	for (let i = 0; i < readFiles; i++) {
+		let currentPath = path.join(testDirectory, readFiles[i]);
 		files.push(currentPath)
-	});
+	}
 	files = files.filter(function (file) {
 		return file.match(config.test_file_extension_regexp) != null;
 	});

@@ -203,10 +203,11 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 const findFiles = async (directory) => {
 
 	let files = [];
-	await fs.readdirSync(directory).forEach(function (file) {
-		let currentPath = path.join(directory, file);
+	const readFiles = await fs.readdirSync(directory);
+	for (let i = 0; i < readFiles.length; i++) {
+		let currentPath = path.join(directory, readFiles[i]);
 		files.push(currentPath)
-	});
+	}
 
 	files = files.filter(function (file) {
 		return path.extname(file) == ".json" && path.basename(file)[0] != ".";

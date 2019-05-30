@@ -14,20 +14,19 @@ const run = async () => {
 };
 
 let findFiles = async (workingDirectory) => {
-	try {
-		let files = [];
-		await fs.readdirSync(workingDirectory).forEach(function (file) {
-			let currentPath = path.join(workingDirectory, file);
-			files.push(currentPath)
-		});
+	let files = [];
 
-		files = files.filter(function (file) {
-			return path.extname(file) == ".json" && path.basename(file)[0] != ".";
-		});
-		return files;
-	} catch (err) {
-		throw err;
+	const readFiles = await fs.readdirSync(workingDirectory);
+	for (let i = 0; i < readFiles.length; i++) {
+		let currentPath = path.join(workingDirectory, readFiles[i]);
+		files.push(currentPath)
 	}
+
+
+	files = files.filter(function (file) {
+		return path.extname(file) == ".json" && path.basename(file)[0] != ".";
+	});
+	return files;
 }
 
 const createZKProofTrustedSetupFolder = (folderPath) => {

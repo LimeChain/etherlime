@@ -20,10 +20,11 @@ let find_contracts = async (workingPath) => {
 
     try {
       let files = [];
-      fs.readdirSync(workingPath).forEach(function (file) {
-        let currentPath = path.join(workingPath, file);
+      const readFiles = await fs.readdirSync(workingPath);
+      for (let i = 0; i < readFiles.length; i++) {
+        let currentPath = path.join(workingPath, readFiles[i]);
         files.push(currentPath)
-      });
+      }
       return resolve(fetchSolAndVyperFiles(files))
     } catch (err) {
       return reject(err)
