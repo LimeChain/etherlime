@@ -1,18 +1,18 @@
 const KeenTracking = require('keen-tracking');
 const analytics = require('./analytics.json');
-const debugTestModule = 'nyc';
+let debugTestModule;
 const fs = require('fs-extra');
 
 let isProd = false;
-try {
-	require(debugTestModule);
-} catch (e) {
-	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
-		isProd = true;
-	} else {
-		throw e
-	}
-}
+// try {
+// 	debugTestModule = require('nyc');
+// } catch (e) {
+// 	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
+// 		isProd = true;
+// 	} else {
+// 		throw e
+// 	}
+// }
 
 const analyticsClient = new KeenTracking({
 	projectId: analytics.projectId,

@@ -1,59 +1,77 @@
 {
-  "name": "etherlime",
-  "version": "2.0.1",
-  "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
-  "main": "index.js",
-  "scripts": {
-    "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'"
-  },
-  "nyc": {
-    "exclude": [
-      "Solidity-IDE/*.js",
-      "test/**/*.js",
-      "tmpTest/**/*.js"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime"
-  },
-  "keywords": [],
-  "author": "http://www.limechain.tech",
-  "license": "ISC",
-  "dependencies": {
-    "@0x/sol-coverage": "^3.0.0",
-    "axios": "^0.18.0",
-    "bn": "^1.0.1",
-    "chai": "4.1.2",
-    "circom": "LimeChain/circom",
-    "cli-table": "0.3.1",
-    "colors": "1.3.2",
-    "docker-cli-js": "^2.5.2",
-    "ethereum-transaction-debugger": "0.0.5",
-    "etherlime-config": "^1.0.0",
-    "etherlime-logger": "^1.0.0",
-    "etherlime-utils": "^1.0.0",
-    "ethers": "^4.0.27",
-    "find-cache-dir": "2.0.0",
-    "fs-extra": "7.0.1",
-    "ganache-cli": "^6.4.1",
-    "keen-tracking": "4.0.15",
-    "mocha": "5.2.0",
-    "original-require": "1.0.1",
-    "require-from-string": "2.0.2",
-    "simple-git": "^1.107.0",
-    "snarkjs": "LimeChain/snarkjs",
-    "solc": "^0.5.1",
-    "tcp-port-used": "^1.0.1",
-    "yargs": "11.0.0"
-  },
-  "bin": {
-    "etherlime": "./cli.js"
-  },
-  "browser": {
-    "fs": false,
-    "fs-extra": false,
-    "path": false,
-    "os": false
-  }
+	"name": "etherlime",
+	"version": "2.0.1",
+	"description": "etherlime is an ethereum development and deployment framework based on ethers.js",
+	"main": "dist/etherlime-cli.js",
+	"scripts": {
+		"postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'",
+		"prepare": "npm run build",
+		"build": "webpack --config webpack/webpack.config.js"
+	},
+	"nyc": {
+		"exclude": [
+			"Solidity-IDE/*.js",
+			"test/**/*.js",
+			"tmpTest/**/*.js"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime"
+	},
+	"keywords": [],
+	"author": "http://www.limechain.tech",
+	"license": "ISC",
+	"dependencies": {
+		"@0x/sol-coverage": "^3.0.0",
+		"axios": "^0.18.0",
+		"bn": "^1.0.1",
+		"chai": "4.1.2",
+		"circom": "LimeChain/circom",
+		"cli-table": "0.3.1",
+		"colors": "1.3.2",
+		"docker-cli-js": "^2.5.2",
+		"ethereum-transaction-debugger": "0.0.5",
+		"etherlime-config": "^1.0.0",
+		"etherlime-logger": "^1.0.0",
+		"etherlime-utils": "^1.0.0",
+		"ethers": "^4.0.27",
+		"find-cache-dir": "2.0.0",
+		"fs-extra": "7.0.1",
+		"ganache-cli": "^6.4.1",
+		"keen-tracking": "4.0.15",
+		"mocha": "5.2.0",
+		"original-require": "1.0.1",
+		"require-from-string": "2.0.2",
+		"simple-git": "^1.107.0",
+		"snarkjs": "LimeChain/snarkjs",
+		"solc": "^0.5.1",
+		"tcp-port-used": "^1.0.1",
+		"yargs": "11.0.0"
+	},
+	"devDependencies": {
+		"babel-core": "^6.26.0",
+		"babel-loader": "^7.1.2",
+		"babel-plugin-transform-object-rest-spread": "^6.26.0",
+		"babel-plugin-transform-runtime": "^6.23.0",
+		"babel-preset-env": "^1.6.1",
+		"babel-runtime": "^6.26.0",
+		"mocha": "5.2.0",
+		"mocha-webpack": "^1.1.0",
+		"node-interval-tree": "^1.3.3",
+		"webpack": "^3.8.1",
+		"webpack-dev-middleware": "^2.0.4",
+		"webpack-merge": "^4.1.1",
+		"webpack-node-externals": "^1.6.0",
+		"write-file-webpack-plugin": "^4.2.0"
+	},
+	"bin": {
+		"etherlime": "./cli.js"
+	},
+	"browser": {
+		"fs": false,
+		"fs-extra": false,
+		"path": false,
+		"os": false
+	}
 }
