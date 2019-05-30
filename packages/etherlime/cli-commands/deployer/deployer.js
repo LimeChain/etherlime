@@ -27,6 +27,7 @@ const run = async (deploymentFilePath, network, secret, silent, compile, runs, o
 		await compiler.run('.');
 	}
 	const initialRecords = logsStore.getHistory();
+	console.log()
 	const deployMethod = getDeployMethod(deploymentFilePath);
 
 	try {

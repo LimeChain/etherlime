@@ -4,15 +4,15 @@ let debugTestModule;
 const fs = require('fs-extra');
 
 let isProd = false;
-// try {
-// 	debugTestModule = require('nyc');
-// } catch (e) {
-// 	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
-// 		isProd = true;
-// 	} else {
-// 		throw e
-// 	}
-// }
+try {
+	debugTestModule = require('nyc');
+} catch (e) {
+	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
+		isProd = true;
+	} else {
+		throw e
+	}
+}
 
 const analyticsClient = new KeenTracking({
 	projectId: analytics.projectId,
