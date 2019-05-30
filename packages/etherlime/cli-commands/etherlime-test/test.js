@@ -28,19 +28,15 @@ const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasR
 
 const getFiles = async function (testDirectory, config) {
 
-	try {
-		let files = [];
-		await fs.readdirSync(testDirectory).forEach(function (file) {
-			let currentPath = path.join(testDirectory, file);
-			files.push(currentPath)
-		});
-		files = files.filter(function (file) {
-			return file.match(config.test_file_extension_regexp) != null;
-		});
-		return files;
-	} catch (err) {
-		throw new Error(err)
-	}
+	let files = [];
+	await fs.readdirSync(testDirectory).forEach(function (file) {
+		let currentPath = path.join(testDirectory, file);
+		files.push(currentPath)
+	});
+	files = files.filter(function (file) {
+		return file.match(config.test_file_extension_regexp) != null;
+	});
+	return files;
 }
 
 const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {

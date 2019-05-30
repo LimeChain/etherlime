@@ -201,20 +201,17 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 
 // Find compiled files from passed directory, e.g ./build
 const findFiles = async (directory) => {
-	try {
-		let files = [];
-		await fs.readdirSync(directory).forEach(function (file) {
-			let currentPath = path.join(directory, file);
-			files.push(currentPath)
-		});
 
-		files = files.filter(function (file) {
-			return path.extname(file) == ".json" && path.basename(file)[0] != ".";
-		});
-		return files;
-	} catch (err) {
-		throw err;
-	}
+	let files = [];
+	await fs.readdirSync(directory).forEach(function (file) {
+		let currentPath = path.join(directory, file);
+		files.push(currentPath)
+	});
+
+	files = files.filter(function (file) {
+		return path.extname(file) == ".json" && path.basename(file)[0] != ".";
+	});
+	return files;
 }
 
 module.exports = {

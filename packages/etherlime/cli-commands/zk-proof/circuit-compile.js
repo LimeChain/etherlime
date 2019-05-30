@@ -15,20 +15,16 @@ const run = async () => {
 
 let findFiles = async (workingDirectory) => {
 
-	try {
-		let files = [];
-		await fs.readdirSync(workingDirectory).forEach(function (file) {
-			let currentPath = path.join(workingDirectory, file);
-			files.push(currentPath)
-		});
+	let files = [];
+	await fs.readdirSync(workingDirectory).forEach(function (file) {
+		let currentPath = path.join(workingDirectory, file);
+		files.push(currentPath)
+	});
 
-		files = files.filter(function (file) {
-			return path.extname(file) == ".circom" && path.basename(file)[0] != ".";
-		});
-		return files;
-	} catch (err) {
-		throw err;
-	}
+	files = files.filter(function (file) {
+		return path.extname(file) == ".circom" && path.basename(file)[0] != ".";
+	});
+	return files;
 }
 
 const createZKProofCompiledCircuitFolder = () => {

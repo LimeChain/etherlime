@@ -1,11 +1,11 @@
 const fs = require('fs');
-const path = require('path')
 const compiler = require("./etherlime-workflow-compile/index");
 const Resolver = require("./etherlime-resolver/index");
 const colors = require("etherlime-utils").colors;
 const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('etherlime-logger').logger;
+const deleteFolderRecursive = require('etherlime-utils').deleteFolderRecursive;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
 	if (list !== undefined) {
@@ -145,21 +145,6 @@ const help = () => {
 		" `prereleases`    solcjs nightly builds\n" +
 		" `latestRelease`  solcjs latest\n\n";
 }
-
-const deleteFolderRecursive = async (pathForDelete) => {
-	if (!fs.existsSync(pathForDelete)) {
-		return;
-	}
-	fs.readdirSync(pathForDelete).forEach(function (file) {
-		let currentPath = path.join(pathForDelete, file);
-		if (!fs.lstatSync(currentPath).isDirectory()) {
-			fs.unlinkSync(currentPath);
-		}
-		deleteFolderRecursive(currentPath);
-	});
-	fs.rmdirSync(pathForDelete);
-
-};
 
 module.exports = {
 	run
