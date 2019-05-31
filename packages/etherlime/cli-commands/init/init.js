@@ -136,7 +136,7 @@ const copyInputParamsFile = (libraryDirectory) => {
 
 const run = async (zkEnabled) => {
 	const libraryDirectory = __dirname;
-
+	console.log('JERE OGI', libraryDirectory)
 	try {
 		logger.log('===== Installing etherlime =====');
 		copyPackageJsonFile(libraryDirectory);

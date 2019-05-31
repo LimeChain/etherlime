@@ -87,8 +87,8 @@ const overrideCoverageBytecodes = async (buildDirectory) => {
 	for (buildFilePath of buildFilesPaths) {
 		for (coverageBuildFilePath of coverageBuildFilesPaths) {
 
-			let buildFile = require(`${process.cwd()}/${buildFilePath}`);
-			let coverageBuildFile = require(`${process.cwd()}/${coverageBuildFilePath}`);
+			let buildFile = originalRequire(`${process.cwd()}/${buildFilePath}`);
+			let coverageBuildFile = originalRequire(`${process.cwd()}/${coverageBuildFilePath}`);
 			if (buildFile.contractName === coverageBuildFile.contractName) {
 				coverageBuildFile.compilerOutput.evm.bytecode.object = buildFile.bytecode;
 				coverageBuildFile.compilerOutput.evm.deployedBytecode.object = buildFile.deployedBytecode;
@@ -180,7 +180,7 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 	const collector = new istanbul.Collector();
 	const reporter = new istanbul.Reporter();
 	const sync = false;
-	const coverageFile = require(`${process.cwd()}/coverage/coverage.json`);
+	const coverageFile = originalRequire(`${process.cwd()}/coverage/coverage.json`);
 	collector.add(coverageFile);
 	reporter.add(['text']);
 	reporter.add(['html']);
@@ -192,7 +192,7 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 			if (shouldOpenCoverage) {
 				const url = `${process.cwd()}/coverage/index.html`;
 				const start = (process.platform == 'darwin' ? 'open' : process.platform == 'win32' ? 'start' : 'xdg-open');
-				require('child_process').exec(start + ' ' + url);
+				originalRequire('child_process').exec(start + ' ' + url);
 			}
 		});
 	}, 100);

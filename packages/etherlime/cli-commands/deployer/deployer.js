@@ -4,6 +4,7 @@ const { logsStore, logger, AppenderTypes } = require('etherlime-logger');
 const utils = require('./../util');
 let compiler = require('./../compiler/compiler');
 const Verifier = require('../verifier/verifier');
+const originalRequire = require('original-require');
 
 const verifyDeploymentFile = (deploymentFile) => {
 	if (!fs.existsSync(deploymentFile)) {
@@ -15,7 +16,7 @@ const getDeployMethod = (deploymentFilePath) => {
 	const _deploymentFilePath = (deploymentFilePath) ? deploymentFilePath : defaultDeploymentFilePath;
 	verifyDeploymentFile(_deploymentFilePath)
 	const deploymentFile = `${process.cwd()}/${_deploymentFilePath}`;
-	const deployModule = require(deploymentFile);
+	const deployModule = originalRequire(`${deploymentFile}`);
 
 	return deployModule.deploy;
 };

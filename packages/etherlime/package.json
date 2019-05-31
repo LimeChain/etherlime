@@ -64,7 +64,8 @@
 		"webpack-merge": "^4.1.1",
 		"webpack-node-externals": "^1.6.0",
 		"write-file-webpack-plugin": "^4.2.0",
-		"nyc": "^13.3.0"
+		"nyc": "^13.3.0",
+		"copy-webpack-plugin": "4.6.0"
 	},
 	"bin": {
 		"etherlime": "./cli.js"

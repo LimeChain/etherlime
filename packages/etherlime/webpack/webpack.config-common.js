@@ -2,7 +2,7 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-	entry: "./index.js",
+	entry: path.resolve(__dirname, "..", "index.js"),
 
 	module: {
 		rules: [{
@@ -29,11 +29,13 @@ module.exports = {
 		library: "Etherlime-cli",
 		libraryTarget: "umd",
 		umdNamedDefine: true,
-
 		filename: "etherlime-cli.js",
 		path: path.join(__dirname, "..", "dist"),
 		devtoolModuleFilenameTemplate: '[absolute-resource-path]',
 		devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]'
+	},
+	node: {
+		__dirname: false
 	},
 
 	resolve: {

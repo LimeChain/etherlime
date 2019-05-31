@@ -1,11 +1,12 @@
 const KeenTracking = require('keen-tracking');
 const analytics = require('./analytics.json');
-let debugTestModule;
+const debugTestModule = 'nyc';
 const fs = require('fs-extra');
+const originalRequire = require('original-require');
 
 let isProd = false;
 try {
-	debugTestModule = require('nyc');
+	originalRequire(`${debugTestModule}`);
 } catch (e) {
 	if (e.message.includes(`Cannot find module '${debugTestModule}'`)) {
 		isProd = true;
