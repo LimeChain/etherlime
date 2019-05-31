@@ -1,4 +1,3 @@
-const mkdirp = require("mkdirp");
 const Schema = require("./../etherlime-contract-schema");
 const fs = require("fs-extra");
 const path = require("path");
@@ -74,7 +73,7 @@ class Artifactor {
     const abiDir = path.join(self.destination, ABIsDirName)
 
     if (!fs.existsSync(abiDir)) {
-      mkdirp.sync(abiDir);
+      fs.mkdirpSync(abiDir);
     }
 
     const contractName = object.contractName;

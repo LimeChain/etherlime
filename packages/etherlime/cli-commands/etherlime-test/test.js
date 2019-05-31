@@ -1,6 +1,7 @@
 let etherlimeTest = require('./etherlime-test');
 let etherlimeCoverage = require('./etherlime-coverage');
-let dir = require('node-dir');
+const fs = require('fs-extra');
+const path = require('path');
 let Config = require('./../compiler/etherlime-config');
 
 const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasReport, port) => {
@@ -27,21 +28,18 @@ const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasR
 
 const getFiles = async function (testDirectory, config) {
 
-	return new Promise((resolve, reject) => {
-		dir.files(testDirectory, (error, files) => {
-			if (error) {
-				reject(new Error(error));
+	let files = [];
 
-				return;
-			}
+	const readFiles = await fs.readdirSync(testDirectory);
+	for (let i = 0; i < readFiles.length; i++) {
+		let currentPath = path.join(testDirectory, readFiles[i]);
+		files.push(currentPath)
+	}
 
-			files = files.filter(function (file) {
-				return file.match(config.test_file_extension_regexp) != null;
-			});
-
-			resolve(files);
-		});
+	files = files.filter(function (file) {
+		return file.match(config.test_file_extension_regexp) != null;
 	});
+	return files;
 }
 
 const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {

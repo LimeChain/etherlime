@@ -5,7 +5,7 @@ const colors = require("etherlime-utils").colors;
 const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('etherlime-logger').logger;
-const del = require('del');
+const deleteFolderRecursive = require('etherlime-utils').deleteFolderRecursive;
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
 	if (list !== undefined) {
@@ -66,7 +66,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		return await compilePromise(compileOptions, quiet)
 	}
 
-	await del(compileOptions.contracts_build_directory);
+	await deleteFolderRecursive(compileOptions.contracts_build_directory);
 
 	return await compilePromise(compileOptions, quiet)
 

@@ -1,6 +1,5 @@
 const circom = require("circom");
 const fs = require("fs");
-const dir = require("node-dir");
 const path = require("path");
 
 const circuitsPath = './zero-knowledge-proof/circuits';
@@ -15,17 +14,18 @@ const run = async () => {
 };
 
 let findFiles = async (workingDirectory) => {
-	return new Promise((resolve, reject) => {
-		dir.files(workingDirectory, function (err, files) {
-			if (err) {
-				return reject(err);
-			}
-			files = files.filter(function (file) {
-				return path.extname(file) == ".circom" && path.basename(file)[0] != ".";
-			});
-			return resolve(files);
-		})
+
+	let files = [];
+	const readFiles = await fs.readdirSync(workingDirectory);
+	for (let i = 0; i < readFiles.length; i++) {
+		let currentPath = path.join(workingDirectory, readFiles[i]);
+		files.push(currentPath)
+	}
+
+	files = files.filter(function (file) {
+		return path.extname(file) == ".circom" && path.basename(file)[0] != ".";
 	});
+	return files;
 }
 
 const createZKProofCompiledCircuitFolder = () => {

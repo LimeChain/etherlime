@@ -9,6 +9,8 @@ const isNumber = require('./utils/number-utils').isNumber;
 const isProvider = require('./utils/provider-utils').isProvider;
 const isSigner = require('./utils/signer-utils').isSigner;
 const isUrl = require('./utils/url-utils').isUrl;
+const getReadableTime = require('./utils/get-readable-time').getReadableTime;
+const deleteFolderRecursive = require('./utils/delete-folder-recursive').deleteFolderRecursive;
 
 
 module.exports = {
@@ -22,5 +24,7 @@ module.exports = {
     isNumber,
     isProvider,
     isSigner,
-    isUrl
+    isUrl,
+    getReadableTime,
+    deleteFolderRecursive
 }

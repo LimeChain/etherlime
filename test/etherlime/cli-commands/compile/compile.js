@@ -102,7 +102,7 @@ describe('Compile cli command', () => {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
     })
 
-    it('should compile specific vyper contract', async function() {
+    it('should compile specific vyper contract', async function () {
         fs.copyFileSync('./test/etherlime/cli-commands/compile/examples/crowdfund.vy', './contracts/crowdfund.vy')
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
     })
