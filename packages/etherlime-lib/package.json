@@ -1,6 +1,6 @@
 {
   "name": "etherlime-lib",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Etherlime Library API for deployment, interaction and testing of Etehreum smart contracts",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "etherlime-config": "^1.0.0",
     "etherlime-logger": "^1.0.0",
-    "etherlime-utils": "^1.0.0",
+    "etherlime-utils": "^1.0.1",
     "ethers": "git+https://github.com/LimeChain/ethers.js.git#master"
   }
 }

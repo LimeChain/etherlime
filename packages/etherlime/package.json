@@ -1,6 +1,6 @@
 {
   "name": "etherlime",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "ethereum-transaction-debugger": "0.0.5",
     "etherlime-config": "^1.0.0",
     "etherlime-logger": "^1.0.0",
-    "etherlime-utils": "^1.0.0",
+    "etherlime-utils": "^1.0.1",
     "ethers": "^4.0.27",
     "find-cache-dir": "2.0.0",
     "fs-extra": "7.0.1",
