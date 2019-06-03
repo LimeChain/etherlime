@@ -17,7 +17,7 @@ describe('Example', () => {
         assert.strictEqual(deployer.signer.privateKey, aliceAccount.secretKey);
     });
 
-    it('should have valid private key', async () => {
+    it('should be valid private key', async () => {
         assert.isPrivateKey(aliceAccount.secretKey);
     });
 
@@ -25,10 +25,10 @@ describe('Example', () => {
         assert.isAddress(limeFactoryInstance.contractAddress, "The contract was not deployed");
     })
 
-    it('should be a valid transaction hash', async () => {
-        assert.isHash('0x5024924b629bbc6a32e3010ad738989f3fb2adf2b2c06f0cceeb17f6da6641b3')
+    it('should be a valid hash', async () => {
+        let hash = '0x5024924b629bbc6a32e3010ad738989f3fb2adf2b2c06f0cceeb17f6da6641b3';
+        assert.isHash(hash)
     })
-
 
 
     it('should create lime', async () => {
@@ -59,6 +59,6 @@ describe('Example', () => {
     })
 
     it('should emit event with certain arguments', async () => {
-        await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), ["newLime", 6])
+        await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), ["newLime"])
     })
 });
