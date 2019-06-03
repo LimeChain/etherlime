@@ -1,7 +1,7 @@
 const ethersUtils = require("ethers").utils;
 const colors = require('etherlime-utils').colors;
 const Table = require('cli-table');
-const moment = require('moment');
+const getReadableTime = require('etherlime-utils').getReadableTime;
 
 const printReportTable = (recordActions) => {
 
@@ -10,9 +10,8 @@ const printReportTable = (recordActions) => {
 
 	for (const action of recordActions) {
 		actionIndex++;
-
 		table.push(
-			{ 'Event Time': `${moment(action.eventTimestamp).format('D MMM, HH:MM:ss')}` },
+			{ 'Event Time': `${getReadableTime(action.eventTimestamp)}` },
 			{ 'Executor': `${action.deployerType}` },
 			{ 'Name or Label': `${colors.colorName(action.nameOrLabel)}` },
 			{ 'Tx Hash': `${action.transactionHash}` },

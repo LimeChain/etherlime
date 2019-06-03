@@ -181,7 +181,7 @@ Parameters:
   settings for `gasPrice` , `gasLimit` and `chainId`.
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
 
     const TestContract = require('./TestContract.json');
 
@@ -249,7 +249,7 @@ Parameters:
   settings for `gasPrice` , `gasLimit` and `chainId`.
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
 
     const TestContract = require('./TestContract.json');
 
@@ -321,7 +321,7 @@ Parameters:
 **This deployer only works with etherlime ganache**
 
 ```javascript
-    const etherlime = require('etherlime');
+    const etherlime = require('etherlime-lib');
 
     const TestContract = require('./TestContract.json');
 

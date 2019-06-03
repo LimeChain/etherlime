@@ -4,8 +4,8 @@ let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const sinon = require('sinon');
 const fs = require('fs-extra');
-const util = require('util');
-const request = require('request-promise');
+const axios = require('axios');
+const axiosInstance = axios.create();
 
 const compiler = require('../../../../packages/etherlime/cli-commands/compiler/compiler');
 const contracts = require('../../../../packages/etherlime/cli-commands/compiler/etherlime-workflow-compile/index');
@@ -575,9 +575,8 @@ describe('Compile dependencies', () => {
             let allVersions = await compilerSupplier.getVersions(options.versionsUrl)
             file = compilerSupplier.getVersionUrlSegment("0.4.21", allVersions);
             let url = options.compilerUrlRoot + file;
-            let code = await request.get(url)
-
-            await compilerSupplier.addToCache(code, file);
+            let response = await axiosInstance.get(url)
+            await compilerSupplier.addToCache(response.data, file);
 
             assert.isTrue(fs.existsSync('./packages/etherlime/node_modules/.cache/etherlime/soljson-v0.4.21+commit.dfe3193c.js'))
 

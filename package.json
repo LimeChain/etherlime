@@ -20,13 +20,8 @@
   "keywords": [],
   "author": "http://www.limechain.tech",
   "license": "ISC",
-  "bin": {
-    "etherlime": "./cli.js"
-  },
-  "dependencies": {
-    "axios": "^0.18.0"
-  },
   "devDependencies": {
+    "axios": "^0.18.0",
     "chai": "4.1.2",
     "fs-extra": "7.0.1",
     "ethers": "^4.0.27",
@@ -38,7 +33,6 @@
     "sinon": "^7.1.0",
     "mocha": "5.2.0",
     "@0x/sol-coverage": "^3.0.4",
-    "request-promise": "^4.2.4",
     "solc": "^0.5.8",
     "tcp-port-used": "^1.0.1",
     "web3-provider-engine": "^15.0.0"

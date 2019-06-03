@@ -24,4 +24,5 @@
   * [etherlime zk](developer-documentation/etherlime-cli/zk.md)
   * [etherlime utils](developer-documentation/etherlime-cli/utils.md)
 * [Migration from Truffle to Etherlime](developer-documentation/migration-from-truffle-guide.md)
+* [Migration from v1.2 to v2.0](developer-documentation/migration-to-new-version.md)
 * [License](developer-documentation/license.md)

@@ -23,7 +23,6 @@ const isVerbose = true;
 let artifacts = `./coverage-artifacts`;
 const Compiler = require('@0x/sol-compiler').Compiler;
 const provider = new ProviderEngine();
-const dir = require('node-dir');
 const path = require('path');
 const fs = require('fs')
 var istanbul = require('istanbul');
@@ -202,17 +201,18 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 
 // Find compiled files from passed directory, e.g ./build
 const findFiles = async (directory) => {
-	return new Promise((resolve, reject) => {
-		dir.files(directory, function (err, files) {
-			if (err) {
-				return reject(err);
-			}
-			files = files.filter(function (file) {
-				return path.extname(file) == ".json" && path.basename(file)[0] != ".";
-			});
-			return resolve(files);
-		})
+
+	let files = [];
+	const readFiles = await fs.readdirSync(directory);
+	for (let i = 0; i < readFiles.length; i++) {
+		let currentPath = path.join(directory, readFiles[i]);
+		files.push(currentPath)
+	}
+
+	files = files.filter(function (file) {
+		return path.extname(file) == ".json" && path.basename(file)[0] != ".";
 	});
+	return files;
 }
 
 module.exports = {

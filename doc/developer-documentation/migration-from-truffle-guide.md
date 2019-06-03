@@ -38,7 +38,7 @@ _with Truffle_ :
 _with Etherlime_ :
 
 ```javascript
-    const etherlime = require('etherlime')
+    const etherlime = require('etherlime-lib')
     const LimeFactory = require('../build/LimeFactory.json');
 ```
 
@@ -47,7 +47,7 @@ _with Etherlime_ :
 _Local deployment with Etherlime_ :
 
 ```javascript
-    const etherlime = require('etherlime')
+    const etherlime = require('etherlime-lib')
     const LimeFactory = require('../build/LimeFactory.json');
     const InterfaceFactory = require('../build/InterfaceFactory.json')
 
@@ -88,7 +88,7 @@ _with Etherlime_ :
 
 ```javascript
     // step1: require Etherlime module
-    const etherlime = require('etherlime')
+    const etherlime = require('etherlime-lib')
 
     // step2: require compiled contract from ./build,
     // not the .sol file (as in deployment scripts)
