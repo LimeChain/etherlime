@@ -1,40 +1,33 @@
-var ethers = require("ethers");
+const {
+  addPropertyAddress,
+  addPropertyPrivateKey,
+  addPropertyHash,
+  addMethodChangeBalance,
+  addMethodChangeBalances,
+  executeTransaction
+} = require('./assertion-utils');
 
 module.exports = function (chai, utils) {
   var assert = chai.assert;
-  chai.Assertion.addProperty('address', function () {
-    this.assert(this._obj.length === 42, 'expected #{this} to be a 42 character address (0x...)', 'expected #{this} to not be a 42 character address (0x...)');
-
-    var number = ethers.utils.bigNumberify(this._obj);
-    this.assert(number.eq(0) === false, 'expected address #{this} to not be zero', 'you shouldn\'t ever see this.');
-  });
-
-  chai.Assertion.addProperty('privateKey', function () {
-    this.assert(this._obj.length === 66, 'expected #{this} to be a 66 character private key (0x...)', 'expected #{this} to not be a 66 character private key (0x...)');
-
-    let number = ethers.utils.bigNumberify(this._obj);
-    this.assert(number.eq(0) === false, 'expected private key #{this} to not be zero', 'expected private key #{this} to be zero.');
-  })
-
-  chai.Assertion.addProperty('hash', function () {
-    this.assert(/^0x([A-Fa-f0-9]{64})$/.test(this._obj), 'Expected hash #{this} to be valid hex string', 'expected hash #{this} to not be a valid hex string.')
-  })
 
   assert.isAddress = function (val, exp, msg) {
+    addPropertyAddress(chai);
     return new chai.Assertion(val, msg).to.be.address;
   };
 
   assert.isPrivateKey = function (val, exp, msg) {
+    addPropertyPrivateKey(chai);
     return new chai.Assertion(val, msg).to.be.privateKey;
   }
 
   assert.isHash = function (val, exp, msg) {
+    addPropertyHash(chai);
     return new chai.Assertion(val, msg).to.be.hash;
   }
 
   assert.revert = async (promise, msg) => {
     try {
-      let result = await promise;
+      await promise;
     } catch (error) {
       const invalidJump = error.message.search('invalid JUMP') >= 0
       const invalidOpcode = error.message.search('invalid opcode') >= 0
@@ -46,25 +39,53 @@ module.exports = function (chai, utils) {
     assert.fail(msg ? msg : 'Expected throw not received')
   }
 
+  assert.notRevert = async function (promise) {
+    let errorMessage;
+    let txReceipt;
+    
+    try {
+      txReceipt = (await executeTransaction(promise)).txReceipt;
+    } catch (e) {
+      errorMessage = e.message
+    }
+
+    assert(!errorMessage, `Expected function to be fulfilled, but it reverted with ${errorMessage}`);
+    assert(txReceipt.status === 1);
+  }
+
   assert.emit = async (promise, expectedEvent) => {
-    let transaction = await promise;
-    let txReceipt = await transaction.wait()
+    let {
+      txReceipt
+    } = await executeTransaction(promise)
     assert.isDefined(txReceipt.events.find(emittedEvent => emittedEvent.event === expectedEvent, `Expected event ${expectedEvent} was not emitted.`));
   }
 
   assert.emitWithArgs = async (promise, arguments) => {
-    let transaction = await promise;
-    let txReceipt = await transaction.wait()
+    let {
+      txReceipt
+    } = await executeTransaction(promise)
     let eventName = txReceipt.events[0].event;
-    let log = txReceipt.events[0].args
+    let log = txReceipt.events[0].args;
     let argsLogged = [];
-  
-    for(let i = 0; i < log.length; i++) {
-      argsLogged.push(log[i])
+
+    for (let i = 0; i < log.length; i++) {
+      argsLogged.push(log[i]);
     }
 
     assert.equal(argsLogged.toString(), arguments.toString(), `Event ${eventName} was not emitted with expected arguments ${arguments}.`);
-    
+
   }
+
+  assert.balanceChanged = async function (promise, account, value) {
+    addMethodChangeBalance(chai, account, value);
+    return new chai.Assertion(promise).to.be.changeBalance(account, value);
+  }
+
+
+  assert.balancesChanged = async function (promise, accounts, values) {
+    addMethodChangeBalances(chai, accounts, values);
+    return new chai.Assertion(promise).to.be.changeBalances(accounts, values);
+  }
+
 
 };

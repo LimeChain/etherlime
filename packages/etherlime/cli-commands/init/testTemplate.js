@@ -24,7 +24,7 @@ describe('Example', () => {
         assert.isAddress(limeFactoryInstance.contractAddress, "The contract was not deployed");
     })
 
-    it('should be a valid hash', async () => {
+    it('should be valid hash', async () => {
         let hash = '0x5024924b629bbc6a32e3010ad738989f3fb2adf2b2c06f0cceeb17f6da6641b3';
         assert.isHash(hash)
     })
@@ -40,6 +40,10 @@ describe('Example', () => {
         let carbohydrates = 0;
         await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
     });
+
+    it('should assert that function not revert and is executed successfully', async () => {
+        await assert.notRevert(limeFactoryInstance.createLime("newLime3", 6, 8, 2))
+    })
 
     it('should create lime from another account', async () => {
         let bobsAccount = accounts[4].signer;
@@ -60,4 +64,23 @@ describe('Example', () => {
     it('should emit event with certain arguments', async () => {
         await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), ["newLime"])
     })
+
+    it('should change balance on ethers sent', async () => {
+        let bobsAccount = accounts[4].signer
+        await assert.balanceChanged(bobsAccount.sendTransaction({
+            to: aliceAccount.signer.address,
+            value: 200
+        }), bobsAccount, '-200')
+    })
+
+    it('should change multiple balances on ethers sent', async () => {
+        let sender = accounts[1].signer
+        let receiver = accounts[2].signer
+
+        await assert.balancesChanged(sender.sendTransaction({
+                    to: receiver.address,
+                    value: 200
+                }), [sender, receiver], ['-200', 200])
+    })
+
 });
