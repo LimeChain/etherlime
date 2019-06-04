@@ -27,7 +27,7 @@ const addMethodChangeBalance = function (chai, account, value) {
     chai.Assertion.addMethod('changeBalance', async function (account, value) {
         let promise = this._obj;
         let balanceDiff = await getBalanceChange(promise, account);
-        assert(balanceDiff.eq(ethers.utils.bigNumberify(value)), `Expected the balance of "${account.address}" to be changed by ${value} wei, but it has been changed by ${balanceDiff} wei`,
+        this.assert(balanceDiff.eq(ethers.utils.bigNumberify(value)), `Expected the balance of "${account.address}" to be changed by ${value} wei, but it has been changed by ${balanceDiff} wei`,
           `Expected the balance of "${account.address}" to not be changed by ${value} wei,`)
       })
 }
@@ -38,7 +38,7 @@ const addMethodChangeBalances = function (chai, accounts, values) {
         let accountAddresses = accounts.map((account) => account.address);
         let balancesDiff = await getBalancesChanges(promise, accounts);
     
-        assert(balancesDiff.every((diff, index) => diff.eq(ethers.utils.bigNumberify(values[index]))), `Expected the balance of "${accountAddresses}" to be changed by ${values} wei, but it has been changed by ${balancesDiff} wei`,
+        this.assert(balancesDiff.every((diff, index) => diff.eq(ethers.utils.bigNumberify(values[index]))), `Expected the balance of "${accountAddresses}" to be changed by ${values} wei, but it has been changed by ${balancesDiff} wei`,
           `Expected the balance of "${accountAddresses}" to not be changed by ${values} wei,`)
       })
 }
