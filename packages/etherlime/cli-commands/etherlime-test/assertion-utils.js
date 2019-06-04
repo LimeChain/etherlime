@@ -1,7 +1,10 @@
 const ethers = require("ethers");
+const ADDRESS_LENGTH = 42;
+const PRIVATE_KEY_LENGTH = 66;
+
 const addPropertyAddress = function (chai) {
     chai.Assertion.addProperty('address', function () {
-        this.assert(this._obj.length === 42, 'Expected #{this} to be a 42 character address (0x...)', 'Expected #{this} to not be a 42 character address (0x...)');
+        this.assert(this._obj.length === ADDRESS_LENGTH, 'Expected #{this} to be a 42 character address (0x...)', 'Expected #{this} to not be a 42 character address (0x...)');
     
         var number = ethers.utils.bigNumberify(this._obj);
         this.assert(number.eq(0) === false, 'Expected address #{this} to not be zero', 'you shouldn\'t ever see this.');
@@ -10,7 +13,7 @@ const addPropertyAddress = function (chai) {
 
 const addPropertyPrivateKey = function (chai) {
     chai.Assertion.addProperty('privateKey', function () {
-        this.assert(this._obj.length === 66, 'Expected #{this} to be a 66 character private key (0x...)', 'Expected #{this} to not be a 66 character private key (0x...)');
+        this.assert(this._obj.length === PRIVATE_KEY_LENGTH, 'Expected #{this} to be a 66 character private key (0x...)', 'Expected #{this} to not be a 66 character private key (0x...)');
     
         let number = ethers.utils.bigNumberify(this._obj);
         this.assert(number.eq(0) === false, 'Expected private key #{this} to not be zero', 'Expected private key #{this} to be zero.');
