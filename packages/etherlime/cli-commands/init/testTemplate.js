@@ -12,13 +12,23 @@ describe('Example', () => {
         limeFactoryInstance = await deployer.deploy(LimeFactory);
     });
 
-    it('should have valid private key', async () => {
+    it('should have valid deployer private key', async () => {
         assert.strictEqual(deployer.signer.privateKey, aliceAccount.secretKey);
+    });
+
+    it('should be valid private key', async () => {
+        assert.isPrivateKey(aliceAccount.secretKey);
     });
 
     it('should be valid address', async () => {
         assert.isAddress(limeFactoryInstance.contractAddress, "The contract was not deployed");
     })
+
+    it('should be valid hash', async () => {
+        let hash = '0x5024924b629bbc6a32e3010ad738989f3fb2adf2b2c06f0cceeb17f6da6641b3';
+        assert.isHash(hash)
+    })
+
 
     it('should create lime', async () => {
         const createTransaction = await limeFactoryInstance.createLime("newLime", 6, 8, 2);
@@ -31,6 +41,10 @@ describe('Example', () => {
         await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
     });
 
+    it('should assert that function not revert and is executed successfully', async () => {
+        await assert.notRevert(limeFactoryInstance.createLime("newLime3", 6, 8, 2))
+    })
+
     it('should create lime from another account', async () => {
         let bobsAccount = accounts[4].signer;
         const transaction = await limeFactoryInstance.from(bobsAccount /* Could be address or just index in accounts like 4 */).createLime("newLime3", 6, 8, 2);
@@ -42,16 +56,31 @@ describe('Example', () => {
         assert.equal(lime.name, 'newLime3', '"newLime3" was not created');
     })
 
-    it('should emit event on lime created', async () => {
-        let expectedEvent = 'FreshLime';
-        const createTransaction = await limeFactoryInstance.contract.createLime("newLime4", 5, 8, 2);
-        const transactionReceipt = await limeFactoryInstance.verboseWaitForTransaction(createTransaction);
-        // check for event
-        let isEmitted = utils.hasEvent(transactionReceipt, limeFactoryInstance.contract, expectedEvent);
-        assert(isEmitted, 'Event FreshLime was not emitted');
+    it('should emit event', async () => {
+        let expectedEvent = "FreshLime"
+        await assert.emit(limeFactoryInstance.createLime("newLime", 6, 8, 2), expectedEvent)
+    })
 
-        // parse logs
-        let logs = utils.parseLogs(transactionReceipt, limeFactoryInstance.contract, expectedEvent);
-        assert.equal(logs[0].name, "newLime4", '"newLime4" was not created');
-    });
+    it('should emit event with certain arguments', async () => {
+        await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), ["newLime"])
+    })
+
+    it('should change balance on ethers sent', async () => {
+        let bobsAccount = accounts[4].signer
+        await assert.balanceChanged(bobsAccount.sendTransaction({
+            to: aliceAccount.signer.address,
+            value: 200
+        }), bobsAccount, '-200')
+    })
+
+    it('should change multiple balances on ethers sent', async () => {
+        let sender = accounts[1].signer
+        let receiver = accounts[2].signer
+
+        await assert.balancesChanged(sender.sendTransaction({
+                    to: receiver.address,
+                    value: 200
+                }), [sender, receiver], ['-200', 200])
+    })
+
 });

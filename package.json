@@ -4,7 +4,8 @@
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "scripts": {
     "test": "nyc --check-coverage --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "link": "lerna bootstrap && cd packages/etherlime && yarn link"
   },
   "nyc": {
     "exclude": [

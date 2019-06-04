@@ -69,9 +69,17 @@ We've augmented the test runner with the following things you can use:
 
   of the account.
 
-* The assert object has `assert.revert(promiseOfFailingTransaction)`
+* The assert object has function:
 
-  function for testing reverting transactions
+    > * `assert.revert(promiseOfFailingTransaction)` for testing reverting transactions
+    > * `assert.notRevert(promiseOfNotFailingTransaction)` for testing transaction is executed successfully
+    > * `assert.isAddress(value)` for testing a value is a proper address
+    > * `assert.isPrivateKey(value)` for testing a value is a proper private key
+    > * `assert.isHash(value)` for testing a value is a proper hex
+    > * `assert.emit(function, eventName)` for testing an event is emitted after function execution
+    > * `assert.emitWithArgs(function, [args])` for testing an event is emitted with certain arguments after function execution
+    > * `assert.balanceChanged(function, account, value)` for testing the balance of an account has been changed after function execution
+    > * `assert.balancesChanged(function, [accounts], [values])` for testing the balances of multiple accounts has been changed after function execution
 
 ## Available Utils
 
@@ -83,19 +91,19 @@ On your disposal there is a global available utils object. Here are the methods 
 >
 >     from the EtherlimeGanacheDeployer
 >
->   * `utils.setTimeTo(provider, timestamp)` method allowing etherlime
+> * `utils.setTimeTo(provider, timestamp)` method allowing etherlime
 >
 >     ganache to move to the desired `timestamp` ahead. You need to pass
 >
 >     your provider from the EtherlimeGanacheDeployer
 >
->   * `utils.mineBlock(provider)` method telling the etherlime ganache
+> * `utils.mineBlock(provider)` method telling the etherlime ganache
 >
 >     to mine the next block. You need to pass your provider from the
 >
 >     EtherlimeGanacheDeployer
 >
->   * `utils.hasEvent(receipt, contract, eventName)` allowing the user
+> * `utils.hasEvent(receipt, contract, eventName)` allowing the user
 >
 >     to check if the desired event was broadcasted in the transaction
 >
@@ -103,7 +111,7 @@ On your disposal there is a global available utils object. Here are the methods 
 >
 >     that emits it and the name of the Event.
 >
->   * `utils.parseLogs(receipt, contract, eventName)` allowing the user
+> * `utils.parseLogs(receipt, contract, eventName)` allowing the user
 >
 >     get parsed events from a transaction receipt. You need to pass the
 >
@@ -185,7 +193,47 @@ On your disposal there is a global available utils object. Here are the methods 
 
 ```javascript
     it('should throw if throwing method is called', async () => {
-        assert.revert(contract.throwingMethod());
+        await assert.revert(contract.throwingMethod());
+    });
+```
+
+## assert.notRevert
+
+```javascript
+    it('should assert that function not revert and is executed successfully', async () => {
+        await assert.notRevert(contract.notThrowingMethod());
+    });
+```
+
+## assert.isAddress
+
+```javascript
+	const etherlime = require('etherlime');
+	const Billboard = require('../build/Billboard.json');
+
+	describe('Example', () => {
+		let owner = accounts[3];
+		let deployer;
+		let BillboardContract;
+
+		beforeEach(async () => {
+			deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
+			BillboardContract = await deployer.deploy(Billboard, {});
+        });
+        
+            it('should be valid address', async () => {
+                assert.isAddress(BillboardContract.contractAddress, "The contract was not deployed");
+            })
+        
+	});
+```
+
+## assert.isPrivateKey
+
+```javascript
+    it('should be valid private key', async () => {
+        let aliceAccount = accounts[3];
+        assert.isPrivateKey(aliceAccount.secretKey);
     });
 ```
 
@@ -203,15 +251,44 @@ On your disposal there is a global available utils object. Here are the methods 
             const deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
             const BillboardContract = await deployer.deploy(Billboard, {});
 
-            const buyTransaction = await BillboardContract.buy('Billboard slogan', { value: 10000 });
-
-            const transactionReceipt = await BillboardContract.verboseWaitForTransaction(buyTransaction);
-
             const expectedEvent = 'LogBillboardBought';
-
-            assert.isDefined(transactionReceipt.events
-              .find(emittedEvent => emittedEvent.event === expectedEvent, 'There is no such event'));
+        	await assert.emit(BillboardContract.buy('Billboard slogan', { value: 10000 }), expectedEvent)
         });
     });
 ```
+
+## Check if the desired event was broadcasted with specific arguments
+
+```javascript
+    it('should emit event with certain arguments', async () => {
+        await assert.emitWithArgs(BillboardContract.buy('Billboard slogan', { value: 10000 }), ['Billboard slogan', 1000])
+    })
+```
+
+## Check if a balance was changed on ethers sent
+
+```javascript
+    it('should change balance on ethers sent', async () => {
+        let bobsAccount = accounts[4].signer
+        await assert.balanceChanged(bobsAccount.sendTransaction({
+            to: aliceAccount.signer.address,
+            value: 200
+        }), bobsAccount, '-200')
+    })
+```
+
+## Check if multiple balances changed on ethers sent
+
+```javascript
+    it('should change multiple balances on ethers sent', async () => {
+        let sender = accounts[1].signer;
+        let receiver = accounts[2].signer;
+        await assert.balancesChanged(sender.sendTransaction({
+                    to: receiver.address,
+                    value: 200
+                }), [sender, receiver], ['-200', 200])
+    })
+```
+
+
 
