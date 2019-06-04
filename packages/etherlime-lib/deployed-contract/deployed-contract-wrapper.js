@@ -15,6 +15,7 @@ class DeployedContractWrapper {
 	 * @param {*} provider ethers provider
 	 */
 	constructor(contract, contractAddress, signer, provider) {
+		const self = this;
 		this._validateInput(contract, contractAddress, signer, provider);
 		this.contractAddress = contractAddress;
 		this.signer = signer;
@@ -26,6 +27,11 @@ class DeployedContractWrapper {
 		this.estimate = this.contract.estimate
 		this.functions = this.contract.functions
 		this.filters = this.contract.filters
+		this.utils = {
+            getBalance: async function() {
+                return await self.contract.provider.getBalance(self.contractAddress)
+            }
+        }
 	}
 
 	_validateInput(contract, contractAddress, signer, provider) {

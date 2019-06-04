@@ -8,6 +8,7 @@ const config = require('./../../config.json');
 const ICOTokenContract = require('./../../testContracts/ICOToken.json');
 const VestingContract = require('./../../testContracts/Vesting.json');
 const Greetings = require('./../../testContracts/Greetings.json');
+const Billboard = require('./../../testContracts/Billboard.json')
 const store = require('./../../../packages/etherlime-logger/logs-store/logs-store');
 
 const defaultConfigs = {
@@ -128,6 +129,21 @@ describe('Deployed Contracts Wrapper tests', () => {
 				assert(e.message.includes("failed"), "Incorrect error was thrown");
 			}
 		});
+	})
+
+	describe('Contract utils properties', async () => {
+		before(async () => {
+			deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
+			contractWrapper = await deployer.deploy(Billboard);
+		});
+
+		it('should get contract balance', async () => {
+			let oneEther = ethers.utils.parseEther('1000000000000000000');
+			let slogan = 'I am the best';
+			await contractWrapper.buy(slogan, {value: oneEther});
+			let balance = await contractWrapper.utils.getBalance();
+			assert(balance.eq(oneEther), 'The balance of contract is not valid based on ethers send')
+		})
 	})
 
 });
