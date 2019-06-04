@@ -103,6 +103,14 @@ On your disposal there is a global available utils object. Here are the methods 
 >
 >     EtherlimeGanacheDeployer
 >
+> * `utils.snapshot(provider)` snapshot the state of the blockchain at the current block.
+>    
+>     Returns the integer id of the snapshot created
+>
+> * `utils.revertState(provider, snapshotID)` Revert the state of the blockchain to a previous snapshot.
+>
+>     If no snapshot id is passed it will revert to the latest snapshot. Returns `true`.
+>
 > * `utils.hasEvent(receipt, contract, eventName)` allowing the user
 >
 >     to check if the desired event was broadcasted in the transaction
