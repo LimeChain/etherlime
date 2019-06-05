@@ -17,6 +17,13 @@ In addition it exposes you `verboseWaitForTransaction(transaction, transactionLa
          'Transfer Ownership');
 ```
 
+The contractWrapper object has also utils property that gives you the option to get easy the contract's balance.
+
+```javascript
+    let balance = await contractWrapper.utils.getBalance();
+```
+
+
 If you are working with EtherlimeGanacheDeployer you will have the `from` method at your disposal. It will allow you to call certain methods from other default accounts.
 
 ```javascript
