@@ -26,6 +26,13 @@ class DeployedContractWrapper {
 		this.estimate = this.contract.estimate
 		this.functions = this.contract.functions
 		this.filters = this.contract.filters
+		this.utils = this._generateUtils(provider)
+	}
+
+	_generateUtils(provider) {
+		return {
+			getBalance: () => provider.getBalance(this.contractAddress)
+		}
 	}
 
 	_validateInput(contract, contractAddress, signer, provider) {
