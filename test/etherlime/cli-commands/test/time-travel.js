@@ -15,7 +15,8 @@ describe('Time travel tests', () => {
         let timestampBefore = await timeTravel.latestTimestamp(deployer.provider)
         await timeTravel.timeTravel(deployer.provider, seconds)
         let timestampAfter = await timeTravel.latestTimestamp(deployer.provider)
-        assert.equal(timestampAfter, timestampBefore + seconds)
+        let difference = (timestampAfter - timestampBefore) - seconds;
+        assert(difference <= 5) // the diff must be less than 5 seconds
     })
 
     it('it should setTimeTo desired timestamp', async () => {
