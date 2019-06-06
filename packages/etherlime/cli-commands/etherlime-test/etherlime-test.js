@@ -64,6 +64,8 @@ const setJSTestGlobals = async (port) => {
 		timeTravel: timeTravel.timeTravel,
 		setTimeTo: timeTravel.setTimeTo,
 		latestTimestamp: timeTravel.latestTimestamp,
+		snapshot: timeTravel.snapshot,
+    	revertState: timeTravel.revertState,
 		parseLogs: events.parseLogs,
 		hasEvent: events.hasEvent
 	}
