@@ -1,12 +1,18 @@
 {
-  "name": "etherlime",
-  "version": "1.0.2",
+  "name": "etherlime-monorepo",
+  "version": "1.2.0",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
-  "main": "index.js",
   "scripts": {
-    "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'",
     "test": "nyc --check-coverage --lines 95 mocha 'test/**/*.js' --require mocha.opts.helper.js",
-    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "link": "lerna bootstrap && cd packages/etherlime && yarn link"
+  },
+  "nyc": {
+    "exclude": [
+      "packages/etherlime/Solidity-IDE/*.js",
+      "test/**/**/*.js",
+      "tmpTest/**/*.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -15,50 +21,22 @@
   "keywords": [],
   "author": "http://www.limechain.tech",
   "license": "ISC",
-  "dependencies": {
-    "ajv": "^6.5.5",
-    "async": "2.6.1",
-    "async-each-series": "1.1.0",
-    "async.whilst": "0.5.2",
-    "axios": "^0.18.0",
-    "bn": "^1.0.1",
-    "chai": "4.1.2",
-    "chalk": "2.4.1",
-    "cli-table": "0.3.1",
-    "colors": "1.3.2",
-    "ethers": "4.0.23",
-    "find-cache-dir": "2.0.0",
-    "find-process": "^1.2.1",
-    "find-up": "^3.0.0",
-    "fs-extra": "7.0.1",
-    "ganache-cli": "6.1.8",
-    "graphlib": "2.1.5",
-    "keen-tracking": "4.0.15",
-    "mkdirp": "0.5.1",
-    "mocha": "5.2.0",
-    "moment": "2.22.2",
-    "node-dir": "0.1.17",
-    "original-require": "1.0.1",
-    "readline-sync": "1.4.9",
-    "request": "2.88.0",
-    "request-promise": "4.2.2",
-    "require-from-string": "2.0.2",
-    "simple-git": "^1.107.0",
-    "solc": "^0.5.1",
-    "solidity-coverage": "LimeChain/solidity-coverage#master",
-    "ethereum-transaction-debugger": "^0.0.1",
-    "tcp-port-used": "^1.0.1",
-    "yargs": "11.0.0"
-  },
-  "bin": {
-    "etherlime": "./cli.js"
-  },
   "devDependencies": {
+    "axios": "^0.18.0",
+    "chai": "4.1.2",
+    "fs-extra": "7.0.1",
+    "ethers": "^4.0.27",
+    "axios-mock-adapter": "^1.16.0",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.0.2",
-    "nyc": "^12.0.2",
+    "nyc": "^13.3.0",
+    "openzeppelin-solidity": "^2.1.2",
     "sinon": "^7.1.0",
-    "openzeppelin-solidity": "^2.1.2"
+    "mocha": "5.2.0",
+    "@0x/sol-coverage": "^3.0.4",
+    "solc": "^0.5.8",
+    "tcp-port-used": "^1.0.1",
+    "web3-provider-engine": "^15.0.0"
   },
   "browser": {
     "fs": false,

@@ -1,0 +1,22 @@
+{
+  "name": "etherlime-lib",
+  "version": "1.0.3",
+  "description": "Etherlime Library API for deployment, interaction and testing of Etehreum smart contracts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime-lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "etherlime-config": "^1.0.0",
+    "etherlime-logger": "^1.0.0",
+    "etherlime-utils": "^1.0.1",
+    "ethers": "git+https://github.com/LimeChain/ethers.js.git#master"
+  }
+}

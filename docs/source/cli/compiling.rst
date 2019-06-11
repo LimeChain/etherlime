@@ -1,12 +1,17 @@
 etherlime compile
 *****************
 
+
+Running this command will compile all smart contracts along with imported sources.
+The command comes with integrated solidity and vyper compiler and would automatically fetch all files with '.sol' and '.vy' extensions and would record the compiled json object in './build' folder.
+Note! To enable the vyper compiler you need to have running docker.
+
 Syntax
 ------
 
 ::
 
-    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quite] [output]
+    etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all] [quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles]
 
 Parameters:
 
@@ -16,8 +21,12 @@ Parameters:
 * ``docker`` - [Optional] When you want to use a docker image for your solc you should set ``docker=true`` in order ``solcVersion`` to accept the passed image.
 * ``list`` - [Optional] By specifying ``list`` you can list the available solc versions. The following values can be used: ``docker``, ``releases``, ``prereleases`` and ``latestRelease``. By default only 10 version are listed
 * ``all`` - [Optional] By specifying ``all`` together with ``list`` you will be able to list all available solc versions.
-* ``quite`` - [Optional] Disable verboseness during compilation. By the default ``quite`` is set to false.
+* ``quiet`` - [Optional] Disable verboseness during compilation. By the default ``quiet`` is set to false.
 * ``output`` - [Optional] Defines the way that the logs are shown. Choices: ``none`` - silences the output of logs, ``normal`` - see verbose logs in the console and ``structured`` - structured output in a file meant for inter program communication.
+* ``buildDirectory`` - [Optional] Defines the directory for placing builded contracts.
+* ``workingDirectory`` - [Optional] Defines the folder to use for reading contracts from, instead of the default one: ``./contracts``. Here can be specified also a single solidity file for compiling e.g: ``/contracts/LimeFactory.sol``.
+* ``deleteCompiledFiles`` - [Optional] Delete the files in the compilation contract directory before compiling. By the default ``deleteCompiledFiles`` is set to false.
+* ``exportAbi`` - [Optional] In addition to the json build files, etherlime build `abis` folder with files containing the abi of every contract
 
 The ``solcVersion`` can accept the following values:
 
