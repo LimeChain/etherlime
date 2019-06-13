@@ -2,9 +2,10 @@
   "name": "etherlime-lib",
   "version": "1.0.2",
   "description": "Etherlime Library API for deployment, interaction and testing of Etehreum smart contracts",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
     "etherlime-config": "^1.0.0",
     "etherlime-logger": "^1.0.0",
     "etherlime-utils": "^1.0.1",
-    "ethers": "git+https://github.com/LimeChain/ethers.js.git#master"
+    "ethers": "git+https://github.com/LimeChain/ethers.js.git#master",
+    "typescript": "^3.5.1"
   }
 }

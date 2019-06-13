@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 let chai = require("chai");
 chai.use(require('../../../../packages/etherlime/cli-commands/etherlime-test/assertions'));
 const ethers = require('ethers')
-let etherlime = require('./../../../../packages/etherlime-lib/index');
+let etherlime = require('./../../../../packages/etherlime-lib/dist/index');
 const Billboard = require('../../../testContracts/Billboard.json');
 const config = require('../../../config.json')
 

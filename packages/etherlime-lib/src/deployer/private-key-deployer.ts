@@ -1,8 +1,11 @@
-const ethers = require('ethers');
-const colors = require('etherlime-utils').colors;
+import { ethers } from 'ethers';
+import { colors } from  'etherlime-utils';
+import { logger } from 'etherlime-logger';
 
-const Deployer = require('./deployer');
-const logger = require('etherlime-logger').logger;
+import Deployer from'./deployer';
+import { InfuraProvider, JsonRpcProvider, Web3Provider } from 'ethers/providers';
+import { txParams, compiledContract } from './../types/types';
+
 
 class PrivateKeyDeployer extends Deployer {
 
@@ -12,7 +15,8 @@ class PrivateKeyDeployer extends Deployer {
 	 * @param {*} provider the ethers.provider instance
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey, provider, defaultOverrides) {
+
+	constructor(privateKey: string, provider: JsonRpcProvider | InfuraProvider | Web3Provider, defaultOverrides?: txParams) {
 		const sanitizedPrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
 		const signer = new ethers.Wallet(sanitizedPrivateKey, provider);
 
@@ -21,15 +25,15 @@ class PrivateKeyDeployer extends Deployer {
 		logger.log(`Deployer set to deploy from address: ${colors.colorAddress(this.signer.address)}\n`);
 	}
 
-	setPrivateKey(privateKey) {
+	setPrivateKey(privateKey: string): void {
 		const sanitizedPrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
 		const signer = new ethers.Wallet(sanitizedPrivateKey, this.provider);
 		this.setSigner(signer);
 	}
 
-	toString() {
+	toString(): string {
 		return `Deployer set to deploy from address: ${colors.colorAddress(this.signer.address)}`;
 	}
 }
 
-module.exports = PrivateKeyDeployer;
+export default PrivateKeyDeployer;
