@@ -103,6 +103,14 @@ On your disposal there is a global available utils object. Here are the methods 
 >
 >     EtherlimeGanacheDeployer
 >
+> * `utils.snapshot(provider)` snapshot the state of the blockchain at the current block.
+>    
+>     Returns the integer id of the snapshot created
+>
+> * `utils.revertState(provider, snapshotID)` revert the state of the blockchain to a previous snapshot.
+>
+>     If no snapshot id is passed it will revert to the latest snapshot. Returns `true`.
+>
 > * `utils.hasEvent(receipt, contract, eventName)` allowing the user
 >
 >     to check if the desired event was broadcasted in the transaction
@@ -290,5 +298,40 @@ On your disposal there is a global available utils object. Here are the methods 
     })
 ```
 
+## Time travel and snapshot
 
+```javascript
+	const etherlime = require('etherlime');
+	const Billboard = require('../build/Billboard.json');
+
+	describe('Example', () => {
+		let owner = accounts[3];
+		let deployer;
+		let BillboardContract;
+
+		beforeEach(async () => {
+			deployer = new etherlime.EtherlimeGanacheDeployer(owner.secretKey);
+			BillboardContract = await deployer.deploy(Billboard, {});
+        });
+        
+            it('should do something in the future', async () => {
+                let seconds = 600000;
+                await utils.timeTravel(deployer.provider, seconds);
+                
+                // Do what is needed to be done in the future
+            })
+
+            it('should snapshot the current state', async () => {
+                let snapshotID = await utils.snapshot(deployer.provider);
+
+                // Additional logic comes here
+            })
+
+            it('should revert the state to a previous snapshot', async () => {
+                await utils.revertState(deployer.provider, snapshotID);
+
+                // Add before or after the reversion the logic you need
+        
+	});
+```
 
