@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 const timeTravel = require('../../../../packages/etherlime/cli-commands/etherlime-test/time-travel');
-let etherlime = require('./../../../../packages/etherlime-lib/index');
+let etherlime = require('./../../../../packages/etherlime-lib/dist/index');
 
 describe('Time travel tests', () => { 
 
