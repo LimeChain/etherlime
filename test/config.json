@@ -4,6 +4,7 @@
   "infuraRopstenURL": "https://ropsten.infura.io/ede61953adb34beeb5106a2c0c61f200",
   "infuraRopstenPrivateKey" : "9C854BD14857DD1F107ECB94E1AEEAA8E9538E3DC41D082D5FE0E452E87A2F28",
   "infuraPrivateKey": "09d63a68dafa08dffee686e044f8dc4fe4fc368011d757edf68de4fe8af89f82",
+  "firstEtherlimeGanacheAccount": "0xd9995bae12fee327256ffec1e3184d492bd94c31",
   "randomPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
   "randomAddress": "0xda8a06f1c910cab18ad187be1faa2b8606c2ec86",
   "randomDeployedAddress": "0x54a298ee9fccbf0ad8e55bc641d3086b81a48c41",
@@ -11,6 +12,8 @@
   "defaultGasPrice": 50000000000,
   "defaultGasLimit": 4700000,
   "defaultChainId": 0,
+  "randomEtherscanApiKey": "3DQYBPZZS77YDR15NKJHURVTV9WI2KH6UY",
+  "secondRandomEtherscanApiKey": "4PQYBPZZS77YDR15NKJHURVTV9WI2KH6UY",
   "nodeUrl": "http://localhost:8545/",
   "alternativeNodeUrl": "http://localhost:9545/",
   "ganacheCliPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
@@ -20,5 +23,6 @@
   "alternativeApiKey": "fdcadd1410c443e08ff281545f24b70a",
   "specificBlockNumber": 2,
   "deployedContractAddress": "0x78ed7A34D67fB3eAc745e7af78aE1bcA770C26de",
-  "localPrivateKey": "0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8"
+  "localPrivateKey": "0x7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
+  "secondLocalPrivateKey": "0x2030b463177db2da82908ef90fa55ddfcef56e8183caf60db464bc398e736e6f"
 }
