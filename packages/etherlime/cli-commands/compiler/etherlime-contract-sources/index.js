@@ -31,15 +31,15 @@ let find_contracts = async (workingPath) => {
 const readAllFilesSync = async function(dir, fileList) {
   files = await fs.readdirSync(dir);
   fileList = fileList || [];
-  files.forEach(async function(file) {
-      const filePath = path.join(dir, file)
-      if (fs.statSync(filePath).isDirectory()) {
-          fileList = await readAllFilesSync(filePath, fileList);
-      }
-      else {
-          fileList.push(filePath);
-      }
-  });
+  for(let i = 0; i < files.length; i++) {
+    const filePath = path.join(dir, files[i])
+    if (fs.statSync(filePath).isDirectory()) {
+        fileList = await readAllFilesSync(filePath, fileList);
+    }
+    else {
+        fileList.push(filePath);
+    }
+  }
   return fileList;
 };
 
