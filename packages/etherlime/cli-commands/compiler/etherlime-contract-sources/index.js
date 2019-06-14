@@ -19,19 +19,29 @@ let find_contracts = async (workingPath) => {
     }
 
     try {
-      let files = [];
-      const readFiles = await fs.readdirSync(workingPath);
-      for (let i = 0; i < readFiles.length; i++) {
-        let currentPath = path.join(workingPath, readFiles[i]);
-        files.push(currentPath)
-      }
-      return resolve(fetchSolAndVyperFiles(files))
+      const readFiles = await readAllFilesSync(workingPath);
+      return resolve(fetchSolAndVyperFiles(readFiles))
     } catch (err) {
       return reject(err)
     }
 
   });
 }
+
+const readAllFilesSync = async function(dir, fileList) {
+  files = await fs.readdirSync(dir);
+  fileList = fileList || [];
+  files.forEach(async function(file) {
+      const filePath = path.join(dir, file)
+      if (fs.statSync(filePath).isDirectory()) {
+          fileList = await readAllFilesSync(filePath, fileList);
+      }
+      else {
+          fileList.push(filePath);
+      }
+  });
+  return fileList;
+};
 
 const fetchSolAndVyperFiles = (files) => {
   let solFiles = [];
