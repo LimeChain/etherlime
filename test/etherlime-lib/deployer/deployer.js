@@ -33,7 +33,7 @@ const GAS_DEPLOY_WITH_LINK = 1629070;
 describe('Deployer tests', () => {
 
 	before(() => {
-		etherlime = require('./../../../packages/etherlime-lib');
+		etherlime = require('./../../../packages/etherlime-lib/dist/index');
 	})
 
 	describe('Initialization', async () => {

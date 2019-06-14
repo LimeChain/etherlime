@@ -1,4 +1,4 @@
-const etherlime = require('./../../../../packages/etherlime-lib/index');
+const etherlime = require('./../../../../packages/etherlime-lib/dist/index');
 const ethers = require('ethers');
 let chai = require("chai");
 const assert = require('chai').assert;

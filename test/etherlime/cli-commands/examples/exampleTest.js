@@ -1,4 +1,4 @@
-const exampleTest = `const etherlime = require('../../packages/etherlime-lib/index.js');
+const exampleTest = `const etherlime = require('../../packages/etherlime-lib/dist/index.js');
 const LimeFactory = require('../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {

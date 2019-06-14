@@ -19,7 +19,7 @@ describe('ContractAt tests', () => {
 	let provider;
 
 	before(async () => {
-        etherlime = require('../../../packages/etherlime-lib/index');
+        etherlime = require('../../../packages/etherlime-lib/dist/index');
 		const deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
 		const contractWrapper = await deployer.deploy(ICOTokenContract);
 		owner = deployer.signer;

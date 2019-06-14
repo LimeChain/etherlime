@@ -18,7 +18,7 @@ describe('Private key deployer tests', () => {
 	let provider;
 
 	beforeEach(() => {
-		etherlime = require('./../../../packages/etherlime-lib');
+		etherlime = require('./../../../packages/etherlime-lib/dist/index');
 		provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 	})
 
