@@ -102,6 +102,11 @@ describe('Compile cli command', () => {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
     })
 
+    it('should compile contracts in nested directory', async function() {
+        fs.mkdirsSync('./contracts/NestedFolder')
+        fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './contracts/NestedFolder/LimeFactory.sol');
+    })
+
     it('should compile specific vyper contract', async function () {
         fs.copyFileSync('./test/etherlime/cli-commands/compile/examples/crowdfund.vy', './contracts/crowdfund.vy')
         await assert.isFulfilled(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/crowdfund.vy'))
