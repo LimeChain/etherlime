@@ -56,7 +56,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
     async _instantiateProject() {
         let projectName = path.parse(process.cwd()).name; // the name of the project is needed to instantiate it
         let transactionParams = await this._setTransactionParams();
-        return new SimpleProject(projectName, transactionParams);
+        return new SimpleProject(projectName, undefined, transactionParams);
     }
 
 

@@ -1,15 +1,15 @@
-const etherlime = require('./../../../index.js');
+const etherlime = require('./../../../../packages/etherlime-lib/index');
 const ethers = require('ethers');
 let chai = require("chai");
 const assert = require('chai').assert;
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const fs = require('fs-extra');
-const isAddress = require('../../../utils/address-utils').isAddress;
+const isAddress = require('./../../../../packages/etherlime-utils/index').isAddress;
 
-const ganacheSetupConfig = require('../../../cli-commands/ganache/setup');
-const compiler = require('../../../cli-commands/compiler/compiler')
-const config = require('./../../config.json');
+const ganacheSetupConfig = require('./../../../../packages/etherlime-config/index').ganacheSetupConfig;
+const compiler = require('./../../../../packages/etherlime/cli-commands/compiler/compiler')
+const config = require('./../../../config.json');
 
 const upgradedContract = require('./contracts/ZosContractUpgraded').upgradedContract
 
@@ -36,7 +36,7 @@ describe('Zos deployer tests', async () => {
 
 		before(async function() {
 			currentDir = process.cwd();
-			process.chdir('./test/deployer/zos-deployer')
+			process.chdir('./test/etherlime-lib/deployer/zos-deployer')
 			await compiler.run('.')
 			LimeFactory = JSON.parse(fs.readFileSync('./build/LimeFactory.json'));
 			ZosContract = JSON.parse(fs.readFileSync('./build/ZosContract.json'));
