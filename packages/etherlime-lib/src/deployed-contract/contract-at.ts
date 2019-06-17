@@ -1,11 +1,11 @@
-import { ethers, Wallet } from 'ethers';
+import { Wallet } from 'ethers';
+import { JsonRpcProvider } from 'ethers/providers';
 import { ganacheSetupConfig } from 'etherlime-config';
 import { isSigner, isProvider } from 'etherlime-utils';
 
 import DeployedContractWrapper from './deployed-contract-wrapper';
 import EtherlimeGanacheWrapper from './etherlime-ganache-wrapper';
 import { compiledContract } from '../types/types';
-import { JsonRpcProvider } from 'ethers/providers';
 
 /**
  * 
@@ -34,7 +34,7 @@ Promise<DeployedContractWrapper | EtherlimeGanacheWrapper> => {
 	}
 	
 	if (typeof providerOrPort === 'number' && Number.isInteger(providerOrPort)) {
-		const provider = new ethers.providers.JsonRpcProvider(`http://localhost:${providerOrPort}`)
+		const provider = new JsonRpcProvider(`http://localhost:${providerOrPort}`)
 
 		if (isSigner(signer)) {
 
@@ -45,7 +45,7 @@ Promise<DeployedContractWrapper | EtherlimeGanacheWrapper> => {
 			return new EtherlimeGanacheWrapper(contract, contractAddress, signer, provider)
 		}
 
-		let signerInstance = new ethers.Wallet(ganacheSetupConfig.accounts[0].secretKey, provider);
+		let signerInstance = new Wallet(ganacheSetupConfig.accounts[0].secretKey, provider);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, signerInstance, provider)
 	}
 

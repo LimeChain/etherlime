@@ -1,8 +1,6 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isUrl, colors} from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
-
-import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 
 import PrivateKeyDeployer from './../private-key-deployer';
 import { txParams, JSONRPCGlobal } from '../../types/types';
@@ -28,10 +26,10 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 		if (global.coverageSubprovider) {
 			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = nodeUrl;
-			localNodeProvider = new ethers.providers.Web3Provider(global.provider);
+			localNodeProvider = new Web3Provider(global.provider);
 			localNodeProvider.connection.url = nodeUrl;
 		} else {
-			localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+			localNodeProvider = new JsonRpcProvider(nodeUrl);
 		}
 		
 		super(privateKey, localNodeProvider, defaultOverrides);
@@ -43,7 +41,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	setNodeUrl(nodeUrl: string): void {
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 
-		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+		const localNodeProvider = new JsonRpcProvider(nodeUrl);
 		this.setProvider(localNodeProvider);
 		this.nodeUrl = nodeUrl;
 	}

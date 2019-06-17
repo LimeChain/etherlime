@@ -1,4 +1,4 @@
-import { ethers, Wallet, Contract, ContractFunction, EventFilter } from 'ethers';
+import { Wallet, Contract, ContractFunction, EventFilter } from 'ethers';
 import { isAddress, isSigner, isValidContract, colors } from 'etherlime-utils';
 import { logsStore, logger } from 'etherlime-logger';
 import { compiledContract, Generic } from '../types/types';
@@ -35,7 +35,7 @@ class DeployedContractWrapper {
 		this.signer = signer;
 		this.provider = provider;
 		this._contract = contract;
-		this.contract = new ethers.Contract(contractAddress, contract.abi, signer);
+		this.contract = new Contract(contractAddress, contract.abi, signer);
 		Object.assign(this, this.contract.functions);
 		this.interface = this.contract.interface
 		this.estimate = this.contract.estimate

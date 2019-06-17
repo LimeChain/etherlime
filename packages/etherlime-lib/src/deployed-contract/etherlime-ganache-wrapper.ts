@@ -6,7 +6,6 @@ import { compiledContract, etherlimeWallet, Generic } from '../types/types';
 import { Wallet, Contract } from 'ethers';
 import { JsonRpcProvider, TransactionResponse, TransactionReceipt } from 'ethers/providers';
 
-const ethers = require('ethers')
 
 class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 
@@ -29,8 +28,8 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		this.instances = new Array();
 		this.instancesMap = {};
 		for (const acc of ganacheSetupConfig.accounts) {
-			const accSigner = new ethers.Wallet(acc.secretKey, provider);
-			const accContract = new ethers.Contract(contractAddress, contract.abi, accSigner);
+			const accSigner = new Wallet(acc.secretKey, provider);
+			const accContract = new Contract(contractAddress, contract.abi, accSigner);
 			this.instances.push(accContract)
 			this.instancesMap[accSigner.address] = accContract
 		}
@@ -48,7 +47,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		if (typeof addressOrSignerOrIndex !== 'number' && isSigner(addressOrSignerOrIndex)) {
 			let instance = this.instancesMap[addressOrSignerOrIndex.address];
 			if (!instance) {
-				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex);
+				return new Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex);
 			}
 			return this.instancesMap[addressOrSignerOrIndex.address]
 		}
@@ -56,7 +55,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		if (typeof addressOrSignerOrIndex !== 'number' && isSigner(addressOrSignerOrIndex.signer)) {
 			let instance = this.instancesMap[addressOrSignerOrIndex.signer.address];
 			if (!instance) {
-				return new ethers.Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex.signer);
+				return new Contract(this.contractAddress, this._contract.abi, addressOrSignerOrIndex.signer);
 			}
 			return this.instancesMap[addressOrSignerOrIndex.signer.address]
 		}

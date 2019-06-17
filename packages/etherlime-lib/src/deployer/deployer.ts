@@ -1,10 +1,11 @@
-import { ethers, Signer, Wallet } from 'ethers';
+import { Signer, Wallet, ContractFactory } from 'ethers';
 import { colors, isSigner, isValidContract, isValidLibrary, isValidBytecode, linkLibrary } from 'etherlime-utils';
-import DeployedContractWrapper from './../deployed-contract/deployed-contract-wrapper';
+import  DeployedContractWrapper  from './../deployed-contract/deployed-contract-wrapper';
 import { logsStore, logger } from 'etherlime-logger';
 import { TransactionRequest, TransactionResponse, TransactionReceipt, InfuraProvider, JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { txParams, compiledContract, Generic } from './../types/types';
 import EtherlimeGanacheWrapper from '../deployed-contract/etherlime-ganache-wrapper';
+import { UnsignedTransaction, BigNumber } from 'ethers/utils';
 
 declare var Verifier: any;
 
@@ -149,8 +150,8 @@ class Deployer {
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
 	private async _prepareDeployTransaction(contract: compiledContract, deploymentArguments: any[]):
-	Promise<ethers.utils.UnsignedTransaction> {
-		let factory = new ethers.ContractFactory(contract.abi, contract.bytecode);
+	Promise<UnsignedTransaction> {
+		let factory = new ContractFactory(contract.abi, contract.bytecode);
 		return factory.getDeployTransaction(...deploymentArguments);
 	}
 
@@ -160,8 +161,8 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
-	private async _overrideDeployTransactionConfig(deployTransaction: ethers.utils.UnsignedTransaction):
-	Promise<ethers.utils.UnsignedTransaction> {
+	private async _overrideDeployTransactionConfig(deployTransaction: UnsignedTransaction):
+	Promise<UnsignedTransaction> {
 		if (this.defaultOverrides === undefined) {
 			return deployTransaction;
 		}
@@ -289,7 +290,7 @@ class Deployer {
 
 	}
 
-	private async _estimateTransactionGas(transaction:TransactionRequest): Promise<ethers.utils.BigNumber> {
+	private async _estimateTransactionGas(transaction:TransactionRequest): Promise<BigNumber> {
 		return this.provider.estimateGas(transaction);
 	}
 
