@@ -125,7 +125,7 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	private async _preValidateArguments(contract: compiledContract, deploymentArguments: any[]): Promise<void> {
+	protected async _preValidateArguments(contract: compiledContract, deploymentArguments: any[]): Promise<void> {
 		if (!(isValidContract(contract))) {
 			await this._logAction(this.constructor.name, contract ? contract.contractName : 'No contract name', '', 1, '-', '-', 'Invalid contract object', '-', false);
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
@@ -160,7 +160,7 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
-	private async _overrideDeployTransactionConfig(deployTransaction: ethers.utils.UnsignedTransaction):
+	protected async _overrideDeployTransactionConfig(deployTransaction: ethers.utils.UnsignedTransaction):
 	Promise<ethers.utils.UnsignedTransaction> {
 		if (this.defaultOverrides === undefined) {
 			return deployTransaction;
@@ -207,7 +207,7 @@ class Deployer {
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	private async _postValidateTransaction(contract: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	protected async _postValidateTransaction(contract: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
 	Promise<void> {
 		if (transactionReceipt.status === 0) {
 			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed', '-', false);
@@ -242,7 +242,7 @@ class Deployer {
 	 * @param {*} result arbitrary result text
 	 */
 
-	private async _logAction(deployerType: string, nameOrLabel: string, transactionHash: string, status: number, gasPrice: string, gasUsed: string, result: string, solcVersion: string, verification: boolean):
+	protected async _logAction(deployerType: string, nameOrLabel: string, transactionHash: string, status: number, gasPrice: string, gasUsed: string, result: string, solcVersion: string, verification: boolean):
 	Promise<void> {
 		const network = await this.provider.getNetwork();
 		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);

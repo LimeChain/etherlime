@@ -1,5 +1,7 @@
 import Global = NodeJS.Global;
 import { Wallet } from "ethers";
+import { Contract } from 'zos-lib';
+import { ZosJSONRPCPrivateKeyDeployer } from "..";
 
 export interface txParams {
     gasPrice?: number,
@@ -23,6 +25,12 @@ export interface etherlimeWallet {
 export interface JSONRPCGlobal extends Global {
   coverageSubprovider: any
   provider: any
+}
+
+export interface proxyData {
+    address: string,
+    deployer: ZosJSONRPCPrivateKeyDeployer,
+    network: string 
 }
 
 export interface Generic<T> {
