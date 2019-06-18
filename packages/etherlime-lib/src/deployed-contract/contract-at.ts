@@ -5,7 +5,7 @@ import { isSigner, isProvider } from 'etherlime-utils';
 
 import DeployedContractWrapper from './deployed-contract-wrapper';
 import EtherlimeGanacheWrapper from './etherlime-ganache-wrapper';
-import { compiledContract } from '../types/types';
+import { CompiledContract } from '../types/types';
 
 /**
  * 
@@ -14,7 +14,7 @@ import { compiledContract } from '../types/types';
  * @param {*} signer The signer to connect this contract to
  * @param {*} providerOrPort Either provider to connect a normal Deployed Contract Wrapper or the port that the etherlime ganache is run on. Defaults to 8545
  */
-const contractAt = async (contract: compiledContract, contractAddress: string, signer?: Wallet, providerOrPort?: JsonRpcProvider | number):
+const contractAt = async (contract: CompiledContract, contractAddress: string, signer?: Wallet, providerOrPort?: JsonRpcProvider | number):
 Promise<DeployedContractWrapper | EtherlimeGanacheWrapper> => {
 
 	if (typeof providerOrPort !== 'number' &&  isProvider(providerOrPort)) {

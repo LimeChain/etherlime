@@ -2,7 +2,7 @@ import { colors, isSigner } from 'etherlime-utils';
 import DeployedContractWrapper from './deployed-contract-wrapper';
 import { logger } from 'etherlime-logger';
 import { ganacheSetupConfig } from 'etherlime-config';
-import { compiledContract, etherlimeWallet, Generic } from '../types/types';
+import { CompiledContract, EtherlimeWallet, Generic } from '../types/types';
 import { Wallet, Contract } from 'ethers';
 import { JsonRpcProvider, TransactionResponse, TransactionReceipt } from 'ethers/providers';
 
@@ -22,7 +22,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 	private instances: Array<Contract>;
 	private instancesMap: Generic<Contract>;
 	
-	constructor(contract: compiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
 		super(contract, contractAddress, signer, provider)
 
 		this.instances = new Array();
@@ -35,7 +35,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		}
 	}
 
-	from(addressOrSignerOrIndex: string | Wallet & etherlimeWallet | number): Contract {
+	from(addressOrSignerOrIndex: string | Wallet & EtherlimeWallet | number): Contract {
 		if (typeof addressOrSignerOrIndex === 'number' && Number.isInteger(addressOrSignerOrIndex)) {
 			return this.instances[addressOrSignerOrIndex];
 		}
@@ -43,7 +43,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		if (typeof addressOrSignerOrIndex === 'string' || addressOrSignerOrIndex instanceof String) {
 			return this.instancesMap[addressOrSignerOrIndex.toString()]
 		}
-
+		
 		if (typeof addressOrSignerOrIndex !== 'number' && isSigner(addressOrSignerOrIndex)) {
 			let instance = this.instancesMap[addressOrSignerOrIndex.address];
 			if (!instance) {

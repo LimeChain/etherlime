@@ -1,7 +1,7 @@
 import { Wallet, Contract, ContractFunction, EventFilter } from 'ethers';
 import { isAddress, isSigner, isValidContract, colors } from 'etherlime-utils';
 import { logsStore, logger } from 'etherlime-logger';
-import { compiledContract, Generic } from '../types/types';
+import { CompiledContract, Generic } from '../types/types';
 import { JsonRpcProvider, TransactionResponse, TransactionReceipt } from 'ethers/providers';
 import { Interface, BigNumber } from 'ethers/utils';
 
@@ -22,14 +22,14 @@ class DeployedContractWrapper {
 	contractAddress: string;
 	signer: Wallet;
 	provider: JsonRpcProvider;
-	_contract: compiledContract;
+	_contract: CompiledContract;
 	interface: Interface;
 	estimate: Generic<(...params: Array<any>) => Promise<BigNumber>>;
 	functions: Generic<ContractFunction>;
 	filters: Generic<(...params: Array<any>) => EventFilter>;
 	utils: Generic<(provider: JsonRpcProvider) => {}>;
 
-	constructor(contract: compiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
 		this._validateInput(contract, contractAddress, signer);
 		this.contractAddress = contractAddress;
 		this.signer = signer;
@@ -50,7 +50,7 @@ class DeployedContractWrapper {
 		}
 	}
 
-	private _validateInput(contract: compiledContract, contractAddress: string, signer?: Wallet): void {
+	private _validateInput(contract: CompiledContract, contractAddress: string, signer?: Wallet): void {
 		if (!(isSigner(signer))) {
 			throw new Error('Passed signer is not a valid signer instance of ethers Wallet');
 		}

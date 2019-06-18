@@ -4,7 +4,7 @@ import { InfuraProvider } from 'ethers/providers';
 import PrivateKeyDeployer from './../private-key-deployer';
 import { colors } from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
-import { txParams } from '../../types/types';
+import { TxParams } from '../../types/types';
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
@@ -21,7 +21,7 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	network: string;
 	apiKey: string;
 	
-	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: txParams) {
+	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: TxParams) {
 		const infuraNetwork = getNetwork(network);
 		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);

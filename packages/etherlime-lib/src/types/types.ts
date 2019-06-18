@@ -1,21 +1,21 @@
 import Global = NodeJS.Global;
 import { Wallet } from "ethers";
 
-export interface txParams {
+export type TxParams = {
     gasPrice?: number,
     gasLimit?: number,
     chainId?: number,
     etherscanApiKey?: string
 }
 
-export interface compiledContract {
+export type CompiledContract = {
     abi: any[],
     bytecode: string,
     contractName: string,
     compiler: {version: string}
 }
 
-export interface etherlimeWallet {
+export type EtherlimeWallet = {
     secretKey: string,
 	signer: Wallet
 }

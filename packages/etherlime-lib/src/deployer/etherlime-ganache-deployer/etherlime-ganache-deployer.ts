@@ -4,8 +4,8 @@ import { ganacheSetupConfig } from 'etherlime-config';
 import EtherlimeGanacheWrapper from './../../deployed-contract/etherlime-ganache-wrapper';
 import { logger } from 'etherlime-logger';
 import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
-import { txParams, compiledContract } from '../../types/types';
-import { node } from 'prop-types';
+import { TxParams, CompiledContract } from '../../types/types';
+
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
 	 *
@@ -16,7 +16,7 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 
-	constructor(privateKey: string = ganacheSetupConfig.accounts[0].secretKey, port: number = ganacheSetupConfig.defaultPort, defaultOverrides?: txParams) {
+	constructor(privateKey: string = ganacheSetupConfig.accounts[0].secretKey, port: number = ganacheSetupConfig.defaultPort, defaultOverrides?: TxParams) {
 		EtherlimeGanacheDeployer._validatePortInput(port);
 
 		const nodeUrl = `http://localhost:${port}/`;
@@ -46,13 +46,13 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 		return this.provider.getTransactionReceipt(transaction.hash);
 	}
 
-	protected async _generateDeploymentResult(contract: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
 	Promise<EtherlimeGanacheWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
 
-	wrapDeployedContract(contract: compiledContract, contractAddress: string): EtherlimeGanacheWrapper{
+	wrapDeployedContract(contract: CompiledContract, contractAddress: string): EtherlimeGanacheWrapper{
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, this.signer, this.provider);
 	}

@@ -2,8 +2,8 @@ import { Signer, Wallet, ContractFactory } from 'ethers';
 import { colors, isSigner, isValidContract, isValidLibrary, isValidBytecode, linkLibrary } from 'etherlime-utils';
 import  DeployedContractWrapper  from './../deployed-contract/deployed-contract-wrapper';
 import { logsStore, logger } from 'etherlime-logger';
-import { TransactionRequest, TransactionResponse, TransactionReceipt, InfuraProvider, JsonRpcProvider, Web3Provider } from 'ethers/providers';
-import { txParams, compiledContract, Generic } from './../types/types';
+import { TransactionRequest, TransactionResponse, TransactionReceipt, JsonRpcProvider, Web3Provider } from 'ethers/providers';
+import { TxParams, CompiledContract, Generic } from './../types/types';
 import EtherlimeGanacheWrapper from '../deployed-contract/etherlime-ganache-wrapper';
 import { UnsignedTransaction, BigNumber } from 'ethers/utils';
 
@@ -21,10 +21,10 @@ class Deployer {
 	 */
 
 	signer: Wallet;
-	provider: JsonRpcProvider | InfuraProvider | Web3Provider;
-	defaultOverrides: txParams;
+	provider: JsonRpcProvider | Web3Provider;
+	defaultOverrides: TxParams;
 
-	constructor(signer: Wallet, provider: JsonRpcProvider | InfuraProvider | Web3Provider, defaultOverrides?: txParams) {
+	constructor(signer: Wallet, provider: JsonRpcProvider | Web3Provider, defaultOverrides?: TxParams) {
 		this._validateInput(signer);
 
 		this.signer = signer;
@@ -40,12 +40,12 @@ class Deployer {
 		this.signer = this.signer.connect(this.provider);
 	}
 
-	setProvider(provider: JsonRpcProvider | InfuraProvider): void {
+	setProvider(provider: JsonRpcProvider): void {
 		this.provider = provider;
 		this.signer = this.signer.connect(this.provider);
 	}
 
-	setDefaultOverrides(defaultOverrides: txParams): void {
+	setDefaultOverrides(defaultOverrides: TxParams): void {
 		this.defaultOverrides = defaultOverrides;
 	}
 
@@ -72,7 +72,7 @@ class Deployer {
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
 
-	async deploy(contract: compiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
+	async deploy(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
 		const deploymentArguments = Array.prototype.slice.call(args);
 
 		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this._prepareAndDeployTransaction(contract, libraries, deploymentArguments);
@@ -81,7 +81,7 @@ class Deployer {
 	}
 
 
-	async deployAndVerify(contract: compiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
+	async deployAndVerify(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
 		if (!this.defaultOverrides || !this.defaultOverrides.etherscanApiKey) {
 			throw new Error('Please provide Etherscan API key!')
 		}
@@ -96,8 +96,8 @@ class Deployer {
 		return deploymentResult;
 	}
 
-	private async _prepareAndDeployTransaction(contract: compiledContract, libraries?: Generic<string>, deploymentArguments?: any[]):
-	Promise<{contractCopy: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt, deploymentResult: DeployedContractWrapper}> {
+	private async _prepareAndDeployTransaction(contract: CompiledContract, libraries?: Generic<string>, deploymentArguments?: any[]):
+	Promise<{contractCopy: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt, deploymentResult: DeployedContractWrapper}> {
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
@@ -126,7 +126,7 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	private async _preValidateArguments(contract: compiledContract, deploymentArguments: any[]): Promise<void> {
+	private async _preValidateArguments(contract: CompiledContract, deploymentArguments: any[]): Promise<void> {
 		if (!(isValidContract(contract))) {
 			await this._logAction(this.constructor.name, contract ? contract.contractName : 'No contract name', '', 1, '-', '-', 'Invalid contract object', '-', false);
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
@@ -149,7 +149,7 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
-	private async _prepareDeployTransaction(contract: compiledContract, deploymentArguments: any[]):
+	private async _prepareDeployTransaction(contract: CompiledContract, deploymentArguments: any[]):
 	Promise<UnsignedTransaction> {
 		let factory = new ContractFactory(contract.abi, contract.bytecode);
 		return factory.getDeployTransaction(...deploymentArguments);
@@ -208,7 +208,7 @@ class Deployer {
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	private async _postValidateTransaction(contract: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	private async _postValidateTransaction(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
 	Promise<void> {
 		if (transactionReceipt.status === 0) {
 			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed', '-', false);
@@ -224,7 +224,7 @@ class Deployer {
 	 * @param {*} transaction the transaction object that was sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	protected async _generateDeploymentResult(contract: compiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
 	Promise<DeployedContractWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
@@ -260,7 +260,7 @@ class Deployer {
 	 *
 	 * @return
 	 */
-	wrapDeployedContract(contract: compiledContract, contractAddress: string): DeployedContractWrapper {
+	wrapDeployedContract(contract: CompiledContract, contractAddress: string): DeployedContractWrapper {
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new DeployedContractWrapper(contract, contractAddress, this.signer, this.provider);
 	}
@@ -273,7 +273,7 @@ class Deployer {
 	 *
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile. Add the deployment params as comma separated values
 	 */
-	async estimateGas(contract: compiledContract, libraries?: Generic<string>, ...args): Promise<string> {
+	async estimateGas(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<string> {
 		const deploymentArguments = Array.prototype.slice.call(args);
 
 		await this._preValidateArguments(contract, deploymentArguments);
