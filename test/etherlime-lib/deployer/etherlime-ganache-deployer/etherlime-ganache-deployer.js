@@ -17,7 +17,7 @@ const defaultPrivateKey = ganacheSetupConfig.accounts[0].secretKey;
 describe('GanacheCli-Deployer tests', () => {
 
     before(() => {
-        etherlime = require('./../../../../packages/etherlime-lib/index');
+        etherlime = require('./../../../../packages/etherlime-lib/dist/index');
     })
 
 	describe('Initialization', async () => {

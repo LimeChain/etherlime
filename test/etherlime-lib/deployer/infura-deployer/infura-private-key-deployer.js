@@ -11,7 +11,7 @@ const defaultConfigs = {
 describe('Infura private key tests', () => {
 
     before(() => {
-        etherlime = require('./../../../../packages/etherlime-lib/index');
+        etherlime = require('./../../../../packages/etherlime-lib/dist/index');
     })
 
 	describe('Initialization', async () => {

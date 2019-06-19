@@ -1,7 +1,13 @@
-const ethers = require('ethers');
-const { colors, isSigner, isValidContract, isValidLibrary, isValidBytecode, linkLibrary } = require('etherlime-utils');
-const DeployedContractWrapper = require('./../deployed-contract/deployed-contract-wrapper');
-const { logsStore, logger } = require('etherlime-logger');
+import { Signer, Wallet, ContractFactory } from 'ethers';
+import { colors, isSigner, isValidContract, isValidLibrary, isValidBytecode, linkLibrary } from 'etherlime-utils';
+import  DeployedContractWrapper  from './../deployed-contract/deployed-contract-wrapper';
+import { logsStore, logger } from 'etherlime-logger';
+import { TransactionRequest, TransactionResponse, TransactionReceipt, JsonRpcProvider, Web3Provider } from 'ethers/providers';
+import { TxParams, CompiledContract, Generic } from './../types/types';
+import EtherlimeGanacheWrapper from '../deployed-contract/etherlime-ganache-wrapper';
+import { UnsignedTransaction, BigNumber } from 'ethers/utils';
+
+declare var Verifier: any;
 
 class Deployer {
 
@@ -13,8 +19,13 @@ class Deployer {
 	 * @param {*} provider ethers.provider instance
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(signer, provider, defaultOverrides) {
-		this._validateInput(signer, defaultOverrides);
+
+	signer: Wallet;
+	provider: JsonRpcProvider | Web3Provider;
+	defaultOverrides: TxParams;
+
+	constructor(signer: Wallet, provider: JsonRpcProvider | Web3Provider, defaultOverrides?: TxParams) {
+		this._validateInput(signer);
 
 		this.signer = signer;
 		this.provider = provider;
@@ -23,29 +34,30 @@ class Deployer {
 		logsStore.initHistoryRecord();
 	}
 
-	setSigner(signer) {
+	setSigner(signer: Wallet): void {
 		this._validateInput(signer);
 		this.signer = signer;
 		this.signer = this.signer.connect(this.provider);
 	}
 
-	setProvider(provider) {
+	setProvider(provider: JsonRpcProvider): void {
 		this.provider = provider;
 		this.signer = this.signer.connect(this.provider);
 	}
 
-	setDefaultOverrides(defaultOverrides) {
+	setDefaultOverrides(defaultOverrides: TxParams): void {
 		this.defaultOverrides = defaultOverrides;
 	}
 
-	setVerifierApiKey(etherscanApiKey) {
+	setVerifierApiKey(etherscanApiKey: string): void {
 		if (!this.defaultOverrides) {
 			this.defaultOverrides = {}
 		}
+		
 		this.defaultOverrides.etherscanApiKey = etherscanApiKey;
 	}
 
-	_validateInput(signer, provider, defaultOverrides) {
+	private _validateInput(signer): void {
 		if (!(isSigner(signer))) {
 			throw new Error('Passed signer is not valid signer instance of ethers Wallet');
 		}
@@ -60,25 +72,22 @@ class Deployer {
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile
 	 */
 
-	async deploy(contract, libraries) {
-		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 2);
+	async deploy(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
+		const deploymentArguments = Array.prototype.slice.call(args);
 
-		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this.prepareAndDeployTransaction(contract, libraries, deploymentArguments);
-		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler ? deploymentResult._contract.compiler.version : null);
-
+		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this._prepareAndDeployTransaction(contract, libraries, deploymentArguments);
+		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler ? deploymentResult._contract.compiler.version : null, false);
 		return deploymentResult;
 	}
 
 
-	async deployAndVerify(contract, libraries) {
+	async deployAndVerify(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
 		if (!this.defaultOverrides || !this.defaultOverrides.etherscanApiKey) {
 			throw new Error('Please provide Etherscan API key!')
 		}
-		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 2);
+		const deploymentArguments = Array.prototype.slice.call(args);
 
-		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this.prepareAndDeployTransaction(contract, libraries, deploymentArguments);
+		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this._prepareAndDeployTransaction(contract, libraries, deploymentArguments);
 
 		const verification = await Verifier.verifySmartContract(deploymentResult, deploymentArguments, libraries, this.defaultOverrides);
 
@@ -87,7 +96,8 @@ class Deployer {
 		return deploymentResult;
 	}
 
-	async prepareAndDeployTransaction(contract, libraries, deploymentArguments) {
+	private async _prepareAndDeployTransaction(contract: CompiledContract, libraries?: Generic<string>, deploymentArguments?: any[]):
+	Promise<{contractCopy: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt, deploymentResult: DeployedContractWrapper}> {
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
@@ -116,9 +126,9 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the deployment arguments
 	 */
-	async _preValidateArguments(contract, deploymentArguments) {
+	private async _preValidateArguments(contract: CompiledContract, deploymentArguments: any[]): Promise<void> {
 		if (!(isValidContract(contract))) {
-			await this._logAction(this.constructor.name, contract ? contract.name : 'No contract name', '', 1, '-', '-', 'Invalid contract object');
+			await this._logAction(this.constructor.name, contract ? contract.contractName : 'No contract name', '', 1, '-', '-', 'Invalid contract object', '-', false);
 			throw new Error(`Passed contract is not a valid contract object. It needs to have bytecode, abi and contractName properties`);
 		}
 
@@ -139,8 +149,9 @@ class Deployer {
 	 * @param {*} contract the contract to be deployed
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
-	async _prepareDeployTransaction(contract, deploymentArguments) {
-		let factory = new ethers.ContractFactory(contract.abi, contract.bytecode);
+	private async _prepareDeployTransaction(contract: CompiledContract, deploymentArguments: any[]):
+	Promise<UnsignedTransaction> {
+		let factory = new ContractFactory(contract.abi, contract.bytecode);
 		return factory.getDeployTransaction(...deploymentArguments);
 	}
 
@@ -150,7 +161,8 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
-	async _overrideDeployTransactionConfig(deployTransaction) {
+	private async _overrideDeployTransactionConfig(deployTransaction: UnsignedTransaction):
+	Promise<UnsignedTransaction> {
 		if (this.defaultOverrides === undefined) {
 			return deployTransaction;
 		}
@@ -175,7 +187,7 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be sent
 	 */
-	async _sendDeployTransaction(deployTransaction) {
+	private async _sendDeployTransaction(deployTransaction: TransactionRequest): Promise <TransactionResponse> {
 		return this.signer.sendTransaction(deployTransaction);
 	}
 
@@ -185,7 +197,7 @@ class Deployer {
 	 *
 	 * @param {*} transaction The sent transaction object to be waited for
 	 */
-	async _waitForDeployTransaction(transaction) {
+	protected async _waitForDeployTransaction(transaction: TransactionResponse): Promise<TransactionReceipt> {
 		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 		return transaction.wait();
 	}
@@ -196,9 +208,10 @@ class Deployer {
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	async _postValidateTransaction(contract, transaction, transactionReceipt) {
+	private async _postValidateTransaction(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	Promise<void> {
 		if (transactionReceipt.status === 0) {
-			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
+			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed', '-', false);
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
 		}
 	}
@@ -211,7 +224,8 @@ class Deployer {
 	 * @param {*} transaction the transaction object that was sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	Promise<DeployedContractWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
@@ -228,7 +242,9 @@ class Deployer {
 	 * @param {*} gasUsed the gas used by this transaction
 	 * @param {*} result arbitrary result text
 	 */
-	async _logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, result, solcVersion, verification) {
+
+	private async _logAction(deployerType: string, nameOrLabel: string, transactionHash: string, status: number, gasPrice: string, gasUsed: string, result: string, solcVersion: string, verification: boolean):
+	Promise<void> {
 		const network = await this.provider.getNetwork();
 		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);
 	}
@@ -244,7 +260,7 @@ class Deployer {
 	 *
 	 * @return
 	 */
-	wrapDeployedContract(contract, contractAddress) {
+	wrapDeployedContract(contract: CompiledContract, contractAddress: string): DeployedContractWrapper {
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new DeployedContractWrapper(contract, contractAddress, this.signer, this.provider);
 	}
@@ -257,9 +273,8 @@ class Deployer {
 	 *
 	 * @param {*} contract the contract object to be deployed. Must have at least abi and bytecode fields. For now use the .json file generated from etherlime compile. Add the deployment params as comma separated values
 	 */
-	async estimateGas(contract, libraries) {
-		const deploymentArguments = Array.prototype.slice.call(arguments);
-		deploymentArguments.splice(0, 2);
+	async estimateGas(contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<string> {
+		const deploymentArguments = Array.prototype.slice.call(args);
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
@@ -275,7 +290,7 @@ class Deployer {
 
 	}
 
-	async _estimateTransactionGas(transaction) {
+	private async _estimateTransactionGas(transaction:TransactionRequest): Promise<BigNumber> {
 		return this.provider.estimateGas(transaction);
 	}
 
@@ -286,7 +301,7 @@ class Deployer {
 	 * @param {*} libraries The libraries which will be linked to the contract
 	 * @param {*} bytecode The contract's bytecode which be used for linking
 	 */
-	async _prepareBytecode(libraries, bytecode) {
+	private async _prepareBytecode(libraries: Generic<string>, bytecode: string): Promise<string> {
 		if (isValidLibrary(libraries)) {
 			return await linkLibrary(libraries, bytecode);
 		}
@@ -295,4 +310,4 @@ class Deployer {
 	}
 }
 
-module.exports = Deployer;
+export default Deployer;

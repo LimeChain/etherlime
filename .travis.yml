@@ -14,6 +14,9 @@ install:
   - lerna bootstrap
   - cd packages/etherlime
   - yarn link
+  - cd ..
+  - cd etherlime-lib
+  - npm run tsc
   - cd ../..
 services:
   - docker

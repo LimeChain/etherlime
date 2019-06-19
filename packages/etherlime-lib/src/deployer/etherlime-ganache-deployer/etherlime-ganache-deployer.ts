@@ -1,8 +1,10 @@
-const { colors, isNumber } = require('etherlime-utils');
-const JSONRPCDeployer = require('./../jsonrpc-deployer/jsonrpc-private-key-deployer');
-const { ganacheSetupConfig } = require('etherlime-config');
-const EtherlimeGanacheWrapper = require('./../../deployed-contract/etherlime-ganache-wrapper');
-const logger = require('etherlime-logger').logger;
+import { colors, isNumber } from 'etherlime-utils';
+import JSONRPCDeployer from './../jsonrpc-deployer/jsonrpc-private-key-deployer';
+import { ganacheSetupConfig } from 'etherlime-config';
+import EtherlimeGanacheWrapper from './../../deployed-contract/etherlime-ganache-wrapper';
+import { logger } from 'etherlime-logger';
+import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
+import { TxParams, CompiledContract } from '../../types/types';
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	/**
@@ -13,46 +15,47 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	 * @param {*} port port number of the network to deploy on. This is the port number that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey = ganacheSetupConfig.accounts[0].secretKey, port = ganacheSetupConfig.defaultPort, defaultOverrides) {
+
+	constructor(privateKey: string = ganacheSetupConfig.accounts[0].secretKey, port: number = ganacheSetupConfig.defaultPort, defaultOverrides?: TxParams) {
 		EtherlimeGanacheDeployer._validatePortInput(port);
 
 		const nodeUrl = `http://localhost:${port}/`;
-
 		super(privateKey, nodeUrl, defaultOverrides);
 		this.nodeUrl = nodeUrl;
 	}
 
-	setPort(port) {
+	setPort(port: number): void {
 		EtherlimeGanacheDeployer._validatePortInput(port);
 		const nodeUrl = `http://localhost:${port}/`;
 		this.setNodeUrl(nodeUrl);
 	}
 
-	static _validatePortInput(port) {
+	static _validatePortInput(port: number): void {
 		if (!isNumber(port)) {
 			throw new Error(`Passed port (${port}) is not valid port`);
 		}
 	}
 
-	toString() {
+	toString(): string {
 		const superString = super.toString();
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
 	}
 
-	async _waitForDeployTransaction(transaction) {
-		await this.provider.send('evm_mine');
+	protected async _waitForDeployTransaction(transaction: TransactionResponse): Promise<TransactionReceipt> {
+		await this.provider.send('evm_mine', []);
 		return this.provider.getTransactionReceipt(transaction.hash);
 	}
 
-	async _generateDeploymentResult(contract, transaction, transactionReceipt) {
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
+	Promise<EtherlimeGanacheWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
 
-	wrapDeployedContract(contract, contractAddress) {
+	wrapDeployedContract(contract: CompiledContract, contractAddress: string): EtherlimeGanacheWrapper{
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, this.signer, this.provider);
 	}
 }
 
-module.exports = EtherlimeGanacheDeployer;
+export default EtherlimeGanacheDeployer;

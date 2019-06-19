@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-let etherlime = require('./../../../../packages/etherlime-lib/index');
+let etherlime = require('./../../../../packages/etherlime-lib/dist/index');
 let chai = require("chai");
 let chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);

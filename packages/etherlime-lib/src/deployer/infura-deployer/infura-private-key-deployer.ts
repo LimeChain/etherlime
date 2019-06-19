@@ -1,8 +1,10 @@
-const ethers = require('ethers');
+import { getNetwork } from 'ethers/utils';
+import { InfuraProvider } from 'ethers/providers';
 
-const PrivateKeyDeployer = require('./../private-key-deployer');
-const colors = require('etherlime-utils').colors;
-const logger = require('etherlime-logger').logger;
+import PrivateKeyDeployer from './../private-key-deployer';
+import { colors } from 'etherlime-utils';
+import { logger } from 'etherlime-logger';
+import { TxParams } from '../../types/types';
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
@@ -15,9 +17,13 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	 * @param {*} apiKey the apiKey given to you by Infura
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey, network, apiKey, defaultOverrides) {
-		const infuraNetwork = ethers.utils.getNetwork(network);
-		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, apiKey);
+
+	network: string;
+	apiKey: string;
+	
+	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: TxParams) {
+		const infuraNetwork = getNetwork(network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
 
 		logger.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`);
@@ -26,23 +32,24 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 		this.apiKey = apiKey;
 	}
 
-	setNetwork(network) {
-		const infuraNetwork = ethers.utils.getNetwork(network);
-		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, this.apiKey);
+	setNetwork(network: string): void {
+		const infuraNetwork = getNetwork(network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, this.apiKey);
 		this.setProvider(infuraProvider);
 		this.network = network;
 	}
 
-	setApiKey(apiKey) {
-		const infuraProvider = new ethers.providers.InfuraProvider(this.infuraNetwork, apiKey);
+	setApiKey(apiKey: string): void {
+		const infuraNetwork = getNetwork(this.network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
 		this.setProvider(infuraProvider);
 		this.apiKey = apiKey;
 	}
 
-	toString() {
+	toString(): string {
 		const superString = super.toString();
 		return `Deployer set to Infura. Network: ${colors.colorNetwork(this.network)} with API Key: ${colors.colorAPIKey(this.apiKey)}\n${superString}`;
 	}
 }
 
-module.exports = InfuraPrivateKeyDeployer;
+export default InfuraPrivateKeyDeployer;
