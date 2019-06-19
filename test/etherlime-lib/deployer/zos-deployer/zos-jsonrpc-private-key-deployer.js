@@ -39,7 +39,7 @@ describe('Zos deployer tests', async () => {
 			compiler = require('./../../../../packages/etherlime/cli-commands/compiler/compiler');
 			currentDir = process.cwd();
 			process.chdir('./test/etherlime-lib/deployer/zos-deployer')
-			// await compiler.run('.')
+			await compiler.run('.')
 			LimeFactory = JSON.parse(fs.readFileSync('./build/LimeFactory.json'));
 			ZosContract = JSON.parse(fs.readFileSync('./build/ZosContract.json'));
 			deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
