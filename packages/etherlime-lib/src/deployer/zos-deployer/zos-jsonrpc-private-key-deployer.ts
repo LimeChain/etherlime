@@ -3,7 +3,7 @@ import * as fs  from 'fs';
 import * as path from 'path';
 
 import JSONRPCPrivateKeyDeployer from '../jsonrpc-deployer/jsonrpc-private-key-deployer';
-import { txParams, compiledContract, proxyData } from '../../types/types';
+import { TxParams, CompiledContract, ProxyData } from '../../types/types';
 import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import { DeployedContractWrapper } from '../..';
@@ -18,16 +18,16 @@ import { DeployedContractWrapper } from '../..';
 	 * @param {*} nodeUrl url of the network to deploy on. This is the node url address that is given to the class
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
-	constructor(privateKey: string, nodeUrl: string, defaultOverrides: txParams) {
+	constructor(privateKey: string, nodeUrl: string, defaultOverrides: TxParams) {
         super(privateKey, nodeUrl, defaultOverrides);
         ZWeb3.initialize(this.nodeUrl);
     }
 
 
-    async deploy(contract: compiledContract, ...args): Promise<DeployedContractWrapper> {
+    async deploy(contract: CompiledContract, ...args): Promise<DeployedContractWrapper> {
         const deploymentArguments = Array.prototype.slice.call(args);
 
-         await this._preValidateArguments(contract, deploymentArguments);
+        await this._preValidateArguments(contract, deploymentArguments);
 
          /* Create a SimpleProject to interact with ZeppelinOS programmatically. */
         const project = await this._instantiateProject();
@@ -63,13 +63,13 @@ import { DeployedContractWrapper } from '../..';
     }
 
 
-    private async _readContract(contract: compiledContract): Promise<Contract> {
+    private async _readContract(contract: CompiledContract): Promise<Contract> {
         await Contracts.setLocalBuildDir(`${process.cwd()}/build`);
         return Contracts.getFromLocal(contract.contractName);
     }
 
 
-    private async _findProxyInstanceData(contractToDeploy: Contract): Promise<proxyData> {
+    private async _findProxyInstanceData(contractToDeploy: Contract): Promise<ProxyData> {
         if(!fs.existsSync('./proxy.json')) {
             return
         }
@@ -99,7 +99,7 @@ import { DeployedContractWrapper } from '../..';
     }
 
 
-    private async _setTransactionParams() {
+    private async _setTransactionParams(): Promise<any> {
         let transactionParams: any = {};
         let wallet = await ZWeb3.eth().accounts.wallet.add(this.signer.privateKey);
         transactionParams.from = wallet.address;

@@ -20,6 +20,12 @@ export type EtherlimeWallet = {
 	signer: Wallet
 }
 
+export type ProxyData = {
+    address: string,
+    deployer: string,
+    network: string
+}
+
 export interface JSONRPCGlobal extends Global {
   coverageSubprovider: any
   provider: any
