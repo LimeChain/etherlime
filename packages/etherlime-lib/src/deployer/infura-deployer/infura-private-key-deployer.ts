@@ -1,9 +1,10 @@
-import { ethers } from 'ethers';
+import { getNetwork } from 'ethers/utils';
+import { InfuraProvider } from 'ethers/providers';
 
 import PrivateKeyDeployer from './../private-key-deployer';
 import { colors } from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
-import { txParams } from '../../types/types';
+import { TxParams } from '../../types/types';
 
 class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
@@ -20,9 +21,9 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	network: string;
 	apiKey: string;
 	
-	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: txParams) {
-		const infuraNetwork = ethers.utils.getNetwork(network);
-		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, apiKey);
+	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: TxParams) {
+		const infuraNetwork = getNetwork(network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
 
 		logger.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`);
@@ -32,15 +33,15 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	}
 
 	setNetwork(network: string): void {
-		const infuraNetwork = ethers.utils.getNetwork(network);
-		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, this.apiKey);
+		const infuraNetwork = getNetwork(network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, this.apiKey);
 		this.setProvider(infuraProvider);
 		this.network = network;
 	}
 
 	setApiKey(apiKey: string): void {
-		const infuraNetwork = ethers.utils.getNetwork(this.network);
-		const infuraProvider = new ethers.providers.InfuraProvider(infuraNetwork, apiKey);
+		const infuraNetwork = getNetwork(this.network);
+		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
 		this.setProvider(infuraProvider);
 		this.apiKey = apiKey;
 	}

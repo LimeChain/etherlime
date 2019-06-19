@@ -1,11 +1,9 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { isUrl, colors} from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
 
-import { JsonRpcProvider, Web3Provider } from 'ethers/providers';
-
 import PrivateKeyDeployer from './../private-key-deployer';
-import { txParams, JSONRPCGlobal } from '../../types/types';
+import { TxParams, JSONRPCGlobal } from '../../types/types';
 
 const COVERAGE_PROVIDER_INDEX = 1; // This is the index of the desired provider located in global.providers. We have two providers there: one for coverage which is listening for blocks and one for deploying contracts
 declare const global: JSONRPCGlobal;
@@ -23,15 +21,15 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	
 	nodeUrl: string
 
-	constructor(privateKey: string, nodeUrl: string, defaultOverrides?: txParams) {
+	constructor(privateKey: string, nodeUrl: string, defaultOverrides?: TxParams) {
 		let localNodeProvider: JsonRpcProvider | Web3Provider;
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 		if (global.coverageSubprovider) {
 			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = nodeUrl;
-			localNodeProvider = new ethers.providers.Web3Provider(global.provider);
+			localNodeProvider = new Web3Provider(global.provider);
 			localNodeProvider.connection.url = nodeUrl;
 		} else {
-			localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+			localNodeProvider = new JsonRpcProvider(nodeUrl);
 		}
 		
 		super(privateKey, localNodeProvider, defaultOverrides);
@@ -43,7 +41,7 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	setNodeUrl(nodeUrl: string): void {
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 
-		const localNodeProvider = new ethers.providers.JsonRpcProvider(nodeUrl);
+		const localNodeProvider = new JsonRpcProvider(nodeUrl);
 		this.setProvider(localNodeProvider);
 		this.nodeUrl = nodeUrl;
 	}
