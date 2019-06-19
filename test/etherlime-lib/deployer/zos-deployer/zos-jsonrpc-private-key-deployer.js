@@ -1,4 +1,4 @@
-const etherlime = require('./../../../../packages/etherlime-lib/dist/index');
+let etherlime;
 const ethers = require('ethers');
 let chai = require("chai");
 const assert = require('chai').assert;
@@ -8,7 +8,7 @@ const fs = require('fs-extra');
 const isAddress = require('./../../../../packages/etherlime-utils/index').isAddress;
 
 const ganacheSetupConfig = require('./../../../../packages/etherlime-config/index').ganacheSetupConfig;
-const compiler = require('./../../../../packages/etherlime/cli-commands/compiler/compiler')
+let compiler;
 const config = require('./../../../config.json');
 
 const upgradedContract = require('./contracts/ZosContractUpgraded').upgradedContract
@@ -35,9 +35,11 @@ describe('Zos deployer tests', async () => {
 	describe('deploy proxy', async () => {
 
 		before(async function() {
+			etherlime = require('./../../../../packages/etherlime-lib/dist/index');
+			compiler = require('./../../../../packages/etherlime/cli-commands/compiler/compiler');
 			currentDir = process.cwd();
 			process.chdir('./test/etherlime-lib/deployer/zos-deployer')
-			await compiler.run('.')
+			// await compiler.run('.')
 			LimeFactory = JSON.parse(fs.readFileSync('./build/LimeFactory.json'));
 			ZosContract = JSON.parse(fs.readFileSync('./build/ZosContract.json'));
 			deployer = new etherlime.ZosJSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.nodeUrl, defaultConfigs);
