@@ -12,5 +12,11 @@
   },
   "dependencies": {
     "chalk": "2.4.1"
+  },
+  "browser": {
+    "fs": false,
+    "fs-extra": false,
+    "path": false,
+    "os": false
   }
 }
