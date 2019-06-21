@@ -1,6 +1,6 @@
 {
   "name": "etherlime-logger",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "etherlime-logger manages the historical logs of executions and their reports",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,11 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "7.0.1"
+  },
+  "browser": {
+    "fs": false,
+    "fs-extra": false,
+    "path": false,
+    "os": false
   }
 }
