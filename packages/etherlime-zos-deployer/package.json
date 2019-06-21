@@ -1,0 +1,23 @@
+{
+  "name": "etherlime-zos-deployer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.5.1",
+    "etherlime-lib": "^1.0.3",
+    "zos-lib": "^2.3.1"
+  },
+  "browser": {
+    "fs": false,
+    "fs-extra": false,
+    "path": false,
+    "os": false
+  }
+}

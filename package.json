@@ -36,8 +36,7 @@
     "@0x/sol-coverage": "^3.0.4",
     "solc": "^0.5.8",
     "tcp-port-used": "^1.0.1",
-    "web3-provider-engine": "^15.0.0",
-    "zos-lib": "^2.3.1"
+    "web3-provider-engine": "^15.0.0"
   },
   "browser": {
     "fs": false,
