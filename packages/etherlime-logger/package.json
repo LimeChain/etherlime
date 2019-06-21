@@ -15,5 +15,11 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "7.0.1"
+  },
+  "browser": {
+    "fs": false,
+    "fs-extra": false,
+    "path": false,
+    "os": false
   }
 }
