@@ -1,9 +1,7 @@
-import { Wallet, Contract, ContractFunction, EventFilter } from 'ethers';
+import { Wallet, Contract, ContractFunction, EventFilter, providers, utils } from 'ethers';
 import { isAddress, isSigner, isValidContract, colors } from 'etherlime-utils';
 import { logsStore, logger } from 'etherlime-logger';
 import { CompiledContract, Generic } from '../types/types';
-import { JsonRpcProvider, TransactionResponse, TransactionReceipt } from 'ethers/providers';
-import { Interface, BigNumber } from 'ethers/utils';
 
 class DeployedContractWrapper {
 
@@ -21,15 +19,15 @@ class DeployedContractWrapper {
 	contract: Contract;
 	contractAddress: string;
 	signer: Wallet;
-	provider: JsonRpcProvider;
+	provider: providers.JsonRpcProvider;
 	_contract: CompiledContract;
-	interface: Interface;
-	estimate: Generic<(...params: Array<any>) => Promise<BigNumber>>;
+	interface: utils.Interface;
+	estimate: Generic<(...params: Array<any>) => Promise<utils.BigNumber>>;
 	functions: Generic<ContractFunction>;
 	filters: Generic<(...params: Array<any>) => EventFilter>;
-	utils: Generic<(provider: JsonRpcProvider) => {}>;
+	utils: Generic<(provider: providers.JsonRpcProvider) => {}>;
 
-	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider) {
 		this._validateInput(contract, contractAddress, signer);
 		this.contractAddress = contractAddress;
 		this.signer = signer;
@@ -44,7 +42,7 @@ class DeployedContractWrapper {
 		this.utils = this._generateUtils(provider)
 	}
 
-	private _generateUtils(provider: JsonRpcProvider) {
+	private _generateUtils(provider: providers.JsonRpcProvider) {
 		return {
 			getBalance: () => provider.getBalance(this.contractAddress)
 		}
@@ -71,19 +69,19 @@ class DeployedContractWrapper {
 	 * @param {*} transactionHash The transaction hash you are waiting for
 	 * @param {*} transactionLabel [Optional] A human readable label to help you differentiate you transaction
 	 */
-	async verboseWaitForTransaction(transaction: TransactionResponse, transactionLabel: string): Promise<TransactionReceipt> {
+	async verboseWaitForTransaction(transaction: providers.TransactionResponse, transactionLabel: string): Promise<providers.TransactionReceipt> {
 
 		let labelPart = (transactionLabel) ? `labeled ${colors.colorName(transactionLabel)} ` : '';
 		logger.log(`Waiting for transaction ${labelPart}to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 
-		const transactionReceipt: TransactionReceipt = await transaction.wait();
+		const transactionReceipt: providers.TransactionReceipt = await transaction.wait();
 		await this._postValidateTransaction(transaction, transactionReceipt);
 		const actionLabel = (transactionLabel) ? transactionLabel : this.constructor.name;
 		await this._logAction(this.constructor.name, actionLabel, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Successfully Waited For Transaction');
 		return transactionReceipt;
 	}
 
-	protected async _postValidateTransaction(transaction: TransactionResponse, transactionReceipt: TransactionReceipt): Promise<TransactionReceipt> {
+	protected async _postValidateTransaction(transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt): Promise<providers.TransactionReceipt> {
 		if (transactionReceipt.status === 0) {
 			await this._logAction(this.constructor.name, this._contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed');
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
