@@ -1,11 +1,8 @@
-import { Signer, Wallet, ContractFactory } from 'ethers';
+import { Wallet, ContractFactory, utils, providers } from 'ethers';
 import { colors, isSigner, isValidContract, isValidLibrary, isValidBytecode, linkLibrary } from 'etherlime-utils';
-import  DeployedContractWrapper  from './../deployed-contract/deployed-contract-wrapper';
+import DeployedContractWrapper from './../deployed-contract/deployed-contract-wrapper';
 import { logsStore, logger } from 'etherlime-logger';
-import { TransactionRequest, TransactionResponse, TransactionReceipt, JsonRpcProvider, Web3Provider } from 'ethers/providers';
 import { TxParams, CompiledContract, Generic } from './../types/types';
-import EtherlimeGanacheWrapper from '../deployed-contract/etherlime-ganache-wrapper';
-import { UnsignedTransaction, BigNumber } from 'ethers/utils';
 
 declare var Verifier: any;
 
@@ -21,10 +18,10 @@ class Deployer {
 	 */
 
 	signer: Wallet;
-	provider: JsonRpcProvider | Web3Provider;
+	provider: providers.JsonRpcProvider | providers.Web3Provider;
 	defaultOverrides: TxParams;
 
-	constructor(signer: Wallet, provider: JsonRpcProvider | Web3Provider, defaultOverrides?: TxParams) {
+	constructor(signer: Wallet, provider: providers.JsonRpcProvider | providers.Web3Provider, defaultOverrides?: TxParams) {
 		this._validateInput(signer);
 
 		this.signer = signer;
@@ -40,7 +37,7 @@ class Deployer {
 		this.signer = this.signer.connect(this.provider);
 	}
 
-	setProvider(provider: JsonRpcProvider): void {
+	setProvider(provider: providers.JsonRpcProvider): void {
 		this.provider = provider;
 		this.signer = this.signer.connect(this.provider);
 	}
@@ -53,7 +50,7 @@ class Deployer {
 		if (!this.defaultOverrides) {
 			this.defaultOverrides = {}
 		}
-		
+
 		this.defaultOverrides.etherscanApiKey = etherscanApiKey;
 	}
 
@@ -97,7 +94,7 @@ class Deployer {
 	}
 
 	private async _prepareAndDeployTransaction(contract: CompiledContract, libraries?: Generic<string>, deploymentArguments?: any[]):
-	Promise<{contractCopy: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt, deploymentResult: DeployedContractWrapper}> {
+		Promise<{ contractCopy: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt, deploymentResult: DeployedContractWrapper }> {
 
 		await this._preValidateArguments(contract, deploymentArguments);
 
@@ -150,7 +147,7 @@ class Deployer {
 	 * @param {*} deploymentArguments the arguments to this contract
 	 */
 	private async _prepareDeployTransaction(contract: CompiledContract, deploymentArguments: any[]):
-	Promise<UnsignedTransaction> {
+		Promise<utils.UnsignedTransaction> {
 		let factory = new ContractFactory(contract.abi, contract.bytecode);
 		return factory.getDeployTransaction(...deploymentArguments);
 	}
@@ -161,8 +158,8 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be overridden
 	 */
-	private async _overrideDeployTransactionConfig(deployTransaction: UnsignedTransaction):
-	Promise<UnsignedTransaction> {
+	private async _overrideDeployTransactionConfig(deployTransaction: utils.UnsignedTransaction):
+		Promise<utils.UnsignedTransaction> {
 		if (this.defaultOverrides === undefined) {
 			return deployTransaction;
 		}
@@ -187,7 +184,7 @@ class Deployer {
 	 *
 	 * @param {*} deployTransaction the transaction that is to be sent
 	 */
-	private async _sendDeployTransaction(deployTransaction: TransactionRequest): Promise <TransactionResponse> {
+	private async _sendDeployTransaction(deployTransaction: providers.TransactionRequest): Promise<providers.TransactionResponse> {
 		return this.signer.sendTransaction(deployTransaction);
 	}
 
@@ -197,7 +194,7 @@ class Deployer {
 	 *
 	 * @param {*} transaction The sent transaction object to be waited for
 	 */
-	protected async _waitForDeployTransaction(transaction: TransactionResponse): Promise<TransactionReceipt> {
+	protected async _waitForDeployTransaction(transaction: providers.TransactionResponse): Promise<providers.TransactionReceipt> {
 		logger.log(`Waiting for transaction to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 		return transaction.wait();
 	}
@@ -208,8 +205,8 @@ class Deployer {
 	 * @param {*} transaction the transaction object being sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	private async _postValidateTransaction(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
-	Promise<void> {
+	private async _postValidateTransaction(contract: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt):
+		Promise<void> {
 		if (transactionReceipt.status === 0) {
 			await this._logAction(this.constructor.name, contract.contractName, transaction.hash, 1, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Transaction failed', '-', false);
 			throw new Error(`Transaction ${colors.colorTransactionHash(transactionReceipt.transactionHash)} ${colors.colorFailure('failed')}. Please check etherscan for better reason explanation.`);
@@ -224,8 +221,8 @@ class Deployer {
 	 * @param {*} transaction the transaction object that was sent
 	 * @param {*} transactionReceipt the transaction receipt
 	 */
-	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
-	Promise<DeployedContractWrapper> {
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt):
+		Promise<DeployedContractWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
@@ -244,7 +241,7 @@ class Deployer {
 	 */
 
 	private async _logAction(deployerType: string, nameOrLabel: string, transactionHash: string, status: number, gasPrice: string, gasUsed: string, result: string, solcVersion: string, verification: boolean):
-	Promise<void> {
+		Promise<void> {
 		const network = await this.provider.getNetwork();
 		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);
 	}
@@ -290,7 +287,7 @@ class Deployer {
 
 	}
 
-	private async _estimateTransactionGas(transaction:TransactionRequest): Promise<BigNumber> {
+	private async _estimateTransactionGas(transaction: providers.TransactionRequest): Promise<utils.BigNumber> {
 		return this.provider.estimateGas(transaction);
 	}
 

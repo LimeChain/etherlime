@@ -1,9 +1,8 @@
-import { Wallet } from 'ethers';
-import { colors } from  'etherlime-utils';
+import { Wallet, providers } from 'ethers';
+import { colors } from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
 
-import Deployer from'./deployer';
-import { JsonRpcProvider } from 'ethers/providers';
+import Deployer from './deployer';
 import { TxParams } from './../types/types';
 
 
@@ -16,7 +15,7 @@ class PrivateKeyDeployer extends Deployer {
 	 * @param {*} defaultOverrides [Optional] default deployment overrides
 	 */
 
-	constructor(privateKey: string, provider: JsonRpcProvider, defaultOverrides?: TxParams) {
+	constructor(privateKey: string, provider: providers.JsonRpcProvider, defaultOverrides?: TxParams) {
 		const sanitizedPrivateKey = (privateKey.startsWith('0x')) ? privateKey : `0x${privateKey}`;
 		const signer = new Wallet(sanitizedPrivateKey, provider);
 
