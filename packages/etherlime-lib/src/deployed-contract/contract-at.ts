@@ -1,13 +1,6 @@
-// type Wallet = ethers.Wallet;
-// type JsonRpcProvider = ethers.providers.JsonRpcProvider;
-// const JsonRpcProvider = ethers.providers.JsonRpcProvider;
-// const Wallet = ethers.Wallet;
-import { Wallet } from 'ethers';
-import { providers } from 'ethers';
-
+import { providers, Wallet } from 'ethers';
 import { ganacheSetupConfig } from 'etherlime-config';
 import { isSigner, isProvider } from 'etherlime-utils';
-
 import DeployedContractWrapper from './deployed-contract-wrapper';
 import EtherlimeGanacheWrapper from './etherlime-ganache-wrapper';
 import { CompiledContract } from '../types/types';
