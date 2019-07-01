@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 let port;
 
-const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generate) => {
+const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generate, networkId) => {
 	if (mnemonic && generate) {
 		generateAccounts(mnemonic, generate);
 	}
@@ -21,7 +21,8 @@ const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generat
 		logger: inLogger,
 		fork,
 		gasPrice,
-		gasLimit
+		gasLimit,
+		network_id: networkId
 	});
 
 	server.listen(port, ganacheServerListenCallback);
@@ -40,6 +41,7 @@ const ganacheServerListenCallback = (err, blockchain) => {
 	logger.log(`\nListening on http://localhost:${port}`);
 	forkedNetwork ? logger.log(`Etherlime ganache is forked from network: ${colors.colorSuccess(forkedNetwork)}`) : null;
 	forkedBlockNumber ? logger.log(`Network is forked from block number: ${colors.colorSuccess(forkedBlockNumber)}`) : null;
+	logger.log(`Network ID: ${colors.colorSuccess(blockchain.options.network_id)}`);
 };
 
 const generateAccounts = (mnemonic, generate) => {

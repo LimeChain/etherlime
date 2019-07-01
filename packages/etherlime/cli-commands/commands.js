@@ -20,7 +20,7 @@ const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
 	{
-		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count]',
+		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -61,6 +61,11 @@ const commands = [
 				default: 1
 			});
 
+			yargs.positional('networkId', {
+				describe: 'Specify the network id etherlime ganache will use to identify itself',
+				type: 'number',
+			});
+
 		},
 		commandProcessor: (argv) => {
 			recordEvent('etherlime ganache', {
@@ -70,7 +75,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
-				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count);
+				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count, argv.networkId);
 			} catch (err) {
 				console.error(err);
 			} finally {
