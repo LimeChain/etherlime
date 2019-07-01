@@ -3,7 +3,7 @@ import JSONRPCDeployer from './../jsonrpc-deployer/jsonrpc-private-key-deployer'
 import { ganacheSetupConfig } from 'etherlime-config';
 import EtherlimeGanacheWrapper from './../../deployed-contract/etherlime-ganache-wrapper';
 import { logger } from 'etherlime-logger';
-import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
+import { providers } from 'ethers';
 import { TxParams, CompiledContract } from '../../types/types';
 
 class EtherlimeGanacheDeployer extends JSONRPCDeployer {
@@ -41,18 +41,18 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 		return `Network: ${colors.colorNetwork(this.nodeUrl)}\n${superString}`;
 	}
 
-	protected async _waitForDeployTransaction(transaction: TransactionResponse): Promise<TransactionReceipt> {
+	protected async _waitForDeployTransaction(transaction: providers.TransactionResponse): Promise<providers.TransactionReceipt> {
 		await this.provider.send('evm_mine', []);
 		return this.provider.getTransactionReceipt(transaction.hash);
 	}
 
-	protected async _generateDeploymentResult(contract: CompiledContract, transaction: TransactionResponse, transactionReceipt: TransactionReceipt):
-	Promise<EtherlimeGanacheWrapper> {
+	protected async _generateDeploymentResult(contract: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt):
+		Promise<EtherlimeGanacheWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
 	}
 
-	wrapDeployedContract(contract: CompiledContract, contractAddress: string): EtherlimeGanacheWrapper{
+	wrapDeployedContract(contract: CompiledContract, contractAddress: string): EtherlimeGanacheWrapper {
 		logger.log(`Wrapping contract ${colors.colorName(contract.contractName)} at address: ${colors.colorAddress(contractAddress)}`);
 		return new EtherlimeGanacheWrapper(contract, contractAddress, this.signer, this.provider);
 	}

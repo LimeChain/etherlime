@@ -5,7 +5,6 @@ import * as path from 'path';
 import { JSONRPCPrivateKeyDeployer } from 'etherlime-lib';
 import { TxParams, CompiledContract } from 'etherlime-lib';
 import { ProxyData } from './../types'
-import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 import { DeployedContractWrapper } from 'etherlime-lib';
 
