@@ -34,6 +34,8 @@ const PRIVATE_KEY_LENGTH = 66;
 const GAS_PRICE = 200000;
 const GAS_LIMIT = 250000;
 
+const NETWORK_ID = 12345678;
+
 const FIRST_PRIVATE_KEY = ganacheSetupFile.accounts[0].secretKey;
 const FIRST_ACCOUNT_ADDRESS = signerUtil.getAddressByPrivateKey(ganacheSetupFile.accounts[0].secretKey);
 
@@ -58,7 +60,8 @@ const LOCAL_NETWORK_URL = "http://localhost";
 let ganacheCommandOutput;
 let expectedOutput = 'Listening on';
 let localForkingExpectedOutput = 'Etherlime ganache is forked from network';
-let localForkingFromSpecificBlockNumberOutput = 'Network is forked from block number'
+let localForkingFromSpecificBlockNumberOutput = 'Network is forked from block number';
+let specificNetworkId = `Network ID: ${NETWORK_ID}`;
 let childResponse;
 
 describe('Ganache cli command', () => {
@@ -411,6 +414,22 @@ describe('Etherlime ganache with specific gasPrice and gasLimit', async () => {
 
 		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --gasPrice ${GAS_PRICE} --gasLimit ${GAS_LIMIT}`, expectedOutput);
 		assert.include(childResponse.output, expectedOutput, 'The ganache is not runned with specific default gasPrice');
+	});
+
+	afterEach(async () => {
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
+	});
+});
+
+describe('Etherlime ganache with specific network id', async () => {
+
+	it('should start ganache server with specific network id', async () => {
+
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --networkId ${NETWORK_ID}`, specificNetworkId);
+		assert.include(childResponse.output, specificNetworkId, 'The ganache is not runned with specific network id');
 	});
 
 	afterEach(async () => {

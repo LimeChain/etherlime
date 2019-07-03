@@ -60,5 +60,8 @@ Parameters:
 
   passed.
 
+* `networkId` - \[Optional\] By specifying `--networkId` you can specify the network id etherlime ganache will use to identify itself.
+
+
 For easier integration and usage of `EtherlimeGanacheDeployer` and running local deployments you can use the embedded ganache-cli. It comes with fixed 10 accounts and a lot of ETH \(191408831393027885698 to be precise\)
 

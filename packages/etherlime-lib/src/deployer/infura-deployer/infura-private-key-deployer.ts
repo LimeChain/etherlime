@@ -1,6 +1,5 @@
-import { getNetwork } from 'ethers/utils';
-import { InfuraProvider } from 'ethers/providers';
 
+import { utils, providers } from 'ethers';
 import PrivateKeyDeployer from './../private-key-deployer';
 import { colors } from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
@@ -20,10 +19,10 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	network: string;
 	apiKey: string;
-	
+
 	constructor(privateKey: string, network: string, apiKey: string, defaultOverrides?: TxParams) {
-		const infuraNetwork = getNetwork(network);
-		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
+		const infuraNetwork = utils.getNetwork(network);
+		const infuraProvider = new providers.InfuraProvider(infuraNetwork, apiKey);
 		super(privateKey, infuraProvider, defaultOverrides);
 
 		logger.log(`Deployer set to Infura. Network: ${colors.colorNetwork(network)} with API Key: ${colors.colorAPIKey(apiKey)}\n`);
@@ -33,15 +32,15 @@ class InfuraPrivateKeyDeployer extends PrivateKeyDeployer {
 	}
 
 	setNetwork(network: string): void {
-		const infuraNetwork = getNetwork(network);
-		const infuraProvider = new InfuraProvider(infuraNetwork, this.apiKey);
+		const infuraNetwork = utils.getNetwork(network);
+		const infuraProvider = new providers.InfuraProvider(infuraNetwork, this.apiKey);
 		this.setProvider(infuraProvider);
 		this.network = network;
 	}
 
 	setApiKey(apiKey: string): void {
-		const infuraNetwork = getNetwork(this.network);
-		const infuraProvider = new InfuraProvider(infuraNetwork, apiKey);
+		const infuraNetwork = utils.getNetwork(this.network);
+		const infuraProvider = new providers.InfuraProvider(infuraNetwork, apiKey);
 		this.setProvider(infuraProvider);
 		this.apiKey = apiKey;
 	}

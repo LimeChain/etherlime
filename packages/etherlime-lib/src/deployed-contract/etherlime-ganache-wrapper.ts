@@ -3,9 +3,7 @@ import DeployedContractWrapper from './deployed-contract-wrapper';
 import { logger } from 'etherlime-logger';
 import { ganacheSetupConfig } from 'etherlime-config';
 import { CompiledContract, EtherlimeWallet, Generic } from '../types/types';
-import { Wallet, Contract } from 'ethers';
-import { JsonRpcProvider, TransactionResponse, TransactionReceipt } from 'ethers/providers';
-
+import { Wallet, Contract, providers } from 'ethers';
 
 class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 
@@ -21,8 +19,8 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 
 	private instances: Array<Contract>;
 	private instancesMap: Generic<Contract>;
-	
-	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: JsonRpcProvider) {
+
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider) {
 		super(contract, contractAddress, signer, provider)
 
 		this.instances = new Array();
@@ -43,7 +41,7 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		if (typeof addressOrSignerOrIndex === 'string' || addressOrSignerOrIndex instanceof String) {
 			return this.instancesMap[addressOrSignerOrIndex.toString()]
 		}
-		
+
 		if (typeof addressOrSignerOrIndex !== 'number' && isSigner(addressOrSignerOrIndex)) {
 			let instance = this.instancesMap[addressOrSignerOrIndex.address];
 			if (!instance) {
@@ -63,13 +61,13 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 		throw new Error('Unrecognized input parameter. It should be index, address or signer instance')
 	}
 
-	async verboseWaitForTransaction(transaction: TransactionResponse, transactionLabel: string): Promise<TransactionReceipt> {
+	async verboseWaitForTransaction(transaction: providers.TransactionResponse, transactionLabel: string): Promise<providers.TransactionReceipt> {
 
 		let labelPart = (transactionLabel) ? `labeled ${colors.colorName(transactionLabel)} ` : '';
 		logger.log(`Waiting for transaction ${labelPart}to be included in a block and mined: ${colors.colorTransactionHash(transaction.hash)}`);
 
 		await this.provider.send('evm_mine', []);
-		const transactionReceipt: TransactionReceipt = await transaction.wait();
+		const transactionReceipt: providers.TransactionReceipt = await transaction.wait();
 		await this._postValidateTransaction(transaction, transactionReceipt);
 		const actionLabel = (transactionLabel) ? transactionLabel : this.constructor.name;
 		await this._logAction(this.constructor.name, actionLabel, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), 'Successfully Waited For Transaction');
