@@ -36,7 +36,7 @@ describe('root calling cli commands', () => {
     it('should throw err if compile cli command failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime compile`, expectedOutput);
-        assert.include(childProcess.output, expectedOutput)
+        assert.include(childProcess, expectedOutput)
     });
 
     it('should throw err if test cli command failed', async function () {
@@ -54,7 +54,7 @@ describe('root calling cli commands', () => {
     it('should throw err if deploy failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime deploy`, expectedOutput);
-        assert.include(childProcess.output, expectedOutput)
+        assert.include(childProcess, expectedOutput)
     });
 
     it('should throw err if ganache failed', async function () {
