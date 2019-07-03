@@ -19,6 +19,8 @@ let find_contracts = async (workingPath) => {
     }
 
     try {
+
+
       const readFiles = await readAllFilesSync(workingPath);
       return resolve(fetchSolAndVyperFiles(readFiles))
     } catch (err) {
@@ -28,29 +30,31 @@ let find_contracts = async (workingPath) => {
   });
 }
 
-const readAllFilesSync = async function(dir, fileList) {
+const readAllFilesSync = async function (dir, fileList) {
   files = await fs.readdirSync(dir);
   fileList = fileList || [];
-  for(let i = 0; i < files.length; i++) {
-    const filePath = path.join(dir, files[i])
+  for (const file of files) {
+    const filePath = path.join(dir, file)
     if (fs.statSync(filePath).isDirectory()) {
-        fileList = await readAllFilesSync(filePath, fileList);
+      fileList = await readAllFilesSync(filePath, fileList);
     }
     else {
-        fileList.push(filePath);
+      fileList.push(filePath);
     }
   }
   return fileList;
 };
 
 const fetchSolAndVyperFiles = (files) => {
+
   let solFiles = [];
   let vyperFiles = [];
 
-  files.forEach(file => {
+  for (const file of files) {
     if (path.extname(file) == SOL_EXTENSION && path.basename(file)[0] != '.') solFiles.push(file)
     if (path.extname(file) == VYPER_EXTENSION && path.basename(file)[0] != '.') vyperFiles.push(file)
-  })
+  }
+
 
   return { solFiles, vyperFiles }
 }
