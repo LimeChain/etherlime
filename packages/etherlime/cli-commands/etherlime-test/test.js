@@ -43,6 +43,7 @@ const getFiles = async function (testDirectory, files) {
 			files.push(filePath);
 		}
 	}
+	console.log('HERE GET FILES', files)
 	return files;
 }
 
@@ -62,7 +63,7 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 		testDirectory = `${process.cwd()}/${path}`;
 	}
 
-	let files = await getFiles(testDirectory, config);
+	let files = await getFiles(testDirectory);
 	files = files.filter(function (file) {
 		return file.match(config.test_file_extension_regexp) != null;
 	});
