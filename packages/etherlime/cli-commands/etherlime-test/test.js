@@ -43,7 +43,6 @@ const getFiles = async function (testDirectory, files) {
 			files.push(filePath);
 		}
 	}
-	console.log('HERE GET FILES', files)
 	return files;
 }
 
