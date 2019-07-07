@@ -21,24 +21,28 @@ const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasR
 		testDirectory = `${process.cwd()}/${path}`;
 	}
 
-	const files = await getFiles(testDirectory, config);
+	let files = await getFiles(testDirectory);
+	files = files.filter(function (file) {
+		return file.match(config.test_file_extension_regexp) != null;
+	});
 
 	await etherlimeTest.run(files, timeout, skipCompilation, runs, solcVersion, enableGasReport, port);
 }
 
-const getFiles = async function (testDirectory, config) {
+const getFiles = async function (testDirectory, files) {
 
-	let files = [];
-
+	files = files || [];
 	const readFiles = await fs.readdirSync(testDirectory);
-	for (let i = 0; i < readFiles.length; i++) {
-		let currentPath = path.join(testDirectory, readFiles[i]);
-		files.push(currentPath)
-	}
 
-	files = files.filter(function (file) {
-		return file.match(config.test_file_extension_regexp) != null;
-	});
+	for (let i = 0; i < readFiles.length; i++) {
+		const filePath = path.join(testDirectory, readFiles[i])
+		if (fs.statSync(filePath).isDirectory()) {
+			files = await getFiles(filePath, files);
+		}
+		else {
+			files.push(filePath);
+		}
+	}
 	return files;
 }
 
@@ -58,7 +62,10 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 		testDirectory = `${process.cwd()}/${path}`;
 	}
 
-	const files = await getFiles(testDirectory, config);
+	let files = await getFiles(testDirectory);
+	files = files.filter(function (file) {
+		return file.match(config.test_file_extension_regexp) != null;
+	});
 	await etherlimeCoverage.runCoverage(files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage);
 
 }
