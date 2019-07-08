@@ -32,7 +32,7 @@ class Verifier {
 	}
 
 	async _flattenSourceCode(contractWrapper) {
-		const regexp = /[0-9]?\.[0-9]?\.[0-9]?/;
+		const regexp = /[0-9]?\.[0-9]?\.[0-9]?[0-9]?/;
 		const solcVersion = regexp.exec(contractWrapper._contract.compiler.version)[0];
 		const sourceCode = await runWithoutWriteFiles(`${contractWrapper._contract.contractName}.sol`, solcVersion);
 		return sourceCode
