@@ -5,9 +5,7 @@ import * as path from 'path';
 import { JSONRPCPrivateKeyDeployer } from 'etherlime-lib';
 import { TxParams, CompiledContract } from 'etherlime-lib';
 import { ProxyData } from './../types'
-import { BigNumber, bigNumberify } from 'ethers/utils';
 import { DeployedContractWrapper } from 'etherlime-lib';
-
 
 class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
     /**
@@ -52,7 +50,7 @@ class ZosJSONRPCPrivateKeyDeployer extends JSONRPCPrivateKeyDeployer {
             await this._postValidateTransaction(contract, transaction, transactionReceipt);
         }
 
-        await this._logAction(this.constructor.name, contract.contractName, 'Not provided', 0, project.txParams.gasPrice, 'Not provided', proxyInstance.contractAddress, proxyInstance._contract.solcVersion, false);
+        await this._logAction(this.constructor.name, contract.contractName, 'Not provided', 0, project.txParams.gasPrice.toString(), 'Not provided', proxyInstance.contractAddress, proxyInstance._contract.solcVersion, false);
         return proxyInstance;
     }
 
