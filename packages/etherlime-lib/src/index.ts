@@ -8,6 +8,8 @@ import DeployedContractWrapper from './deployed-contract/deployed-contract-wrapp
 import EtherlimeGanacheWrapper from './deployed-contract/etherlime-ganache-wrapper';
 import ContractAt from './deployed-contract/contract-at';
 
+import { TxParams, CompiledContract } from './types/types';
+
 export {
 	Deployer,
 	PrivateKeyDeployer,
@@ -16,5 +18,7 @@ export {
 	DeployedContractWrapper,
 	EtherlimeGanacheDeployer,
 	EtherlimeGanacheWrapper,
-	ContractAt
+	ContractAt,
+	TxParams,
+	CompiledContract
 }

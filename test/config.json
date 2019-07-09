@@ -1,6 +1,8 @@
 {
   "infuraAPIKey": "Up5uvBHSCSqtOmnlhL87",
   "infuraNetwork": "rinkeby",
+  "infuraRopstenURL": "https://ropsten.infura.io/ede61953adb34beeb5106a2c0c61f200",
+  "infuraRopstenPrivateKey" : "9C854BD14857DD1F107ECB94E1AEEAA8E9538E3DC41D082D5FE0E452E87A2F28",
   "infuraPrivateKey": "09d63a68dafa08dffee686e044f8dc4fe4fc368011d757edf68de4fe8af89f82",
   "firstEtherlimeGanacheAccount": "0xd9995bae12fee327256ffec1e3184d492bd94c31",
   "randomPrivateKey": "7ab741b57e8d94dd7e1a29055646bafde7010f38a900f55bbd7647880faa6ee8",
