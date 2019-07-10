@@ -1,6 +1,6 @@
 {
   "name": "etherlime-zos-deployer",
-  "version": "0.99.99",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
