@@ -40,6 +40,12 @@ describe('Shape cli command', () => {
         assert(fs.existsSync('./demo'))
     });
 
+    it('should shape new Chainlink project', async () => {
+        let expectedOutput = 'Shaping finished successful';
+        let childProcess = await runCmdHandler('etherlime shape chainLink', expectedOutput)
+        assert.include(childProcess.output, expectedOutput)
+    })
+
     afterEach(async function () {
         fs.removeSync('./contracts')
         fs.removeSync('./deployment')

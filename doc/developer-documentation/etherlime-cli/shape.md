@@ -16,7 +16,7 @@ Parameters:
 
   project. `react` - shapes boilerplate containing ready to use dApp
 
-  with React front-end and Etherlime project.
+  with React front-end and Etherlime project. `monoplasma` - shapes monoplasma demo for scalable one-to-many payments. `chainLink` - shapes project that uses Chainlink ecosystem
 
 ## References:
 
@@ -33,6 +33,10 @@ Follow up the steps to set up your project here:
 * Monoplasma Demo:
 
   [https://github.com/LimeChain/etherlime-shape-monoplasma](https://github.com/LimeChain/etherlime-shape-monoplasma)
+
+* ChainLink:
+
+  [https://github.com/LimeChain/etherlime-shape-chainLink/blob/master/README.md](https://github.com/LimeChain/etherlime-shape-chainLink/blob/master/README.md)
 
 Running this command will create integrated blockchain project with all modules and settings needed.
 
