@@ -1,6 +1,6 @@
 {
   "name": "etherlime-utils",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "etherlime-utils provides helpful utility functions needed for ethereum development",
   "main": "index.js",
   "keywords": [],
