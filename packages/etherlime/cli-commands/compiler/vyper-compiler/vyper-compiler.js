@@ -60,7 +60,7 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
 const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
-    console.log("platform", process.platform)
+    console.log("platformmm", process.platform)
     let command;
     if(process.platform === "darwin") {
         command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
