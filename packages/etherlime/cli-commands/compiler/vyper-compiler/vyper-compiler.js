@@ -62,10 +62,10 @@ const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
     console.log("platformmm", process.platform)
     let command;
-    if(process.platform === "darwin") {
-        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
-    } else {
+    if(process.platform === "win32") {
         command = `run  -v "%cd%":/code ethereum/vyper -f combined_json ${filePath}`
+    } else {
+        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
     }
 
     let data = await docker.command(command)
