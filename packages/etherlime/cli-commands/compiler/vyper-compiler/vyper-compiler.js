@@ -60,7 +60,14 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
 const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
-    let data = await docker.command(`run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`)
+    let command;
+    if(process.platform === "win32") {
+        command = `run  -v %cd%:/code ethereum/vyper -f combined_json ${filePath}`
+    } else {
+        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
+    }
+
+    let data = await docker.command(command)
 
     let compiledObject = JSON.parse(data.raw)
     compiledObject = Object.assign({ contractName: fileBaseName }, compiledObject[filePath]) //restructuring the compiled object
