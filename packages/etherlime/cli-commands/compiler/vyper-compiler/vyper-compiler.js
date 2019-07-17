@@ -60,11 +60,12 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
 
 const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
+    console.log("platform", process.platform)
     let command;
     if(process.platform === "darwin") {
         command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
     } else {
-        command = `run  -v %cd%:/code ethereum/vyper -f combined_json ${filePath}`
+        command = `run  -v "%cd%":/code ethereum/vyper -f combined_json ${filePath}`
     }
 
     let data = await docker.command(command)
