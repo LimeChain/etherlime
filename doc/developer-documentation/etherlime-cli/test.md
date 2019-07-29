@@ -72,6 +72,7 @@ We've augmented the test runner with the following things you can use:
 * The assert object has function:
 
     > * `assert.revert(promiseOfFailingTransaction)` for testing reverting transactions
+    > * `assert.revertWith(promiseOfFailingTransaction, expectedRevertMessage)` for testing reverting transaction with specific revert message
     > * `assert.notRevert(promiseOfNotFailingTransaction)` for testing transaction is executed successfully
     > * `assert.isAddress(value)` for testing a value is a proper address
     > * `assert.isPrivateKey(value)` for testing a value is a proper private key
@@ -204,6 +205,15 @@ On your disposal there is a global available utils object. Here are the methods 
         await assert.revert(contract.throwingMethod());
     });
 ```
+
+## assert.revertWith
+
+```javascript
+    it('should throw with specific revert message', async () => {
+        await assert.revert(contract.throwingMethod(), expectedRevertMessage);
+    });
+```
+
 
 ## assert.notRevert
 

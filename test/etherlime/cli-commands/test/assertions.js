@@ -37,6 +37,11 @@ describe('etherlime test assertions', () => {
         await assert.revert(billboardContract.buy(slogan)) // it reverts because buy functions is payable
     })
 
+    it('should revert with expected revert message', async function () {
+        let expectedRevertMessage = "The ether sent was too low"
+        await assert.revertWith(billboardContract.buy(slogan, {value: 0}), expectedRevertMessage)
+    })
+
     it('should assert that function was executed successfully', async function () {
         await assert.notRevert(billboardContract.buy(slogan, {value: oneEther}))
     })
