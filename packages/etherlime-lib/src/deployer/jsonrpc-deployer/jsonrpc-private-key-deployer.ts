@@ -3,6 +3,7 @@ import { isUrl, colors } from 'etherlime-utils';
 import { logger } from 'etherlime-logger';
 import PrivateKeyDeployer from './../private-key-deployer';
 import { TxParams, JSONRPCGlobal } from '../../types/types';
+import { ConnectionInfo } from 'ethers/utils';
 
 const COVERAGE_PROVIDER_INDEX = 1; // This is the index of the desired provider located in global.providers. We have two providers there: one for coverage which is listening for blocks and one for deploying contracts
 declare const global: JSONRPCGlobal;
@@ -20,19 +21,19 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 
 	nodeUrl: string
 
-	constructor(privateKey: string, nodeUrl: string, defaultOverrides?: TxParams) {
+	constructor(privateKey: string, nodeUrl: string | ConnectionInfo, defaultOverrides?: TxParams) {
 		let localNodeProvider: providers.JsonRpcProvider | providers.Web3Provider;
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
 		if (global.coverageSubprovider) {
-			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = nodeUrl;
+			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;
 			localNodeProvider = new providers.Web3Provider(global.provider);
-			localNodeProvider.connection.url = nodeUrl;
+			localNodeProvider.connection.url = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;
 		} else {
 			localNodeProvider = new providers.JsonRpcProvider(nodeUrl);
 		}
 
 		super(privateKey, localNodeProvider, defaultOverrides);
-		this.nodeUrl = nodeUrl;
+		this.nodeUrl = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;;
 
 		logger.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`);
 	}
@@ -45,8 +46,8 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 		this.nodeUrl = nodeUrl;
 	}
 
-	static _validateUrlInput(nodeUrl: string): void {
-		if (!(isUrl(nodeUrl))) {
+	static _validateUrlInput(nodeUrl: string | any): void {
+		if (!(isUrl(nodeUrl)) && !isUrl(nodeUrl.url)) {
 			throw new Error(`Passed contract url (${nodeUrl}) is not valid url`);
 		}
 	}
