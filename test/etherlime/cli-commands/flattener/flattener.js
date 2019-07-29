@@ -54,17 +54,17 @@ describe('Flatten method without writing files', async () => {
     });
 
     it('should flatten contract with all dependencies', async () => {
-        await assert.isFulfilled(flattener.runWithoutWriteFiles('BillboardService.sol'))
+        await assert.isFulfilled(flattener.runWithoutWriteFiles('./contracts/BillboardService.sol'))
         // assert.isTrue(fs.existsSync('./flat'))
         // assert.isTrue(fs.existsSync('./flat/BillboardService_flat.sol'))
     })
 
     it('should flat contract with external imports and specific solc version', async () => {
-        await assert.isFulfilled(flattener.runWithoutWriteFiles('contractWithExternalImports.sol', '0.5.0'))
+        await assert.isFulfilled(flattener.runWithoutWriteFiles('./contracts/contractWithExternalImports.sol', '0.5.0'))
     })
 
     it('should throw if can not find file', async () => {
-        assert.isRejected(flattener.runWithoutWriteFiles('Unexisting.sol'))
+        assert.isRejected(flattener.runWithoutWriteFiles('./contracts/Unexisting.sol'))
     })
 
     after(async function () {
