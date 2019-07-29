@@ -17,7 +17,7 @@ In addition it exposes you `verboseWaitForTransaction(transaction, transactionLa
          'Transfer Ownership');
 ```
 
-The contractWrapper object has also utils property that gives you the option to get easy the contract's balance.
+Тhe address of the contract can be accessed by `contractWrapper.contractAddress`. It has also utils property that gives you the option to get easy the contract's balance.
 
 ```javascript
     let balance = await contractWrapper.utils.getBalance();
