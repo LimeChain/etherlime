@@ -27,6 +27,12 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
 		})
 
+		it("Should initialize the signer with correct values if nodeUrl is passed as an object", () => {
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, {url: config.nodeUrl}, defaultConfigs);
+			assert.deepEqual(config.nodeUrl, deployer.provider.connection.url, "The stored provider url does not match the inputted one");
+			assert.deepEqual(defaultConfigs, deployer.defaultOverrides, "The stored default overrides does not match the inputted one");
+		})
+
 		it('Should throw on empty nodeUrl', () => {
 			const throwingFunction = () => {
 				new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, '', defaultConfigs)
@@ -38,6 +44,14 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 		it('Should throw on number for nodeUrl', () => {
 			const throwingFunction = () => {
 				new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, 69, defaultConfigs)
+			}
+
+			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
+		})
+
+		it('Should throw on invalid nodeUrl if it is passed as an object', () => {
+			const throwingFunction = () => {
+				new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, {url: 69}, defaultConfigs)
 			}
 
 			assert.throws(throwingFunction, "The deployer did not throw with invalid nodeUrl");
@@ -57,6 +71,18 @@ describe('JSONRPC-Private-Key-Deployer tests', () => {
 			provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${config.alternativePort}` }));
 			global.provider = provider;
 			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, config.alternativeNodeUrl, defaultConfigs);
+			assert.deepEqual(global.provider._providers[1].rpcUrl, config.alternativeNodeUrl, "The stored provider url does not match the inputted one");
+			assert.deepEqual(global.provider._providers[1].rpcUrl, deployer.provider.connection.url, "The stored connection url does not match the inputted one");
+
+		})
+
+		it('Should set the right localNodeProvider if the deployer is runned from coverage command and nodeUrl is passed as an object', () => {
+			const provider = new ProviderEngine();
+			global.coverageSubprovider = new CoverageSubprovider();
+			provider.addProvider(global.coverageSubprovider);
+			provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${config.alternativePort}` }));
+			global.provider = provider;
+			const deployer = new etherlime.JSONRPCPrivateKeyDeployer(config.randomPrivateKey, {url: config.alternativeNodeUrl}, defaultConfigs);
 			assert.deepEqual(global.provider._providers[1].rpcUrl, config.alternativeNodeUrl, "The stored provider url does not match the inputted one");
 			assert.deepEqual(global.provider._providers[1].rpcUrl, deployer.provider.connection.url, "The stored connection url does not match the inputted one");
 
