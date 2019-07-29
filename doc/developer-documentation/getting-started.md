@@ -5,6 +5,9 @@
 ```text
 npm i -g etherlime
 ```
+Having Etherlime installed you'll have the ability to compile, deploy, test, debug and many other cli-command options for a smart contracts development.
+
+Note that you have to install `etherlime-lib` package separately for using the deployment API.
 
 ## Running embedded ganache-cli
 

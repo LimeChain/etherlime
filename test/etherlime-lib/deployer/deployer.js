@@ -17,6 +17,7 @@ const DataContract = require('./../../testContracts/DataContract.json');
 const VestingContract = require('./../../testContracts/Vesting.json');
 const Greetings = require('./../../testContracts/Greetings.json');
 let Verifier;
+let compiler;
 
 const defaultConfigs = {
 	gasPrice: config.defaultGasPrice,
@@ -316,6 +317,7 @@ describe('Deployer tests', () => {
 
 			before(async () => {
 				Verifier = require('./../../../packages/etherlime/cli-commands/verifier/verifier');
+				compiler = require('./../../../packages/etherlime/cli-commands/compiler/compiler');
 				provider = new ethers.providers.JsonRpcProvider(config.nodeUrl);
 				signer = new ethers.Wallet('0x' + config.randomPrivateKey);
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
@@ -323,14 +325,16 @@ describe('Deployer tests', () => {
 				fs.copyFileSync('./test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
-				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2_Test.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
+				
+				await compiler.run('.', undefined, "0.5.1");
 
-				LimeFactory = require('./examples/compiledLimeFactory');
-				TestToken = require('./examples/compiledMockToken');
-				ECTools = require('./examples/compiledECToolsContract');
-				Escrow = require('./examples/compiledEscrowContract');
-				TestTokenOptimized = require('./examples/compiledMockTokenOptimized');
+				LimeFactory = require('./../../../build/LimeFactory.json');
+				TestToken = require('./../../../build/Mock_Token.json');
+				ECTools = require('./../../../build/ECTools.json');
+				Escrow = require('./../../../build/Escrow_V2_Test.json');
+				TestTokenOptimized = require('./../../../build/Mock_Token_Optimized.json');
 
 				global.Verifier = new Verifier();
 
@@ -351,7 +355,6 @@ describe('Deployer tests', () => {
 				stubRequest.onCall(0).returns(requestObject)
 				let stubCheckStatus = sinon.stub(Verifier.prototype, "_checkVerificationStatus")
 				stubCheckStatus.onCall(0).returns('Success')
-
 				contractWrapper = await deployer.deployAndVerify(LimeFactory);
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];

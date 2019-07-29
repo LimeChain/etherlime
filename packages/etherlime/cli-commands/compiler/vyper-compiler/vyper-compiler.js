@@ -18,7 +18,7 @@ const run = async (allFiles, options) => {
             let fileTimestampStatus = await getFileTimestampStatus(filePath)
 
             if (!await isFileUpdated(fileBaseName, fileTimestampStatus, buildDirectory)) {
-                return
+                continue
             }
 
             const displayPath = '.' + path.sep + filePath;
@@ -53,8 +53,8 @@ const isFileUpdated = async (fileBaseName, fileTimestampStatus, buildDirectory) 
     }
 
     current = JSON.parse(current)
-
-    return (current.updatedAt < fileTimestampStatus)
+    let updatedAt = new Date(current.updatedAt).getTime()
+    return (updatedAt < fileTimestampStatus)
 }
 
 
@@ -62,15 +62,16 @@ const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
 
     let command;
     if(process.platform === "win32") {
-        command = `run  -v %cd%:/code ethereum/vyper -f combined_json ${filePath}`
+        filePath = filePath.replace(/\\/gm, "/") //convert windows slashes to work properly for docker
+        command = `run -v %cd%:/code/ ethereum/vyper -f combined_json /code/${filePath}`
     } else {
-        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json ${filePath}`
+        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json /code/${filePath}`
     }
 
     let data = await docker.command(command)
 
     let compiledObject = JSON.parse(data.raw)
-    compiledObject = Object.assign({ contractName: fileBaseName }, compiledObject[filePath]) //restructuring the compiled object
+    compiledObject = Object.assign({ contractName: fileBaseName }, compiledObject[`/code/${filePath}`]) //restructuring the compiled object
     compiledObject.updatedAt = fileTimestampStatus
 
     return compiledObject

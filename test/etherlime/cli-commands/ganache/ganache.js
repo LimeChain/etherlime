@@ -246,8 +246,8 @@ describe('Ganache fork command', () => {
 		it('should start normal ganache server when empty parameter for forking is specified', async () => {
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
-
-			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
+			
+			const forkingParameter = rawOutputNetworkData.length > 1 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
 		});
@@ -255,8 +255,8 @@ describe('Ganache fork command', () => {
 		it('should start normal ganache server when no parameter for forking is specified', async () => {
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT}`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
-
-			const forkingParameter = rawOutputNetworkData.length > 0 ? true : false;
+		
+			const forkingParameter = rawOutputNetworkData.length > 1 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
 		});
@@ -294,7 +294,7 @@ describe('Ganache fork command', () => {
 			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(`${LOCAL_NETWORK_URL}:8125`);
 			const forkedSigner = new ethers.Wallet(randomSigner.privateKey, forkedJsonRpcProvider);
 			const balanceInForkedSigner = await forkedSigner.getBalance();
-
+	
 			assert.notDeepEqual(randomSigner.provider, forkedSigner.provider, 'The signer provider from the forked network is deep equal with signer provider from the network, that the fork is made from');
 			assert.deepEqual(randomSigner.address, forkedSigner.address, 'The stored walled address from the forked network is not the stored signer address from the network, that the fork is made from');
 			assert.deepEqual(balanceRandomSigner, balanceInForkedSigner, 'The balance in the two signers is not equal');
