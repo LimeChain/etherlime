@@ -27,7 +27,7 @@ const run = async (file, solcVersion) => {
 };
 
 const runWithoutWriteFiles = async (file, solcVersion) => {
-
+	file = path.relative(`${process.cwd()}/contracts`, file)
 	const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
 	return returnFiles(file, resolvedFiles, orderedPaths)
 
