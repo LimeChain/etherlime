@@ -41,6 +41,12 @@ describe('Example', () => {
         await assert.revert(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), "Carbohydrates are not set to 0");
     });
 
+    it('should revert with expected revert message', async () => {
+        let expectedRevertMessage = "The carbohydrates cannot be 0";
+        let carbohydrates = 0;
+        await assert.revertWith(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), expectedRevertMessage)
+    })
+
     it('should assert that function not revert and is executed successfully', async () => {
         await assert.notRevert(limeFactoryInstance.createLime("newLime3", 6, 8, 2))
     })

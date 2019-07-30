@@ -39,6 +39,19 @@ module.exports = function (chai, utils) {
     assert.fail(msg ? msg : 'Expected throw not received')
   }
 
+  assert.revertWith = async (promise, revertMessage) => {
+    try {
+      await promise
+    } catch (error) {
+      const revert = error.message.search('revert') >= 0;
+      const revertMessageExists = error.message.search(revertMessage) >= 0;
+      assert(revert && revertMessageExists, `Expected throw '${revertMessage}', got '${error.message}' instead`)
+      return
+    }
+
+    assert.fail('Expected throw not received')
+  }
+
   assert.notRevert = async function (promise) {
     let errorMessage;
     let txReceipt;
