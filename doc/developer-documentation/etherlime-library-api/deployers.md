@@ -242,7 +242,13 @@ Parameters:
 
 * `nodeUrl` - the url to the node you are trying to connect \(local or
 
-  remote\)
+  remote\). The `nodeUrl` may also be specified as an object with properties:
+
+    * url — the JSON-RPC URL (required)
+    * user — a username to use for Basic Authentication [optional]
+    * password — a password to use for Basic Authentication [optional]
+    * allowInsecure — allow Basic Authentication over an insecure HTTP network (default: false)
+
 
 * `defaultOverrides` - \[Optional\] object overriding the deployment
 
