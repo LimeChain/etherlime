@@ -37,7 +37,6 @@
     "find-cache-dir": "2.0.0",
     "fs-extra": "7.0.1",
     "ganache-cli": "^6.4.1",
-    "keen-tracking": "4.0.15",
     "mocha": "5.2.0",
     "original-require": "1.0.1",
     "require-from-string": "2.0.2",
