@@ -461,22 +461,6 @@ const commands = [
 		}
 	},
 	{
-		command: 'opt-out',
-		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
-		argumentsProcessor: (yargs) => {
-		},
-		commandProcessor: (argv) => {
-
-			try {
-				eventTracker.optOutUser();
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
 		command: 'flatten [file] [solcVersion]',
 		description: 'Flattens a smart contract combining all Solidity code in one file along with imported sources.',
 		argumentsProcessor: (yargs) => {

@@ -3,9 +3,6 @@
   "version": "2.1.8",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
-  "scripts": {
-    "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'"
-  },
   "nyc": {
     "exclude": [
       "Solidity-IDE/*.js",
