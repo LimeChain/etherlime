@@ -210,7 +210,7 @@ On your disposal there is a global available utils object. Here are the methods 
 
 ```javascript
     it('should throw with specific revert message', async () => {
-        await assert.revert(contract.throwingMethod(), expectedRevertMessage);
+        await assert.revertWith(contract.throwingMethod(), expectedRevertMessage);
     });
 ```
 
