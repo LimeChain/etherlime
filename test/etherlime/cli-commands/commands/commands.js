@@ -122,7 +122,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[11].commandProcessor(argv)
+        commands[10].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
