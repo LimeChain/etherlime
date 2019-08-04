@@ -184,6 +184,7 @@ const generateCoverageReports = async (shouldOpenCoverage) => {
 	collector.add(coverageFile);
 	reporter.add(['text']);
 	reporter.add(['html']);
+	reporter.add(['lcov']);
 
 	setTimeout(async () => {
 		console.log();
