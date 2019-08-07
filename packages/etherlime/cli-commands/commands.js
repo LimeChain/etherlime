@@ -6,8 +6,6 @@ const compiler = require('./compiler/compiler');
 const test = require('./etherlime-test/test');
 const shape = require('./shape/shape');
 const logger = require('etherlime-logger').logger;
-const eventTracker = require('./event-tracker');
-const recordEvent = eventTracker.recordEvent
 const debug = require('./debugger/index');
 const flatten = require('./flattener/flatten');
 const circuitCompile = require('./zk-proof/circuit-compile');
@@ -68,9 +66,6 @@ const commands = [
 
 		},
 		commandProcessor: (argv) => {
-			recordEvent('etherlime ganache', {
-				argv
-			});
 
 			logger.storeOutputParameter(argv.output);
 
@@ -103,9 +98,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime init', {
-				argv
-			});
+	
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -172,9 +165,6 @@ const commands = [
 				}
 				delete statistics.argv.secret;
 
-				recordEvent('etherlime deploy', {
-					statistics
-				});
 			}
 		}
 	},
@@ -196,9 +186,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime history', {
-				argv
-			});
+	
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -283,9 +271,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime compile', {
-				argv
-			});
+		
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -349,9 +335,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime test', {
-				argv
-			});
+		
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -415,9 +399,7 @@ const commands = [
 
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime coverage', {
-				argv
-			});
+			
 			try {
 				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
 			} catch (e) {
@@ -445,9 +427,7 @@ const commands = [
 			})
 		},
 		commandProcessor: async (argv) => {
-			recordEvent('etherlime debbuger', {
-				argv
-			});
+			
 			try {
 				await debug.run(argv.transactionHash, argv.port)
 			} catch (err) {
@@ -468,33 +448,11 @@ const commands = [
 			})
 		},
 		commandProcessor: (argv) => {
-			recordEvent('etherlime shape', {
-				argv
-			});
 
 			logger.storeOutputParameter(argv.output);
 
 			try {
 				shape.run(argv.name);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
-	{
-		command: 'opt-out',
-		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
-		argumentsProcessor: (yargs) => {
-		},
-		commandProcessor: (argv) => {
-			recordEvent('etherlime opt-out', {
-				argv
-			});
-
-			try {
-				eventTracker.optOutUser();
 			} catch (err) {
 				console.error(err);
 			} finally {

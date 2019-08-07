@@ -9,7 +9,6 @@ const init = require('../../../../packages/etherlime/cli-commands/init/init')
 const ganache = require('../../../../packages/etherlime/cli-commands/ganache/ganache');
 const shape = require('../../../../packages/etherlime/cli-commands/shape/shape');
 const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/etherlime-ide');
-const eventTracker = require('../../../../packages/etherlime/cli-commands/event-tracker');
 
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
@@ -91,23 +90,6 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     });
 
-    it('should throw if opt-out failed', async function () {
-        let stub = sinon.stub(eventTracker, "optOutUser")
-        stub.throws()
-        let argv = {
-            output: "some message"
-        }
-        let errorMessage = "Error"
-        let consoleSpy = sinon.spy(console, "error");
-        commands[9].commandProcessor(argv)
-        let logs = consoleSpy.getCall(0);
-        let error = String(logs.args[0])
-        let errorLogged = error.includes(errorMessage);
-        assert.isTrue(errorLogged, errorMessage);
-        stub.restore();
-        consoleSpy.restore();
-    })
-
     it('should throw if flatten failed', async function () {
         let expectedOutput = "Could not find ./contracts/Unexisting.sol from any sources"
         let childProcess = await runCmdHandler(`etherlime flatten Unexisting.sol`, expectedOutput);
@@ -122,7 +104,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[11].commandProcessor(argv)
+        commands[10].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
