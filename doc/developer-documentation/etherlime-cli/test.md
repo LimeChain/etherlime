@@ -78,7 +78,7 @@ We've augmented the test runner with the following things you can use:
     > * `assert.isPrivateKey(value)` for testing a value is a proper private key
     > * `assert.isHash(value)` for testing a value is a proper hex
     > * `assert.emit(function, eventName)` for testing an event is emitted after function execution
-    > * `assert.emitWithArgs(function, [args])` for testing an event is emitted with certain arguments after function execution
+    > * `assert.emitWithArgs(function, eventName, [args])` for testing an event is emitted with certain arguments after function execution
     > * `assert.balanceChanged(function, account, value)` for testing the balance of an account has been changed after function execution
     > * `assert.balancesChanged(function, [accounts], [values])` for testing the balances of multiple accounts has been changed after function execution
 
@@ -279,7 +279,9 @@ On your disposal there is a global available utils object. Here are the methods 
 
 ```javascript
     it('should emit event with certain arguments', async () => {
-        await assert.emitWithArgs(BillboardContract.buy('Billboard slogan', { value: 10000 }), ['Billboard slogan', 1000])
+        const expectedEvent = 'LogBillboardBought';
+        const expectedArgs = 'Billboard slogan', 1000];
+        await assert.emitWithArgs(BillboardContract.buy('Billboard slogan', { value: 10000 }), expectedEvent, expectedArgs)
     })
 ```
 
