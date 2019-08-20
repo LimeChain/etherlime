@@ -46,12 +46,12 @@ const getFiles = async function (testDirectory, files) {
 	return files;
 }
 
-const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
+const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
 	var config = Config.default();
 	var testDirectory = '';
 	if (path.includes('.js')) {
 
-		await etherlimeCoverage.runCoverage([path], timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage);
+		await etherlimeCoverage.runCoverage([path], timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
 
 		return;
 	}
@@ -66,7 +66,7 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 	files = files.filter(function (file) {
 		return file.match(config.test_file_extension_regexp) != null;
 	});
-	await etherlimeCoverage.runCoverage(files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage);
+	await etherlimeCoverage.runCoverage(files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
 
 }
 
