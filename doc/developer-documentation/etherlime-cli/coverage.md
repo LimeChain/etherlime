@@ -4,7 +4,7 @@
 
 ```text
 etherlime coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory]
-[workingDirectory] [shouldOpenCoverage]
+[workingDirectory] [shouldOpenCoverage] [ignoreFiles]
 ```
 
 Parameters:
@@ -56,4 +56,10 @@ Parameters:
   open automatically with you default browser the html coverage report
 
   located in: `./coverage`. Defaults to `false`.
+
+* `ignoreFiles` - \[Optional\] By specifying `ignoreFiles` you can set files
+
+  that would be omitted in coverage report. List them separated with comma. By
+  
+  default all files imported from `./node-modules' are ignored.
 

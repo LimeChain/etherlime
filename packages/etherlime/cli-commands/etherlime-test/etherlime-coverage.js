@@ -27,7 +27,7 @@ const path = require('path');
 const fs = require('fs')
 var istanbul = require('istanbul');
 
-const runCoverage = async (files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage) => {
+const runCoverage = async (files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
 	var mochaConfig = { 'useColors': true, 'timeout': timeout };
 	let mocha = createMocha(mochaConfig, files);
 	mocha.reporter(CustomReporter, { port });
@@ -38,7 +38,7 @@ const runCoverage = async (files, timeout, port, runs, solcVersion, buildDirecto
 		mocha.addFile(file);
 	});
 
-	const coverageProvider = await prepareCoverage(workingDirectory, port)
+	const coverageProvider = await prepareCoverage(workingDirectory, port, ignoreFiles)
 	await setJSTestGlobals(port, coverageProvider);
 
 	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, buildDirectory, workingDirectory);
@@ -150,13 +150,23 @@ const setJSTestGlobals = async (port, coverageProvider) => {
 }
 
 // Set and run coverage providers
-const prepareCoverage = async (workingDirectory, port) => {
-
+const prepareCoverage = async (workingDirectory, port, ignoreFiles) => {
 	let artifactAdapter = new SolCompilerArtifactAdapter(artifacts, workingDirectory);
+	let coverageSubproviderConfig = {
+		isVerbose,
+		ignoreFilesGlobs: ['**/node_modules/**']
+	}
+
+	if (ignoreFiles) {
+		ignoreFiles = ignoreFiles.split(',')
+		ignoreFiles = ignoreFiles.map(file => "**/" + file)
+		coverageSubproviderConfig.ignoreFilesGlobs = coverageSubproviderConfig.ignoreFilesGlobs.concat(ignoreFiles)
+	}
+		
 	global.coverageSubprovider = new CoverageSubprovider(
 		artifactAdapter,
 		defaultFromAddress,
-		isVerbose
+		coverageSubproviderConfig
 	);
 	provider.addProvider(global.coverageSubprovider);
 	provider.addProvider(new RpcProvider({ rpcUrl: `http://localhost:${port}` }));
