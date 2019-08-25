@@ -348,7 +348,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html]',
+		command: 'coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html] [ignoreFiles]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -397,11 +397,16 @@ const commands = [
 				default: 2000
 			});
 
+			yargs.positional('ignoreFiles', {
+				describe: 'Specifies files that should be omitted in coverage',
+				type: 'string'
+			});
+
 		},
 		commandProcessor: async (argv) => {
 			
 			try {
-				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html);
+				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html, argv.ignoreFiles);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();
