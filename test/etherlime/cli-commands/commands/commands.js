@@ -13,7 +13,7 @@ const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/e
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
 
-describe('root calling cli commands', () => {
+describe.only('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
         let stub = sinon.stub(init, "run")
@@ -39,8 +39,10 @@ describe('root calling cli commands', () => {
     });
 
     it('should throw err if test cli command failed', async function () {
+        let expectedOutput = "EADDRINUSE"
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
-        assert.isTrue(childProcess.portInUse)
+        console.log("obj", childProcess)
+        assert.include(childProcess, expectedOutput)
     });
 
     it('should throw err if history failed', async function () {
@@ -113,12 +115,16 @@ describe('root calling cli commands', () => {
     })
 
     it('should throw if coverage failed', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
-        assert.isTrue(childProcess.portInUse)
+        console.log("obj", childProcess)
+        assert.include(childProcess, expectedOutput)
     })
 
     it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
+        let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
-        assert.isTrue(childProcess.portInUse)
+        console.log("obj", childProcess)
+        assert.include(childProcess, expectedOutput)
     })
 })
