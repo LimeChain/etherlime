@@ -13,7 +13,7 @@ const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/e
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
 
-describe.only('root calling cli commands', () => {
+describe('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
         let stub = sinon.stub(init, "run")
