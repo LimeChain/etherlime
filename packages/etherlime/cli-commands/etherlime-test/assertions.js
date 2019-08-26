@@ -73,19 +73,25 @@ module.exports = function (chai, utils) {
     assert.isDefined(txReceipt.events.find(emittedEvent => emittedEvent.event === expectedEvent, `Expected event ${expectedEvent} was not emitted.`));
   }
 
-  assert.emitWithArgs = async (promise, arguments) => {
+  assert.emitWithArgs = async (promise, expectedEvent, arguments) => {
     let {
       txReceipt
     } = await executeTransaction(promise)
-    let eventName = txReceipt.events[0].event;
-    let log = txReceipt.events[0].args;
-    let argsLogged = [];
 
+    
+    let log;
+    for(let i = 0; i < txReceipt.events.length; i++) {
+      if(txReceipt.events[i].event === expectedEvent) {
+        log = txReceipt.events[i].args;;
+      }
+    }
+    
+    let argsLogged = [];
     for (let i = 0; i < log.length; i++) {
       argsLogged.push(log[i]);
     }
 
-    assert.equal(argsLogged.toString(), arguments.toString(), `Event ${eventName} was not emitted with expected arguments ${arguments}.`);
+    assert.equal(argsLogged.toString(), arguments.toString(), `Event ${expectedEvent} was not emitted with expected arguments ${arguments}.`);
 
   }
 

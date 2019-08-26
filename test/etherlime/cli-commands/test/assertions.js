@@ -52,8 +52,9 @@ describe('etherlime test assertions', () => {
     })
 
     it('should assert that event was emitted with certain arguments', async function () {
+        let expectedEvent = 'LogBillboardBought'
         let expectedArgs = [address, oneEther , slogan]
-        await assert.emitWithArgs(billboardContract.buy(slogan, {value: oneEther}), expectedArgs)
+        await assert.emitWithArgs(billboardContract.buy(slogan, {value: oneEther}), expectedEvent, expectedArgs)
     })
 
     it('should assert a balance has been changed after a function is executed', async function () {
