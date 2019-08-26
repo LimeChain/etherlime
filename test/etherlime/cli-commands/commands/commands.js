@@ -13,7 +13,7 @@ const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/e
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
 
-describe.only('root calling cli commands', () => {
+describe('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
         let stub = sinon.stub(init, "run")
@@ -39,9 +39,8 @@ describe.only('root calling cli commands', () => {
     });
 
     it('should throw err if test cli command failed', async function () {
-        let expectedOutput = "ture"
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
-        assert.include(childProcess.portInUse, expectedOutput)
+        assert.isTrue(childProcess.portInUse)
     });
 
     it('should throw err if history failed', async function () {
@@ -68,7 +67,6 @@ describe.only('root calling cli commands', () => {
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
-        console.log("errorLogged", errorLogged)
         assert.isTrue(errorLogged, errorMessage);
         stub.restore();
         consoleSpy.restore();
@@ -115,14 +113,12 @@ describe.only('root calling cli commands', () => {
     })
 
     it('should throw if coverage failed', async function () {
-        let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
-        assert.include(childProcess, expectedOutput)
+        assert.isTrue(childProcess.portInUse)
     })
 
     it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
-        let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
-        assert.include(childProcess, expectedOutput)
+        assert.isTrue(childProcess.portInUse)
     })
 })
