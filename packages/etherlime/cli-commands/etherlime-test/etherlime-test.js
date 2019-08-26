@@ -13,15 +13,14 @@ chai.use(require("./assertions"));
 
 const run = async (files, timeout, skipCompilation, runs, solcVersion, enableGasReport, port) => {
 	var mochaConfig = { 'useColors': true, 'timeout': timeout };
-	console.log("1")
 	let mocha = createMocha(mochaConfig, files);
-	console.log("2")
+
 	files.forEach(function (file) {
 		delete originalRequire.cache[file];
 
 		mocha.addFile(file);
 	});
-	console.log("3")
+
 	setJSTestGlobals(port);
 	if (enableGasReport) {
 		mocha.reporter(CustomReporter, { port });
@@ -44,11 +43,8 @@ const createMocha = (config, files) => {
 }
 
 const runMocha = async (mocha) => {
-	console.log("4")
 	return new Promise((resolve, reject) => {
-		console.log("5")
 		mocha.run(failures => {
-			console.log("6")
 			process.exitCode = failures ? -1 : 0;
 			if (failures) {
 				reject('Some of the test scenarios failed!')
