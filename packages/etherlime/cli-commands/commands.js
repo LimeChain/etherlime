@@ -336,6 +336,7 @@ const commands = [
 				const test = require('./etherlime-test/test');
 				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.runs, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
+				console.log("error in command", err)
 				console.error(err);
 			} finally {
 				logger.removeOutputStorage();

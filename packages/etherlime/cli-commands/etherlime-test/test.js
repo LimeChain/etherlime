@@ -5,17 +5,16 @@ const path = require('path');
 let Config = require('./../compiler/etherlime-config');
 
 const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasReport, port) => {
-	console.log("0")
+
 	var config = Config.default();
 	var testDirectory = '';
 
 	if (path.includes('.js')) {
-		console.log("1")
 		await etherlimeTest.run([path], timeout, skipCompilation, runs, solcVersion, enableGasReport, port);
 
 		return;
 	}
-	console.log("2")
+
 	testDirectory = path;
 
 	if (!path.includes(config.test_directory)) {
@@ -23,12 +22,10 @@ const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasR
 	}
 
 	let files = await getFiles(testDirectory);
-	console.log("3")
 	files = files.filter(function (file) {
-		console.log("4")
 		return file.match(config.test_file_extension_regexp) != null;
 	});
-	console.log("5")
+
 	await etherlimeTest.run(files, timeout, skipCompilation, runs, solcVersion, enableGasReport, port);
 }
 

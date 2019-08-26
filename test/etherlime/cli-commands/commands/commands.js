@@ -38,11 +38,10 @@ describe.only('root calling cli commands', () => {
         assert.include(childProcess, expectedOutput)
     });
 
-    it('should throw err if test cli command failed', async function () {
-        let expectedOutput = "EADDRINUSE"
-        let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
+    it.only('should throw err if test cli command failed', async function () {
+        let childProcess = await runCmdHandler(`etherlime test`);
         console.log("obj", childProcess)
-        assert.include(childProcess, expectedOutput)
+        assert.isTrue(childProcess.portInUse)
     });
 
     it('should throw err if history failed', async function () {
@@ -115,16 +114,16 @@ describe.only('root calling cli commands', () => {
     })
 
     it('should throw if coverage failed', async function () {
-        let expectedOutput = "ENOENT: no such file or directory"
-        let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
-        console.log("obj", childProcess)
-        assert.include(childProcess, expectedOutput)
+        // let expectedOutput = "ENOENT: no such file or directory"
+        let childProcess = await runCmdHandler(`etherlime coverage`);
+        console.log("obj1", childProcess)
+        assert.isTrue(childProcess.portInUse)
     })
 
     it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
         let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
-        console.log("obj", childProcess)
+        console.log("obj2", childProcess)
         assert.include(childProcess, expectedOutput)
     })
 })
