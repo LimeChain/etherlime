@@ -13,7 +13,7 @@ const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/e
 const commands = require('../../../../packages/etherlime/cli-commands/commands');
 
 
-describe('root calling cli commands', () => {
+describe.only('root calling cli commands', () => {
 
     it('should throw err if init cli command failed', async function () {
         let stub = sinon.stub(init, "run")
@@ -38,11 +38,10 @@ describe('root calling cli commands', () => {
         assert.include(childProcess, expectedOutput)
     });
 
-    it.only('should throw err if test cli command failed', async function () {
-        let expectedOutput = "ENOENT: no such file or directory"
+    it('should throw err if test cli command failed', async function () {
+        let expectedOutput = "ture"
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
-        console.log("childprocess", childProcess)
-        assert.include(childProcess, expectedOutput)
+        assert.include(childProcess.portInUse, expectedOutput)
     });
 
     it('should throw err if history failed', async function () {
@@ -69,6 +68,7 @@ describe('root calling cli commands', () => {
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
+        console.log("errorLogged", errorLogged)
         assert.isTrue(errorLogged, errorMessage);
         stub.restore();
         consoleSpy.restore();
