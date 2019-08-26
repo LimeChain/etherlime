@@ -42,7 +42,7 @@ describe.only('root calling cli commands', () => {
         let expectedOutput = 'ENOENT: no such file or directory'
         let childProcess = await runCmdHandler(`etherlime test`, expectedOutput);
         console.log("obj", childProcess)
-        assert.isTrue(childProcess.portInUse)
+        assert.include(childProcess, expectedOutput)
     });
 
     it('should throw err if history failed', async function () {
