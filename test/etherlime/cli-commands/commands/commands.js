@@ -113,9 +113,9 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     })
 
-    it('should throw if coverage failed', async function () {
+    it.only('should throw if coverage failed', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
-        let childProcess = await runCmdHandler(`etherlime coverage`);
+        let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
         assert.include(childProcess, expectedOutput)
     })
 

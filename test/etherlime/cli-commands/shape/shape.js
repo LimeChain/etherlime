@@ -13,10 +13,10 @@ describe('Shape cli command', () => {
         process.chdir('/tmp');
     });
 
-    it('should throw err if can not find a proper shape', async () => {
+    it.only('should throw err if can not find a proper shape', async () => {
         let expectedOutput = 'Invalid shape'
         let childProcess = await runCmdHandler(`etherlime shape ${unexistingShape}`, expectedOutput)
-        assert.include(childProcess.output, expectedOutput)
+        assert.include(childProcess, expectedOutput)
     })
 
     it('should shape new dApp with Angular front-end', async () => {
