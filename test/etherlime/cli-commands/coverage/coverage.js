@@ -97,6 +97,11 @@ describe('coverage cli command', () => {
         etherlimeTestSpy.restore();
     });
 
+    it('should execute coverage cli command with specified files to ignore in report', async function () {
+        let ignoreFile = 'contracts2/LimeFactory.sol'
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, `./build`, `./contracts`, true, ignoreFile))
+    })
+
     it('should throw on wrong path', async function () {
         await assert.isRejected(test.runCoverage('wrongTestDirectory'));
     });
