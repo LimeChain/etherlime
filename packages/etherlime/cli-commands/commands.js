@@ -1,20 +1,4 @@
-const ganache = require('./ganache/ganache');
-const init = require('./init/init');
-const deployer = require('./deployer/deployer');
-const history = require('./history/history');
-const compiler = require('./compiler/compiler');
-const test = require('./etherlime-test/test');
-const shape = require('./shape/shape');
 const logger = require('etherlime-logger').logger;
-const debug = require('./debugger/index');
-const flatten = require('./flattener/flatten');
-const circuitCompile = require('./zk-proof/circuit-compile');
-const trustedSetup = require('./zk-proof/trusted-setup');
-const generateProof = require('./zk-proof/generate-proof');
-const verifier = require('./zk-proof/verify-proof');
-const generateVerify = require('./zk-proof/generate-verify');
-const generateCall = require('./zk-proof/generate-call');
-const ide = require('./etherlime-ide/etherlime-ide');
 
 const commands = [
 	{
@@ -70,6 +54,12 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				process.on('SIGINT', function () {
+					console.log("\nGracefully shutting down from SIGINT (Ctrl-C)");
+					// some other closing procedures go here
+					process.exit(1);
+				});
+				const ganache = require('./ganache/ganache');
 				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count, argv.networkId);
 			} catch (err) {
 				console.error(err);
@@ -98,10 +88,11 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-	
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const init = require('./init/init');
 				await init.run(argv.zk);
 			} catch (err) {
 				console.error(err);
@@ -155,6 +146,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const deployer = require('./deployer/deployer');
 				await deployer.run(argv.file, argv.network, argv.secret, argv.silent, argv.compile, argv.runs, argv.output, argv.etherscanApiKey);
 			} catch (err) {
 				console.error(err);
@@ -186,10 +178,11 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-	
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const history = require('./history/history');
 				await history.run(argv.limit, argv.output);
 			} catch (err) {
 				console.error(err);
@@ -271,10 +264,11 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-		
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const compiler = require('./compiler/compiler');
 				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles, argv.exportAbi);
 			} catch (err) {
 				console.error(err);
@@ -335,10 +329,11 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
-		
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const test = require('./etherlime-test/test');
 				await test.run(argv.path, argv.timeout, argv.skipCompilation, argv.runs, argv.solcVersion, argv.gasReport, argv.port);
 			} catch (err) {
 				console.error(err);
@@ -404,8 +399,9 @@ const commands = [
 
 		},
 		commandProcessor: async (argv) => {
-			
+
 			try {
+				const test = require('./etherlime-test/test');
 				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html, argv.ignoreFiles);
 			} catch (e) {
 				console.error(e);
@@ -432,8 +428,9 @@ const commands = [
 			})
 		},
 		commandProcessor: async (argv) => {
-			
+
 			try {
+				const debug = require('./debugger/index');
 				await debug.run(argv.transactionHash, argv.port)
 			} catch (err) {
 				console.error(err);
@@ -457,6 +454,7 @@ const commands = [
 			logger.storeOutputParameter(argv.output);
 
 			try {
+				const shape = require('./shape/shape');
 				shape.run(argv.name);
 			} catch (err) {
 				console.error(err);
@@ -481,6 +479,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 			try {
+				const flatten = require('./flattener/flatten');
 				await flatten.run(argv.file, argv.solcVersion);
 			} catch (err) {
 				console.error(err);
@@ -500,6 +499,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 			try {
+				const ide = require('./etherlime-ide/etherlime-ide');
 				await ide.run(argv.port);
 			} catch (err) {
 				console.error(err);
@@ -540,13 +540,14 @@ const zkCommandProcessor = async (argv) => {
 	let proof = 'circuit_proof.json';
 	let verifierKey = 'circuit_verification_key.json';
 
-
 	// check command and optional scenarios:
 	switch (argv.zkCommand) {
 		case 'compile':
+			const circuitCompile = require('./zk-proof/circuit-compile');
 			await circuitCompile.run();
 			break;
 		case 'setup':
+			const trustedSetup = require('./zk-proof/trusted-setup');
 			await trustedSetup.run();
 			break;
 		case 'proof':
@@ -559,6 +560,7 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.provingKey) {
 				provingKey = argv.provingKey;
 			}
+			const generateProof = require('./zk-proof/generate-proof');
 			await generateProof.run(signal, circuit, provingKey);
 			break;
 		case 'verify':
@@ -571,13 +573,14 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.verifierKey) {
 				verifierKey = argv.verifierKey;
 			}
-
+			const verifier = require('./zk-proof/verify-proof');
 			await verifier.run(publicSignals, proof, verifierKey);
 			break;
 		case 'generate':
 			if (argv.verifierKey) {
 				verifierKey = argv.verifierKey;
 			}
+			const generateVerify = require('./zk-proof/generate-verify');
 			await generateVerify.run(verifierKey);
 			break;
 		case 'call':
@@ -587,6 +590,7 @@ const zkCommandProcessor = async (argv) => {
 			if (argv.proof) {
 				proof = argv.proof;
 			}
+			const generateCall = require('./zk-proof/generate-call');
 			await generateCall.run(publicSignals, proof);
 			break;
 	}
