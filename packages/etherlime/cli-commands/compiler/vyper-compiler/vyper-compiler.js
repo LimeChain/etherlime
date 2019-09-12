@@ -63,9 +63,9 @@ const compile = async (filePath, fileBaseName, fileTimestampStatus) => {
     let command;
     if(process.platform === "win32") {
         filePath = filePath.replace(/\\/gm, "/") //convert windows slashes to work properly for docker
-        command = `run -v %cd%:/code/ ethereum/vyper -f combined_json /code/${filePath}`
+        command = `run -v %cd%:/code/ ethereum/vyper:0.1.0b11 -f combined_json /code/${filePath}`
     } else {
-        command = `run  -v $(pwd):/code ethereum/vyper -f combined_json /code/${filePath}`
+        command = `run -v $(pwd):/code ethereum/vyper:0.1.0b11 -f combined_json /code/${filePath}`
     }
 
     let data = await docker.command(command)
