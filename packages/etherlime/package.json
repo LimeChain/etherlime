@@ -18,7 +18,7 @@
   "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
-    "@0x/sol-coverage": "^3.0.0",
+    "@0x/sol-coverage": "3.0.12",
     "axios": "^0.18.0",
     "bn": "^1.0.1",
     "chai": "4.1.2",
