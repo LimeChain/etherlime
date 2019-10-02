@@ -2,6 +2,7 @@ language:
 - node_js:
 before_install:
   - npm install -g lerna
+  - npm install -g solc@0.5.12
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
   - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list

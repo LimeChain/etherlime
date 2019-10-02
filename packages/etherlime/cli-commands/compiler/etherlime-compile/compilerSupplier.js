@@ -6,6 +6,7 @@ const requireFromString = require('require-from-string');
 const findCacheDir = require('find-cache-dir');
 const originalRequire = require('original-require');
 const solcWrap = require('solc/wrapper');
+const { execSync } = require("child_process");
 
 class CompilerSupplier {
     /**
@@ -52,9 +53,11 @@ class CompilerSupplier {
             const useDefaultNodeModules = useDefaultEtherlime && self.isLocal(nodeModulesSolc); // Checking for version number
             const useLocal = !useDefaultEtherlime && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
             const useRemote = !useLocal;
+            const useNative = (self.config.version === 'native');
 
             if (useDocker) return accept(self.getBuilt("docker"));
             if (useLocal) return accept(self.getLocal(version));
+            if (useNative) return accept(self.getByUrl(self.getNative()));
             if (useDefaultNodeModules) return accept(self.getLocal(nodeModulesSolc));
             if (useDefaultEtherlime) return accept(self.getDefaultEtherlime());
             if (useRemote) return accept(self.getByUrl(version));
@@ -117,6 +120,20 @@ class CompilerSupplier {
         }
 
         return compiler;
+    }
+
+    getNative() {
+        const self = this;
+        let version;
+        try {
+            version = execSync("solcjs --version").toString();
+            const regexp = /[0-9]?\.[0-9]?\.[0-9]?[0-9]?/;
+            const solcVersion = regexp.exec(version)[0];
+            return solcVersion;
+            
+        } catch (error) {
+            throw self.errors('No native error.');
+        }
     }
 
     getVersions() {
