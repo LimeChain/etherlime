@@ -9,7 +9,7 @@ before_install:
   - sudo apt-get install -y -qq yarn
   - sudo add-apt-repository ppa:ethereum/ethereum
   - sudo apt-get update
-  - sudo apt-get install solc
+  - sudo apt-get install -y solc
 cache:
   yarn: true
 install:
