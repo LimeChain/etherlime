@@ -6,6 +6,8 @@ const requireFromString = require('require-from-string');
 const findCacheDir = require('find-cache-dir');
 const originalRequire = require('original-require');
 const solcWrap = require('solc/wrapper');
+const { execSync } = require("child_process");
+const process = require('process');
 
 class CompilerSupplier {
     /**
@@ -52,9 +54,12 @@ class CompilerSupplier {
             const useDefaultNodeModules = useDefaultEtherlime && self.isLocal(nodeModulesSolc); // Checking for version number
             const useLocal = !useDefaultEtherlime && self.isLocal(version); // We're checking if the version is set as path and then we're checking the path
             const useRemote = !useLocal;
+            const useNative = (self.config.version === 'native');
+
 
             if (useDocker) return accept(self.getBuilt("docker"));
             if (useLocal) return accept(self.getLocal(version));
+            if (useNative) return accept(self.getNative());
             if (useDefaultNodeModules) return accept(self.getLocal(nodeModulesSolc));
             if (useDefaultEtherlime) return accept(self.getDefaultEtherlime());
             if (useRemote) return accept(self.getByUrl(version));
@@ -100,6 +105,33 @@ class CompilerSupplier {
 
         return compiler;
     }
+
+    getNative() {
+        const versionString = this.getNativeSolcVersion();
+        const command = `solc --standard-json --allow-paths ${process.cwd()}`;
+
+        try {
+        return {
+            compile: options => String(execSync(command, { input: options })),
+            version: () => versionString
+        };
+        } catch (error) {
+        if (error.message === "No matching version found") {
+            throw this.errors("noVersion", versionString);
+        }
+        throw new Error(error);
+        }
+    }
+
+    getNativeSolcVersion() {
+        let version;
+        try {
+            version = execSync("solc --version");
+        } catch (error) {
+          throw this.errors("noNative", null, error);
+        }
+        return version.toString().split(":")[1].trim();
+      }
 
 
     /**

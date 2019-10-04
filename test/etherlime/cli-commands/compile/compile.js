@@ -46,6 +46,10 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, "^0.4.21", true), "It is not successfully executed!")
     });
 
+    it('should run compile with native solc', async function () {
+        await assert.isFulfilled(compiler.run('.', undefined, "native", undefined), "It is not successfully executed!")
+    });
+
     it('should throw error if docker is true but solc version is undefined', async function () {
         await assert.isRejected(compiler.run('.', undefined, undefined, true), error)
     })

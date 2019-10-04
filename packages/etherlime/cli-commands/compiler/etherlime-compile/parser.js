@@ -1,8 +1,8 @@
 const CompileError = require("./compile-error");
 const preReleaseCompilerWarning = "This is a pre-release compiler version, please do not use it in production.";
-
 const parseImports = (body, solc) => {
   const importErrorKey = "ETHERLIME_IMPORT";
+  const nativeSolImportErrorKey = "File outside of allowed directories."
   const failingImportFileName = "__Etherlime__NotFound.sol";
 
   body = body + "\n\nimport '" + failingImportFileName + "';\n";
@@ -22,9 +22,9 @@ const parseImports = (body, solc) => {
       }
     }
   };
-
+ 
   let output = solc.compile(JSON.stringify(solcStandardInput), () => {
-    return { error: importErrorKey };
+    return { error: (importErrorKey && nativeSolImportErrorKey) };
   });
 
   output = JSON.parse(output);
@@ -34,9 +34,9 @@ const parseImports = (body, solc) => {
   });
 
   let nonImportErrors = errors.filter((solidity_error) => {
-
-    return solidity_error.formattedMessage.indexOf(importErrorKey) < 0;
+    return (solidity_error.formattedMessage.indexOf(importErrorKey) < 0 && solidity_error.formattedMessage.indexOf(nativeSolImportErrorKey) < 0);
   });
+
 
   if (nonImportErrors.length > 0) {
     throw new CompileError(nonImportErrors[0].formattedMessage);
