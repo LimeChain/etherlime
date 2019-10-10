@@ -192,11 +192,11 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [dir] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles] [exportAbi]',
-		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the dir parameter (defaults to .)',
+		command: 'compile [path] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles] [exportAbi]',
+		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the path parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
-			yargs.positional('dir', {
-				describe: 'Specifies the root dir to read the contracts and place the build folder',
+			yargs.positional('path', {
+				describe: 'Specifies the root path to read the contracts and place the build folder',
 				type: 'string',
 				default: '.'
 			});
@@ -269,7 +269,7 @@ const commands = [
 
 			try {
 				const compiler = require('./compiler/compiler');
-				await compiler.run(argv.dir, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles, argv.exportAbi);
+				await compiler.run(argv.path, argv.runs, argv.solcVersion, argv.docker, argv.list, argv.all, argv.quite, argv.buildDirectory, argv.workingDirectory, argv.deleteCompiledFiles, argv.exportAbi);
 			} catch (err) {
 				console.error(err);
 			} finally {
