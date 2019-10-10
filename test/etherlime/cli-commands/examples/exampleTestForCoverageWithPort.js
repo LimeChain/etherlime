@@ -6,7 +6,7 @@ const LimeFactory = require('../../test/testContracts/LimeFactory.json')
 
 describe('Lime Factory example', function () {
 
-    let port = 5000
+    let port = 8545
     let accountFour = accounts[3];
     let deployer;
     let limeFactoryInstance;

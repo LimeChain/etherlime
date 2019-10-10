@@ -117,8 +117,14 @@ const runMocha = async (mocha) => {
 
 	return new Promise((resolve, reject) => {
 		mocha.run(async failures => {
-			await writeCoverageFile();
-			resolve();
+			process.exitCode = failures ? 1 : 0;
+			if (failures) {
+				reject('Some of the test scenarios failed!')
+			}
+			else {
+				await writeCoverageFile();
+				resolve();
+			}
 		});
 	})
 
