@@ -2,7 +2,7 @@ const logger = require('etherlime-logger').logger;
 
 const commands = [
 	{
-		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId]',
+		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId] [unlock] [secure]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('port', {
@@ -48,6 +48,17 @@ const commands = [
 				type: 'number',
 			});
 
+			yargs.positional('unlock', {
+				describe: 'Specify --unlock passing an address to unlock specific account/accounts',
+				type: 'string',
+			});
+
+			yargs.positional('secure', {
+				describe: 'Lock available accounts by default. (defaults to: false)',
+				type: 'boolean',
+				default: false
+			});
+
 		},
 		commandProcessor: (argv) => {
 
@@ -60,7 +71,7 @@ const commands = [
 					process.exit(1);
 				});
 				const ganache = require('./ganache/ganache');
-				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count, argv.networkId);
+				ganache.run(argv.port, logger, argv.fork, argv.gasPrice, argv.gasLimit, argv.mnemonic, argv.count, argv.networkId, argv.unlock, argv.secure);
 			} catch (err) {
 				console.error(err);
 			} finally {
