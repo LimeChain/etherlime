@@ -51,6 +51,8 @@ const OPTIONAL_ACCOUNT_ADDRESS = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9';
 const SECOND_OPTIONAL_ACCOUNT_PRIVATE_KEY = '0xfb848dd410a29bc784745d01c877a2934a3711a2dd53b8e5c5c651139a3b3689';
 const SECOND_OPTIONAL_ACCOUNT_ADDRESS = '0x9f7ffcb016b0f7b142529bf27ef1ec5b0039c32c';
 
+const THIRD_OPTIONAL_ACCOUNT_ADDRESS = '0xd9995bae12fee327256ffec1e3184d492bd94c31';
+
 const MNEMONIC = "radar blur cabbage chef fix engine embark joy scheme fiction master release";
 const NUMBER_OF_ACCOUNTS = 2;
 
@@ -62,6 +64,8 @@ let expectedOutput = 'Listening on';
 let localForkingExpectedOutput = 'Etherlime ganache is forked from network';
 let localForkingFromSpecificBlockNumberOutput = 'Network is forked from block number';
 let specificNetworkId = `Network ID: ${NETWORK_ID}`;
+let unlockedAccount = `Unlocked Account(s): ${THIRD_OPTIONAL_ACCOUNT_ADDRESS}`;
+let secureAccounts = "Secure: true";
 let childResponse;
 
 describe('Ganache cli command', () => {
@@ -308,7 +312,7 @@ describe('Ganache fork command', () => {
 		}
 	});
 });
-describe('Ganace fork existing contract tests', async () => {
+describe('Ganache fork existing contract tests', async () => {
 	describe('Fetching contract through the forked network, which is already deployed on the main network', async () => {
 
 		let jsonRpcProvider;
@@ -511,6 +515,26 @@ describe('Run ganache server with optional mnemonic and optional number of accou
 
 	afterEach(async () => {
 		fs.writeFileSync(`${process.cwd()}/packages/etherlime/cli-commands/ganache/setup.json`, JSON.stringify(ganacheSetupFile, null, '\t'), "utf8");
+		if (childResponse && childResponse.process) {
+			killProcessByPID(childResponse.process.pid)
+			childResponse = '';
+		}
+	});
+});
+
+describe('Etherlime ganache with unlock and secure param param', async () => {
+
+	it('should start ganache server with specific unlock account address', async () => {
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --unlock=${THIRD_OPTIONAL_ACCOUNT_ADDRESS}`, unlockedAccount);
+		assert.include(childResponse.output, unlockedAccount, 'The ganache is not runned with unlocked account');
+	});
+
+	it('should start ganache server with --secure param', async () => {
+		childResponse = await runCmdHandler(`etherlime ganache --port ${SPECIFIC_PORT} --secure`, secureAccounts);
+		assert.include(childResponse.output, secureAccounts, 'The ganache is not runned with locked accounts');
+	});
+
+	afterEach(async () => {
 		if (childResponse && childResponse.process) {
 			killProcessByPID(childResponse.process.pid)
 			childResponse = '';

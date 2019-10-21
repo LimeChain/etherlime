@@ -8,10 +8,16 @@ const fs = require('fs');
 const path = require('path');
 let port;
 
-const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generate, networkId) => {
+const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generate, networkId, unlock, secure) => {
+	
 	if (mnemonic && generate) {
 		generateAccounts(mnemonic, generate);
 	}
+
+	if (typeof unlock == "string") {
+		unlock = [unlock];
+	}
+
 	port = (inPort) ? inPort : setup.defaultPort;
 	fork = (forkParams) ? forkParams : setup.forkParams;
 	gasPrice = (gasPrice) ? ethers.utils.hexlify(gasPrice) : setup.gasPrice;
@@ -22,7 +28,9 @@ const run = (inPort, inLogger, forkParams, gasPrice, gasLimit, mnemonic, generat
 		fork,
 		gasPrice,
 		gasLimit,
-		network_id: networkId
+		network_id: networkId,
+		unlocked_accounts: unlock,
+		secure: secure
 	});
 
 	server.listen(port, ganacheServerListenCallback);
@@ -42,6 +50,8 @@ const ganacheServerListenCallback = (err, blockchain) => {
 	forkedNetwork ? logger.log(`Etherlime ganache is forked from network: ${colors.colorSuccess(forkedNetwork)}`) : null;
 	forkedBlockNumber ? logger.log(`Network is forked from block number: ${colors.colorSuccess(forkedBlockNumber)}`) : null;
 	logger.log(`Network ID: ${colors.colorSuccess(blockchain.options.network_id)}`);
+	blockchain.options.unlocked_accounts.length ? logger.log(`Unlocked Account(s): ${colors.colorSuccess(blockchain.options.unlocked_accounts)}`) : null;
+	blockchain.options.secure ? logger.log(`Secure: ${colors.colorSuccess(blockchain.options.secure)}`) : null;
 };
 
 const generateAccounts = (mnemonic, generate) => {
