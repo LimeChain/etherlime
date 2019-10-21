@@ -5,17 +5,17 @@ Running this command will compile all smart contracts along with imported source
 ## Syntax
 
 ```text
-etherlime compile [dir] [runs] [solcVersion] [docker] [list] [all]
+etherlime compile [path] [runs] [solcVersion] [docker] [list] [all]
 [quiet] [output] [buildDirectory] [workingDirectory] [deleteCompiledFiles] [exportAbi]
 ```
 
 Parameters:
 
-* `dir` - \[Optional\] By specifying `dir` you can set the root
+* `path` - \[Optional\] By specifying `path` you can set the root
 
   directory where to read the contracts and place the build folder. By
 
-  default `dir` is set to the current working directory `./`
+  default `path` is set to the current working directory `./`
 
 * `runs` - \[Optional\] By specifying `runs` between 1 and 999 you
 
