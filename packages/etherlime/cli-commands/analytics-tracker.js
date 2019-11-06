@@ -31,7 +31,7 @@ class AnalyticsTracker {
             metadata = adjustData(metadata)
             await analyticsClient.recordEvent(eventType, metadata)
         } catch (e) {
-
+            return false
         }
         
         return true
@@ -44,8 +44,6 @@ class AnalyticsTracker {
     }
 }
 
-module.exports = AnalyticsTracker
-
 // adjust data to array and remove unsuitable keys
 function adjustData(metadata) {
     let data = [];
@@ -56,3 +54,5 @@ function adjustData(metadata) {
     })
     return data
 }
+
+module.exports = AnalyticsTracker
