@@ -304,7 +304,7 @@ describe('Deployer tests', () => {
 			});
 		});
 
-		describe.only('Deploy and verify smart contract', () => {
+		describe('Deploy and verify smart contract', () => {
 
 			let signer;
 			let provider;
