@@ -37,7 +37,7 @@
     "solc": "^0.5.8",
     "tcp-port-used": "^1.0.1",
     "web3-provider-engine": "^15.0.0",
-    "@openzeppelin/upgrades": "^2.5.3"
+    "@openzeppelin/upgrades": "^2.6.0-rc.1"
   },
   "browser": {
     "fs": false,

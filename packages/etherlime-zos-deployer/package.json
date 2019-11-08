@@ -12,7 +12,7 @@
   "dependencies": {
     "etherlime-lib": "^1.1.5",
     "typescript": "^3.5.1",
-    "@openzeppelin/upgrades": "^2.5.3"
+    "@openzeppelin/upgrades": "^2.6.0-rc.1"
   },
   "browser": {
     "fs": false,
