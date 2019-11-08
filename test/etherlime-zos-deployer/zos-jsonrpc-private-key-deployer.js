@@ -30,7 +30,7 @@ let LimeFactory;
 let currentDir;
 
 
-xdescribe('Zos deployer tests', async () => {
+describe('Zos deployer tests', async () => {
 
 	describe('deploy proxy', async () => {
 
