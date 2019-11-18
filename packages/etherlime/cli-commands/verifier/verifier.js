@@ -15,7 +15,7 @@ class Verifier {
 
 	}
 
-	async verifySmartContract(contractWrapper, deploymentArguments, libraries, defaultOverrides) {
+	async verifySmartContract(contractWrapper, blockscout, deploymentArguments, libraries, defaultOverrides) {
 
 		const etherscanApiKey = defaultOverrides.etherscanApiKey;
 		const contractName = contractWrapper._contract.contractName;
@@ -25,6 +25,21 @@ class Verifier {
 		const { apiUrl, networkName } = await this._buildApiUrl(contractWrapper);
 		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
 		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
+		
+		if(blockscout) {
+			console.log("1")
+			const url = 'https://blockscout.com/poa/sokol/api'
+			let data = this._prepareBlockscoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries)
+			const response = await axios.post(url, data);;
+			console.log("response", response)
+			if (response.message !== 'OK') {
+				logger.log(`Contract: ${colors.colorName(contractName)} verification failed with error: ${colors.colorFailure(response.result)}`);
+				return response.result;
+			}
+			logger.log(`Contract: ${colors.colorName(contractName)} is verified ${colors.colorSuccess('successfully!')}`);
+			return 'Success';
+			
+		}
 		let data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
 
 		const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
@@ -91,6 +106,29 @@ class Verifier {
 				let index = i + 1
 				data[`libraryname${index}`] = contractLibraries[i].name;
 				data[`libraryaddress${index}`] = contractLibraries[i].address;
+			}
+		}
+		let stringData = querystring.stringify(data);
+		return stringData
+	}
+
+	_prepareBlockscoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
+		let data = {
+			module: MODULE_NAME,
+			action: 'verify', // DO NOT CHANGE
+			addressHash: contractWrapper.contractAddress,
+			contractSourceCode: flattenedCode,
+			name: contractWrapper._contract.contractName,
+			compilerVersion: solcVersionCompiler,
+			optimization: contractWrapper._contract.compiler.optimizer ? true : false,
+			runs: contractWrapper._contract.compiler.runs,
+			constructorArguments: constructorArguments
+		}
+		if (contractLibraries) {
+			for (let i = 0; i < contractLibraries.length; i++) {
+				let index = i + 1
+				data[`library${index}Name`] = contractLibraries[i].name;
+				data[`library${index}Address`] = contractLibraries[i].address;
 			}
 		}
 		let stringData = querystring.stringify(data);
