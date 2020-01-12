@@ -4,6 +4,23 @@ const fs = require('fs-extra');
 const path = require('path');
 let Config = require('./../compiler/etherlime-config');
 
+const CoverageAPI = require("solidity-coverage/api");
+const utils = require('solidity-coverage/utils');
+
+const client = require('ganache-cli');
+const setup = require('../ganache/setup.json');
+
+const coverageConfig = {
+	workingDir: process.cwd(),
+	contractsDir: path.join(process.cwd(), 'contracts'),
+	providerOptions: {
+		port: 8545,
+		accounts: setup.accounts
+	}
+}
+
+
+
 const run = async (path, timeout, skipCompilation, runs, solcVersion, enableGasReport, port) => {
 
 	var config = Config.default();
@@ -38,8 +55,7 @@ const getFiles = async function (testDirectory, files) {
 		const filePath = path.join(testDirectory, readFiles[i])
 		if (fs.statSync(filePath).isDirectory()) {
 			files = await getFiles(filePath, files);
-		}
-		else {
+		} else {
 			files.push(filePath);
 		}
 	}
@@ -49,12 +65,12 @@ const getFiles = async function (testDirectory, files) {
 const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
 	var config = Config.default();
 	var testDirectory = '';
-	if (path.includes('.js')) {
+	// if (path.includes('.js')) {
 
-		await etherlimeCoverage.runCoverage([path], timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
+	// 	await etherlimeCoverage.runCoverage([path], timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
 
-		return;
-	}
+	// 	return;
+	// }
 
 	testDirectory = path;
 
@@ -66,7 +82,29 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 	files = files.filter(function (file) {
 		return file.match(config.test_file_extension_regexp) != null;
 	});
-	await etherlimeCoverage.runCoverage(files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
+	// await etherlimeCoverage.runCoverage(files, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles);
+
+	const api = new CoverageAPI({
+		client: client,
+		port: 8545,
+		providerOptions: {
+			accounts: setup.accounts
+		}
+	});
+
+	const {
+		targets,
+		skipped
+	} = utils.assembleFiles(coverageConfig, files)
+
+	const address = await api.ganache();
+	console.log(address)
+
+	const instrumented = api.instrument(targets);
+
+	await etherlimeTest.run(files, timeout, false, runs, solcVersion, true, port);
+	await api.report();
+	await api.finish();
 
 }
 

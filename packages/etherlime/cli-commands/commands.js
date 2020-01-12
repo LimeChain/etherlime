@@ -1,7 +1,6 @@
 const logger = require('etherlime-logger').logger;
 
-const commands = [
-	{
+const commands = [{
 		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId] [unlock] [secure]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
@@ -416,7 +415,7 @@ const commands = [
 				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html, argv.ignoreFiles);
 			} catch (e) {
 				console.error(e);
-				global.provider.stop();
+				// global.provider.stop();
 			} finally {
 				logger.removeOutputStorage();
 			}
