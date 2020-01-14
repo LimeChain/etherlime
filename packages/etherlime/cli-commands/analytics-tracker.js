@@ -24,14 +24,14 @@ class AnalyticsTracker {
     static async recordEvent(eventType, metadata) {
 
         if (!isProd || analytics.optOut) {
-            return
+            return false
         }
 
         try {
             metadata = adjustData(metadata)
             await analyticsClient.recordEvent(eventType, metadata)
         } catch (e) {
-            return
+            return false
         }
     }
 
