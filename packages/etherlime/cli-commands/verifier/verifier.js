@@ -4,6 +4,7 @@ const querystring = require('querystring');
 const logger = require('etherlime-logger').logger;
 const colors = require('etherlime-utils').colors;
 const ethers = require('ethers');
+const chainIdToUrlMap = require('./urlConfig').chainIdToUrlMap;
 const DEFAULT_SEND_REQUEST_TIMEOUT = 10000;
 const DEFAULT_CHECK_STATUS_TIMEOUT = 5000;
 const MODULE_NAME = 'contract';
@@ -15,35 +16,31 @@ class Verifier {
 
 	}
 
-	async verifySmartContract(contractWrapper, blockscout, deploymentArguments, libraries, defaultOverrides) {
+	async verifySmartContract(contractWrapper, platform, deploymentArguments, libraries, defaultOverrides) {
 
-		const etherscanApiKey = defaultOverrides.etherscanApiKey;
+		let apiUrl;
+		let data;
+		let networkName;
 		const contractName = contractWrapper._contract.contractName;
 		const flattenedCode = await this._flattenSourceCode(contractWrapper);
 		const constructorArguments = await this._buildConstructorArguments(contractWrapper, deploymentArguments);
 		const contractLibraries = this._buildLibrariesArguments(libraries);
-		const { apiUrl, networkName } = await this._buildApiUrl(contractWrapper);
 		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
-		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
-		
-		if(blockscout) {
-			console.log("1")
-			const url = 'https://blockscout.com/poa/sokol/api'
-			let data = this._prepareBlockscoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries)
-			const response = await axios.post(url, data);;
-			console.log("response", response)
-			if (response.message !== 'OK') {
-				logger.log(`Contract: ${colors.colorName(contractName)} verification failed with error: ${colors.colorFailure(response.result)}`);
-				return response.result;
-			}
-			logger.log(`Contract: ${colors.colorName(contractName)} is verified ${colors.colorSuccess('successfully!')}`);
-			return 'Success';
-			
+		if(platform === 'blockskout') {
+			const network = await contractWrapper.provider.getNetwork();
+			apiUrl = this.getChainUrl(network.chainId)
+			data = this._prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries)
+		} else {
+			const etherscanApiKey = defaultOverrides.etherscanApiKey;
+			const network = await this._buildApiUrl(contractWrapper);
+			apiUrl = network.apiUrl
+			networkName = network.networkName
+			data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
 		}
-		let data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
 
+		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
 		const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
-		return await this._checkVerificationStatus(response, defaultOverrides, contractName, apiUrl);
+		return await this._checkVerificationStatus(data, defaultOverrides, contractName, apiUrl);
 	}
 
 	async _flattenSourceCode(contractWrapper) {
@@ -112,7 +109,7 @@ class Verifier {
 		return stringData
 	}
 
-	_prepareBlockscoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
+	_prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
 		let data = {
 			module: MODULE_NAME,
 			action: 'verify', // DO NOT CHANGE
@@ -158,16 +155,17 @@ class Verifier {
 
 	}
 
-	async _checkVerificationStatus(response, defaultOverrides, contractName, apiUrl) {
-		let params = {
-			guid: response.result,
-			module: MODULE_NAME,
-			action: ACTION_VERIFY_STATUS
-		};
+	async _checkVerificationStatus(data, defaultOverrides, contractName, apiUrl) {
+		// let params = {
+		// 	guid: response.result,
+		// 	module: MODULE_NAME,
+		// 	action: "verify"
+		// };
+		let params = {data}
 		const ms = defaultOverrides.waitInterval || DEFAULT_CHECK_STATUS_TIMEOUT;
 		const self = this;
 		async function checkGuid(ms, count) {
-			const response = await axios.get(apiUrl, { params });
+			const response = await axios.get(apiUrl, data);
 			if (!(count > 10)) {
 				if (response.data.result !== 'Pending in queue') {
 					return response.data
@@ -192,6 +190,16 @@ class Verifier {
 
 	timeout(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	getChainUrl(chainID) {
+		let url = chainIdToUrlMap.get(chainID)
+
+		if (!url) {
+			throw new Error(`Invalid chainID ${chainID}`)
+		}
+
+		return url
 	}
 }
 

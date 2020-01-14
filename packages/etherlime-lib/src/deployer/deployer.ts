@@ -78,7 +78,7 @@ class Deployer {
 	}
 
 
-	async deployAndVerify(contract: CompiledContract, blockscout: boolean, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
+	async deployAndVerify(contract: CompiledContract, platform: string, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
 		console.log(this.defaultOverrides)
 		if (!this.defaultOverrides || !this.defaultOverrides.etherscanApiKey) {
 			throw new Error('Please provide Etherscan API key!')
@@ -86,7 +86,7 @@ class Deployer {
 		const deploymentArguments = Array.prototype.slice.call(args);
 
 		const { contractCopy, transaction, transactionReceipt, deploymentResult } = await this._prepareAndDeployTransaction(contract, libraries, deploymentArguments);
-		const verification = await Verifier.verifySmartContract(deploymentResult, blockscout, deploymentArguments, libraries, this.defaultOverrides);
+		const verification = await Verifier.verifySmartContract(deploymentResult, platform, deploymentArguments, libraries, this.defaultOverrides);
 
 		await this._logAction(this.constructor.name, contractCopy.contractName, transaction.hash, 0, transaction.gasPrice.toString(), transactionReceipt.gasUsed.toString(), deploymentResult.contractAddress, deploymentResult._contract.compiler ? deploymentResult._contract.compiler.version : null, verification);
 
