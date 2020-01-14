@@ -3,6 +3,9 @@ language:
   - 8
 before_install:
   - npm install -g lerna
+  - sudo apt install build-essential
+  - sudo npm install -g node-gyp
+  - npm install web3
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
   - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -16,9 +19,6 @@ before_install:
 cache:
   yarn: true
 install:
-  - sudo apt install build-essential
-  - sudo apt install -g node-gyp
-  - npm install web3
   - npm install
   - lerna bootstrap
   - cd packages/etherlime
