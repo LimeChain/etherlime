@@ -37,3 +37,5 @@ npm i -g etherlime
 
 Completely MIT Licensed. Including ALL dependencies.
 
+### Developed by [LimeChain](https://limechain.tech/)
+
