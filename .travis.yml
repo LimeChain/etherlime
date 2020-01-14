@@ -1,5 +1,6 @@
 language:
 - node_js:
+  - 8.9.4
 before_install:
   - npm install -g lerna
   # Repo for Yarn
@@ -15,6 +16,7 @@ before_install:
 cache:
   yarn: true
 install:
+  - node --version
   - npm install
   - lerna bootstrap
   - cd packages/etherlime
