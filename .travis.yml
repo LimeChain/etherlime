@@ -17,7 +17,7 @@ cache:
   yarn: true
 install:
   - sudo apt install build-essential
-  - sudo npm install -g node-gyp
+  - sudo apt install -g node-gyp
   - npm install web3
   - npm install
   - lerna bootstrap
