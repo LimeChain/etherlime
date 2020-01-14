@@ -108,7 +108,7 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 	});
 
 	// TODO: FIX PARAMS THAT ARE PASSED TO runcoverage
-	await etherlimeCoverage.runCoverage(files, timeout, solcVersion, true, port, shouldOpenCoverage, ignoreFiles);
+	await etherlimeCoverage.runCoverage(files, timeout, solcVersion, false, port, shouldOpenCoverage, ignoreFiles);
 }
 
 module.exports = {
