@@ -1,7 +1,7 @@
 language:
 - node_js:
-  - 11
-  - 8
+  - "11"
+  - "8"
 before_install:
   - npm install -g node-gyp
   - npm install -g lerna
