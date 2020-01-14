@@ -4,7 +4,7 @@ language:
 before_install:
   - npm install -g lerna
   - sudo apt install build-essential
-  - sudo npm install -g node-gyp
+  - npm install -g node-gyp
   - npm install web3
   # Repo for Yarn
   - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
