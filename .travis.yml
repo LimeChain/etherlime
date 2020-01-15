@@ -23,9 +23,6 @@ install:
   - cd ..
   - cd etherlime-lib
   - npm run tsc
-  - cd ..
-  - cd etherlime-zos-deployer
-  - npm run tsc
   - cd ../..
 services:
   - docker
