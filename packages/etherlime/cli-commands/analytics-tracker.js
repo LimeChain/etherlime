@@ -33,6 +33,8 @@ class AnalyticsTracker {
         } catch (e) {
             return false
         }
+
+        return true
     }
 
     static optOutUser() {
