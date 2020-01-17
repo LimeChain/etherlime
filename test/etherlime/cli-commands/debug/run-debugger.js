@@ -107,7 +107,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and proceed when "n" is send, then restart when "r" is send', async function () {
-		let expectedOutput = 'pragma solidity ^0.5.0;';
+		let expectedOutput = 'pragma solidity ^0.6.0;';
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'n\n', 'r\n');
 		assert.include(childProcess.output, expectedOutput);
 
@@ -255,7 +255,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and when "b" is send with specific wrong line number, a message is expexted', async function () {
-		let expectedOutput = "Offset must be an integer."; 
+		let expectedOutput = "Offset must be an integer.";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b + 19\n');
 		assert.include(childProcess.output, expectedOutput);
 
@@ -499,7 +499,7 @@ describe('Debug cli command', () => {
 });
 
 describe('Debug utils', async () => {
-	let source = ['pragma solidity ^0.5.0;',
+	let source = ['pragma solidity ^0.6.0;',
 		'',
 		'contract FoodCart{',
 		'\t/* set owner of contract */',
@@ -599,7 +599,7 @@ describe('Debug utils', async () => {
 		'}'
 	]
 
-	const expectedValue = `1: pragma solidity ^0.5.0;\n2: \n3: contract FoodCart{\n   \u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m`
+	const expectedValue = `1: pragma solidity ^0.6.0;\n2: \n3: contract FoodCart{\n   \u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m\u001b[1m\u001b[94m^\u001b[39m\u001b[22m`
 	it('should return the line prefix with correct number of spaces or tabs(4)', async function () {
 		const line = 'function addFoodItem (string memory _name, uint16 _price) public {';
 		const result = await DebugUtils.formatLineNumberPrefix(line, 53, 4);

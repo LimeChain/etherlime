@@ -280,10 +280,14 @@ describe('Compile dependencies', () => {
             compileOptions.working_directory = `${process.cwd()}`;
             compileOptions.resolver = new Resolver(compileOptions);
             compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
-            `${process.cwd()}/contracts/SafeMath.sol`,
-            `${process.cwd()}/contracts/LimeFactory.sol`];
+                `${process.cwd()}/contracts/SafeMath.sol`,
+                `${process.cwd()}/contracts/LimeFactory.sol`
+            ];
             compileOptions.solc = {
-                optimizer: { enabled: false, runs: 200 },
+                optimizer: {
+                    enabled: false,
+                    runs: 200
+                },
             };
         });
 
@@ -322,8 +326,9 @@ describe('Compile dependencies', () => {
 
         it('should throw error if compilation fail', async function () {
             compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
-            `${process.cwd()}/contracts/SafeMath.sol`,
-            `${process.cwd()}/contracts/LimeFactory.sol`];
+                `${process.cwd()}/contracts/SafeMath.sol`,
+                `${process.cwd()}/contracts/LimeFactory.sol`
+            ];
             fs.writeFileSync('./contracts/ContractForFailCompilation.sol', contractForFailCompilation);
             let expectedError = "Source file requires different compiler version";
 
@@ -333,7 +338,7 @@ describe('Compile dependencies', () => {
         it('should throw err if there is syntax err', async function () {
             let expectedError = "Expected ';' but got end of source"
             const sourceObject = {
-                "::contracts\\Empty.sol": 'pragma solidity ^0.5.0 contract Empty {\n\n}'
+                "::contracts\\Empty.sol": 'pragma solidity ^0.6.0 contract Empty {\n\n}'
             }
 
             await assert.isRejected(etherlimeCompile(sourceObject, compileOptions), expectedError)
@@ -343,7 +348,7 @@ describe('Compile dependencies', () => {
         it('should replace \\ with /', async function () {
             compileOptions.strict = true;
             const sourceObject = {
-                "::contracts\\Empty.sol": 'pragma solidity ^0.5.0;\n\ncontract Empty {\n\n}'
+                "::contracts\\Empty.sol": 'pragma solidity ^0.6.0;\n\ncontract Empty {\n\n}'
             }
 
             await assert.isFulfilled(etherlimeCompile(sourceObject, compileOptions), "Characters \\ should not throw err");
@@ -361,8 +366,9 @@ describe('Compile dependencies', () => {
 
         before(async function () {
             compileOptions.paths = [`${process.cwd()}/contracts/BillboardService.sol`,
-            `${process.cwd()}/contracts/SafeMath.sol`,
-            `${process.cwd()}/contracts/Empty.sol`];
+                `${process.cwd()}/contracts/SafeMath.sol`,
+                `${process.cwd()}/contracts/Empty.sol`
+            ];
             compileOptions.base_path = `${process.cwd()}/contracts`;
             compileOptions.resolver = new Resolver(compileOptions);
         });
@@ -383,7 +389,9 @@ describe('Compile dependencies', () => {
 
         it('should return pure path if import path does not starts with .', async function () {
             let file = `${process.cwd()}/contracts/SafeMath.sol`
-            let resolved = { file: `${process.cwd()}/contracts/SafeMath.sol` }
+            let resolved = {
+                file: `${process.cwd()}/contracts/SafeMath.sol`
+            }
 
             let stub = sinon.stub(parser, "parseImports");
             stub.onFirstCall().returns(['SafeMath.sol'])
@@ -417,7 +425,9 @@ describe('Compile dependencies', () => {
         it('should reject if error occurs', async function () {
             let resolver = new FSSource(undefined, undefined);
             let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
-            let solc = { "version": "[Function]" }
+            let solc = {
+                "version": "[Function]"
+            }
 
             let expectedError = "solc.compile is not a function"
 
@@ -426,7 +436,9 @@ describe('Compile dependencies', () => {
 
         it('should throw if resolver throws', async function () {
             let initial_paths = [`${process.cwd()}/contracts/BillboardService.sol`];
-            let solc = { "version": "[Function]" }
+            let solc = {
+                "version": "[Function]"
+            }
             let resolver = new Resolver(compileOptions);
 
             let stub = sinon.stub(resolver, "resolve");
@@ -457,8 +469,9 @@ describe('Compile dependencies', () => {
 
         it('should compile if files are provided as an option', async function () {
             compileOptions.files = [`${process.cwd()}/contracts/BillboardService.sol`,
-            `${process.cwd()}/contracts/SafeMath.sol`,
-            `${process.cwd()}/contracts/LimeFactory.sol`]
+                `${process.cwd()}/contracts/SafeMath.sol`,
+                `${process.cwd()}/contracts/LimeFactory.sol`
+            ]
 
             await assert.isFulfilled(profiler.updated(compileOptions), "Paths in options must be right")
         });
