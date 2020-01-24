@@ -458,13 +458,6 @@ describe('Compile dependencies', () => {
             await assert.isFulfilled(profiler.required_sources(compileOptions));
         });
 
-        it('should throw if there is syntax error when importing contract', async function () {
-            fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);
-            let expectedError = "ParserError: Expected ';' but got 'contract'";
-
-            await assert.isRejected(profiler.required_sources(compileOptions), expectedError);
-            fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')
-        })
 
 
         it('should compile if files are provided as an option', async function () {

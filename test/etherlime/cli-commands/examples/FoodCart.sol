@@ -92,7 +92,7 @@ contract FoodCart{
 		return (name, sku, price, state, foodItemExist);
 	}
 
-	function () external payable {
+	receive () external payable {
 
 	}
 }
