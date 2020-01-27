@@ -335,6 +335,14 @@ describe('Compile dependencies', () => {
             await assert.isRejected(etherlimeCompile.with_dependencies(compileOptions), expectedError)
         });
 
+        it('should throw if there is syntax error when importing contract', async function () {	
+            fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);	
+            let expectedError = "ParserError: Expected ';' but got 'contract'";	
+
+            await assert.isRejected(etherlimeCompile.with_dependencies(compileOptions), expectedError);	
+            fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')	
+        })
+
         it('should throw err if there is syntax err', async function () {
             let expectedError = "Expected ';' but got end of source"
             const sourceObject = {
