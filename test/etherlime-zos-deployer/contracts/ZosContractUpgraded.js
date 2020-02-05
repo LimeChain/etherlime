@@ -1,4 +1,4 @@
-let upgradedContract = `pragma solidity ^0.5.0;
+let upgradedContract = `pragma solidity ^0.6.0;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
@@ -16,4 +16,6 @@ contract ZosContract is Initializable {
     
 }`
 
-module.exports = {upgradedContract}
+module.exports = {
+    upgradedContract
+}

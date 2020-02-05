@@ -34,7 +34,7 @@
     "sinon": "^7.1.0",
     "mocha": "5.2.0",
     "@0x/sol-coverage": "3.0.12",
-    "solc": "^0.5.8",
+    "solc": "^0.6.1",
     "tcp-port-used": "^1.0.1",
     "web3-provider-engine": "^15.0.0",
     "@openzeppelin/upgrades": "^2.6.0-rc.1"

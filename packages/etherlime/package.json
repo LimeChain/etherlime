@@ -3,8 +3,8 @@
   "version": "2.2.4",
   "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
   "main": "index.js",
-  "scripts": {	
-    "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'"	
+  "scripts": {
+    "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'"
   },
   "nyc": {
     "exclude": [
@@ -42,7 +42,7 @@
     "require-from-string": "2.0.2",
     "simple-git": "^1.107.0",
     "snarkjs": "LimeChain/snarkjs",
-    "solc": "^0.5.1",
+    "solc": "^0.6.1",
     "tcp-port-used": "^1.0.1",
     "yargs": "11.0.0",
     "cli-analytics-sdk": "LimeChain/cli-analytics-sdk"
