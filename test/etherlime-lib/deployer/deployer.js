@@ -322,13 +322,13 @@ describe('Deployer tests', () => {
 				signer = new ethers.Wallet('0x' + config.randomPrivateKey);
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
 				fs.mkdirSync('./contracts');
-				fs.copyFileSync('./test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2_Test.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
 				
-				await compiler.run('.', undefined, "0.5.1");
+				await compiler.run('.', undefined, "0.5.0");
 
 				LimeFactory = require('./../../../build/LimeFactory.json');
 				TestToken = require('./../../../build/Mock_Token.json');
@@ -350,7 +350,7 @@ describe('Deployer tests', () => {
 				};
 
 				deployer.setVerifierApiKey(config.secondRandomEtherscanApiKey)
-
+				
 				let stubRequest = sinon.stub(Verifier.prototype, "_sendVerificationRequest")
 				stubRequest.onCall(0).returns(requestObject)
 				let stubCheckStatus = sinon.stub(Verifier.prototype, "_checkVerificationStatus")

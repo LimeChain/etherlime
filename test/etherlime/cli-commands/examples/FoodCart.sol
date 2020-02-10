@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.6.0;
 
 contract FoodCart{
 	/* set owner of contract */
@@ -92,7 +92,7 @@ contract FoodCart{
 		return (name, sku, price, state, foodItemExist);
 	}
 
-	function () external payable {
+	receive () external payable {
 
 	}
 }

@@ -1,0 +1,22 @@
+{
+  "name": "etherlime-utils",
+  "version": "1.1.4",
+  "description": "etherlime-utils provides helpful utility functions needed for ethereum development",
+  "main": "index.js",
+  "keywords": [],
+  "author": "http://www.limechain.tech",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime-utils"
+  },
+  "dependencies": {
+    "chalk": "2.4.1"
+  },
+  "browser": {
+    "fs": false,
+    "fs-extra": false,
+    "path": false,
+    "os": false
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "etherlime-zos-deployer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "etherlime-lib": "^1.1.5",
-    "typescript": "^3.5.1",
-    "zos-lib": "^2.3.1"
+    "@openzeppelin/upgrades": "^2.6.0-rc.1",
+    "etherlime-lib": "^1.1.6",
+    "typescript": "^3.5.1"
   },
   "browser": {
     "fs": false,
