@@ -291,8 +291,13 @@ describe('Deployer tests', () => {
 			});
 
 			it('should throw error on transaction receipt status 0', async () => {
-				const dummyTransaction = { gasPrice: 2000000 };
-				const dummyTransactionReceipt = { status: 0, gasUsed: 300000 };
+				const dummyTransaction = {
+					gasPrice: 2000000
+				};
+				const dummyTransactionReceipt = {
+					status: 0,
+					gasUsed: 300000
+				};
 
 				try {
 					await deployer._postValidateTransaction(VestingContract, dummyTransaction, dummyTransactionReceipt);
@@ -327,7 +332,7 @@ describe('Deployer tests', () => {
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2_Test.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
-				
+
 				await compiler.run('.', undefined, "0.5.0");
 
 				LimeFactory = require('./../../../build/LimeFactory.json');
@@ -350,7 +355,7 @@ describe('Deployer tests', () => {
 				};
 
 				deployer.setVerifierApiKey(config.secondRandomEtherscanApiKey)
-				
+
 				let stubRequest = sinon.stub(Verifier.prototype, "_sendVerificationRequest")
 				stubRequest.onCall(0).returns(requestObject)
 				let stubCheckStatus = sinon.stub(Verifier.prototype, "_checkVerificationStatus")
@@ -552,7 +557,9 @@ describe('Deployer tests', () => {
 		it('should wrap contracts correctly', async () => {
 			const mockedEstimateGas = await mockEstimateGas(infuraProvider, GAS_DEPLOY_WITH_LINK);
 
-			let libraries = { "LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC" };
+			let libraries = {
+				"LinkedList": "0x2Be52D5d7A73FC183cF40053B95beD572519EBbC"
+			};
 			const estimateGas = await deployer.estimateGas(DataContract, libraries);
 
 			assert.equal(GAS_DEPLOY_WITH_LINK, estimateGas.toString());
