@@ -79,15 +79,15 @@ const prepareTestFilesForCoverage = async (filePaths) => {
 	});
 }
 
-const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirectory, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
+const runCoverage = async (path, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
+	console.log('HERE PATH', path)
 	var config = Config.default();
 	var testDirectory = '';
 	if (path.includes('.js')) {
 
 		filePath = await prepareTestFilesForCoverage(path);
 
-		// TODO: FIX PARAMS THAT ARE PASSED TO runcoverage
-		await etherlimeCoverage.runCoverage([filePath], timeout, solcVersion, false, port, shouldOpenCoverage, ignoreFiles);
+		await etherlimeCoverage.runCoverage([filePath], timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, false);
 		return;
 	}
 
@@ -107,8 +107,8 @@ const runCoverage = async (path, timeout, port, runs, solcVersion, buildDirector
 		return file.match(config.test_file_extension_regexp) != null;
 	});
 
-	// TODO: FIX PARAMS THAT ARE PASSED TO runcoverage
-	await etherlimeCoverage.runCoverage(files, timeout, solcVersion, false, port, shouldOpenCoverage, ignoreFiles);
+	await etherlimeCoverage.runCoverage(files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, false);
+
 }
 
 module.exports = {

@@ -1,8 +1,7 @@
 const logger = require('etherlime-logger').logger;
 const analyticsTracker = require('./analytics-tracker');
 
-const commands = [
-	{
+const commands = [{
 		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId] [unlock] [secure]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
@@ -63,7 +62,10 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 
-			let { mnemonic, ...rest } = argv; //removes sensitive data
+			let {
+				mnemonic,
+				...rest
+			} = argv; //removes sensitive data
 			analyticsTracker.recordEvent('ganache', rest);
 			logger.storeOutputParameter(argv.output);
 
@@ -168,7 +170,11 @@ const commands = [
 				console.error(err);
 			} finally {
 				logger.removeOutputStorage();
-				let { secret, etherscanApiKey, ...rest } = argv // removes sensitive data 
+				let {
+					secret,
+					etherscanApiKey,
+					...rest
+				} = argv // removes sensitive data 
 				analyticsTracker.recordEvent('deploy', rest);
 			}
 		}
@@ -359,7 +365,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html] [ignoreFiles]',
+		command: 'coverage [path] [timeout] [port] [solcVersion] [workingDirectory] [html] [ignoreFiles]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -374,20 +380,9 @@ const commands = [
 				default: 8545
 			});
 
-			yargs.positional('runs', {
-				describe: 'enables the optimizer on the compiler and specifies the runs',
-				type: 'number'
-			});
-
 			yargs.positional('solcVersion', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
-			});
-
-			yargs.positional('buildDirectory', {
-				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
-				type: 'string',
-				default: './build'
 			});
 
 			yargs.positional('workingDirectory', {
@@ -420,7 +415,7 @@ const commands = [
 
 			try {
 				const test = require('./etherlime-test/test');
-				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html, argv.ignoreFiles);
+				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.solcVersion, argv.workingDirectory, argv.html, argv.ignoreFiles);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();
@@ -484,23 +479,22 @@ const commands = [
 			}
 		}
 	},
-	{	
-		command: 'opt-out',	
-		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,	
-		argumentsProcessor: (yargs) => {	
-		},	
+	{
+		command: 'opt-out',
+		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
+		argumentsProcessor: (yargs) => {},
 		commandProcessor: (argv) => {
 
-			analyticsTracker.recordEvent('opt-out', argv);	
+			analyticsTracker.recordEvent('opt-out', argv);
 
-			try {	
-				analyticsTracker.optOutUser();	
-			} catch (err) {	
-				console.error(err);	
-			} finally {	
-				logger.removeOutputStorage();	
-			}	
-		}	
+			try {
+				analyticsTracker.optOutUser();
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
 	},
 	{
 		command: 'flatten [file] [solcVersion]',

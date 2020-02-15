@@ -20,58 +20,74 @@ const path = require('path');
 const fs = require("fs");
 
 const COVERAGE_TEST_FOLDER = '.coverage_tests';
+const COVERAGE_ARTIFACTS_FOLDER = '.coverage_artifacts';
+const COVERAGE_CONTRACTS_FOLDER = '.coverage_contracts';
+let coverageConfig;
 
+const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, enableGasReport) => {
 
-const coverageConfig = {
-	workingDir: process.cwd(),
-	contractsDir: path.join(process.cwd(), 'contracts'),
-	logger: logger
-}
+	try {
 
-const runCoverage = async (files, timeout, solcVersion, enableGasReport, port, shouldOpenCoverage, ignoreFiles) => {
-
-	let ignoredFilesArray;
-	if (ignoreFiles) {
-		ignoredFilesArray = ignoreFiles.split(',').map(function (item) {
-			return item.trim();
-		});
-	}
-
-	coverageApi = new CoverageAPI({
-		client: client,
-		port: port,
-		providerOptions: {
-			accounts: setup.accounts
+		coverageConfig = {
+			workingDir: process.cwd(),
+			contractsDir: path.join(process.cwd(), workingDirectory),
+			logger: logger
 		}
-	});
 
-	await prepareCoverageFiles(files, solcVersion, ignoredFilesArray);
-	await startGanache();
 
-	var mochaConfig = {
-		'useColors': true,
-		'timeout': timeout
-	};
-	let mocha = createMocha(mochaConfig, files);
+		let ignoredFilesArray;
+		if (ignoreFiles) {
+			ignoredFilesArray = ignoreFiles.split(',').map(function (item) {
+				return item.trim();
+			});
+		}
 
-	files.forEach(function (file) {
-		delete originalRequire.cache[file];
-
-		mocha.addFile(file);
-	});
-
-	setJSTestGlobals(port);
-	if (enableGasReport) {
-		mocha.reporter(CustomReporter, {
-			port
+		coverageApi = new CoverageAPI({
+			client: client,
+			port: port,
+			providerOptions: {
+				accounts: setup.accounts
+			}
 		});
+
+		await prepareCoverageFiles(files, solcVersion, ignoredFilesArray);
+		await startGanache();
+
+		var mochaConfig = {
+			'useColors': true,
+			'timeout': timeout
+		};
+		let mocha = createMocha(mochaConfig, files);
+
+		files.forEach(function (file) {
+			delete originalRequire.cache[file];
+
+			mocha.addFile(file);
+		});
+
+		setJSTestGlobals(port);
+		if (enableGasReport) {
+			mocha.reporter(CustomReporter, {
+				port
+			});
+		}
+
+		await runMocha(mocha);
+		await coverageApi.report();
+		await utils.finish(coverageConfig, coverageApi);
+		await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
+		openCoverage(shouldOpenCoverage);
+
+	} catch (e) {
+		console.log('HERE Error', e);
+		await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
+		await removeDir(`${process.cwd()}/${COVERAGE_ARTIFACTS_FOLDER}`);
+		await removeDir(`${process.cwd()}/${COVERAGE_CONTRACTS_FOLDER}`);
+
+		throw new Error(e);
 	}
 
-	await runMocha(mocha);
-	await coverageApi.report();
-	await utils.finish(coverageConfig, coverageApi);
-	await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
-	openCoverage(shouldOpenCoverage);
+
 }
 
 const createMocha = (config, files) => {
