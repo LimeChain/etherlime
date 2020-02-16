@@ -24,16 +24,13 @@ const COVERAGE_ARTIFACTS_FOLDER = '.coverage_artifacts';
 const COVERAGE_CONTRACTS_FOLDER = '.coverage_contracts';
 let coverageConfig;
 
-const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, enableGasReport) => {
-
+const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
 	try {
-
 		coverageConfig = {
 			workingDir: process.cwd(),
-			contractsDir: path.join(process.cwd(), workingDirectory),
+			contractsDir: path.join(process.cwd(), 'contracts'),
 			logger: logger
 		}
-
 
 		let ignoredFilesArray;
 		if (ignoreFiles) {
@@ -66,11 +63,11 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 		});
 
 		setJSTestGlobals(port);
-		if (enableGasReport) {
-			mocha.reporter(CustomReporter, {
-				port
-			});
-		}
+		// if (enableGasReport) {
+		// 	mocha.reporter(CustomReporter, {
+		// 		port
+		// 	});
+		// }
 
 		await runMocha(mocha);
 		await coverageApi.report();
@@ -79,7 +76,6 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 		openCoverage(shouldOpenCoverage);
 
 	} catch (e) {
-		console.log('HERE Error', e);
 		await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
 		await removeDir(`${process.cwd()}/${COVERAGE_ARTIFACTS_FOLDER}`);
 		await removeDir(`${process.cwd()}/${COVERAGE_CONTRACTS_FOLDER}`);

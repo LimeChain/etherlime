@@ -13,6 +13,7 @@ let nameOfexampleTestForCoverage = 'exampleTestForCoverage.js';
 let pathToExampleTest = `./testsToRun/${nameOfexampleTestForCoverage}`;
 let defaultTimeout = 10000;
 let customTimeout = 12000;
+let ganachePort = 8546;
 let currentDir;
 let originalPlatform;
 
@@ -28,45 +29,45 @@ describe.only('coverage cli command', () => {
         fs.mkdirSync('./contracts')
         fs.mkdirSync('./contracts2')
         fs.copyFileSync('../test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts/LimeFactory.sol')
-        fs.copyFileSync('../test/etherlime/cli-commands/examples/FoodCart.sol', './contracts/FoodCart.sol')
+        // fs.copyFileSync('../test/etherlime/cli-commands/examples/FoodCart.sol', './contracts/FoodCart.sol')
         fs.copyFileSync('../test/etherlime/cli-commands/examples/LimeFactory.sol', './contracts2/LimeFactory.sol')
 
         fs.mkdirSync('./testsToRun')
         fs.writeFileSync(`./testsToRun/${nameOfexampleTestForCoverage}`, exampleTestForCoverage)
     })
 
-    it.only('should execute coverage cli command with default port specified', async function () {
+    it('should execute coverage cli command with default port specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, undefined, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, undefined, undefined, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with custom timeout specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, customTimeout, 8545, undefined, undefined, undefined, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], customTimeout, 8545, undefined, undefined, undefined, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, customTimeout, ganachePort, undefined, undefined, false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], customTimeout, ganachePort, undefined, undefined, false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command when path does not includes specific .js file', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`./testsToRun`, defaultTimeout, 8545, undefined, undefined, undefined, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, undefined, undefined, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`./testsToRun`, defaultTimeout, ganachePort, undefined, undefined, false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with specific contracts folder', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, './contracts2', undefined, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, './contracts2', undefined, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts2', false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts2', false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with shouldOpenCoverage param', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, true, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, undefined, true, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
         etherlimeTestSpy.restore();
     });
 
@@ -75,8 +76,8 @@ describe.only('coverage cli command', () => {
             value: 'win32'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, true, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, undefined, true, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
         etherlimeTestSpy.restore();
     });
 
@@ -85,23 +86,19 @@ describe.only('coverage cli command', () => {
             value: 'MocOs'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, true, undefined, false))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, 8545, undefined, undefined, true, undefined, false)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with specified files to ignore in report', async function () {
         let ignoreFile = 'contracts2/LimeFactory.sol'
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, 8545, undefined, undefined, undefined, undefined, false))
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, undefined, ignoreFile))
     })
 
-    // it('should throw on wrong path', async function () {
-    //     await assert.isRejected(test.runCoverage('wrongTestDirectory'));
-    // });
-
-    // it('should throw if find files method trows', async () => {
-    //     await assert.isRejected(etherlimeCoverage.findFiles('wrongFolder'));
-    // })
+    it('should throw on wrong path', async function () {
+        await assert.isRejected(test.runCoverage('wrongTestDirectory'));
+    });
 
     after(async function () {
         Object.defineProperty(process, 'platform', {
