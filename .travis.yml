@@ -13,7 +13,6 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install dpkg
   - sudo apt-get update -qq
-  - sudo apt-get install -y libc6-amd64
   - sudo apt-get install solc
 cache:
   yarn: true
