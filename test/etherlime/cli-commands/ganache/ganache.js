@@ -250,7 +250,7 @@ describe('Ganache fork command', () => {
 		it('should start normal ganache server when empty parameter for forking is specified', async () => {
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
-			
+
 			const forkingParameter = rawOutputNetworkData.length > 1 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
@@ -259,7 +259,7 @@ describe('Ganache fork command', () => {
 		it('should start normal ganache server when no parameter for forking is specified', async () => {
 			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT}`, expectedOutput);
 			const rawOutputNetworkData = childResponse.output.split(/\r?\n/).slice(12, 14).filter(Boolean);
-		
+
 			const forkingParameter = rawOutputNetworkData.length > 1 ? true : false;
 			assert.isFalse(forkingParameter, `The forking parameters are not empty`);
 
@@ -298,7 +298,7 @@ describe('Ganache fork command', () => {
 			const forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(`${LOCAL_NETWORK_URL}:8125`);
 			const forkedSigner = new ethers.Wallet(randomSigner.privateKey, forkedJsonRpcProvider);
 			const balanceInForkedSigner = await forkedSigner.getBalance();
-	
+
 			assert.notDeepEqual(randomSigner.provider, forkedSigner.provider, 'The signer provider from the forked network is deep equal with signer provider from the network, that the fork is made from');
 			assert.deepEqual(randomSigner.address, forkedSigner.address, 'The stored walled address from the forked network is not the stored signer address from the network, that the fork is made from');
 			assert.deepEqual(balanceRandomSigner, balanceInForkedSigner, 'The balance in the two signers is not equal');
@@ -342,12 +342,14 @@ describe('Ganache fork existing contract tests', async () => {
 			localDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, jsonRpcProvider);
 			localConnectedContract = localDeployedContract.connect(localInitializedSigner);
 			await localConnectedContract.setPrice(50);
-			const sentTransaction = await localConnectedContract.buy('I love Sisi', { value: 51 });
+			const sentTransaction = await localConnectedContract.buy('I love LimeChain', {
+				value: 51
+			});
 			const transactionComplete = await jsonRpcProvider.waitForTransaction(sentTransaction.hash);
 			localDeployedContractSlogan = await localDeployedContract.slogan();
 
 			//fork locally started etherlime ganache network
-			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT}`, localForkingExpectedOutput);
+			childResponse = await runCmdHandler(`etherlime ganache --port ${RUN_FORK_PORT} --fork ${LOCAL_NETWORK_URL}:${DEFAULT_PORT} --networkId ${NETWORK_ID}`, localForkingExpectedOutput);
 			const forkedLocalNetworkToListen = `${LOCAL_NETWORK_URL}:${RUN_FORK_PORT}`;
 			forkedJsonRpcProvider = new ethers.providers.JsonRpcProvider(forkedLocalNetworkToListen);
 			forkedDeployedContract = new ethers.Contract(localDeployedContractAddress, Billboard.abi, forkedJsonRpcProvider);
@@ -369,7 +371,11 @@ describe('Ganache fork existing contract tests', async () => {
 
 		it('should be able to send transaction to the already deployed smart contract in the forked network', async () => {
 			const newSlogan = 'Ogi naistina li e majstor?';
-			const sentTransaction = await forkedConnectedContract.buy(newSlogan, { value: 51 });
+			const sentTransaction = await forkedConnectedContract.buy(newSlogan, {
+				value: 51,
+				chainId: NETWORK_ID
+			});
+
 			const transactionComplete = await forkedJsonRpcProvider.waitForTransaction(sentTransaction.hash);
 			const newBuyedSlogan = await forkedDeployedContract.slogan();
 			assert.strictEqual(newSlogan, newBuyedSlogan, 'The slogan of the already deployed smart contract and the new buyed slogan are not the same');
