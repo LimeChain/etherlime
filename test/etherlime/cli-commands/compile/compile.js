@@ -46,9 +46,9 @@ describe('Compile cli command', () => {
         await assert.isFulfilled(compiler.run('.', undefined, "^0.4.21", true), "It is not successfully executed!")
     });
 
-    it('should run compile with native solc', async function () {
-        await assert.isFulfilled(compiler.run('.', undefined, "native", undefined), "It is not successfully executed!")
-    });
+    // it('should run compile with native solc', async function () {
+    //     await assert.isFulfilled(compiler.run('.', undefined, "native", undefined), "It is not successfully executed!")
+    // });
 
     it('should throw error if docker is true but solc version is undefined', async function () {
         await assert.isRejected(compiler.run('.', undefined, undefined, true), error)
@@ -106,7 +106,7 @@ describe('Compile cli command', () => {
         await assert.isRejected(compiler.run('.', undefined, undefined, undefined, undefined, undefined, true, undefined, 'contracts/unexisting.sol'))
     })
 
-    it('should compile contracts in nested directory', async function() {
+    it('should compile contracts in nested directory', async function () {
         fs.mkdirsSync('./contracts/NestedFolder')
         fs.copyFileSync('./packages/etherlime/cli-commands/init/LimeFactory.sol', './contracts/NestedFolder/LimeFactory.sol');
     })
