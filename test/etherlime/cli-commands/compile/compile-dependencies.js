@@ -157,11 +157,11 @@ describe('Compile dependencies', () => {
         })
 
         //NPM Source
-        it('should find file in node-modules', async function () {
-            let library = 'exports = module.exports = Yargs'
-            let result = await compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "")
-            assert.include(result.body, library)
-        });
+        // it('should find file in node-modules', async function () {
+        //     let library = 'exports = module.exports = Yargs'
+        //     let result = await compileOptions.resolver.sources[1].resolve('yargs/yargs.js', "")
+        //     assert.include(result.body, library)
+        // });
 
         it('should resolve dependency path in contract', function () {
             let dependencyPath = `${process.cwd()}/contracts/SafeMath.sol`;
@@ -335,12 +335,12 @@ describe('Compile dependencies', () => {
             await assert.isRejected(etherlimeCompile.with_dependencies(compileOptions), expectedError)
         });
 
-        it('should throw if there is syntax error when importing contract', async function () {	
-            fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);	
-            let expectedError = "ParserError: Expected ';' but got 'contract'";	
+        it('should throw if there is syntax error when importing contract', async function () {
+            fs.writeFileSync('./contracts/contractImportFailCompilation.sol', contractWithImportSyntaxErr);
+            let expectedError = "ParserError: Expected ';' but got 'contract'";
 
-            await assert.isRejected(etherlimeCompile.with_dependencies(compileOptions), expectedError);	
-            fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')	
+            await assert.isRejected(etherlimeCompile.with_dependencies(compileOptions), expectedError);
+            fs.removeSync('./contracts/contractWithImportSyntaxErr.sol')
         })
 
         it('should throw err if there is syntax err', async function () {
