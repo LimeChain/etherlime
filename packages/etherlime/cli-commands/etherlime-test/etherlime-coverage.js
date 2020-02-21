@@ -77,9 +77,9 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 		openCoverage(shouldOpenCoverage);
 
 	} catch (e) {
-		// await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
-		// await removeDir(`${process.cwd()}/${COVERAGE_ARTIFACTS_FOLDER}`);
-		// await removeDir(`${process.cwd()}/${COVERAGE_CONTRACTS_FOLDER}`);
+		await removeDir(`${process.cwd()}/${COVERAGE_TEST_FOLDER}`);
+		await removeDir(`${process.cwd()}/${COVERAGE_ARTIFACTS_FOLDER}`);
+		await removeDir(`${process.cwd()}/${COVERAGE_CONTRACTS_FOLDER}`);
 
 		throw new Error(e);
 	}
