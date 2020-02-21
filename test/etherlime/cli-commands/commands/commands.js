@@ -140,7 +140,7 @@ describe('root calling cli commands', () => {
 
     it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
-        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=8989 --solcVersion=0.5.6 --workingDirectory=coverageWorkingFolder --html=true`, expectedOutput);
         assert.include(childProcess, expectedOutput)
     })
 })
