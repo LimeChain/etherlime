@@ -393,7 +393,7 @@ const commands = [{
 
 			yargs.positional('html', {
 				describe: 'Defines whether to open automatically the html coverage report located in: ./coverage',
-				type: 'string',
+				type: 'boolean',
 				default: 'false'
 			});
 
