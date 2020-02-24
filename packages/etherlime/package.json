@@ -21,7 +21,6 @@
   "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
-    "@0x/sol-coverage": "3.0.12",
     "axios": "^0.18.0",
     "bn": "^1.0.1",
     "chai": "4.1.2",
@@ -37,13 +36,14 @@
     "ethers": "^4.0.27",
     "find-cache-dir": "2.0.0",
     "fs-extra": "7.0.1",
-    "ganache-cli": "6.5.1",
+    "ganache-cli": "6.9.1",
     "mocha": "5.2.0",
     "original-require": "1.0.1",
     "require-from-string": "2.0.2",
     "simple-git": "^1.107.0",
     "snarkjs": "LimeChain/snarkjs",
     "solc": "^0.6.1",
+    "solidity-coverage": "0.7.2",
     "tcp-port-used": "^1.0.1",
     "yargs": "11.0.0"
   },

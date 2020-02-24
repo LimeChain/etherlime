@@ -91,21 +91,21 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     });
 
-    it('should throw if opt-out failed', async function () {	
-        let stub = sinon.stub(analyticsTracker, "optOutUser")	
-        stub.throws()	
-        let argv = {	
-            output: "some message"	
-        }	
-        let errorMessage = "Error"	
-        let consoleSpy = sinon.spy(console, "error");	
-        commands[9].commandProcessor(argv)	
-        let logs = consoleSpy.getCall(0);	
-        let error = String(logs.args[0])	
-        let errorLogged = error.includes(errorMessage);	
-        assert.isTrue(errorLogged, errorMessage);	
-        stub.restore();	
-        consoleSpy.restore();	
+    it('should throw if opt-out failed', async function () {
+        let stub = sinon.stub(analyticsTracker, "optOutUser")
+        stub.throws()
+        let argv = {
+            output: "some message"
+        }
+        let errorMessage = "Error"
+        let consoleSpy = sinon.spy(console, "error");
+        commands[9].commandProcessor(argv)
+        let logs = consoleSpy.getCall(0);
+        let error = String(logs.args[0])
+        let errorLogged = error.includes(errorMessage);
+        assert.isTrue(errorLogged, errorMessage);
+        stub.restore();
+        consoleSpy.restore();
     })
 
     it('should throw if flatten failed', async function () {
@@ -132,14 +132,18 @@ describe('root calling cli commands', () => {
     })
 
     it('should throw if coverage failed', async function () {
-        let expectedOutput = "ENOENT: no such file or directory"
+        let expectedOutput = "Cannot locate expected contract sources folder:"
         let childProcess = await runCmdHandler(`etherlime coverage`, expectedOutput);
         assert.include(childProcess, expectedOutput)
     })
 
     it('should throw if coverage failed with specific path port runs solcVersion buildingDirectory workingDirectory and shouldOpenCoverage', async function () {
         let expectedOutput = "ENOENT: no such file or directory"
-        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=1234 --runs=10 --solcVersion=0.5.6 --buildDirectory=coverageTestFolder --workingDirectory=coverageWorkingFolder --shouldOpenCoverage=true`, expectedOutput);
+        let childProcess = await runCmdHandler(`etherlime coverage --path ./testFolderForCoverage/tests.js --port=8989 --solcVersion=0.5.6 --workingDirectory=coverageWorkingFolder --html=true`, expectedOutput);
         assert.include(childProcess, expectedOutput)
-    })
+    });
+
+    after(async function () {
+        fs.removeSync('.coverage_tests');
+    });
 })

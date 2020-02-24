@@ -1,0 +1,85 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.0/libexec/bin/yarn.js link
+
+PATH: 
+  /Users/ognyanchikov/Downloads/google-cloud-sdk/bin:/Users/ognyanchikov/.npm-global/bin:/usr/local/opt/icu4c/sbin:/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/ognyanchikov/Downloads/google-cloud-sdk/bin:/Users/ognyanchikov/.npm-global/bin:/usr/local/opt/icu4c/sbin:/usr/local/opt/icu4c/bin
+
+Yarn version: 
+  1.22.0
+
+Node version: 
+  8.10.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: ENOENT: no such file or directory, symlink '../../.config/yarn/link/etherlime/cli.js' -> '/usr/local/share/.npm-global/bin/etherlime'
+
+npm manifest: 
+  {
+    "name": "etherlime",
+    "version": "2.2.5",
+    "description": "etherlime is an ethereum development and deployment framework based on ethers.js",
+    "main": "index.js",
+    "scripts": {
+      "postinstall": "node --eval 'console.log(\"By installing Etherlime you automatically opt-in for analytics. To opt-out run `etherlime opt-out`.\")'"
+    },
+    "nyc": {
+      "exclude": [
+        "Solidity-IDE/*.js",
+        "test/**/*.js",
+        "tmpTest/**/*.js"
+      ]
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/LimeChain/etherlime/tree/master/packages/etherlime"
+    },
+    "keywords": [],
+    "author": "http://www.limechain.tech",
+    "license": "ISC",
+    "dependencies": {
+      "@0x/sol-coverage": "3.0.12",
+      "axios": "^0.18.0",
+      "bn": "^1.0.1",
+      "chai": "4.1.2",
+      "circom": "LimeChain/circom",
+      "cli-analytics-sdk": "LimeChain/cli-analytics-sdk",
+      "cli-table": "0.3.1",
+      "colors": "1.3.2",
+      "docker-cli-js": "^2.5.2",
+      "ethereum-transaction-debugger": "0.0.5",
+      "etherlime-config": "^1.0.0",
+      "etherlime-logger": "^1.1.4",
+      "etherlime-utils": "^1.1.4",
+      "ethers": "^4.0.27",
+      "find-cache-dir": "2.0.0",
+      "fs-extra": "7.0.1",
+      "ganache-cli": "6.9.1",
+      "mocha": "5.2.0",
+      "original-require": "1.0.1",
+      "require-from-string": "2.0.2",
+      "simple-git": "^1.107.0",
+      "snarkjs": "LimeChain/snarkjs",
+      "solc": "^0.6.1",
+      "solidity-coverage": "0.7.1",
+      "tcp-port-used": "^1.0.1",
+      "yargs": "11.0.0"
+    },
+    "bin": {
+      "etherlime": "./cli.js"
+    },
+    "browser": {
+      "fs": false,
+      "fs-extra": false,
+      "path": false,
+      "os": false
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

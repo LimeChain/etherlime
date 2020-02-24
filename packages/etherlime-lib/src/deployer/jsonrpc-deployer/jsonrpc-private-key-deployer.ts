@@ -23,16 +23,11 @@ class JSONRPCPrivateKeyDeployer extends PrivateKeyDeployer {
 	constructor(privateKey: string, nodeUrl: string | utils.ConnectionInfo, defaultOverrides?: TxParams) {
 		let localNodeProvider: providers.JsonRpcProvider | providers.Web3Provider;
 		JSONRPCPrivateKeyDeployer._validateUrlInput(nodeUrl);
-		if (global.coverageSubprovider) {
-			global.provider._providers[COVERAGE_PROVIDER_INDEX].rpcUrl = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;
-			localNodeProvider = new providers.Web3Provider(global.provider);
-			localNodeProvider.connection.url = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;
-		} else {
-			localNodeProvider = new providers.JsonRpcProvider(nodeUrl);
-		}
+
+		localNodeProvider = new providers.JsonRpcProvider(nodeUrl);
 
 		super(privateKey, localNodeProvider, defaultOverrides);
-		this.nodeUrl = typeof nodeUrl === "string"? nodeUrl : nodeUrl.url;;
+		this.nodeUrl = typeof nodeUrl === "string" ? nodeUrl : nodeUrl.url;;
 
 		logger.log(`JSONRPC Deployer Network: ${colors.colorNetwork(this.nodeUrl)}`);
 	}
