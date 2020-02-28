@@ -24,6 +24,10 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
 
+	if(contractsWorkingDirectory) {
+		contractsWorkingDirectory = `${defaultPath}/${contractsWorkingDirectory}`;
+	}
+
 	let compilerSolcOptions = {
 		solc: {
 			version: solcVersion,
@@ -32,7 +36,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	};
 
 	let resolverOptions = {
-		"working_directory": `${defaultPath}/${contractsWorkingDirectory}` || `${defaultPath}/contracts`,
+		"working_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
@@ -40,7 +44,7 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 
 	new Resolver(resolverOptions);
 	let compileOptions = {
-		"contracts_directory": `${defaultPath}/${contractsWorkingDirectory}` || `${defaultPath}/contracts`,
+		"contracts_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
