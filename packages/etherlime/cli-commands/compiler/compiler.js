@@ -32,16 +32,15 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	};
 
 	let resolverOptions = {
-		"working_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
+		"working_directory": `${defaultPath}/${contractsWorkingDirectory}` || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
 	};
 
 	new Resolver(resolverOptions);
-
 	let compileOptions = {
-		"contracts_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
+		"contracts_directory": `${defaultPath}/${contractsWorkingDirectory}` || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
 		"compilers": compilerSolcOptions,
 		"quiet": quiet
