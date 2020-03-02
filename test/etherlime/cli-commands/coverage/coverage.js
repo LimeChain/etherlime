@@ -18,7 +18,7 @@ let currentDir;
 let originalPlatform;
 
 
-describe('coverage cli command', () => {
+describe.only('coverage cli command', () => {
 
     before(async function () {
         fs.mkdirSync('./tmpTest')
@@ -38,22 +38,22 @@ describe('coverage cli command', () => {
 
     it('should execute coverage cli command with default port specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, false, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, false, undefined)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with custom timeout specified', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, customTimeout, ganachePort, undefined, undefined, false, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], customTimeout, ganachePort, undefined, undefined, false, undefined)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, customTimeout, ganachePort, undefined, './contracts', false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], customTimeout, ganachePort, undefined, './contracts', false, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command when path does not includes specific .js file', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`./testsToRun`, defaultTimeout, ganachePort, undefined, undefined, false, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, false, undefined)
+        await assert.isFulfilled(test.runCoverage(`./testsToRun`, defaultTimeout, ganachePort, undefined, './contracts', false, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', false, undefined)
         etherlimeTestSpy.restore();
     });
 
@@ -66,8 +66,8 @@ describe('coverage cli command', () => {
 
     it('should execute coverage cli command with shouldOpenCoverage param', async function () {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', true, undefined)
         etherlimeTestSpy.restore();
     });
 
@@ -76,8 +76,8 @@ describe('coverage cli command', () => {
             value: 'win32'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', true, undefined)
         etherlimeTestSpy.restore();
     });
 
@@ -86,14 +86,14 @@ describe('coverage cli command', () => {
             value: 'MocOs'
         });
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, true, undefined))
-        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, undefined, true, undefined)
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', true, undefined))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', true, undefined)
         etherlimeTestSpy.restore();
     });
 
     it('should execute coverage cli command with specified files to ignore in report', async function () {
         let ignoreFile = 'contracts2/LimeFactory.sol'
-        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, undefined, undefined, ignoreFile))
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', undefined, ignoreFile))
     })
 
     it('should throw on wrong path', async function () {

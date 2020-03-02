@@ -27,8 +27,8 @@ let coverageConfig;
 const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
 	try {
 		coverageConfig = {
-			workingDir: process.cwd(),
-			contractsDir: path.join(process.cwd(), 'contracts'),
+			workingDir: '',
+			contractsDir: path.join(process.cwd(), workingDirectory),
 			logger: logger
 		}
 
@@ -47,7 +47,7 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 			}
 		});
 
-		await prepareCoverageFiles(files, solcVersion, ignoredFilesArray);
+		await prepareCoverageFiles(files, solcVersion, ignoredFilesArray, workingDirectory);
 		await startGanache();
 
 		var mochaConfig = {
@@ -137,7 +137,7 @@ const setJSTestGlobals = async (port) => {
 }
 
 
-const prepareCoverageFiles = async (files, solcVersion, ignoredFilesArray) => {
+const prepareCoverageFiles = async (files, solcVersion, ignoredFilesArray, workingDirectory) => {
 	const {
 		tempContractsDir,
 		tempArtifactsDir
