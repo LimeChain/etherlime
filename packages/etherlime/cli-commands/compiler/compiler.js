@@ -24,6 +24,10 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
 
+	if(contractsBuildDirectory) {
+		contractsBuildDirectory = `${defaultPath}/${contractsBuildDirectory}`;
+	}
+
 	if(contractsWorkingDirectory) {
 		contractsWorkingDirectory = `${defaultPath}/${contractsWorkingDirectory}`;
 	}
