@@ -1,5 +1,6 @@
-language:
-- node_js:
+language: node_js
+node_js: 
+  - 8.9.4
 before_install:
   - npm install -g lerna
   # Repo for Yarn
@@ -8,10 +9,12 @@ before_install:
   - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6494C6D6997C215E
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
-  - sudo add-apt-repository -y ppa:ethereum/ethereum
-  - sudo apt-get update -qq
-  - sudo apt-get install dpkg
-  - sudo apt-get install solc
+  #TODO: Uncomment when travis-ci fix libc6 library to version 2.29
+  # - sudo add-apt-repository -y ppa:ethereum/ethereum
+  # - sudo apt-get update -qq
+  # - sudo apt-get install dpkg
+  # - sudo apt-get update -qq
+  # - sudo apt-get install solc
 cache:
   yarn: true
 install:
@@ -21,9 +24,6 @@ install:
   - yarn link
   - cd ..
   - cd etherlime-lib
-  - npm run tsc
-  - cd ..
-  - cd etherlime-zos-deployer
   - npm run tsc
   - cd ../..
 services:

@@ -1,9 +1,12 @@
 const fs = require('fs-extra');
 const path = require('path');
 let Profiler = require("../compiler/etherlime-compile/profiler");
-let { resolver, supplier } = require('./config.js')
+let {
+	resolver,
+	supplier
+} = require('./config.js')
 
-const versionRegex = /^\s*pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
+const versionRegex = /pragma\ssolidity\s+(.*?)\s*;/; //regex for pragma solidity version 
 const importRegex = /^\s*import(\s+).*$/gm; //regex for imported files
 
 const returnFilesAndPaths = async (file, solcVersion) => {
@@ -14,13 +17,19 @@ const returnFilesAndPaths = async (file, solcVersion) => {
 	let resolvedFiles = await resolveSources(`./contracts/${file}`)
 	let resolvedPaths = resolvePaths(resolvedFiles)
 	let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
-	return { resolvedFiles, orderedPaths }
+	return {
+		resolvedFiles,
+		orderedPaths
+	}
 }
 
 const run = async (file, solcVersion) => {
 
 
-	const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
+	const {
+		resolvedFiles,
+		orderedPaths
+	} = await returnFilesAndPaths(file, solcVersion);
 	recordFiles(file, resolvedFiles, orderedPaths)
 	console.log('Contract was flattened successfully. Check your "./flat" folder')
 
@@ -28,7 +37,10 @@ const run = async (file, solcVersion) => {
 
 const runWithoutWriteFiles = async (file, solcVersion) => {
 	file = path.relative(`${process.cwd()}/contracts`, file)
-	const { resolvedFiles, orderedPaths } = await returnFilesAndPaths(file, solcVersion);
+	const {
+		resolvedFiles,
+		orderedPaths
+	} = await returnFilesAndPaths(file, solcVersion);
 	return returnFiles(file, resolvedFiles, orderedPaths)
 
 };

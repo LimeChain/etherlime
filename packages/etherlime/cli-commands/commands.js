@@ -1,7 +1,7 @@
 const logger = require('etherlime-logger').logger;
+const analyticsTracker = require('./analytics-tracker');
 
-const commands = [
-	{
+const commands = [{
 		command: 'ganache [port] [output] [fork] [gasPrice] [gasLimit] [mnemonic] [count] [networkId] [unlock] [secure]',
 		description: 'start etherlime ganache-cli instance with static accounts with a lot of ETH.',
 		argumentsProcessor: (yargs) => {
@@ -62,6 +62,11 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 
+			let {
+				mnemonic,
+				...rest
+			} = argv; //removes sensitive data
+			analyticsTracker.recordEvent('ganache', rest);
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -100,6 +105,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('init', argv);
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -154,6 +160,7 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -163,11 +170,12 @@ const commands = [
 				console.error(err);
 			} finally {
 				logger.removeOutputStorage();
-				const statistics = {
-					argv
-				}
-				delete statistics.argv.secret;
-
+				let {
+					secret,
+					etherscanApiKey,
+					...rest
+				} = argv // removes sensitive data 
+				analyticsTracker.recordEvent('deploy', rest);
 			}
 		}
 	},
@@ -190,6 +198,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('history', argv);
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -203,7 +212,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'compile [path] [runs] [solc-version] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles] [exportAbi]',
+		command: 'compile [path] [runs] [solcVersion] [docker] [list] [all] [quite] [output] [buildDirectory] [deleteCompiledFiles] [exportAbi]',
 		description: 'Compiles the smart contracts that are in the directory contracts in the path provided by the path parameter (defaults to .)',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -217,7 +226,7 @@ const commands = [
 				type: 'number'
 			});
 
-			yargs.positional('solc-version', {
+			yargs.positional('solcVersion', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
 			});
@@ -276,6 +285,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('compile', argv);
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -341,6 +351,7 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('test', argv);
 			logger.storeOutputParameter(argv.output);
 
 			try {
@@ -354,7 +365,7 @@ const commands = [
 		}
 	},
 	{
-		command: 'coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory] [workingDirectory] [html] [ignoreFiles]',
+		command: 'coverage [path] [timeout] [port] [solcVersion] [workingDirectory] [html] [ignoreFiles]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -369,20 +380,9 @@ const commands = [
 				default: 8545
 			});
 
-			yargs.positional('runs', {
-				describe: 'enables the optimizer on the compiler and specifies the runs',
-				type: 'number'
-			});
-
 			yargs.positional('solcVersion', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
-			});
-
-			yargs.positional('buildDirectory', {
-				describe: 'Defines which folder to use for reading builded contracts from, instead of the default one: ./build',
-				type: 'string',
-				default: './build'
 			});
 
 			yargs.positional('workingDirectory', {
@@ -393,7 +393,7 @@ const commands = [
 
 			yargs.positional('html', {
 				describe: 'Defines whether to open automatically the html coverage report located in: ./coverage',
-				type: 'string',
+				type: 'boolean',
 				default: 'false'
 			});
 
@@ -411,9 +411,11 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('coverage', argv);
+
 			try {
 				const test = require('./etherlime-test/test');
-				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.runs, argv.solcVersion, argv.buildDirectory, argv.workingDirectory, argv.html, argv.ignoreFiles);
+				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.solcVersion, argv.workingDirectory, argv.html, argv.ignoreFiles);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();
@@ -440,6 +442,8 @@ const commands = [
 		},
 		commandProcessor: async (argv) => {
 
+			analyticsTracker.recordEvent('debug', argv);
+
 			try {
 				const debug = require('./debugger/index');
 				await debug.run(argv.transactionHash, argv.port)
@@ -462,11 +466,29 @@ const commands = [
 		},
 		commandProcessor: (argv) => {
 
+			analyticsTracker.recordEvent('shape', argv);
 			logger.storeOutputParameter(argv.output);
 
 			try {
 				const shape = require('./shape/shape');
 				shape.run(argv.name);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				logger.removeOutputStorage();
+			}
+		}
+	},
+	{
+		command: 'opt-out',
+		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
+		argumentsProcessor: (yargs) => {},
+		commandProcessor: (argv) => {
+
+			analyticsTracker.recordEvent('opt-out', argv);
+
+			try {
+				analyticsTracker.optOutUser();
 			} catch (err) {
 				console.error(err);
 			} finally {
@@ -489,6 +511,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+
+			analyticsTracker.recordEvent('flatten', argv);
+
 			try {
 				const flatten = require('./flattener/flatten');
 				await flatten.run(argv.file, argv.solcVersion);
@@ -509,6 +534,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+
+			analyticsTracker.recordEvent('ide', argv);
+
 			try {
 				const ide = require('./etherlime-ide/etherlime-ide');
 				await ide.run(argv.port);
@@ -530,6 +558,9 @@ const commands = [
 			});
 		},
 		commandProcessor: async (argv) => {
+
+			analyticsTracker.recordEvent('zk', argv);
+
 			try {
 				await zkCommandProcessor(argv);
 			} catch (err) {

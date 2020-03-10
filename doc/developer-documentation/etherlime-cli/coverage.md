@@ -3,9 +3,16 @@
 ## Syntax
 
 ```text
-etherlime coverage [path] [timeout] [port] [runs] [solcVersion] [buildDirectory]
-[workingDirectory] [shouldOpenCoverage] [ignoreFiles]
+etherlime coverage [path] [timeout] [port] [solcVersion]
+[workingDirectory] [html] [ignoreFiles]
 ```
+
+### Workflow of etherlime coverage
+
+* The `coverage` command copy all test files from test directory to `.coverage_tests` temporary directory
+* The `coverage` command copy all contract files from contract directory to `.coverage_contracts` temporary directory
+* All contract files are builded **without optimization** from temporary directory and saved to `.coverage_artifacts` directory
+* All test files are run, `coverage` folder is created with the result and all temporary directories are deleted.
 
 Parameters:
 
@@ -25,13 +32,6 @@ Parameters:
 
   \(compatible with etherlime ganache deployer\). Default: 8545.
 
-* `runs` - \[Optional\] By specifying number runs you can enable the
-
-  optimizer of the compiler with the provided number of optimization
-
-  runs to be executed. Compilation is always performed by solidity
-
-  coverage.
 
 * `solcVersion` - \[Optional\] By specifying `solcVersion` you can
 
@@ -39,17 +39,9 @@ Parameters:
 
   coverage reports.
 
-* `buildDirectory` - \[Optional\] By specifying `buildDirectory` you
+* `workingDirectory` - \[Optional\] Defines the folder to use for
 
-  can choose which folder to use for reading builded contracts from,
-
-  instead of the default one: `./build`.
-
-* `workingDirectory` - \[Optional\] By specifying `workingDirectory`
-
-  you can choose which folder to use for reading contracts from,
-
-  instead of the default one: `./contracts`.
+    reading contracts from, instead of the default one: ./contracts
 
 * `html` - \[Optional\] By specifying `html` you can choose either to
 

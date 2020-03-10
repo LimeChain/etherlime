@@ -1,4 +1,4 @@
-import { ZWeb3, Contract, Contracts, SimpleProject } from 'zos-lib';
+import { ZWeb3, Contract, Contracts, SimpleProject } from '@openzeppelin/upgrades';
 import * as fs from 'fs';
 import * as path from 'path';
 

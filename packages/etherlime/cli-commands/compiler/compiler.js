@@ -6,6 +6,7 @@ const CompilerSupplier = require("./etherlime-compile/compilerSupplier");
 const supplier = new CompilerSupplier();
 const logger = require('etherlime-logger').logger;
 const deleteFolderRecursive = require('etherlime-utils').deleteFolderRecursive;
+const path = require("path")
 
 const run = async (defaultPath, runs, solcVersion, useDocker, list, all, quite, contractsBuildDirectory, contractsWorkingDirectory, deleteCompiledFiles, exportAbi) => {
 	if (list !== undefined) {
@@ -24,6 +25,14 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 		throw new Error('In order to use the docker, please set an image name: --solcVersion=<image-name>');
 	}
 
+	if (contractsBuildDirectory) {
+		contractsBuildDirectory = `${defaultPath}/${contractsBuildDirectory}`;
+	}
+	if (contractsWorkingDirectory) {
+		contractsWorkingDirectory = `${defaultPath}/${contractsWorkingDirectory}`;
+		contractsWorkingDirectory = path.normalize(contractsWorkingDirectory)
+	}
+
 	let compilerSolcOptions = {
 		solc: {
 			version: solcVersion,
@@ -39,7 +48,6 @@ const performCompilation = async (defaultPath, runs, solcVersion, useDocker, qui
 	};
 
 	new Resolver(resolverOptions);
-
 	let compileOptions = {
 		"contracts_directory": contractsWorkingDirectory || `${defaultPath}/contracts`,
 		"contracts_build_directory": contractsBuildDirectory || `${defaultPath}/build`,
@@ -82,8 +90,7 @@ const compilePromise = async (compileOptions, quiet) => {
 			}
 
 			resolve();
-		}
-		catch (error) {
+		} catch (error) {
 			return reject(error);
 		}
 	});
