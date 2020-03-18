@@ -28,8 +28,10 @@ class Verifier {
 		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
 		if(platform === 'blockskout') {
 			const network = await contractWrapper.provider.getNetwork();
-			apiUrl = this.getChainUrl(network.chainId)
-			data = this._prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries)
+			const chain = this.getChainUrl(network.chainId);
+			apiUrl = chain.url;
+			networkName = chain.name
+			data = this._prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries);
 		} else {
 			const etherscanApiKey = defaultOverrides.etherscanApiKey;
 			const network = await this._buildApiUrl(contractWrapper);
@@ -40,7 +42,7 @@ class Verifier {
 
 		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
 		const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
-		return await this._checkVerificationStatus(data, defaultOverrides, contractName, apiUrl);
+		return await this._checkVerificationStatus(data, contractWrapper.contractAddress, defaultOverrides, contractName, apiUrl);
 	}
 
 	async _flattenSourceCode(contractWrapper) {
@@ -133,7 +135,6 @@ class Verifier {
 	}
 
 	async _sendVerificationRequest(stringData, defaultOverrides, apiUrl) {
-
 		const ms = defaultOverrides.waitInterval || DEFAULT_SEND_REQUEST_TIMEOUT;
 		const self = this;
 		async function sendRequest(ms, count) {
@@ -144,6 +145,7 @@ class Verifier {
 					await self.timeout(ms);
 					return await sendRequest(ms, ++count);
 				}
+				
 				logger.log(`Request successfully sent, your GUID is ${colors.colorParams(response.data.result)}`);
 				return response.data
 			}
@@ -155,17 +157,17 @@ class Verifier {
 
 	}
 
-	async _checkVerificationStatus(data, defaultOverrides, contractName, apiUrl) {
-		// let params = {
-		// 	guid: response.result,
-		// 	module: MODULE_NAME,
-		// 	action: "verify"
-		// };
-		let params = {data}
+	async _checkVerificationStatus(data, address, defaultOverrides, contractName, apiUrl) {
+		let params = {
+			module: MODULE_NAME,
+			action: "getabi",
+			address: address
+		};
+		
 		const ms = defaultOverrides.waitInterval || DEFAULT_CHECK_STATUS_TIMEOUT;
 		const self = this;
 		async function checkGuid(ms, count) {
-			const response = await axios.get(apiUrl, data);
+			const response = await axios.get(apiUrl, {params});
 			if (!(count > 10)) {
 				if (response.data.result !== 'Pending in queue') {
 					return response.data
