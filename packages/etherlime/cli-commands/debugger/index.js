@@ -703,11 +703,11 @@ const run = async function (inputParams, inputPort) {
 						sourceMap: contract.sourceMap,
 						deployedBinary: contract.deployedBinary || contract.deployedBytecode,
 						deployedSourceMap: contract.deployedSourceMap,
-						compiler: contract.compiler
+						compiler: contract.compiler,
+						abi: contract.abi
 					};
 				})
 			}
-
 			const bugger = await Debugger.forTx(txHash, debuggerConfig);
 
 

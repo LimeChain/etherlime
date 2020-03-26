@@ -16,7 +16,7 @@ const DebugUtils = require('../../../../packages/etherlime/cli-commands/debugger
 
 let currentDir;
 
-describe('Debug cli command', () => {
+describe.only('Debug cli command', () => {
 	let txHash;
 	let foodCartTxHash;
 	let contractAddress;
@@ -498,7 +498,7 @@ describe('Debug cli command', () => {
 
 });
 
-describe('Debug utils', async () => {
+describe.only('Debug utils', async () => {
 	let source = ['pragma solidity ^0.6.0;',
 		'',
 		'contract FoodCart{',
