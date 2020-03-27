@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "etherlime-lib": "^1.0.0"
+    "etherlime-lib": "^1.2.1"
   }
 }
