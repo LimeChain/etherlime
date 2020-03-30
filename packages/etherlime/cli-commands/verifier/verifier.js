@@ -16,33 +16,53 @@ class Verifier {
 
 	}
 
-	async verifySmartContract(contractWrapper, platform, deploymentArguments, libraries, defaultOverrides) {
+	async verifySmartContract(platform, contractWrapper, deploymentArguments, libraries, defaultOverrides) {
 
 		let apiUrl;
 		let data;
 		let networkName;
+		console.log("1")
 		const contractName = contractWrapper._contract.contractName;
 		const flattenedCode = await this._flattenSourceCode(contractWrapper);
 		const constructorArguments = await this._buildConstructorArguments(contractWrapper, deploymentArguments);
 		const contractLibraries = this._buildLibrariesArguments(libraries);
 		const solcVersionCompiler = this._buildSolcVersionCompiler(contractWrapper._contract.compiler.version);
-		if(platform === 'blockskout') {
-			const network = await contractWrapper.provider.getNetwork();
-			const chain = this.getChainUrl(network.chainId);
-			apiUrl = chain.url;
-			networkName = chain.name
-			data = this._prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries);
+		
+		if(platform === 'blockscout') {
+			const urlData = await this._buildBlockscoutApiUrl(contractWrapper);
+			apiUrl = urlData.url;
+			networkName = urlData.name
+			data = this._constructBlockscoutRequestData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries);
+			
+			logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
+			const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
+
+			let params = {
+				module: MODULE_NAME,
+				action: "getabi",
+				address: contractWrapper.contractAddress
+			};
+
+			return await this._checkVerificationStatus(defaultOverrides, contractName, apiUrl, params);
 		} else {
 			const etherscanApiKey = defaultOverrides.etherscanApiKey;
-			const network = await this._buildApiUrl(contractWrapper);
-			apiUrl = network.apiUrl
-			networkName = network.networkName
-			data = this._constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
-		}
+			const urlData = await this._buildEtherscanApiUrl(contractWrapper);
+			apiUrl = urlData.apiUrl
+			networkName = urlData.networkName
+			data = this._constructEtherscanRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments);
+			
+			logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
+			const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
+			console.log("response.resut", response.result)
+			let params = {
+				guid: response.result,
+				module: MODULE_NAME,
+				action: ACTION_VERIFY_STATUS
+			};
 
-		logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
-		const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
-		return await this._checkVerificationStatus(data, contractWrapper.contractAddress, defaultOverrides, contractName, apiUrl);
+			return await this._checkVerificationStatus(defaultOverrides, contractName, apiUrl, params);
+		}
+		
 	}
 
 	async _flattenSourceCode(contractWrapper) {
@@ -78,7 +98,7 @@ class Verifier {
 		return version;
 	}
 
-	async _buildApiUrl(contractWrapper) {
+	async _buildEtherscanApiUrl(contractWrapper) {
 		const { name } = await contractWrapper.provider.getNetwork();
 
 		if ((/^(ropsten|rinkeby|kovan|goerli)$/.test(name))) {
@@ -87,7 +107,17 @@ class Verifier {
 		return { apiUrl: 'https://api.etherscan.io/api', networkName: name };
 	}
 
-	_constructRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments) {
+	async _buildBlockscoutApiUrl(contractWrapper) {
+		const network = await contractWrapper.provider.getNetwork();
+		const urlData = chainIdToUrlMap.get(network.chainId);
+		if (!urlData) {
+			throw new Error(`Unsupported chain. ID: ${network.chainId}`);
+		}
+
+		return urlData
+	}
+
+	_constructEtherscanRequestData(etherscanApiKey, contractWrapper, contractLibraries, flattenedCode, solcVersionCompiler, constructorArguments) {
 		let data = {
 			apikey: etherscanApiKey,
 			module: MODULE_NAME,
@@ -100,18 +130,17 @@ class Verifier {
 			runs: contractWrapper._contract.compiler.runs,
 			constructorArguements: constructorArguments
 		}
+
 		if (contractLibraries) {
-			for (let i = 0; i < contractLibraries.length; i++) {
-				let index = i + 1
-				data[`libraryname${index}`] = contractLibraries[i].name;
-				data[`libraryaddress${index}`] = contractLibraries[i].address;
-			}
+			const librariesData = this._constructLibrariesData(contractLibraries, data);
+			data = Object.assign(data, librariesData);
 		}
+
 		let stringData = querystring.stringify(data);
 		return stringData
 	}
 
-	_prepareBlockskoutData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
+	_constructBlockscoutRequestData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
 		let data = {
 			module: MODULE_NAME,
 			action: 'verify', // DO NOT CHANGE
@@ -123,15 +152,25 @@ class Verifier {
 			runs: contractWrapper._contract.compiler.runs,
 			constructorArguments: constructorArguments
 		}
+
 		if (contractLibraries) {
-			for (let i = 0; i < contractLibraries.length; i++) {
-				let index = i + 1
-				data[`library${index}Name`] = contractLibraries[i].name;
-				data[`library${index}Address`] = contractLibraries[i].address;
-			}
+			const librariesData = this._constructLibrariesData(contractLibraries, data);
+			data = Object.assign(data, librariesData);
 		}
+
 		let stringData = querystring.stringify(data);
 		return stringData
+	}
+
+	_constructLibrariesData(contractLibraries, data) {
+		let librariesData = {}; 
+		for (let i = 0; i < contractLibraries.length; i++) {
+			let index = i + 1
+			librariesData[`library${index}Name`] = contractLibraries[i].name;
+			librariesData[`library${index}Address`] = contractLibraries[i].address;
+		}
+
+		return librariesData
 	}
 
 	async _sendVerificationRequest(stringData, defaultOverrides, apiUrl) {
@@ -157,13 +196,7 @@ class Verifier {
 
 	}
 
-	async _checkVerificationStatus(data, address, defaultOverrides, contractName, apiUrl) {
-		let params = {
-			module: MODULE_NAME,
-			action: "getabi",
-			address: address
-		};
-		
+	async _checkVerificationStatus(defaultOverrides, contractName, apiUrl, params) {	
 		const ms = defaultOverrides.waitInterval || DEFAULT_CHECK_STATUS_TIMEOUT;
 		const self = this;
 		async function checkGuid(ms, count) {
@@ -182,6 +215,7 @@ class Verifier {
 		}
 		await self.timeout(ms);
 		const result = await checkGuid(ms, 0);
+		console.log("reult", result)
 		if (result.message !== 'OK') {
 			logger.log(`Contract: ${colors.colorName(contractName)} verification failed with error: ${colors.colorFailure(result.result)}`);
 			return result.result;
@@ -192,16 +226,6 @@ class Verifier {
 
 	timeout(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
-	}
-
-	getChainUrl(chainID) {
-		let url = chainIdToUrlMap.get(chainID)
-
-		if (!url) {
-			throw new Error(`Invalid chainID ${chainID}`)
-		}
-
-		return url
 	}
 }
 
