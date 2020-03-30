@@ -122,6 +122,7 @@ class Verifier {
 
 	async _checkVerificationStatus(response, defaultOverrides, contractName, apiUrl) {
 		let params = {
+			apikey: defaultOverrides.etherscanApiKey,
 			guid: response.result,
 			module: MODULE_NAME,
 			action: ACTION_VERIFY_STATUS
