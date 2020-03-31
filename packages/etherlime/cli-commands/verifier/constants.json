@@ -1,0 +1,17 @@
+{
+    "PLATFORM_TYPE": {
+        "BLOCKSCOUT": "blockscout"
+    },
+    "MODULE_NAME": {
+        "CONTRACT": "contract"
+    },
+    "ACTIONS": {
+        "VERIFY_SOURCE": "verifysourcecode",
+        "VERIFY_STATUS": "checkverifystatus",
+        "GET_ABI": "getabi"
+    },
+    "DEFAULT_TIMEOUT": {
+        "SEND_REQUEST": 10000,
+        "CHECK_STATUS": 5000
+    }
+}

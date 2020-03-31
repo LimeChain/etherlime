@@ -79,7 +79,6 @@ class Deployer {
 
 
 	async deployAndVerify(platform: string, contract: CompiledContract, libraries?: Generic<string>, ...args): Promise<DeployedContractWrapper> {
-		console.log("platform", platform)
 		if (platform === 'etherscan' && (!this.defaultOverrides || !this.defaultOverrides.etherscanApiKey)) {
 			throw new Error('Please provide Etherscan API key!')
 		}
