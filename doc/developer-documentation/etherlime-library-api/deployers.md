@@ -74,20 +74,20 @@ Skipping linking on contract with arguments
     await deployer.deploy(contractWithoutLibraries, false, param1, param2);
 ```
 
-#### deployAndVerify(contract, \[libraries\], \[params\])
+#### deployAndVerify(platform, contract, \[libraries\], \[params\])
 
 The main functionality the deployAndVerify exposes is (obviously) the
-ability to deploy and then verify compiled contract on Etherscan. This
+ability to deploy and then verify compiled contract on Etherscan or Blockscout platforms. This
 method exposes the same features as `deploy` method, but in addition
-automatically verifies the deployed smart contract using Etherscan API
-with Etherscan API Key.
+automatically verifies the deployed smart contract using Etherscan/Blockscout APIs.
 
 In order to use the `deployAndVerify`
-method of the deployer, an Etherscan API Key is used. You can create
+method of the deployer for Etherscan platform, an API Key is required. You can create
 your Etherscan API Key [here](https://etherscan.io/login?cmd=last).
 
 Parameters:
 
+  - `platform` - point the platform you want to verify your contract. Choices: `etherscan` , `blockscout` 
   - `contract` - descriptor object for contract to be deployed. More
     details below
   - `libraries` - key-value object containing all libraries which will
@@ -95,7 +95,7 @@ Parameters:
   - `params` - the constructor params you'd need to pass on deploy (if
     there are any)
 
-The deployment method reads the API Key form the deployer
+The deployment method reads the API Key (needed only for using Etherscan) form the deployer
 `defaultOverrides` object.
 
 Passing API Key to the deployer:

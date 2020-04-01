@@ -113,5 +113,10 @@ describe('Verifier class methods tests', () => {
 			assert.strictEqual(apiData.name, 'xDai Chain');
 		});
 
+		it('should throw if the network is not supported at blockscout platform', async () => {
+			deployer = new etherlime.InfuraPrivateKeyDeployer(privateKey, 'rinkeby');
+			await assert.isRejected(global.Verifier._buildBlockscoutApiUrl(deployer), 'Unsupported chain. ID: 4');
+		});
+
 	});
 });

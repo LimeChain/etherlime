@@ -45,6 +45,7 @@ class Verifier {
 			
 			logger.log(`Attempting to verify your contract: ${colors.colorName(contractName)} on network ${colors.colorParams(networkName)}`);
 			const response = await this._sendVerificationRequest(data, defaultOverrides, apiUrl);
+			
 			params = {
 				apikey: etherscanApiKey,
 				guid: response.result,
@@ -130,7 +131,7 @@ class Verifier {
 	_constructBlockscoutRequestData(contractWrapper, flattenedCode, solcVersionCompiler, constructorArguments, contractLibraries) {
 		const commonData = this._constructCommonData(contractWrapper, contractLibraries);
 		let data = {
-			action: 'verify', // DO NOT CHANGE
+			action: ACTIONS.VERIFY,
 			addressHash: contractWrapper.contractAddress,
 			contractSourceCode: flattenedCode,
 			name: contractWrapper._contract.contractName,

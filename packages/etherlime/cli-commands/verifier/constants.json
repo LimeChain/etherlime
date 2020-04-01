@@ -8,6 +8,7 @@
     "ACTIONS": {
         "VERIFY_SOURCE": "verifysourcecode",
         "VERIFY_STATUS": "checkverifystatus",
+        "VERIFY": "verify",
         "GET_ABI": "getabi"
     },
     "DEFAULT_TIMEOUT": {
