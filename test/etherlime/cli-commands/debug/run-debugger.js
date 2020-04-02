@@ -113,9 +113,10 @@ describe.only('Debug cli command', () => {
 
 	});
 
-	it('should start debug transaction and proceed when "n" is send, then print variables and values when "v" is send', async function () {
+	it.only('should start debug transaction and proceed when "n" is send, then print variables and values when "v" is send', async function () {
 		let expectedOutput = "limes: []";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'n\n', 'v\n');
+		console.log(childProcess)
 		assert.include(childProcess.output, expectedOutput);
 
 	});

@@ -1,4 +1,3 @@
-
 const OS = require("os");
 const path = require("path");
 const util = require("util");
@@ -46,16 +45,19 @@ const config = {
 	"build_directory": `${process.cwd()}/build`,
 	networks: {
 		development: {
-			host: "127.0.0.1",     // Localhost (default: none)
-			port: 8545,            // Standard Ethereum port (default: none)
-			network_id: "*",       // Any network (default: none)
+			host: "127.0.0.1", // Localhost (default: none)
+			port: 8545, // Standard Ethereum port (default: none)
+			network_id: "*", // Any network (default: none)
 		}
 	},
 	network: "etherlime ganache"
 };
 config.resolver = new Resolver(config)
 config.solc = {
-	optimizer: { enabled: false, runs: 200 },
+	optimizer: {
+		enabled: false,
+		runs: 200
+	},
 };
 
 let lastCommand = "n";
@@ -361,9 +363,9 @@ let setOrClearBreakpoint = async (args, setOrClear, session) => {
 	let alreadyExists =
 		breakpoints.filter(
 			existingBreakpoint =>
-				existingBreakpoint.sourceId === breakpoint.sourceId &&
-				existingBreakpoint.line === breakpoint.line &&
-				existingBreakpoint.node === breakpoint.node //may be undefined
+			existingBreakpoint.sourceId === breakpoint.sourceId &&
+			existingBreakpoint.line === breakpoint.line &&
+			existingBreakpoint.node === breakpoint.node //may be undefined
 		).length > 0;
 
 	//NOTE: in the "set breakpoint" case, the above check is somewhat
@@ -620,8 +622,9 @@ let preprocessSelectors = (expr) => {
  *        :!<trace.step.stack>[1]
  */
 let evalAndPrintExpression = async (raw, indent, suppress, session) => {
-	let context = Object.assign(
-		{ $: select },
+	let context = Object.assign({
+			$: select
+		},
 
 		await session.variables()
 	);
@@ -656,7 +659,6 @@ let evalAndPrintExpression = async (raw, indent, suppress, session) => {
 }
 
 let compileAllContracts = async (config) => {
-
 	return new Promise(async (resolve, reject) => {
 		let result;
 		try {
@@ -687,6 +689,7 @@ const run = async function (inputParams, inputPort) {
 
 	return new Promise(async (resolve, reject) => {
 		txHash = inputParams;
+
 		try {
 			const compileResult = await compileAllContracts(config);
 			const debuggerConfig = {
@@ -700,8 +703,10 @@ const run = async function (inputParams, inputPort) {
 						sourcePath: contract.sourcePath,
 						ast: contract.ast,
 						binary: contract.binary || contract.bytecode,
+						bytecode: contract.binary || contract.bytecode,
 						sourceMap: contract.sourceMap,
 						deployedBinary: contract.deployedBinary || contract.deployedBytecode,
+						deployedBytecode: contract.deployedBinary || contract.deployedBytecode,
 						deployedSourceMap: contract.deployedSourceMap,
 						compiler: contract.compiler,
 						abi: contract.abi
@@ -709,7 +714,6 @@ const run = async function (inputParams, inputPort) {
 				})
 			}
 			const bugger = await Debugger.forTx(txHash, debuggerConfig);
-
 
 			const session = bugger.connect()
 
@@ -724,8 +728,7 @@ const run = async function (inputParams, inputPort) {
 			let repl = inputParams.repl || new ReplManager(config);
 
 			repl.start({
-				prompt:
-					"debugging(" +
+				prompt: "debugging(" +
 					`${colors.colorNetwork(config.network)}` +
 					":" +
 					`${colors.colorTransactionHash(txHash)}` +
