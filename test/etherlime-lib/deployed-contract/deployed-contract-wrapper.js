@@ -19,11 +19,11 @@ const defaultConfigs = {
 let sandbox = sinon.createSandbox();
 
 describe('Deployed Contracts Wrapper tests', () => {
-    store.initHistoryRecord();
-    
-    before(() => {
-        etherlime = require('./../../../packages/etherlime-lib/dist/index');
-    })
+	store.initHistoryRecord();
+
+	before(() => {
+		etherlime = require('./../../../packages/etherlime-lib/dist/index');
+	})
 
 	describe('Initialization', async () => {
 		let deployer;
@@ -34,7 +34,7 @@ describe('Deployed Contracts Wrapper tests', () => {
 
 		it('should create correct wrapper', () => {
 			const wrapper = new etherlime.DeployedContractWrapper(Greetings, config.randomAddress, deployer.signer, deployer.provider);
-			
+
 			assert(wrapper.contract.hasOwnProperty('setGreetings'), 'The newly created wrapper does not have ethers.Contract function setGreetings');
 			assert(wrapper.contract.hasOwnProperty('getGreetings'), 'The newly created wrapper does not have ethers.Contract function setGreetings');
 			assert.deepEqual(wrapper.signer, deployer.signer, "The stored signer was not the inputted one")
@@ -89,6 +89,10 @@ describe('Deployed Contracts Wrapper tests', () => {
 			sandbox.restore();
 		});
 
+		it('should have deployment deployment receipt', async () => {
+			assert(contractWrapper.hasOwnProperty('deploymentReceipt'), 'There is no transaction receipt for deployment');
+		})
+
 		it('should wait for transaction correctly', async () => {
 			const label = 'Transfer Ownership';
 			const transferTransaction = await contractWrapper.contract.transferOwnership(config.randomAddress);
@@ -119,8 +123,13 @@ describe('Deployed Contracts Wrapper tests', () => {
 		});
 
 		it('should throw error on transaction receipt status 0', async () => {
-			const dummyTransaction = { gasPrice: 2000000 };
-			const dummyTransactionReceipt = { status: 0, gasUsed: 300000 };
+			const dummyTransaction = {
+				gasPrice: 2000000
+			};
+			const dummyTransactionReceipt = {
+				status: 0,
+				gasUsed: 300000
+			};
 
 			try {
 				await contractWrapper._postValidateTransaction(dummyTransaction, dummyTransactionReceipt);
@@ -140,7 +149,9 @@ describe('Deployed Contracts Wrapper tests', () => {
 		it('should get contract balance', async () => {
 			let oneEther = ethers.utils.parseEther('1000000000000000000');
 			let slogan = 'I am the best';
-			await contractWrapper.buy(slogan, {value: oneEther});
+			await contractWrapper.buy(slogan, {
+				value: oneEther
+			});
 			let balance = await contractWrapper.utils.getBalance();
 			assert(balance.eq(oneEther), 'The balance of contract is not valid based on ethers send')
 		})

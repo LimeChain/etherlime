@@ -43,5 +43,8 @@
     "fs-extra": false,
     "path": false,
     "os": false
+  },
+  "dependencies": {
+    "lerna": "^3.20.2"
   }
 }
