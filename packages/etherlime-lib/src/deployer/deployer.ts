@@ -224,7 +224,7 @@ class Deployer {
 	protected async _generateDeploymentResult(contract: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt):
 		Promise<DeployedContractWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
-		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
+		return new DeployedContractWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider, transactionReceipt);
 	}
 
 	/**
@@ -241,7 +241,7 @@ class Deployer {
 	 */
 
 	protected async _logAction(deployerType: string, nameOrLabel: string, transactionHash: string, status: number, gasPrice: string, gasUsed: string, result: string, solcVersion: string, verification: boolean):
-	Promise<void> {
+		Promise<void> {
 		const network = await this.provider.getNetwork();
 		logsStore.logAction(deployerType, nameOrLabel, transactionHash, status, gasPrice, gasUsed, network.chainId, result, solcVersion, verification);
 	}

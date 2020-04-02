@@ -14,11 +14,11 @@ const defaultConfigs = {
 }
 
 describe('EtherlimeGanacheWrapper tests', () => {
-    store.initHistoryRecord();
-    
-    before(() => {
-        etherlime = require('./../../../packages/etherlime-lib/dist/index');
-    })
+	store.initHistoryRecord();
+
+	before(() => {
+		etherlime = require('./../../../packages/etherlime-lib/dist/index');
+	})
 
 	describe('Initialization', async () => {
 		let deployer;
@@ -52,6 +52,10 @@ describe('EtherlimeGanacheWrapper tests', () => {
 			deployer = new etherlime.EtherlimeGanacheDeployer(undefined, undefined, defaultConfigs);
 			contractWrapper = await deployer.deploy(ICOTokenContract);
 		});
+
+		it('should have deployment deployment receipt', async () => {
+			assert(contractWrapper.hasOwnProperty('deploymentReceipt'), 'There is no transaction receipt for deployment');
+		})
 
 		it('should wait for transaction correctly', async () => {
 			const label = 'Transfer Ownership';
@@ -135,7 +139,7 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		it('should call contract correctly via object with signer instance', async () => {
 			const objectWithSigner = {
 				secretKey: ganacheSetupConfig.accounts[5].secretKey,
-        		signer: notDeployer
+				signer: notDeployer
 			}
 
 			const tx = await deployedContract.from(objectWithSigner).transfer(config.randomAddress, 500)
@@ -145,10 +149,10 @@ describe('EtherlimeGanacheWrapper tests', () => {
 		it('should call contract correctly via object with new signer instance', async () => {
 			let newRandomSigner = ethers.Wallet.createRandom();
 			newRandomSigner = await newRandomSigner.connect(deployer.provider);
-			
+
 			const objectWithSigner = {
 				secretKey: newRandomSigner.privateKey,
-        		signer: newRandomSigner
+				signer: newRandomSigner
 			}
 
 			await deployedContract.mint(newRandomSigner.address, 10000);

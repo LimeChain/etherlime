@@ -49,7 +49,7 @@ class EtherlimeGanacheDeployer extends JSONRPCDeployer {
 	protected async _generateDeploymentResult(contract: CompiledContract, transaction: providers.TransactionResponse, transactionReceipt: providers.TransactionReceipt):
 		Promise<EtherlimeGanacheWrapper> {
 		logger.log(`Contract ${colors.colorName(contract.contractName)} deployed at address: ${colors.colorAddress(transactionReceipt.contractAddress)}`);
-		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider);
+		return new EtherlimeGanacheWrapper(contract, transactionReceipt.contractAddress, this.signer, this.provider, transactionReceipt);
 	}
 
 	wrapDeployedContract(contract: CompiledContract, contractAddress: string): EtherlimeGanacheWrapper {

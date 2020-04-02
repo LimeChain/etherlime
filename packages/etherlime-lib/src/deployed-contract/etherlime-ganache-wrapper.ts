@@ -20,8 +20,8 @@ class EtherlimeGanacheWrapper extends DeployedContractWrapper {
 	private instances: Array<Contract>;
 	private instancesMap: Generic<Contract>;
 
-	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider) {
-		super(contract, contractAddress, signer, provider)
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider, deploymentReceipt?: providers.TransactionReceipt) {
+		super(contract, contractAddress, signer, provider, deploymentReceipt)
 
 		this.instances = new Array();
 		this.instancesMap = {};
