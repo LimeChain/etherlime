@@ -20,6 +20,7 @@ class DeployedContractWrapper {
 	contractAddress: string;
 	signer: Wallet;
 	provider: providers.JsonRpcProvider;
+	deploymentReceipt: providers.TransactionReceipt;
 	_contract: CompiledContract;
 	interface: utils.Interface;
 	estimate: Generic<(...params: Array<any>) => Promise<utils.BigNumber>>;
@@ -27,13 +28,14 @@ class DeployedContractWrapper {
 	filters: Generic<(...params: Array<any>) => EventFilter>;
 	utils: Generic<(provider: providers.JsonRpcProvider) => {}>;
 
-	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider) {
+	constructor(contract: CompiledContract, contractAddress: string, signer?: Wallet, provider?: providers.JsonRpcProvider, deploymentReceipt?: providers.TransactionReceipt) {
 		this._validateInput(contract, contractAddress, signer);
 		this.contractAddress = contractAddress;
 		this.signer = signer;
 		this.provider = provider;
 		this._contract = contract;
 		this.contract = new Contract(contractAddress, contract.abi, signer);
+		this.deploymentReceipt = deploymentReceipt;
 		Object.assign(this, this.contract.functions);
 		this.interface = this.contract.interface
 		this.estimate = this.contract.estimate
