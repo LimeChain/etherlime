@@ -44,12 +44,12 @@ describe('Example', () => {
     it('should revert with expected revert message', async () => {
         let expectedRevertMessage = "The carbohydrates cannot be 0";
         let carbohydrates = 0;
-        await assert.revertWith(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), expectedRevertMessage)
-    })
+        await assert.revertWith(limeFactoryInstance.createLime("newLime2", carbohydrates, 8, 2), expectedRevertMessage);
+    });
 
     it('should assert that function not revert and is executed successfully', async () => {
-        await assert.notRevert(limeFactoryInstance.createLime("newLime3", 6, 8, 2))
-    })
+        await assert.notRevert(limeFactoryInstance.createLime("newLime3", 6, 8, 2));
+    });
 
     it('should create lime from another account', async () => {
         let bobsAccount = accounts[4].signer;
@@ -60,33 +60,35 @@ describe('Example', () => {
         //check created lime
         let lime = await limeFactoryInstance.limes(1);
         assert.equal(lime.name, 'newLime3', '"newLime3" was not created');
-    })
+    });
 
     it('should emit event', async () => {
-        let expectedEvent = "FreshLime"
-        await assert.emit(limeFactoryInstance.createLime("newLime", 6, 8, 2), expectedEvent)
-    })
+        let expectedEvent = "FreshLime";
+        await assert.emit(limeFactoryInstance.createLime("newLime", 6, 8, 2), expectedEvent);
+    });
 
     it('should emit event with certain arguments', async () => {
-        await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), ["newLime"])
-    })
+        let expectedEvent = "FreshLime";
+        let expectedArgs = ["newLime"];
+        await assert.emitWithArgs(limeFactoryInstance.createLime("newLime", 6, 8, 2), expectedEvent, expectedArgs);
+    });
 
     it('should change balance on ethers sent', async () => {
-        let bobsAccount = accounts[4].signer
+        let bobsAccount = accounts[4].signer;
         await assert.balanceChanged(bobsAccount.sendTransaction({
             to: aliceAccount.signer.address,
             value: 200
-        }), bobsAccount, '-200')
-    })
+        }), bobsAccount, '-200');
+    });
 
     it('should change multiple balances on ethers sent', async () => {
-        let sender = accounts[1].signer
-        let receiver = accounts[2].signer
+        let sender = accounts[1].signer;
+        let receiver = accounts[2].signer;
 
         await assert.balancesChanged(sender.sendTransaction({
                     to: receiver.address,
                     value: 200
-                }), [sender, receiver], ['-200', 200])
-    })
+                }), [sender, receiver], ['-200', 200]);
+    });
 
 });
