@@ -36,15 +36,13 @@
     "solc": "^0.6.1",
     "tcp-port-used": "^1.0.1",
     "web3-provider-engine": "^15.0.0",
-    "@openzeppelin/upgrades": "^2.6.0-rc.1"
+    "@openzeppelin/upgrades": "^2.6.0-rc.1",
+    "lerna": "^3.20.2"
   },
   "browser": {
     "fs": false,
     "fs-extra": false,
     "path": false,
     "os": false
-  },
-  "dependencies": {
-    "lerna": "^3.20.2"
   }
 }
