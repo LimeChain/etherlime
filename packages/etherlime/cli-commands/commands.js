@@ -299,7 +299,7 @@ const commands = [{
 		}
 	},
 	{
-		command: 'test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version] [output] [port]',
+		command: 'test [path] [timeout] [skip-compilation] [gas-report] [runs] [solcVersion] [output] [port]',
 		description: 'Run all the tests that are in the test directory',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -325,7 +325,7 @@ const commands = [{
 				type: 'number'
 			});
 
-			yargs.positional('solc-version', {
+			yargs.positional('solcVersion', {
 				describe: 'Sets the solc version used for compiling the smart contracts. By default it use the solc version from the node modules',
 				type: 'string'
 			});
