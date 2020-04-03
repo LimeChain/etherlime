@@ -1,6 +1,6 @@
 {
   "name": "etherlime-logger",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "etherlime-logger manages the historical logs of executions and their reports",
   "main": "index.js",
   "scripts": {
