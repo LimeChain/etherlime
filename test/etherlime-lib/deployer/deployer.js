@@ -347,7 +347,7 @@ describe('Deployer tests', () => {
 
 			});
 
-			it('should deploy and verify smart contract', async () => {
+			it('should deploy and verify smart contract on etherscan platform', async () => {
 				const requestObject = {
 					status: '1',
 					message: 'OK',
@@ -360,11 +360,33 @@ describe('Deployer tests', () => {
 				stubRequest.onCall(0).returns(requestObject)
 				let stubCheckStatus = sinon.stub(Verifier.prototype, "_checkVerificationStatus")
 				stubCheckStatus.onCall(0).returns('Success')
-				contractWrapper = await deployer.deployAndVerify(LimeFactory);
+				contractWrapper = await deployer.deployAndVerify('etherscan', LimeFactory);
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
 				assert.strictEqual(deployer.defaultOverrides.etherscanApiKey, config.secondRandomEtherscanApiKey);
+				stubRequest.restore();
+				stubCheckStatus.restore();
+			});
+
+			it('should deploy and verify smart contract on blockscout platform', async () => {
+				const requestObject = {
+					status: '1',
+					message: 'OK'
+				};
+
+				let stubRequest = sinon.stub(Verifier.prototype, "_sendVerificationRequest");
+				stubRequest.onCall(0).returns(requestObject);
+				let stubCheckStatus = sinon.stub(Verifier.prototype, "_checkVerificationStatus");
+				stubCheckStatus.onCall(0).returns('Success');
+				let stubUrl = sinon.stub(Verifier.prototype, "_buildBlockscoutApiUrl");
+				stubUrl.onCall(0).returns('https://blockscout.com/poa/sokol/api');
+				contractWrapper = await deployer.deployAndVerify('blockscout', LimeFactory);
+				const currentRecord = store.getCurrentWorkingRecord();
+				console.log("currentRecord", currentRecord)
+				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
+				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification on Blockscout platform is not successful');
+				stubUrl.restore();
 				stubRequest.restore();
 				stubCheckStatus.restore();
 			});
@@ -383,7 +405,7 @@ describe('Deployer tests', () => {
 					message: 'OK',
 					result: 'Pass - Verified'
 				});
-				contractWrapper = await deployer.deployAndVerify(LimeFactory);
+				contractWrapper = await deployer.deployAndVerify('etherscan', LimeFactory);
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
@@ -399,7 +421,7 @@ describe('Deployer tests', () => {
 					message: 'NOTOK',
 					result: 'f3bj2acqytj7aire3tceu5wxmyjenayg5jhezjengd3xk2ghhv'
 				});
-				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				await chai.assert.isRejected(deployer.deployAndVerify('etherscan', LimeFactory))
 				mock.restore();
 			});
 
@@ -417,7 +439,7 @@ describe('Deployer tests', () => {
 					message: 'NOTOK',
 					result: 'Pending in queue'
 				});
-				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				await chai.assert.isRejected(deployer.deployAndVerify('etherscan', LimeFactory))
 				mock.restore();
 			});
 
@@ -435,7 +457,7 @@ describe('Deployer tests', () => {
 					message: 'NOTOK',
 					result: 'Fail - Unable to verify'
 				});
-				await deployer.deployAndVerify(LimeFactory)
+				await deployer.deployAndVerify('etherscan', LimeFactory)
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Fail - Unable to verify', 'Contract verification is not successful');
@@ -444,7 +466,7 @@ describe('Deployer tests', () => {
 
 			it('should throw if no Etherscan API key provided', async () => {
 				deployer.setVerifierApiKey(undefined)
-				await chai.assert.isRejected(deployer.deployAndVerify(LimeFactory))
+				await chai.assert.isRejected(deployer.deployAndVerify('etherscan', LimeFactory))
 			});
 
 
@@ -464,9 +486,9 @@ describe('Deployer tests', () => {
 					result: 'Pass - Verified'
 				});
 
-				const tokenContractDeployed = await deployer.deployAndVerify(TestToken, {});
-				const ecToolContract = await deployer.deployAndVerify(ECTools);
-				const escrowContractDeployed_V2 = await deployer.deployAndVerify(Escrow, {
+				const tokenContractDeployed = await deployer.deployAndVerify('etherscan', TestToken, {});
+				const ecToolContract = await deployer.deployAndVerify('etherscan', ECTools);
+				const escrowContractDeployed_V2 = await deployer.deployAndVerify('etherscan', Escrow, {
 					ECTools: ecToolContract.contractAddress
 				}, tokenContractDeployed.contractAddress, DAPP_ADMIN);
 				const currentRecord = store.getCurrentWorkingRecord();
@@ -491,7 +513,7 @@ describe('Deployer tests', () => {
 					result: 'Pass - Verified'
 				});
 
-				const tokenContractDeployed = await deployer.deployAndVerify(TestTokenOptimized, {});
+				const tokenContractDeployed = await deployer.deployAndVerify('etherscan', TestTokenOptimized, {});
 				const currentRecord = store.getCurrentWorkingRecord();
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification is not successful');
