@@ -5,7 +5,7 @@
 ### Syntax
 
 ```text
-etherlime test [path] [timeout] [skip-compilation] [gas-report] [runs] [solc-version]
+etherlime test [path] [timeout] [skip-compilation] [gas-report] [runs] [solcVersion]
 [output] [port]
 ```
 
@@ -39,7 +39,7 @@ Parameters:
 
   run. By default the optimizer is not enabled.
 
-* `solc-version` - \[Optional\] By specifying `solc-version` you can
+* `solcVersion` - \[Optional\] By specifying `solcVersion` you can
 
   set the version of the solc which will be used for compiling the
 
