@@ -14,9 +14,10 @@ const returnFilesAndPaths = async (file, solcVersion) => {
 		supplier.config.version = solcVersion
 	}
 
-	let resolvedFiles = await resolveSources(`./contracts/${file}`)
-	let resolvedPaths = resolvePaths(resolvedFiles)
-	let orderedPaths = orderPaths(resolvedFiles, resolvedPaths)
+	const { resolvedFiles, resolvedPathsImportsMap } = await resolveSourcesAndImports(`./contracts/${file}`)
+
+	const orderedPaths = orderPaths(resolvedPathsImportsMap)
+
 	return {
 		resolvedFiles,
 		orderedPaths
@@ -24,7 +25,6 @@ const returnFilesAndPaths = async (file, solcVersion) => {
 }
 
 const run = async (file, solcVersion) => {
-
 
 	const {
 		resolvedFiles,
@@ -46,12 +46,19 @@ const runWithoutWriteFiles = async (file, solcVersion) => {
 };
 
 
-const resolveSources = async (file) => {
-	let solc = await supplier.load()
-	let resolvedFiles
-	resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
+const resolveSourcesAndImports = async (file) => {
+	const solc = await supplier.load()
+	const resolvedFiles = await Profiler.resolveAllSources(resolver, [file], solc)
 
-	return resolvedFiles
+	const resolvedPaths = resolvePaths(resolvedFiles)
+	
+	const resolvedPathsImportsMap = new Map();
+	resolvedPaths.forEach(path => {
+		const imports = Profiler.getImports(path, resolvedFiles[path], solc)
+		resolvedPathsImportsMap.set(path, imports)
+	})
+
+	return { resolvedFiles, resolvedPathsImportsMap }
 }
 
 const resolvePaths = (files) => {
@@ -59,47 +66,50 @@ const resolvePaths = (files) => {
 }
 
 //sort files according imported dependencies; contracts with no imports are added first
-const orderPaths = (resolvedFiles, resolvedPaths) => {
-	let orderedPaths = new Array();
-	while (resolvedPaths.length > orderedPaths.length) {
+const orderPaths = (pathImportsMap) => {
+	const orderedPaths = new Array(); // keeps final order of the paths
+	const pendingPaths = new Array(); // keeps paths which imports are not ordered yet
 
-		for (let i = 0; i < resolvedPaths.length; i++) {
-			let currentPath = resolvedPaths[i]
-			let imports = resolvedFiles[currentPath].body.match(importRegex)
+	function computeImports(importsArray) {
+		for(let i = 0; i < importsArray.length; i++) {
+			const currentImport = importsArray[i];
 
-			if (!imports) {
-				pushPath(orderedPaths, currentPath)
+			// if current import has already been added => continue with the next import
+			if(orderedPaths.includes(currentImport)){
 				continue
 			}
 
-			let importsCount = countOrderedImports(imports, resolvedPaths, orderedPaths)
-			if (importsCount === imports.length) {
-				pushPath(orderedPaths, currentPath)
+			const childImports = pathImportsMap.get(currentImport);
+			// if current import has no childImports => directly add it and continue with the next import
+			if(childImports.length === 0) {
+				orderedPaths.push(currentImport)
+				continue
 			}
+
+			// if current import has been added to pending =>
+			// means that not all of its child imports were computed yet and we are still looping through them
+			// this can happen only for circular imports
+			// i.e. X.sol imports Y.sol and Y.sol imports X.sol
+			// so do nothing for the moment and continue with the next import
+			// this current (parent) import will be added when all of his child imports are computed
+			if(pendingPaths.includes(currentImport)){
+				continue
+			}
+			
+
+			pendingPaths.push(currentImport) // if no of the scenarios above are met, add current import to pending
+			computeImports(childImports) // and compute its child imports
+			
+			// at the end remove the current import from pending and add it to ordered
+			const index = pendingPaths.indexOf(currentImport);
+			pendingPaths.splice(index, 1)
+			orderedPaths.push(currentImport)
 		}
 	}
 
+	const initialPath = pathImportsMap.keys().next().value // takes the first file path from the mapping, i.e. the main file that should be flattened
+	computeImports([initialPath])
 	return orderedPaths
-}
-
-//counts if all imported sources in current file has already been ordered
-const countOrderedImports = (imports, resolvedPaths, orderedPaths) => {
-	let counter = 0;
-	for (let i = 0; i < imports.length; i++) {
-		let currentImport = imports[i].replace(/[\n\'\"\;]/g, '') //removes quotes and semicolon
-		currentImport = path.basename(currentImport, '.sol') //extract the base name of file
-		let fullPath = findFullPath(resolvedPaths, currentImport) //find full path
-		if (orderedPaths.includes(fullPath)) {
-			counter++
-		}
-	}
-	return counter
-}
-
-const pushPath = (orderedPaths, currentPath) => {
-	if (!orderedPaths.includes(currentPath)) {
-		orderedPaths.push(currentPath)
-	}
 }
 
 const recordFiles = (fileName, resolvedFiles, orderedPaths) => {
@@ -150,15 +160,6 @@ const getSolcVersion = (resolvedFiles, fileName) => {
 
 const removeVersionAndImports = (fileContent) => {
 	return fileContent.replace(versionRegex, '').replace(importRegex, '') //removes pragma solidity version and imported files
-}
-
-const findFullPath = (resolvedPaths, importPath) => {
-	for (let i = 0; i < resolvedPaths.length; i++) {
-		let basePath = path.basename(resolvedPaths[i], '.sol')
-		if (basePath === importPath) {
-			return resolvedPaths[i]
-		}
-	}
 }
 
 
