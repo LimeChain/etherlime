@@ -43,7 +43,7 @@
     "simple-git": "^1.107.0",
     "snarkjs": "LimeChain/snarkjs",
     "solc": "^0.6.1",
-    "solidity-coverage": "0.7.2",
+    "solidity-coverage": "^0.7.5",
     "tcp-port-used": "^1.0.1",
     "yargs": "11.0.0"
   },
