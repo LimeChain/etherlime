@@ -43,7 +43,9 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 			client: client,
 			port: port,
 			providerOptions: {
-				accounts: setup.accounts
+				accounts: setup.accounts,
+				gasLimit: 30700000,
+				e: 10000
 			}
 		});
 
@@ -151,9 +153,10 @@ const prepareCoverageFiles = async (files, solcVersion, ignoredFilesArray, worki
 	} = utils.assembleFiles(coverageConfig, ignoredFilesArray);
 
 	const instrumented = coverageApi.instrument(targets);
-
 	utils.save(instrumented, coverageConfig.contractsDir, tempContractsDir);
-	await compiler.run('.', undefined, solcVersion, false, undefined, false, true, tempArtifactsDir, tempContractsDir);
+	await compiler.run('.', undefined, '0.5.4', false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/infrastructure`);
+	await compiler.run('.', undefined, undefined, false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/modules`);
+	await compiler.run('.', undefined, undefined, false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/wallet`);
 }
 
 const startGanache = async () => {
