@@ -154,7 +154,8 @@ const prepareCoverageFiles = async (files, solcVersion, ignoredFilesArray, worki
 
 	const instrumented = coverageApi.instrument(targets);
 	utils.save(instrumented, coverageConfig.contractsDir, tempContractsDir);
-	await compiler.run('.', undefined, '0.5.4', false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/infrastructure`);
+	await compiler.run('.', undefined, '0.5.4', false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/infrastructure_0.5`);
+	await compiler.run('.', undefined, undefined, false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/infrastructure`);
 	await compiler.run('.', undefined, undefined, false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/modules`);
 	await compiler.run('.', undefined, undefined, false, undefined, false, true, tempArtifactsDir, `${tempContractsDir}/wallet`);
 }
