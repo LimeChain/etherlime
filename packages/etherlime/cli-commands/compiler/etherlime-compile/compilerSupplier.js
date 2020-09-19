@@ -17,8 +17,8 @@ class CompilerSupplier {
         _config = _config || {};
         this.config = {
             version: null,
-            versionsUrl: 'http://etherlime.limechain.tech/solc/bin/list.json',
-            compilerUrlRoot: 'http://etherlime.limechain.tech/solc/bin/',
+            versionsUrl: 'https://ethereum.github.io/solc-bin/bin/list.json',
+            compilerUrlRoot: 'https://ethereum.github.io/solc-bin/bin/',
             dockerTagsUrl: 'https://registry.hub.docker.com/v2/repositories/ethereum/solc/tags/',
             cache: false,
         }
