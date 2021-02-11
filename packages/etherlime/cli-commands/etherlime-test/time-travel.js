@@ -31,10 +31,16 @@ const revertState = async (provider, snapshotID) => {
     return await evmRevertState(provider, snapshotID)
 }
 
+const mineBlock = async (provider) => {
+    return await mineBlock(provider)
+}
+
+
 module.exports = {
     timeTravel,
     setTimeTo,
     latestTimestamp,
     snapshot,
-    revertState
+    revertState,
+    mineBlock
 }

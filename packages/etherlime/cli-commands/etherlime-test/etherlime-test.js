@@ -72,7 +72,8 @@ const setJSTestGlobals = async (port) => {
 		snapshot: timeTravel.snapshot,
 		revertState: timeTravel.revertState,
 		parseLogs: events.parseLogs,
-		hasEvent: events.hasEvent
+		hasEvent: events.hasEvent,
+		mineBlock: timeTravel.mineBlock
 	}
 	const localNodeProvider = new ethers.providers.JsonRpcProvider(`http://localhost:${port}`);
 	global.ganacheProvider = localNodeProvider
