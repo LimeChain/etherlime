@@ -1,9 +1,9 @@
-let { mineBlock, evmTimeTravel, evmSnapshot, evmRevertState } = require("./evm-commands");
+let { evmMineBlock, evmTimeTravel, evmSnapshot, evmRevertState } = require("./evm-commands");
 let firstTimeRequestedTime = true;
 async function latestTimestamp(provider) {
     // this is done as a workaround for a bug when first requested block get return wrong timestamp
     if (firstTimeRequestedTime) {
-        await mineBlock(provider);
+        await evmMineBlock(provider);
         firstTimeRequestedTime = false;
     }
     let latestBlock = await provider.getBlock(await provider.getBlockNumber());
@@ -32,7 +32,7 @@ const revertState = async (provider, snapshotID) => {
 }
 
 const mineBlock = async (provider) => {
-    return await mineBlock(provider)
+    return await evmMineBlock(provider)
 }
 
 
