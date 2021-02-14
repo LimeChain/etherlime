@@ -16,7 +16,7 @@ const DebugUtils = require('../../../../packages/etherlime/cli-commands/debugger
 
 let currentDir;
 
-describe.only('Debug cli command', () => {
+describe('Debug cli command', () => {
 	let txHash;
 	let foodCartTxHash;
 	let contractAddress;
