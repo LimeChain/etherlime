@@ -16,7 +16,7 @@ const DebugUtils = require('../../../../packages/etherlime/cli-commands/debugger
 
 let currentDir;
 
-describe('Debug cli command', () => {
+describe.only('Debug cli command', () => {
 	let txHash;
 	let foodCartTxHash;
 	let contractAddress;
@@ -72,14 +72,14 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and add breakpoint when "b" is send', async function () {
-		let expectedOutput = 'Breakpoint added at this point in line 3.';
+		let expectedOutput = 'Breakpoint added at this point in line 4.';
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
 
 	it('should start debug transaction and remove breakpoint when "B" is send', async function () {
-		let expectedOutput = 'Breakpoint removed at this point in line 3.';
+		let expectedOutput = 'Breakpoint removed at this point in line 4.';
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b\n', 'B\n');
 		assert.include(childProcess.output, expectedOutput);
 
@@ -234,14 +234,14 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and when "B" is send, if no breakpoint is set, a message is expected', async function () {
-		let expectedOutput = "No breakpoint at this point in line 3 to remove.";
+		let expectedOutput = "No breakpoint at this point in line 4 to remove.";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'B\n');
 		assert.include(childProcess.output, expectedOutput);
 
 	});
 
 	it('should start debug transaction and when "b" is send with args, a message is expexted', async function () {
-		let expectedOutput = "Breakpoint added at this point in line 3.";
+		let expectedOutput = "Breakpoint added at this point in line 4.";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b:LimeFactory\n');
 		assert.include(childProcess.output, expectedOutput);
 
@@ -297,7 +297,7 @@ describe('Debug cli command', () => {
 	});
 
 	it('should start debug transaction and when "b" is send with plus sign and a number, a message is expexted with setting brakepoint at the line equal to current plus the number after plus sign', async function () {
-		let expectedOutput = "Breakpoint added at line 8.";
+		let expectedOutput = "Breakpoint added at line 9.";
 		childProcess = await runCmdHandler(`etherlime debug ${txHash}`, expectedOutput, 'b +5\n');
 		assert.include(childProcess.output, expectedOutput);
 
