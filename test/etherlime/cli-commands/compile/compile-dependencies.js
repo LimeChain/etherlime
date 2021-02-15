@@ -356,7 +356,7 @@ describe('Compile dependencies', () => {
         it('should replace \\ with /', async function () {
             compileOptions.strict = true;
             const sourceObject = {
-                "::contracts\\Empty.sol": 'pragma solidity ^0.6.0;\n\ncontract Empty {\n\n}'
+                "::contracts\\Empty.sol": '// SPDX-License-Identifier: UNLICENSED \n\npragma solidity ^0.6.0;\n\ncontract Empty {\n\n}'
             }
 
             await assert.isFulfilled(etherlimeCompile(sourceObject, compileOptions), "Characters \\ should not throw err");

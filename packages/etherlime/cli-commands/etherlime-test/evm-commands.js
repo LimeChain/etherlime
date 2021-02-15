@@ -1,4 +1,4 @@
-const mineBlock = async (provider) => {
+const evmMineBlock = async (provider) => {
     await provider.send('evm_mine');
 }
 
@@ -16,7 +16,7 @@ const evmRevertState = async (provider, snapshotID) => {
 }
 
 module.exports = {
-    mineBlock,
+    evmMineBlock,
     evmTimeTravel,
     evmSnapshot,
     evmRevertState
