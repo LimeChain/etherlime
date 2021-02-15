@@ -11,16 +11,16 @@ describe('analytics tracking', () => {
         requireStub = sinon.stub(_module, '_load');	
     })
 
-    it('The etherlime record event data in prod', async () => {	
+    // it('The etherlime record event data in prod', async () => {	
 
-        requireStub.withArgs('nyc').throws(new Error(`Cannot find module 'nyc'`));	
-        requireStub.callThrough();	
+    //     requireStub.withArgs('nyc').throws(new Error(`Cannot find module 'nyc'`));	
+    //     requireStub.callThrough();	
 
-        const analyticsClient = require('../../../packages/etherlime/cli-commands/analytics-tracker');
+    //     const analyticsClient = require('../../../packages/etherlime/cli-commands/analytics-tracker');
 
-        let returnValue = await analyticsClient.recordEvent('test-event', {key: "value"});
-        assert.isTrue(returnValue, 'recordEvent should be called in prod mode');
-    })	
+    //     let returnValue = await analyticsClient.recordEvent('test-event', {key: "value"});
+    //     assert.isTrue(returnValue, 'recordEvent should be called in prod mode');
+    // })	
 
     it('The etherlime is ran in debug mode', async () => {	
 
