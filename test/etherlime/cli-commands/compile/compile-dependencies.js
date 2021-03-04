@@ -356,7 +356,7 @@ describe('Compile dependencies', () => {
         it('should replace \\ with /', async function () {
             compileOptions.strict = true;
             const sourceObject = {
-                "::contracts\\Empty.sol": '// SPDX-License-Identifier: UNLICENSED \n\npragma solidity ^0.6.0;\n\ncontract Empty {\n\n}'
+                "::contracts\\Empty.sol": '// SPDX-License-Identifier: UNLICENSED \n\npragma solidity ^0.7.0;\n\ncontract Empty {\n\n}'
             }
 
             await assert.isFulfilled(etherlimeCompile(sourceObject, compileOptions), "Characters \\ should not throw err");
@@ -462,7 +462,7 @@ describe('Compile dependencies', () => {
         });
 
         it('should compile if paths includes external imported contract', async function () {
-            compileOptions.paths.push(`${process.cwd()}/node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol`);
+            compileOptions.paths.push(`${process.cwd()}/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol`);
             await assert.isFulfilled(profiler.required_sources(compileOptions));
         });
 

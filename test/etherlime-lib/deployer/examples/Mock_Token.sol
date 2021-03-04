@@ -1,12 +1,12 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Mock_Token is ERC20, ERC20Detailed {
+contract Mock_Token is ERC20 {
     uint256 public constant INITIAL_SUPPLY = 100000 * (10 ** uint256(18));
 
-    constructor() public ERC20Detailed("LimePay Token", "LP", 18) {
+    constructor() ERC20("LimePay Token", "LP") {
         _mint(msg.sender, INITIAL_SUPPLY);
     }
 }

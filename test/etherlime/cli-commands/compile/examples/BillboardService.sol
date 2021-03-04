@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.6.0;
-
-import './SafeMath.sol';
+pragma solidity ^0.7.0;
 
 contract BillboardService {
-
-    using SafeMath for uint256;
     
     uint256 public price = 50 wei;
     address public billboardOwner;
@@ -19,7 +15,7 @@ contract BillboardService {
     function buy(string memory inSlogan) public payable {
         require(msg.value > price, "The ether sent was too low");
         billboardOwner = msg.sender;
-        price = price.add(msg.value);
+        price = price + msg.value;
         slogan = inSlogan;
     }
 

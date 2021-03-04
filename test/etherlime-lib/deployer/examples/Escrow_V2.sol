@@ -1,16 +1,15 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.7.0;
 
 import "./ECTools.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * Escrow_V2 is deprecated and currently it is not used in production 
  */
 contract Escrow_V2_Test {
-    using SafeMath for uint256;
 
-    ERC20 public tokenContract;
+    IERC20 public tokenContract;
 
     mapping (address => bool) public signers;
     mapping (uint256 => bool) public usedNonces;
@@ -31,15 +30,15 @@ contract Escrow_V2_Test {
         _;
     }
 
-    constructor(address tokenAddress, address payable _dAppAdmin) public {
+    constructor(address tokenAddress, address payable _dAppAdmin) {
         dAppAdmin = _dAppAdmin;   
-        tokenContract = ERC20(tokenAddress); 
+        tokenContract = IERC20(tokenAddress); 
     }
    
     function fundForRelayedPayment(uint256 nonce, address payable addressToFund, uint256 weiAmount, bytes memory authorizationSignature) public
     preValidateFund(nonce)
     {
-        uint256 gasLimit = gasleft().add(RELAYED_PAYMENT_FUND_FUNCTION_CALL_GAS_USED);
+        uint256 gasLimit = gasleft() + RELAYED_PAYMENT_FUND_FUNCTION_CALL_GAS_USED;
         
         addressToFund.transfer(weiAmount);
 
@@ -49,7 +48,7 @@ contract Escrow_V2_Test {
     function fundForFiatPayment(uint256 nonce, address payable addressToFund, uint256 tokenAmount, uint256 weiAmount, bytes memory authorizationSignature) public
     preValidateFund(nonce)
     {
-        uint256 gasLimit = gasleft().add(FIAT_PAYMENT_FUND_FUNCTION_CALL_GAS_USED);
+        uint256 gasLimit = gasleft() + FIAT_PAYMENT_FUND_FUNCTION_CALL_GAS_USED;
 
         tokenContract.transfer(addressToFund, tokenAmount);
         addressToFund.transfer(weiAmount);
@@ -62,7 +61,7 @@ contract Escrow_V2_Test {
     }
 
     function _refundMsgSender(uint256 gasLimit) internal {
-        uint256 refundAmount = gasLimit.sub(gasleft()).add(REFUNDING_LOGIC_GAS_COST).mul(tx.gasprice);
+        uint256 refundAmount = gasLimit - (gasleft()) + (REFUNDING_LOGIC_GAS_COST)*(tx.gasprice);
         msg.sender.transfer(refundAmount);
     }
 }

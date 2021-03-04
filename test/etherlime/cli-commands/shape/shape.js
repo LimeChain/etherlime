@@ -19,21 +19,21 @@ describe('Shape cli command', () => {
         assert.include(childProcess, expectedOutput)
     })
 
-    it('should shape new dApp with Angular front-end', async () => {
+    xit('should shape new dApp with Angular front-end', async () => {
         let expectedOutput = 'Shaping finished successful';
         let childProcess = await runCmdHandler('etherlime shape angular', expectedOutput)
         assert.include(childProcess.output, expectedOutput)
         assert(fs.existsSync('./web'))
     });
 
-    it('should shape new dApp with React front-end', async () => {
+    xit('should shape new dApp with React front-end', async () => {
         let expectedOutput = 'Shaping finished successful';
         let childProcess = await runCmdHandler('etherlime shape react', expectedOutput)
         assert.include(childProcess.output, expectedOutput)
         assert(fs.existsSync('./web'))
     });
 
-    it('should shape new dApp with Monoplasma shape', async () => {
+    xit('should shape new dApp with Monoplasma shape', async () => {
         let expectedOutput = 'Shaping finished successful';
         let childProcess = await runCmdHandler('etherlime shape monoplasma', expectedOutput)
         assert.include(childProcess.output, expectedOutput)
