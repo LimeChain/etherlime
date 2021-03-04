@@ -2,12 +2,14 @@
 pragma solidity ^0.7.0;
 
 import "./ECTools.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * Escrow_V2 is deprecated and currently it is not used in production 
  */
 contract Escrow_V2_Test {
+    using SafeMath for uint256;
 
     IERC20 public tokenContract;
 
@@ -38,7 +40,7 @@ contract Escrow_V2_Test {
     function fundForRelayedPayment(uint256 nonce, address payable addressToFund, uint256 weiAmount, bytes memory authorizationSignature) public
     preValidateFund(nonce)
     {
-        uint256 gasLimit = gasleft() + RELAYED_PAYMENT_FUND_FUNCTION_CALL_GAS_USED;
+        uint256 gasLimit = gasleft().add(RELAYED_PAYMENT_FUND_FUNCTION_CALL_GAS_USED);
         
         addressToFund.transfer(weiAmount);
 
@@ -48,7 +50,7 @@ contract Escrow_V2_Test {
     function fundForFiatPayment(uint256 nonce, address payable addressToFund, uint256 tokenAmount, uint256 weiAmount, bytes memory authorizationSignature) public
     preValidateFund(nonce)
     {
-        uint256 gasLimit = gasleft() + FIAT_PAYMENT_FUND_FUNCTION_CALL_GAS_USED;
+        uint256 gasLimit = gasleft().add(FIAT_PAYMENT_FUND_FUNCTION_CALL_GAS_USED);
 
         tokenContract.transfer(addressToFund, tokenAmount);
         addressToFund.transfer(weiAmount);
@@ -61,7 +63,7 @@ contract Escrow_V2_Test {
     }
 
     function _refundMsgSender(uint256 gasLimit) internal {
-        uint256 refundAmount = gasLimit - (gasleft()) + (REFUNDING_LOGIC_GAS_COST)*(tx.gasprice);
+        uint256 refundAmount = gasLimit.sub(gasleft()).add(REFUNDING_LOGIC_GAS_COST).mul(tx.gasprice);
         msg.sender.transfer(refundAmount);
     }
 }
