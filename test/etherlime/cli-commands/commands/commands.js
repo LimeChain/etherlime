@@ -74,22 +74,22 @@ describe('root calling cli commands', () => {
         consoleSpy.restore();
     });
 
-    it('should throw err if shape failed', async function () {
-        let stub = sinon.stub(shape, "run")
-        stub.throws()
-        let argv = {
-            output: "some message"
-        }
-        let errorMessage = "Error"
-        let consoleSpy = sinon.spy(console, "error");
-        commands[8].commandProcessor(argv)
-        let logs = consoleSpy.getCall(0);
-        let error = String(logs.args[0])
-        let errorLogged = error.includes(errorMessage);
-        assert.isTrue(errorLogged, errorMessage);
-        stub.restore();
-        consoleSpy.restore();
-    });
+    // it('should throw err if shape failed', async function () {
+    //     let stub = sinon.stub(shape, "run")
+    //     stub.throws()
+    //     let argv = {
+    //         output: "some message"
+    //     }
+    //     let errorMessage = "Error"
+    //     let consoleSpy = sinon.spy(console, "error");
+    //     commands[8].commandProcessor(argv)
+    //     let logs = consoleSpy.getCall(0);
+    //     let error = String(logs.args[0])
+    //     let errorLogged = error.includes(errorMessage);
+    //     assert.isTrue(errorLogged, errorMessage);
+    //     stub.restore();
+    //     consoleSpy.restore();
+    // });
 
     it('should throw if opt-out failed', async function () {
         let stub = sinon.stub(analyticsTracker, "optOutUser")
@@ -99,7 +99,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[9].commandProcessor(argv)
+        commands[7].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
@@ -122,7 +122,7 @@ describe('root calling cli commands', () => {
         }
         let errorMessage = "Error"
         let consoleSpy = sinon.spy(console, "error");
-        commands[11].commandProcessor(argv)
+        commands[9].commandProcessor(argv)
         let logs = consoleSpy.getCall(0);
         let error = String(logs.args[0])
         let errorLogged = error.includes(errorMessage);
