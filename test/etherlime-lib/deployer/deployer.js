@@ -309,7 +309,7 @@ describe('Deployer tests', () => {
 			});
 		});
 
-		describe('Deploy and verify smart contract', () => {
+		describe('Deploy and verify smart contract', async () => {
 
 			let signer;
 			let provider;
@@ -328,16 +328,16 @@ describe('Deployer tests', () => {
 				deployer = new etherlime.Deployer(signer, provider, defaultConfigs);
 				fs.mkdirSync('./contracts');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/LimeFactory.sol', './contracts/LimeFactory.sol');
-				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/ECTools.sol', './contracts/ECTools.sol');
+				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token.sol', './contracts/Mock_Token.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Escrow_V2.sol', './contracts/Escrow_V2_Test.sol');
 				fs.copyFileSync('./test/etherlime-lib/deployer/examples/Mock_Token_Optimized.sol', './contracts/Mock_Token_Optimized.sol');
 
-				await compiler.run('.', undefined, "0.5.0");
+				await compiler.run('.', undefined, "0.7.0");
 
 				LimeFactory = require('./../../../build/LimeFactory.json');
-				TestToken = require('./../../../build/Mock_Token.json');
 				ECTools = require('./../../../build/ECTools.json');
+				TestToken = require('./../../../build/Mock_Token.json');
 				Escrow = require('./../../../build/Escrow_V2_Test.json');
 				TestTokenOptimized = require('./../../../build/Mock_Token_Optimized.json');
 
@@ -383,7 +383,6 @@ describe('Deployer tests', () => {
 				stubUrl.onCall(0).returns('https://blockscout.com/poa/sokol/api');
 				contractWrapper = await deployer.deployAndVerify('blockscout', LimeFactory);
 				const currentRecord = store.getCurrentWorkingRecord();
-				console.log("currentRecord", currentRecord)
 				const lastAction = currentRecord.actions[currentRecord.actions.length - 1];
 				assert.strictEqual(lastAction.verification, 'Success', 'Contract verification on Blockscout platform is not successful');
 				stubUrl.restore();
@@ -605,7 +604,7 @@ describe('Deployer tests', () => {
 			let invalidLibrary = 100;
 			let bytecode = await deployer._prepareBytecode(invalidLibrary, ICOTokenContract.bytecode);
 
-			assert.equal(ICOTokenContract.bytecode, bytecode);
+			assert.strictEqual(ICOTokenContract.bytecode, bytecode);
 		});
 	})
 });

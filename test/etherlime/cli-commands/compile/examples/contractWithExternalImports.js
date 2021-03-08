@@ -1,6 +1,8 @@
-const contractWithExternalImports = `pragma solidity ^0.6.0;
+const contractWithExternalImports = `
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.7.0;
 
-import '../node_modules/openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol';
+import '../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import './SafeMath.sol';
 
 contract contractExternalImports {

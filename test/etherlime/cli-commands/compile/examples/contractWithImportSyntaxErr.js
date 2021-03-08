@@ -1,4 +1,4 @@
-let contractWithImportSyntaxErr = `pragma solidity ^0.6.0;
+let contractWithImportSyntaxErr = `pragma solidity ^0.7.0;
 
 import './ContractForFailCompilation.sol'
 

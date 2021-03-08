@@ -425,60 +425,60 @@ const commands = [{
 
 		}
 	},
-	{
-		command: 'debug [transactionHash] [port]',
-		description: 'Debug transaction hash',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('transactionHash', {
-				describe: 'Specifies the transaction hash',
-				type: 'string'
-			})
+	// {
+	// 	command: 'debug [transactionHash] [port]',
+	// 	description: 'Debug transaction hash',
+	// 	argumentsProcessor: (yargs) => {
+	// 		yargs.positional('transactionHash', {
+	// 			describe: 'Specifies the transaction hash',
+	// 			type: 'string'
+	// 		})
 
-			yargs.positional('port', {
-				describe: 'The port to run the debugger for listening for local ganache',
-				type: 'number',
-				default: 8545
-			})
-		},
-		commandProcessor: async (argv) => {
+	// 		yargs.positional('port', {
+	// 			describe: 'The port to run the debugger for listening for local ganache',
+	// 			type: 'number',
+	// 			default: 8545
+	// 		})
+	// 	},
+	// 	commandProcessor: async (argv) => {
 
-			analyticsTracker.recordEvent('debug', argv);
+	// 		analyticsTracker.recordEvent('debug', argv);
 
-			try {
-				const debug = require('./debugger/index');
-				await debug.run(argv.transactionHash, argv.port)
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
+	// 		try {
+	// 			const debug = require('./debugger/index');
+	// 			await debug.run(argv.transactionHash, argv.port)
+	// 		} catch (err) {
+	// 			console.error(err);
+	// 		} finally {
+	// 			logger.removeOutputStorage();
+	// 		}
 
-		}
-	},
-	{
-		command: 'shape [name]',
-		description: 'Shapes ready to use dApp containing all files and settings.',
-		argumentsProcessor: (yargs) => {
-			yargs.positional('name', {
-				describe: 'Specifies the name of the framework or library that the project will be build up.',
-				type: 'string'
-			})
-		},
-		commandProcessor: (argv) => {
+	// 	}
+	// },
+	// {
+	// 	command: 'shape [name]',
+	// 	description: 'Shapes ready to use dApp containing all files and settings.',
+	// 	argumentsProcessor: (yargs) => {
+	// 		yargs.positional('name', {
+	// 			describe: 'Specifies the name of the framework or library that the project will be build up.',
+	// 			type: 'string'
+	// 		})
+	// 	},
+	// 	commandProcessor: (argv) => {
 
-			analyticsTracker.recordEvent('shape', argv);
-			logger.storeOutputParameter(argv.output);
+	// 		analyticsTracker.recordEvent('shape', argv);
+	// 		logger.storeOutputParameter(argv.output);
 
-			try {
-				const shape = require('./shape/shape');
-				shape.run(argv.name);
-			} catch (err) {
-				console.error(err);
-			} finally {
-				logger.removeOutputStorage();
-			}
-		}
-	},
+	// 		try {
+	// 			const shape = require('./shape/shape');
+	// 			shape.run(argv.name);
+	// 		} catch (err) {
+	// 			console.error(err);
+	// 		} finally {
+	// 			logger.removeOutputStorage();
+	// 		}
+	// 	}
+	// },
 	{
 		command: 'opt-out',
 		description: `Opt out of the event tracking etherlime uses in order to improve itself (please don't)`,
