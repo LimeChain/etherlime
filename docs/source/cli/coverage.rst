@@ -18,6 +18,9 @@ Parameters:
 * ``buildDirectory`` - [Optional] By specifying ``buildDirectory`` you can choose which folder to use for reading builded contracts from, instead of the default one: ``./build``.
 * ``workingDirectory`` - [Optional] By specifying ``workingDirectory`` you can choose which folder to use for reading contracts from, instead of the default one: ``./contracts``.
 * ``html`` - [Optional] By specifying ``html`` you can choose either to open automatically with you default browser the html coverage report located in: ``./coverage``. Defaults to ``false``.
+* ``gasPrice`` - [Optional] By specifying ``gasPrice`` you can specify the price of gas in wei. Defaults to ``20000000000``.
+* ``gasLimit`` - [Optional] By specifying ``gasLimit`` you can specify the block gas limit. Defaults to ``6721975``.
+
 
 
 
