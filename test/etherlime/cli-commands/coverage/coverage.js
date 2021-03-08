@@ -14,6 +14,8 @@ let pathToExampleTest = `./testsToRun/${nameOfexampleTestForCoverage}`;
 let defaultTimeout = 10000;
 let customTimeout = 12000;
 let ganachePort = 8546;
+let gasPrice = 40000000000;
+let gasLimit = 26721975;
 let currentDir;
 let originalPlatform;
 
@@ -40,6 +42,13 @@ describe('coverage cli command', () => {
         let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
         await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', false, undefined))
         sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', false, undefined)
+        etherlimeTestSpy.restore();
+    });
+
+    it('should execute coverage cli command with default port specified and custom gasPrice and gasLimit', async function () {
+        let etherlimeTestSpy = sinon.spy(etherlimeCoverage, "runCoverage");
+        await assert.isFulfilled(test.runCoverage(`${pathToExampleTest}`, defaultTimeout, ganachePort, undefined, './contracts', false, undefined, gasPrice, gasLimit))
+        sinon.assert.calledWith(etherlimeTestSpy, [`${process.cwd()}/.coverage_tests/${nameOfexampleTestForCoverage}`], defaultTimeout, ganachePort, undefined, './contracts', false, undefined, gasPrice, gasLimit)
         etherlimeTestSpy.restore();
     });
 

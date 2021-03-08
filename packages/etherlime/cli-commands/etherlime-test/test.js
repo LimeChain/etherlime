@@ -79,14 +79,14 @@ const prepareTestFilesForCoverage = async (filePaths) => {
 	});
 }
 
-const runCoverage = async (path, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
+const runCoverage = async (path, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, gasPrice, gasLimit) => {
 	var config = Config.default();
 	var testDirectory = '';
 	if (path.includes('.js')) {
 
 		filePath = await prepareTestFilesForCoverage(path);
 
-		await etherlimeCoverage.runCoverage([filePath], timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles);
+		await etherlimeCoverage.runCoverage([filePath], timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, gasPrice, gasLimit);
 		return;
 	}
 
@@ -106,7 +106,7 @@ const runCoverage = async (path, timeout, port, solcVersion, workingDirectory, s
 		return file.match(config.test_file_extension_regexp) != null;
 	});
 
-	await etherlimeCoverage.runCoverage(files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles);
+	await etherlimeCoverage.runCoverage(files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, gasPrice, gasLimit);
 
 }
 
