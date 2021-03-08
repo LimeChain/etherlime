@@ -24,7 +24,7 @@ const COVERAGE_ARTIFACTS_FOLDER = '.coverage_artifacts';
 const COVERAGE_CONTRACTS_FOLDER = '.coverage_contracts';
 let coverageConfig;
 
-const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles) => {
+const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, shouldOpenCoverage, ignoreFiles, gasPrice, gasLimit) => {
 	try {
 		coverageConfig = {
 			workingDir: '',
@@ -43,7 +43,9 @@ const runCoverage = async (files, timeout, port, solcVersion, workingDirectory, 
 			client: client,
 			port: port,
 			providerOptions: {
-				accounts: setup.accounts
+				accounts: setup.accounts,
+				gasPrice: gasPrice,
+				gasLimit: gasLimit
 			}
 		});
 

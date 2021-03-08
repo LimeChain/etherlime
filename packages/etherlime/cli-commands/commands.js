@@ -365,7 +365,7 @@ const commands = [{
 		}
 	},
 	{
-		command: 'coverage [path] [timeout] [port] [solcVersion] [workingDirectory] [html] [ignoreFiles]',
+		command: 'coverage [path] [timeout] [port] [solcVersion] [workingDirectory] [html] [ignoreFiles] [gasPrice] [gasLimit]',
 		description: 'Run all tests with code coverage.',
 		argumentsProcessor: (yargs) => {
 			yargs.positional('path', {
@@ -408,6 +408,18 @@ const commands = [{
 				type: 'string'
 			});
 
+			yargs.positional('gasPrice', {
+				describe: 'Specifies the price of gas in wei',
+				type: 'number',
+				default: 20000000000
+			});
+
+			yargs.positional('gasLimit', {
+				describe: 'Specifies the block gas limit ',
+				type: 'number',
+				default: 6721975
+			});
+
 		},
 		commandProcessor: async (argv) => {
 
@@ -415,7 +427,7 @@ const commands = [{
 
 			try {
 				const test = require('./etherlime-test/test');
-				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.solcVersion, argv.workingDirectory, argv.html, argv.ignoreFiles);
+				await test.runCoverage(argv.path, argv.timeout, argv.port, argv.solcVersion, argv.workingDirectory, argv.html, argv.ignoreFiles, argv.gasPrice, argv.gasLimit);
 			} catch (e) {
 				console.error(e);
 				global.provider.stop();
