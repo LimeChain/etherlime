@@ -21,7 +21,7 @@
   "author": "http://www.limechain.tech",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bn": "^1.0.1",
     "chai": "4.1.2",
     "circom": "LimeChain/circom",
