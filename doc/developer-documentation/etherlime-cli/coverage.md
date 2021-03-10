@@ -55,3 +55,6 @@ Parameters:
   
   default all files imported from `./node-modules' are ignored.
 
+* `gasPrice` - \[Optional\] By specifying `gasPrice` you can specify the price of gas in wei. Defaults to `20000000000`.
+
+* `gasLimit` - \[Optional\] By specifying `gasLimit` you can specify the block gas limit. Defaults to `6721975`.
