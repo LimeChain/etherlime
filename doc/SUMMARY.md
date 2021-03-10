@@ -17,8 +17,6 @@
   * [etherlime history](developer-documentation/etherlime-cli/history.md)
   * [etherlime test](developer-documentation/etherlime-cli/test.md)
   * [etherlime coverage](developer-documentation/etherlime-cli/coverage.md)
-  * [etherlime debug](developer-documentation/etherlime-cli/debug.md)
-  * [etherlime shape](developer-documentation/etherlime-cli/shape.md)
   * [etherlime flatten](developer-documentation/etherlime-cli/flattener.md)
   * [etherlime ide](developer-documentation/etherlime-cli/ide.md)
   * [etherlime zk](developer-documentation/etherlime-cli/zk.md)
