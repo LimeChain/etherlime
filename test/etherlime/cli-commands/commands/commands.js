@@ -7,7 +7,7 @@ const runCmdHandler = require('../utils/spawn-child-process').runCmdHandler;
 const sinon = require('sinon');
 const init = require('../../../../packages/etherlime/cli-commands/init/init')
 const ganache = require('../../../../packages/etherlime/cli-commands/ganache/ganache');
-const shape = require('../../../../packages/etherlime/cli-commands/shape/shape');
+// const shape = require('../../../../packages/etherlime/cli-commands/shape/shape');
 const ide = require('../../../../packages/etherlime/cli-commands/etherlime-ide/etherlime-ide');
 const analyticsTracker = require('../../../../packages/etherlime/cli-commands/analytics-tracker');
 
